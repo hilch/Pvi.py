@@ -45,6 +45,7 @@ class PviObject():
         self._result = int(0)      
         self._pviError = int(0)
         self.errorChanged = None
+        self.statusChanged = None
         if parent: # all objects but '@Pvi' have a parent
             self._pviConnection = parent._pviConnection
             self._pviConnection.link(self)
@@ -82,6 +83,14 @@ class PviObject():
 
     def _eventUploadStream( self, wParam, responseInfo, dataLen : int ):      
         self._result = PviReadResponse( wParam, None, 0 ) 
+
+    def _eventStatus( self, wParam, responeInfo ):
+        """         
+        handle status events
+        """      
+        self._result = PviReadResponse( wParam, None, 0 ) 
+        if callable(self.statusChanged):
+            pass
 
     def _eventError( self, wParam, responseInfo ):
         """         
@@ -194,6 +203,25 @@ class Cpu(PviObject):
         if self.result == 0:
             s = str(s, 'ascii').rstrip('\x00')
             return s.split('\t')
+
+    @property       
+    def status(self):
+        """
+        read the CPU's status
+        """
+        s = create_string_buffer(b'\000' * 64)             
+        self._result = PviRead( self._linkID, POBJ_ACC_STATUS, None, 0, byref(s), sizeof(s) )
+        if self._result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+            if s == "ST=WarmStart" or s == "ST=ColdStart":
+                return "RUN"
+            elif s == "ST=Diagnose":
+                return "DIAG"
+            elif s == "ST=Error" or s == "ST=Reset":
+                return "SERV"
+            else:
+                return s[3:]
+
 
     def _eventDownloadStream( self, wParam, responseInfo ):    
         self._result = PviWriteResponse( wParam )
@@ -500,7 +528,13 @@ class Pvi():
                 if po:
                     po._eventDownloadStream( wParam, responseInfo ) 
                 else:
-                    raise ValueError("linkID not found !")                    
+                    raise ValueError("linkID not found !") 
+            elif responseInfo.nType == POBJ_EVENT_STATUS or responseInfo.nType == POBJ_ACC_STATUS:
+                po = self._linkIDs.get(responseInfo.LinkID, None )
+                if po:
+                    po._eventStatus( wParam, responseInfo )
+                else:
+                    raise ValueError("linkID not found !")                   
             elif responseInfo.nType == POBJ_EVENT_ERROR:
                 po = self._linkIDs.get(responseInfo.LinkID, None )
                 if po:
