@@ -20,6 +20,8 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import winreg
+
 from ctypes import *
 from ctypes import c_uint32 as DWORD
 from ctypes import c_uint64 as WPARAM
@@ -156,8 +158,22 @@ POBJ_EVENT_LN_XML_MOD_LIST = 403		# module list event (XML format)
 POBJ_EVENT_LN_XML_RED_CTRL = 440		# redundancy event (XML format)
 
 
+accessRegistry = winreg.ConnectRegistry(None,winreg.HKEY_LOCAL_MACHINE)
+pviKey = winreg.OpenKey(accessRegistry,r"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\PviMan.exe")
+pviDllPath = None
+for n in range(10):
+    try:
+        value = list(winreg.EnumValue( pviKey, n))
+        if value[0] == "Path" and value[2] == winreg.REG_SZ:
+            pviDllPath = value[1]
+    except OSError:
+        break
 
-pviDll = WinDLL (r"C:\BrAutomation\PVI\V4.7\Bin\PviCom64.dll")
+if pviDllPath == None:
+    print("Pvi is not installed")
+    exit(1)
+
+pviDll = WinDLL ( pviDllPath + r"\PviCom64.dll")
 
 #
 # int PviInitialize (INT Timeout, INT RetryTime, LPCSTR pInitParam, LPVOID pRes)
