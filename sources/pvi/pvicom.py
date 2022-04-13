@@ -251,6 +251,24 @@ class Task(PviObject):
         objectDescriptor.update({'CD':name})
         super().__init__( parent, 'POBJ_TASK', name, **objectDescriptor)
 
+    def start(self):
+        s = create_string_buffer(b"ST=Start")
+        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
+        if self._result != 0:
+            raise PviError(self._result)  
+
+    def resume(self):
+        s = create_string_buffer(b"ST=Resume")
+        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
+        if self._result != 0:
+            raise PviError(self._result)                         
+
+    def stop(self):
+        s = create_string_buffer(b"ST=Stop")
+        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
+        if self._result != 0:
+            raise PviError(self._result)                  
+
     def __repr__(self):
         return f"Task( name={self._name}, linkID={self._linkID} )"
 
