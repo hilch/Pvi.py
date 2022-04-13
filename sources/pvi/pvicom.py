@@ -319,7 +319,9 @@ class Variable(PviObject):
             raise PviError(12009)        
         self._value = None 
         self._valueChanged = None 
-        objectDescriptor.update({'CD':name})        
+        objectDescriptor.update({'CD':name})
+        if not('RF' in objectDescriptor):
+            objectDescriptor.update({'RF':0}) # do not cyclic refrehs variables by default       
         super().__init__( parent, 'POBJ_PVAR', name, **objectDescriptor)
 
     def __repr__(self):
