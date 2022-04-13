@@ -329,10 +329,18 @@ class Variable(PviObject):
 
     def _readRawData(self, wParam, responseInfo):
         vt = self._objectDescriptor.get('VT') # variable data type
-        # vl = self._objectDescriptor.get('VL') # sizeof(variable)
-        # vn = self._objectDescriptor.get('VN') # number of array elements
+
+        if vt == None:
+            self._value = None
+            if responseInfo: # data is answer of a request
+                data = c_uint8()
+                self._result = PviReadResponse( wParam, byref(data), sizeof(data) )
+            return
+
+        vl = int(self._objectDescriptor.get('VL')) # sizeof(variable)
+        vn = int(self._objectDescriptor.get('VN')) # number of array elements
         
-        data = c_uint8()
+        data = None
 
         if vt == 'boolean':
             data = c_uint8()
@@ -348,7 +356,10 @@ class Variable(PviObject):
             data = c_uint32()
         elif vt == 'i32':
             data = c_int32()
+        elif vt == 'string':
+            data = create_string_buffer(b'\000' * vl)
         else: # not handled data type
+            data = c_uint8()
             self._value = None
             self._result = PviReadResponse( wParam, None, 0 ) # just acknowledge
             if callable(self.errorChanged):
@@ -356,10 +367,14 @@ class Variable(PviObject):
 
         if responseInfo: # data is answer of a request
             self._result = PviReadResponse( wParam, byref(data), sizeof(data) )
-            self._value = data.value
+            if vt == 'string':
+                self._value = data.value.decode('ascii')
+            else:
+                self._value = data.value
+
             if callable(self.errorChanged):
                 self.errorChanged(0)       
-        else: # data shall be read now
+        else: # data shall be immediately read
             self._result = PviRead( self._linkID, POBJ_ACC_DATA, None, 0, byref(data), sizeof(data) )
             if self._result == 0:
                 self._value = data.value
@@ -378,7 +393,8 @@ class Variable(PviObject):
         if self._result == 0:
             s = str(s, 'ascii').rstrip('\x00')
             for x in  re.findall( "([A-Z]{2}=[a-zA-z0-9]+)", s ):
-                self._objectDescriptor.update({ x[0:2]: x[3:]})   
+                self._objectDescriptor.update({ x[0:2]: x[3:]}) 
+            pass  
         else:
             raise PviError(self._result)
 
@@ -538,18 +554,18 @@ class Pvi():
                 self._eventPviDisconnect( wParam, responseInfo )
             elif responseInfo.nType == POBJ_EVENT_PVI_ARRANGE:
                 self._eventPviArrange( wParam, responseInfo )
-            elif responseInfo.nType == POBJ_EVENT_DATA:
-                po = self._linkIDs.get(responseInfo.LinkID, None )
-                if po:
-                    po._eventData( wParam, responseInfo )
-                else:
-                    raise ValueError("linkID not found !")
             elif responseInfo.nType == POBJ_ACC_TYPE:
                 po = self._linkIDs.get(responseInfo.LinkID, None )
                 if po:
                     po._eventDataType( wParam, responseInfo )
                 else:
                     raise ValueError("linkID not found !")
+            elif responseInfo.nType == POBJ_EVENT_DATA:
+                po = self._linkIDs.get(responseInfo.LinkID, None )
+                if po:
+                    po._eventData( wParam, responseInfo )
+                else:
+                    raise ValueError("linkID not found !")                    
             elif responseInfo.nType == POBJ_ACC_UPLOAD_STM:
                 po = self._linkIDs.get(responseInfo.LinkID, None )
                 if po:
