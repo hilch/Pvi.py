@@ -171,6 +171,18 @@ class Cpu(PviObject):
     def __repr__(self):
         return f"Cpu( name={self._name}, linkID={self._linkID} )"
 
+    def warmStart(self):
+        s = create_string_buffer(b"ST=WarmStart")
+        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
+        if self._result != 0:
+            raise PviError(self._result) 
+
+    def coldStart(self):
+        s = create_string_buffer(b"ST=ColdStart")
+        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
+        if self._result != 0:
+            raise PviError(self._result)  
+
     def downloadModule(self, data : bytes, **args ):
         if not(isinstance(data, bytes)):
             raise TypeError("data: only bytes accepted !")
