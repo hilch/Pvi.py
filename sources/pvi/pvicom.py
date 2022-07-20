@@ -21,8 +21,11 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from ctypes import *
+import datetime
 import re
+from sqlite3 import Date
 from pvi.pvi_h import *
+from pvi.common_h import *
 
 # ----------------------------------------------------------------------------------
 class PviError(Exception):
@@ -65,6 +68,7 @@ class PviObject():
     @property
     def name(self):
         return self._name
+
 
     def _eventData( self, wParam, responseInfo ):
         """
@@ -233,6 +237,15 @@ class Cpu(PviObject):
                 return "SERV"
             else:
                 return s[3:]
+
+    @property
+    def time(self) -> datetime.datetime:
+        """
+        read the CPU's clock
+        """
+        t = struct_tm()       
+        self._result = PviRead( self._linkID, POBJ_ACC_DATE_TIME , None, 0, byref(t), sizeof(t) )
+        return datetime.datetime( year = t.tm_year+1900, month = t.tm_mon+1, day=t.tm_mday, hour=t.tm_hour, minute = t.tm_min, second = t.tm_sec)
 
 
     def _eventDownloadStream( self, wParam, responseInfo ):    
@@ -448,6 +461,7 @@ class Pvi():
         self._pviObjects = []
         self._rootObject = PviObject(None, 'POBJ_PVI', '@Pvi')
         self._rootObject._pviConnection = self
+        self.link(self._rootObject)
         self._linkIDs = {}
         self._result = PviInitialize( 0, 0, "", None )
         if self._result == 0:
@@ -463,7 +477,25 @@ class Pvi():
     @property
     def root(self):
         return self._rootObject
-                 
+
+    @property
+    def license(self):
+        """
+        read license information
+        """
+        li = T_PVI_INFO_LICENCE()
+        self._result = PviRead( self.root._linkID, POBJ_ACC_INFO_LICENCE  , None, 0, byref(li), sizeof(li) )
+        if self._result == 0:
+            try: 
+                state = ('undefined', 'trial', 'runtime', 'developer', 'locked')[li.PviWorkState0]
+                hardware = 'B&R IPC' if li.PviWorkState1 and 0x01 else 'PC'
+                burlicence = 'B&R License' if li.PviWorkState1 and 0x02 else ''
+                dongle = 'Pvi Dongle' if li.PviWorkState1 and 0x04 else ''
+                return state, hardware, burlicence, dongle, str(li.LcName)
+            except IndexError:
+                pass
+        return ('undefined', '', '', '', '', '' )
+
     # ----------------------------------------------------------------------------------
     def link(self, *args ):
         """
@@ -520,6 +552,11 @@ class Pvi():
         """
         self._result = PviReadResponse( wParam, None, 0 )                
         print("POBJ_EVENT_PVI_ARRANGE")
+        #link @Pvi
+        # linkID = DWORD(0)
+        # self._result = PviLink( byref(linkID), bytes(self.root.name, 'ascii'),PVI_HMSG_NIL, SET_PVIFUNCTION, 0, None) 
+        # self.root._linkID = linkID
+        # create and link objects
         for po in self._pviObjects:
             po._createAndLink(self)
         self._objectsArranged = True 

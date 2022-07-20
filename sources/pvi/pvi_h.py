@@ -20,6 +20,7 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import ctypes
 import winreg
 
 from ctypes import *
@@ -27,6 +28,7 @@ from ctypes import c_uint32 as DWORD
 from ctypes import c_uint64 as WPARAM
 from ctypes import c_int64 as LPARAM
 from ctypes import c_void_p as HANDLE
+from ctypes import c_uint8 as BYTE
 from enum import IntEnum
 
 
@@ -39,6 +41,7 @@ class T_POBJ_TYPE(IntEnum):
     POBJ_MODULE = 5		# modul
     POBJ_TASK = 6		# task
     POBJ_PVAR = 7		# process variable
+
 
 PVI_HMSG_NIL = 1
 
@@ -67,6 +70,44 @@ class T_RESPONSE_INFO(Structure):
         ("Status", DWORD)
     ]
  
+
+# structure for PVI license information:
+# define PVI_LCNAME_LEN			64		// max length for license name
+# typedef struct t_pvi_info_licence
+# {
+#   BYTE	PviWorkState[2];			// working state
+#   BYTE	_PviWorkState[2];			// inverted working state
+#   DWORD	Res1;						// reserved
+#  char	LcName[PVI_LCNAME_LEN+1];	// B&R license name
+# } T_PVI_INFO_LICENCE;
+
+# // PVI license information in structure element PviWorkState[0]:
+# #define PVIWORK_STATE_NULL		0			// undefined working state
+# #define PVIWORK_STATE_TRIAL		1			// working state: trial
+# #define PVIWORK_STATE_RUNTIME	2			// working state: runtime
+# #define PVIWORK_STATE_DEVELOPER	3			// historical - do not use
+# #define PVIWORK_STATE_LOCKED	4			// working state: locked
+
+# // PVI license information in structure element PviWorkState[1]:
+# #define PVIWORK_BURPC			(1<<0)		// bit indicates B&R IPC
+# #define PVIWORK_BURLC			(1<<1)		// bit indicates B&R license
+# #define PVIWORK_KEYRT			(1<<2)		// bit indicates PVI dongle (runtime)
+# #define PVIWORK_KEYDV			(1<<3)		// historical - do not use
+
+
+PVI_LCNAME_LEN = 64
+STRING_LcName = ctypes.c_char*(PVI_LCNAME_LEN+1)
+
+class T_PVI_INFO_LICENCE(Structure):
+    _fields_ = [
+        ("PviWorkState0",BYTE),    
+        ("PviWorkState1",BYTE),            
+        ("_PviWorkState0",BYTE),               
+        ("_PviWorkState1",BYTE),                       
+        ("Res1",DWORD),           
+        ("LcName",STRING_LcName)           
+    ]
+
 
 # Accessing Types:
 POBJ_ACC_OBJECT = 1		# read process object type
