@@ -245,7 +245,10 @@ class Cpu(PviObject):
         """
         t = struct_tm()       
         self._result = PviRead( self._linkID, POBJ_ACC_DATE_TIME , None, 0, byref(t), sizeof(t) )
-        return datetime.datetime( year = t.tm_year+1900, month = t.tm_mon+1, day=t.tm_mday, hour=t.tm_hour, minute = t.tm_min, second = t.tm_sec)
+        try:
+            return datetime.datetime( year = t.tm_year+1900, month = t.tm_mon+1, day=t.tm_mday, hour=t.tm_hour, minute = t.tm_min, second = t.tm_sec)
+        except ValueError:
+            return datetime.datetime( year = 1970, month = 1, day = 1 )
 
 
     def _eventDownloadStream( self, wParam, responseInfo ):    
