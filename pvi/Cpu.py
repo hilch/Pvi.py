@@ -1,0 +1,146 @@
+#
+# Pvi.py
+# Python connector for B&R Pvi (process visualization interface)
+#
+#  https://github.com/hilch/Pvi.py
+# Permission is hereby granted, free of charge, 
+# to any person obtaining a copy of this software and associated documentation files (the "Software"), 
+# to deal in the Software without restriction, 
+# including without limitation the rights to use, copy, modify, merge, publish, distribute, 
+# sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, 
+# subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included 
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+from ctypes import *
+import datetime
+from .pvi_h import *
+from .common_h import *
+from .Object import PviObject
+from .Error import PviError
+
+
+
+# ----------------------------------------------------------------------------------
+class Cpu(PviObject):
+    def __init__( self, parent, name, **objectDescriptor ):
+        if parent._type != T_POBJ_TYPE.POBJ_DEVICE and parent._type != T_POBJ_TYPE.POBJ_STATION:
+            raise PviError(12009)                    
+        super().__init__( parent, 'POBJ_CPU', name, **objectDescriptor) 
+        self._downloaded = None
+        self._progress = None       
+
+    def __repr__(self):
+        return f"Cpu( name={self._name}, linkID={self._linkID} )" 
+
+    def warmStart(self):
+        '''
+        Cpu: executes a warm restart
+        '''
+        s = create_string_buffer(b"ST=WarmStart")
+        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
+        if self._result != 0:
+            pass
+
+    def coldStart(self):
+        '''
+        Cpu: executes a cold restart
+        '''        
+        s = create_string_buffer(b"ST=ColdStart")
+        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
+        if self._result != 0:
+            pass
+
+    def downloadModule(self, data : bytes, **args ):
+        '''
+        Cpu: download given bytes as module
+        '''
+        if not(isinstance(data, bytes)):
+            raise TypeError("data: only bytes accepted !")
+            return
+        arguments = ''
+        for key, value in args.items():
+            if key == 'downloaded':
+                if callable(value):
+                    self._downloaded = value
+                else:
+                    raise TypeError("only type function for argument 'downloaded' allowed !")
+            elif key == 'progress':
+                if callable(value):
+                    self._progress = value
+                else:
+                    raise TypeError("only type function for argument 'progress' allowed !")
+            else:
+                arguments += f"{key}={value} "
+        s = create_string_buffer(bytes(arguments,'ascii') + b'\0' + data)            
+        self._result = PviWriteRequest( self._linkID, POBJ_ACC_DOWNLOAD_STM, byref(s), sizeof(s)-1, PVI_HMSG_NIL, SET_PVIFUNCTION, 0)
+
+
+    @property
+    def modules(self):
+        """     
+        Cpu: get a list a modules 
+        """
+        s = create_string_buffer(b'\000' * 4096)   
+        self.result = PviRead( self._linkID, POBJ_ACC_LIST_MODULE, None, 0, byref(s), sizeof(s) )
+        if self.result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+            return s.split('\t')
+
+    @property       
+    def status(self):
+        """
+        Cpu: read the CPU status
+        """
+        s = create_string_buffer(b'\000' * 64)             
+        self._result = PviRead( self._linkID, POBJ_ACC_STATUS, None, 0, byref(s), sizeof(s) )
+        if self._result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+            if s == "ST=WarmStart" or s == "ST=ColdStart":
+                return "RUN"
+            elif s == "ST=Diagnose":
+                return "DIAG"
+            elif s == "ST=Error" or s == "ST=Reset":
+                return "SERV"
+            else:
+                return s[3:]
+
+    @property
+    def time(self) -> datetime.datetime:
+        """
+        Cpu: read the CPU's clock
+        """
+        t = struct_tm()       
+        self._result = PviRead( self._linkID, POBJ_ACC_DATE_TIME , None, 0, byref(t), sizeof(t) )
+        try:
+            return datetime.datetime( year = t.tm_year+1900, month = t.tm_mon+1, day=t.tm_mday, hour=t.tm_hour, minute = t.tm_min, second = t.tm_sec)
+        except ValueError:
+            return datetime.datetime( year = 1970, month = 1, day = 1 )
+
+
+    def _eventStatus( self, wParam, responseInfo ):
+        """         
+        handle status events
+        """      
+        self._result = PviReadResponse( wParam, None, 0 ) 
+        if callable(self._statusChanged):
+            self._statusChanged( responseInfo )
+
+
+    def _eventDownloadStream( self, wParam, responseInfo ):    
+        self._result = PviWriteResponse( wParam )
+        if self._result == 0:
+            if self._downloaded:
+                self._downloaded()
+        else:
+            raise PviError(self._result)            
+
+            

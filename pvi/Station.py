@@ -20,3 +20,17 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from ctypes import *
+from .pvi_h import *
+from .common_h import *
+from .Object import PviObject
+from .Error import PviError
+
+class Station(PviObject):
+    def __init__( self, parent, name, **objectDescriptor ):
+        if parent._type != T_POBJ_TYPE.POBJ_DEVICE:
+            raise PviError(12009)          
+        super().__init__( parent, 'POBJ_STATION', name, **objectDescriptor)
+
+    def __repr__(self):
+        return f"Station( name={self._name}, linkID={self._linkID} )"
