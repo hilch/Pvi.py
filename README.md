@@ -3,7 +3,7 @@
 [![Made For B&R](https://github.com/hilch/BandR-badges/blob/main/Made-For-BrAutomation.svg)](https://www.br-automation.com)
 
 # Pvi.py
-Python connector for B&amp;R Pvi (process visualization interface).
+Python connector for [B&amp;R Pvi (process visualization interface)](https://www.br-automation.com/en/products/software/automation-software/automation-netpvi/).
 PVI is a complex software layer. In most cases it is used to communicate with B&R PLCs.
 
 # PVI installation and license
