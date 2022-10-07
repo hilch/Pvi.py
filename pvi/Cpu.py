@@ -22,6 +22,7 @@
 
 from ctypes import *
 import datetime
+import inspect
 from .pvi_h import *
 from .common_h import *
 from .Object import PviObject
@@ -41,18 +42,46 @@ class Cpu(PviObject):
     def __repr__(self):
         return f"Cpu( name={self._name}, linkID={self._linkID} )" 
 
-    def warmStart(self):
+    def _eventStatus( self, wParam, responseInfo ):
+        """         
+        handle status events
+        """      
+        self._result = PviReadResponse( wParam, None, 0 ) 
+        if callable(self._statusChanged):
+            self._statusChanged( responseInfo )
+
+
+    def _eventDownloadStream( self, wParam, responseInfo : T_RESPONSE_INFO):    
+        self._result = PviWriteResponse( wParam )
+        if self._result == 0:
+            if self._downloaded:
+                self._downloaded()
+        else:
+            raise PviError(self._result)      
+
+    def _eventProceeding( self, wParam, responseInfo : T_RESPONSE_INFO ):    
+        proceedingInfo = T_PROCEEDING_INFO()
+        self._result = PviReadResponse( wParam, byref(proceedingInfo), sizeof(proceedingInfo) )
+        if self._result == 0:
+            if self._progress:
+                self._progress(int(proceedingInfo.Percent))
+        else:
+            raise PviError(self._result)   
+
+    def warmStart(self) -> None:
         '''
-        Cpu: executes a warm restart
+        Cpu.warmstart() -> None
+        executes a warm restart
         '''
         s = create_string_buffer(b"ST=WarmStart")
         self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
         if self._result != 0:
             pass
 
-    def coldStart(self):
+    def coldStart(self) -> None:
         '''
-        Cpu: executes a cold restart
+        Cpu.coldStart() -> None
+        executes a cold restart
         '''        
         s = create_string_buffer(b"ST=ColdStart")
         self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
@@ -61,11 +90,27 @@ class Cpu(PviObject):
 
     def downloadModule(self, data : bytes, **args ):
         '''
-        Cpu: download given bytes as module
+        Cpu.downloadModule( data, **args )
+        download given bytes as module
+
+        Parameters:
+        data : bytes  - data content
+        args : MT - module type e.g. 'BRT', '
+               MN - module name
+               MV - module version
+               LD - memory type e.g. 'Ram', 'Dram', 'Rom'
+               downloaded - callback() if module was downloaded
+               progress - callback(p) to show progress
         '''
         if not(isinstance(data, bytes)):
-            raise TypeError("data: only bytes accepted !")
+            raise TypeError(inspect.currentframe().f_code.co_name + " - data: only bytes accepted !")
             return
+        if 'MT' not in args:
+            args.update( { 'MT' : 'BRT' } )
+        if 'MN' not in args:
+            raise KeyError( inspect.currentframe().f_code.co_name + " - argument 'MN' is missing !")
+            return            
+
         arguments = ''
         for key, value in args.items():
             if key == 'downloaded':
@@ -82,12 +127,15 @@ class Cpu(PviObject):
                 arguments += f"{key}={value} "
         s = create_string_buffer(bytes(arguments,'ascii') + b'\0' + data)            
         self._result = PviWriteRequest( self._linkID, POBJ_ACC_DOWNLOAD_STM, byref(s), sizeof(s)-1, PVI_HMSG_NIL, SET_PVIFUNCTION, 0)
+        if self._result:
+            raise PviError( self._result )
 
 
     @property
     def modules(self):
         """     
-        Cpu: get a list a modules 
+        Cpu.modules : list
+        get a list a modules 
         """
         s = create_string_buffer(b'\000' * 4096)   
         self.result = PviRead( self._linkID, POBJ_ACC_LIST_MODULE, None, 0, byref(s), sizeof(s) )
@@ -96,9 +144,10 @@ class Cpu(PviObject):
             return s.split('\t')
 
     @property       
-    def status(self):
+    def status(self) -> str:
         """
-        Cpu: read the CPU status
+        Cpu.status
+        read the CPU status ('RUN' / 'DIAG' / 'SERV' / 'Offline' / 'Err:XXXX' )
         """
         s = create_string_buffer(b'\000' * 64)             
         self._result = PviRead( self._linkID, POBJ_ACC_STATUS, None, 0, byref(s), sizeof(s) )
@@ -112,6 +161,10 @@ class Cpu(PviObject):
                 return "SERV"
             else:
                 return s[3:]
+        elif self._result == 4808 or self._result == 11020:
+            return "Offline"
+        else:
+            return f'Err:{self._result}'
 
     @property
     def time(self) -> datetime.datetime:
@@ -126,21 +179,6 @@ class Cpu(PviObject):
             return datetime.datetime( year = 1970, month = 1, day = 1 )
 
 
-    def _eventStatus( self, wParam, responseInfo ):
-        """         
-        handle status events
-        """      
-        self._result = PviReadResponse( wParam, None, 0 ) 
-        if callable(self._statusChanged):
-            self._statusChanged( responseInfo )
-
-
-    def _eventDownloadStream( self, wParam, responseInfo ):    
-        self._result = PviWriteResponse( wParam )
-        if self._result == 0:
-            if self._downloaded:
-                self._downloaded()
-        else:
-            raise PviError(self._result)            
+     
 
             

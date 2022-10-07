@@ -29,7 +29,8 @@ this simple example just registers a variable, reads its value and then exit aft
 ## ['simple2.py'](simple2.py)
 this simple example just registers a variable for reading and another for writing. In fact we switch on the 'coffee machine' and watch its temperature ...
 
-
+## ['modules1.py'](modules1.py)
+this simple example creates a module on CPU by downloading a bytestream and checks if it exists
 
 
 

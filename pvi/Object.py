@@ -118,8 +118,6 @@ class PviObject():
         handle error events
         """      
         self._result = PviReadResponse( wParam, None, 0 )
-        if self._debug:
-            print(f'POBJ_EVENT_ERROR : responseInfo.ErrCode = {self._name} : {responseInfo.ErrCode}')
         if callable(self.errorChanged):
             self.errorChanged(responseInfo.ErrCode)
 
@@ -130,11 +128,15 @@ class PviObject():
             descriptor_items += [f'{key}={quote}{value}{quote}']
         descr = ' '.join(descriptor_items) 
         linkID = DWORD(0)
+        linkDescriptor = None
+        if self._type == T_POBJ_TYPE.POBJ_CPU:
+            linkDescriptor = b'EV=ep' # need this for downloading proceeding info
         self._result = PviCreate( byref(linkID), bytes(self._name, 'ascii'),
-            self._type, bytes(descr, 'ascii'), PVI_HMSG_NIL, SET_PVIFUNCTION, 0, None)
+            self._type, bytes(descr, 'ascii'), PVI_HMSG_NIL, SET_PVIFUNCTION, 0, linkDescriptor)
         if self._result == 0: # object creation successful
             self._linkID = linkID.value
-            PviReadRequest( self._linkID, POBJ_ACC_TYPE, PVI_HMSG_NIL, SET_PVIFUNCTION, 0 )
+            if self._type == T_POBJ_TYPE.POBJ_PVAR: # read variable's data type
+                PviReadRequest( self._linkID, POBJ_ACC_TYPE, PVI_HMSG_NIL, SET_PVIFUNCTION, 0 )
             pvi._linkIDs[self._linkID] = self # store object for backward reference  
         else:
             print( f"PviCreate {self.name} = {self._result}")

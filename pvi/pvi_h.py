@@ -71,6 +71,23 @@ class T_RESPONSE_INFO(Structure):
     ]
  
 
+# // structure for PROCEEDING events:
+# typedef struct t_proceeding_info
+# {
+# 	DWORD	nAccess;					// access type of the active request
+# 	DWORD	Percent;					// progress of the active request (0%..100%)
+# 	char	Info[32];					// optional text
+# } T_PROCEEDING_INFO;
+
+STRING_ProceedingInfo = ctypes.c_char*(32)
+
+class T_PROCEEDING_INFO(Structure):
+    _fields_ = [
+        ("nAccess",DWORD),
+        ("Percent", DWORD),
+        ("Info", STRING_ProceedingInfo),
+    ]
+
 # structure for PVI license information:
 # define PVI_LCNAME_LEN			64		// max length for license name
 # typedef struct t_pvi_info_licence
@@ -348,7 +365,18 @@ def PviWriteRequest( LinkID, nAccess, pData, DataLen, hResMsg, ResMsgNo, ResPara
     return result
 
 #
-# int PviWriteResponse (WPARAM wParam)
+# int PviWriteResultResponse (WPARAM wParam, LPVOID pRstData, LONG RstDataLen)
+#     
+
+pviDll.PviWriteResultResponse.argtypes = [c_uint64, c_void_p, c_int32]
+pviDll.PviWriteResultResponse.restype = c_int32
+def PviWriteResultResponse( wParam, pRstData, RstDataLen ):
+    result = pviDll.PviWriteResultResponse( wParam, pRstData, RstDataLen )
+    return result
+
+
+#
+# int PviWriteResultResponse (WPARAM wParam)
 #     
 
 pviDll.PviWriteResponse.argtypes = [c_uint64]
@@ -356,6 +384,8 @@ pviDll.PviWriteResponse.restype = c_int32
 def PviWriteResponse( wParam ):
     result = pviDll.PviWriteResponse( wParam )
     return result
+
+
 
 #
 # int PviWrite (DWORD LinkID, DWORD nAccess, LPVOID pData, LONG DataLen, LPVOID pRstData, LONG RstDataLen)

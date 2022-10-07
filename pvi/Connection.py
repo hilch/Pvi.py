@@ -90,11 +90,19 @@ class Connection():
                 raise ValueError("only PviObject of list of PviObjects allowed !")
     # ----------------------------------------------------------------------------------
 
-    def findObjectByName(self, name) ->PviObject :
+    def findObjectByName(self, name : str) ->PviObject :
         for o in self._pviObjects:
             if o.name == name:
                 return o
         return None
+
+    # ----------------------------------------------------------------------------------
+
+    def findObjectByLinkID(self, linkID : DWORD) ->PviObject :
+        for o in self._pviObjects:
+            if o._linkID == linkID:
+                return o
+        return None        
 
 
     # ----------------------------------------------------------------------------------
@@ -163,6 +171,11 @@ class Connection():
             responseInfo = T_RESPONSE_INFO()
             self._result = PviGetResponseInfo( wParam, None, byref(dataLen), byref(responseInfo), sizeof(responseInfo) )
 
+            if self._debug:
+                if responseInfo.ErrCode != 0:
+                    po = self.findObjectByLinkID(responseInfo.LinkID)
+                    print(f'{po.name} : nMode = {responseInfo.nMode}, nType = {responseInfo.nType}, ErrCode = {responseInfo.ErrCode}')
+
             if responseInfo.nType == POBJ_EVENT_PVI_CONNECT:
                 self._eventPviConnect( wParam, responseInfo )
             elif responseInfo.nType == POBJ_EVENT_PVI_DISCONN:
@@ -199,6 +212,12 @@ class Connection():
                     po._eventStatus( wParam, responseInfo )
                 else:
                     raise ValueError("linkID not found !")                   
+            elif responseInfo.nType == POBJ_EVENT_PROCEEDING:
+                po = self._linkIDs.get(responseInfo.LinkID, None )
+                if po:
+                    po._eventProceeding( wParam, responseInfo ) 
+                else:
+                    raise ValueError("linkID not found !")                                         
             elif responseInfo.nType == POBJ_EVENT_ERROR:
                 po = self._linkIDs.get(responseInfo.LinkID, None )
                 if po:
