@@ -129,7 +129,7 @@ class PviObject():
         descr = ' '.join(descriptor_items) 
         linkID = DWORD(0)
         linkDescriptor = None
-        if self._type == T_POBJ_TYPE.POBJ_CPU:
+        if self._type == T_POBJ_TYPE.POBJ_CPU or self._type == T_POBJ_TYPE.POBJ_MODULE:
             linkDescriptor = b'EV=ep' # need this for downloading proceeding info
         self._result = PviCreate( byref(linkID), bytes(self._name, 'ascii'),
             self._type, bytes(descr, 'ascii'), PVI_HMSG_NIL, SET_PVIFUNCTION, 0, linkDescriptor)

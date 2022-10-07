@@ -32,6 +32,8 @@ this simple example just registers a variable for reading and another for writin
 ## ['modules1.py'](modules1.py)
 this simple example creates a module on CPU by downloading a bytestream and checks if it exists
 
-
+## ['modules2.py'](modules2.py)
+this simple example creates a module on CPU by downloading a bytestream and 
+afterwards uploads it again
 
 

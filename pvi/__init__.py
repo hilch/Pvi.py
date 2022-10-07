@@ -28,4 +28,5 @@ from .Device import *
 from .Station import *
 from .Cpu import *
 from .Task import *
+from .Module import *
 from .Variable import *

@@ -29,7 +29,6 @@ from .Object import PviObject
 from .Error import PviError
 
 
-
 # ----------------------------------------------------------------------------------
 class Cpu(PviObject):
     def __init__( self, parent, name, **objectDescriptor ):
@@ -88,14 +87,14 @@ class Cpu(PviObject):
         if self._result != 0:
             pass
 
-    def downloadModule(self, data : bytes, **args ):
+    def downloadModule(self, data : bytes, **kwargs ):
         '''
         Cpu.downloadModule( data, **args )
         download given bytes as module
 
         Parameters:
         data : bytes  - data content
-        args : MT - module type e.g. 'BRT', '
+        kwargs : MT - module type e.g. 'BRT'
                MN - module name
                MV - module version
                LD - memory type e.g. 'Ram', 'Dram', 'Rom'
@@ -105,14 +104,14 @@ class Cpu(PviObject):
         if not(isinstance(data, bytes)):
             raise TypeError(inspect.currentframe().f_code.co_name + " - data: only bytes accepted !")
             return
-        if 'MT' not in args:
-            args.update( { 'MT' : 'BRT' } )
-        if 'MN' not in args:
+        if 'MT' not in kwargs:
+            kwargs.update( { 'MT' : 'BRT' } )
+        if 'MN' not in kwargs:
             raise KeyError( inspect.currentframe().f_code.co_name + " - argument 'MN' is missing !")
             return            
 
         arguments = ''
-        for key, value in args.items():
+        for key, value in kwargs.items():
             if key == 'downloaded':
                 if callable(value):
                     self._downloaded = value
@@ -125,16 +124,15 @@ class Cpu(PviObject):
                     raise TypeError("only type function for argument 'progress' allowed !")
             else:
                 arguments += f"{key}={value} "
-        s = create_string_buffer(bytes(arguments,'ascii') + b'\0' + data)            
-        self._result = PviWriteRequest( self._linkID, POBJ_ACC_DOWNLOAD_STM, byref(s), sizeof(s)-1, PVI_HMSG_NIL, SET_PVIFUNCTION, 0)
+        s = create_string_buffer(bytes(arguments,'ascii') + b'\0' + bytes(data) )            
+        self._result = PviWriteRequest( self._linkID, POBJ_ACC_DOWNLOAD_STM, byref(s), sizeof(s), PVI_HMSG_NIL, SET_PVIFUNCTION, 0)
         if self._result:
             raise PviError( self._result )
-
 
     @property
     def modules(self):
         """     
-        Cpu.modules : list
+        Cpu.modules : list of str
         get a list a modules 
         """
         s = create_string_buffer(b'\000' * 4096)   
