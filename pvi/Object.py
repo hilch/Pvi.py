@@ -144,6 +144,23 @@ class PviObject():
         return self._result                
 
 
+    @property
+    def externalObjects(self):
+        """     
+        PviObject.externalObjects : list of dict
+        get a list of external objects
+        """    
+        s = create_string_buffer(b'\000' * 65536)   
+        self.result = PviRead( self._linkID, POBJ_ACC_LIST_EXTERN, None, 0, byref(s), sizeof(s) )
+        if self.result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+            li1 = [r.split(' OT=') for r in s.split('\t')]
+            li2 = [{ 'name': r[0], 'type' : r[1] } for r in li1]
+            return li2
+        else:
+            return []
+
+
     def kill(self):
         '''
         PviObject.kill: kills this object
