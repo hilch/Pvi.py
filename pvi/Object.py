@@ -143,9 +143,13 @@ class PviObject():
             raise PviError(self._result)
         return self._result                
 
-    def unlink(self):
+
+    def kill(self):
+        '''
+        PviObject.kill: kills this object
+        '''
         if self._linkID != 0:
-            self._pviConnection._linkIDs.remove(self._linkID) # remove from linkIDs
+            self._pviConnection._linkIDs.pop(self._linkID) # remove from linkIDs
             self._pviConnection._pviObjects.remove(self) # remove from PviObjects
             self._result = PviUnlink(self._linkID)
             self._linkID = 0
