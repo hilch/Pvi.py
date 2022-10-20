@@ -23,14 +23,13 @@
 from ctypes import *
 import re
 from sqlite3 import Date
-from .pvi_h import *
-from .common_h import *
+from .include import *
 from .Error import PviError
 from .Object import PviObject
 
 class Variable(PviObject):
     def __init__( self, parent, name, **objectDescriptor ):
-        if parent._type != T_POBJ_TYPE.POBJ_CPU and  parent._type != T_POBJ_TYPE.POBJ_TASK:
+        if parent._type != T_POBJ_TYPE.POBJ_CPU and  parent._type != T_POBJ_TYPE.POBJ_TASK and  parent._type != T_POBJ_TYPE.POBJ_STATION:
             raise PviError(12009)        
         self._value = None 
         self._valueChanged = None 

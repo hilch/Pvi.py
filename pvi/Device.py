@@ -21,8 +21,7 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from ctypes import *
-from .pvi_h import *
-from .common_h import *
+from .include import *
 from .Object import PviObject
 from .Error import PviError
 
@@ -35,3 +34,4 @@ class Device(PviObject):
 
     def __repr__(self):
         return f"Device( name={self._name}, linkID={self._linkID} )"
+

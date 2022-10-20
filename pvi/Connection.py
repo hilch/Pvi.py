@@ -22,8 +22,7 @@
 
 from ctypes import *
 from sqlite3 import Date
-from .pvi_h import *
-from .common_h import *
+from .include import *
 from .Error import PviError
 from .Object import PviObject
 

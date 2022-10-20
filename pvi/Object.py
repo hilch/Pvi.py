@@ -22,8 +22,7 @@
 
 from ctypes import *
 import re
-from .pvi_h import *
-from .common_h import *
+from .include import *
 from .Error import PviError
 
 class PviObject():
@@ -120,7 +119,7 @@ class PviObject():
         self._result = PviReadResponse( wParam, None, 0 )
         if callable(self.errorChanged):
             self.errorChanged(responseInfo.ErrCode)
-
+ 
     def _createAndLink(self, pvi):
         descriptor_items = []
         for key, value in self._objectDescriptor.items():

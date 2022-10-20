@@ -23,8 +23,7 @@
 from ctypes import *
 import datetime
 import inspect
-from .pvi_h import *
-from .common_h import *
+from .include import *
 from .Object import PviObject
 from .Error import PviError
 
