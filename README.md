@@ -33,7 +33,9 @@ this simple example just registers a variable for reading and another for writin
 this simple example creates a module on CPU by downloading a bytestream and checks if it exists
 
 ## ['modules2.py'](modules2.py)
-this simple example creates a module on CPU by downloading a bytestream and 
-afterwards uploads it again
+this simple example creates a module on CPU by downloading a bytestream and afterwards uploads it again
 
+# [browse_for_targets.py](browse_for_targets.py)
+this example searches for B&R plc in local network with PVI's 'SNMP' line and lists their properties
+(if you are looking for a 'real' program consider to use [brsnmp](https://github.com/hilch/brsnmp) )
 
