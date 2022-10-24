@@ -41,4 +41,4 @@ this example searches for B&R plc in local network with PVI's 'SNMP' line and li
 
 ## [list_objects1.py](list_objects1.py)
 this example lists objects with 'global scope' (modules, task and global variables)
-from 'coffe machine' cpu
+from 'coffe machine' cpu and returns status information about them

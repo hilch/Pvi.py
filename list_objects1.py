@@ -6,7 +6,7 @@
 # can be downloaded free of charge from https://www.br-automation.com)
 #
 # this example lists objects with 'global scope' (modules, task and global variables)
-# from 'coffe machine' cpu
+# from 'coffe machine' cpu and returns status information about them
 #
 
 
@@ -33,18 +33,48 @@ def cpuErrorChanged( error : int):
     if error == 0:
         # read content
         allObjects = cpu.externalObjects
-        modules = [ _['name'] for _ in allObjects if _['type'] == 'Module']  # read module names
-        tasks = [ _['name'] for _ in allObjects if _['type'] == 'Task'] # read task names
-        globalVars = [ _['name'] for _ in allObjects if _['type'] == 'Pvar'] # read names of global variables
 
-        # write content to file
+        # read module names
+        moduleNames = [_['name'] for _ in allObjects if _['type'] == 'Module' ]  
+
+        modules = list()
+        for name in moduleNames:  # read the modules' status
+            module = Module( cpu, name )
+            status = { "Name" : name }
+            status.update( module.status )
+            modules.append(status)
+            module.kill()
+
+        # read task names
+        taskNames = [ _['name'] for _ in allObjects if _['type'] == 'Task'] 
+        tasks = list()
+        for name in moduleNames:  # read the tasks' status
+            task = Task( cpu, name )
+            status = { "Name" : name }
+            status.update( task.status )
+            tasks.append(status)
+            task.kill()
+
+        # read names of global variables
+        globalVarnames = [ _['name'] for _ in allObjects if _['type'] == 'Pvar'] 
+        globalVariables = list()
+        for name in globalVarnames:  # read the variables' status, data type and value
+            variable = Variable( cpu, name )
+            status = { "Name" : name }
+            status.update( variable.status )
+            status.update( { "Value" : variable.value} )
+            status.update( { "DataType" : variable.dataType} )            
+            globalVariables.append(status)
+            variable.kill()
+
+ #      write content to file
         with open('content.txt', 'w') as f:
             f.write("Modules =\n")
-            pprint(modules, stream=f)
+            pprint(modules, stream=f, indent = 4)
             f.write("\nTasks =\n")
-            pprint(tasks, stream=f)            
+            pprint(tasks, stream=f, indent = 4)            
             f.write("\nglobalVars =\n")
-            pprint(globalVars, stream=f)  
+            pprint(globalVariables, stream=f, indent = 4)  
         print('content.txt was created !')                      
         run = False
     
