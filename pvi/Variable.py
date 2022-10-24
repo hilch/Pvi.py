@@ -65,22 +65,7 @@ class Variable(PviObject):
             self._objectDescriptor.update({ x[0:2]: x[3:]})         
 
     def _readRawData(self, wParam, responseInfo):
-        vt = self._objectDescriptor.get('VT') # variable data type
-
-        if vt == None:
-            s = create_string_buffer(b'\000' * 64) 
-            self._result = PviRead( self._linkID, POBJ_ACC_TYPE, None, 0, s, sizeof(s) )
-            if self._result == 0:
-                s = str(s, 'ascii').rstrip('\x00')
-                self._updateDataTypeInformation(s) 
-                vt = self._objectDescriptor.get('VT') # variable data type
-            else:
-                self._value = None
-                if responseInfo: # data is answer of a request
-                    data = c_uint8()
-                    self._result = PviReadResponse( wParam, byref(data), sizeof(data) )
-                return
-
+        vt = self.dataType # variable data type
         vl = int(self._objectDescriptor.get('VL')) # sizeof(variable)
         vn = int(self._objectDescriptor.get('VN')) # number of array elements
         
@@ -206,3 +191,20 @@ class Variable(PviObject):
             raise ValueError
 
 
+    @property
+    def dataType(self) -> str:
+        '''
+        Variable: returns datatype
+        '''
+        vt = self._objectDescriptor.get('VT') # variable data type
+
+        if vt == None:
+            s = create_string_buffer(b'\000' * 64) 
+            self._result = PviRead( self._linkID, POBJ_ACC_TYPE, None, 0, s, sizeof(s) )
+            if self._result == 0:
+                s = str(s, 'ascii').rstrip('\x00')
+                self._updateDataTypeInformation(s) 
+                vt = self._objectDescriptor.get('VT') # variable data type
+            else:
+                raise PviError(self._result)
+        return vt
