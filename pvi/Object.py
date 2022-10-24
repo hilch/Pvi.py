@@ -26,6 +26,8 @@ from .include import *
 from .Error import PviError
 
 class PviObject():
+    __patternParameterPairs = re.compile(r"\s*([A-Z]{2}=\w*)\s*")
+
     """
     the base of all objects
     """
@@ -158,6 +160,27 @@ class PviObject():
             return li2
         else:
             return []
+
+
+    @property       
+    def status(self) -> dict:
+        """
+        PviObject.status
+        read the object's status () 
+        """
+        s = create_string_buffer(b'\000' * 64)             
+        self._result = PviRead( self._linkID, POBJ_ACC_STATUS, None, 0, byref(s), sizeof(s) )
+        st = dict()        
+        if self._result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+            matches = PviObject.__patternParameterPairs.findall(s)
+            if matches:
+                for m in matches: 
+                    token = m.split("=")
+                    st.update( {token[0]:token[1]})
+        else:
+            raise PviError(self._result)  
+        return st    
 
 
     def kill(self):

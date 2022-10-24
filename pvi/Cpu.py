@@ -145,26 +145,16 @@ class Cpu(PviObject):
 
 
     @property       
-    def status(self) -> str:
+    def status(self) -> dict:
         """
         Cpu.status
-        read the CPU status ('RUN' / 'DIAG' / 'SERV' )
+        read the CPU status
         """
-        s = create_string_buffer(b'\000' * 64)             
-        self._result = PviRead( self._linkID, POBJ_ACC_STATUS, None, 0, byref(s), sizeof(s) )
-        if self._result == 0:
-            s = str(s, 'ascii').rstrip('\x00')
-            if s == "ST=WarmStart" or s == "ST=ColdStart":
-                return "RUN"
-            elif s == "ST=Diagnose":
-                return "DIAG"
-            elif s == "ST=Error" or s == "ST=Reset":
-                return "SERV"
-            else:
-                return s[3:]
-        else:
-            raise PviError(self._result)
-
+        st = super().status
+        runState = { "WarmStart" : "RUN", "ColdStart" : "RUN", "Diagnose" : "DIAG", "Error" : "SERV", "Reset" : "SERV"}.get(st.get("ST"), "<unknown>")
+        st.update({"RunState" : runState})
+        return st
+        
 
     @property
     def time(self) -> datetime.datetime:

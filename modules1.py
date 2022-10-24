@@ -42,7 +42,7 @@ def callback_downloaded():
 
 def cpuErrorChanged( error : int ):
     if error == 0:
-        s = cpu.status
+        s = cpu.status.get("RunState")
         if s == 'RUN' or s == 'SERV': # download is only allowed in these modes
             step = 1
             cpu.downloadModule( bytes(5000000), MN='bigmod', MT='BRT', progress = callback_progress , downloaded = callback_downloaded )
