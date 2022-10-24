@@ -57,29 +57,29 @@ class PviObject():
         return f"PviObject( name={self._name}, linkID={self._linkID} )"
 
     @property
-    def name(self):
+    def name(self) -> str:
         '''
-        PviObject: returns object name
+        PviObject: hierarchical object name
         '''
         return self._name
 
 
     @property
-    def descriptor(self):
+    def descriptor(self) -> str:
         '''
-        PviObject: returns object descriptor
+        PviObject: object descriptor string
         '''
         return self._objectDescriptor
 
     @property
-    def errorChanged(self):
+    def errorChanged(self) -> callable:
         '''
-        PviObject: returns callback for 'error changed'
+        PviObject: callback for 'error changed'
         '''
         return self._errorChanged
 
     @errorChanged.setter
-    def errorChanged(self, cb):
+    def errorChanged(self, cb : callable):
         '''
         PviObject: set callback for 'error changed'
         '''

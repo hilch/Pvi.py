@@ -62,6 +62,8 @@ class Module(PviObject):
     def upload(self, **args ):
         '''
         Module: upload
+            > uploaded: callable - is fired when module was uploaded
+            > progress: callable(int) - returns percentage of progress
         '''
         arguments = ''
         for key, value in args.items():
@@ -69,13 +71,16 @@ class Module(PviObject):
                 if callable(value):
                     self._uploaded = value
                 else:
-                    raise TypeError("only type function for argument 'uploaded' allowed !")
+                    raise TypeError("only type 'callable' for argument 'uploaded' allowed !")
             elif key == 'progress':
                 if callable(value):
                     self._progress = value
                 else:
-                    raise TypeError("only type function for argument 'progress' allowed !")
+                    raise TypeError("only type 'callable' for argument 'progress' allowed !")
             else:
                 arguments += f"{key}={value}"
         s = create_string_buffer(bytes(arguments, 'ascii'))
-        self._result = PviReadArgumentRequest( self._linkID, POBJ_ACC_UPLOAD_STM, byref(s), sizeof(s), PVI_HMSG_NIL, SET_PVIFUNCTION, 0    )            
+        self._result = PviReadArgumentRequest( self._linkID, POBJ_ACC_UPLOAD_STM, byref(s), sizeof(s), PVI_HMSG_NIL, SET_PVIFUNCTION, 0    ) 
+        if self._result:
+            raise PviError(self._result)           
+            

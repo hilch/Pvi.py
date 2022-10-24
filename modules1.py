@@ -10,7 +10,6 @@
 
 
 from time import sleep
-import datetime
 from tkinter import FALSE
 from pvi import *
 
@@ -24,40 +23,37 @@ line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
 device = Device( line, 'TCP', CD='/IF=TcpIp' )
 cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
 
-
-startTime = datetime.datetime.now()
-
-step = 0
+run = True
+    
     
 def callback_progress(percent):
     print( f'progress: {percent} %\r', end="")   
 
 
 def callback_downloaded():
-    global step
+    global run
     modules = cpu.modules
     if 'bigmod' in modules:
         print(" 'bigmod' was sucessfully downloaded !")
     else:
         print("error: 'bigmod' not found !")
-    step = 99 # exit
+    run = False # exit
 
 
-while step < 99:
-    pviConnection.doEvents() # must be cyclically called
-    if step == 0:
+def cpuErrorChanged( error : int ):
+    if error == 0:
         s = cpu.status
-        if s == 'RUN' or s == 'SERV':
+        if s == 'RUN' or s == 'SERV': # download is only allowed in these modes
             step = 1
             cpu.downloadModule( bytes(5000000), MN='bigmod', MT='BRT', progress = callback_progress , downloaded = callback_downloaded )
             print("downloading...")
+    else:
+        raise PviError( error )
+    
+cpu.errorChanged = cpuErrorChanged
 
-    elif step == 1: # wait until downloaded
-        pass
-
-    elif datetime.datetime.now() - startTime > datetime.timedelta(seconds = 20): # timeout
-        print("timeout !")
-        step = 99 # exit
+while run:
+    pviConnection.doEvents() # must be cyclically called
     sleep(0.1)
 
 

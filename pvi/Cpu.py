@@ -74,7 +74,7 @@ class Cpu(PviObject):
         s = create_string_buffer(b"ST=WarmStart")
         self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
         if self._result != 0:
-            pass
+            raise PviError(self._result)
 
     def coldStart(self) -> None:
         '''
@@ -84,7 +84,7 @@ class Cpu(PviObject):
         s = create_string_buffer(b"ST=ColdStart")
         self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
         if self._result != 0:
-            pass
+            raise PviError(self._result)
 
     def downloadModule(self, data : bytes, **kwargs ):
         '''
@@ -128,6 +128,7 @@ class Cpu(PviObject):
         if self._result:
             raise PviError( self._result )
 
+
     @property
     def modules(self):
         """     
@@ -135,16 +136,19 @@ class Cpu(PviObject):
         get a list a modules 
         """
         s = create_string_buffer(b'\000' * 4096)   
-        self.result = PviRead( self._linkID, POBJ_ACC_LIST_MODULE, None, 0, byref(s), sizeof(s) )
-        if self.result == 0:
+        self._result = PviRead( self._linkID, POBJ_ACC_LIST_MODULE, None, 0, byref(s), sizeof(s) )
+        if self._result == 0:
             s = str(s, 'ascii').rstrip('\x00')
             return s.split('\t')
+        else:
+            raise PviError(self._result)
+
 
     @property       
     def status(self) -> str:
         """
         Cpu.status
-        read the CPU status ('RUN' / 'DIAG' / 'SERV' / 'Offline' / 'Err:XXXX' )
+        read the CPU status ('RUN' / 'DIAG' / 'SERV' )
         """
         s = create_string_buffer(b'\000' * 64)             
         self._result = PviRead( self._linkID, POBJ_ACC_STATUS, None, 0, byref(s), sizeof(s) )
@@ -158,10 +162,9 @@ class Cpu(PviObject):
                 return "SERV"
             else:
                 return s[3:]
-        elif self._result == 4808 or self._result == 11020:
-            return "Offline"
         else:
-            return f'Err:{self._result}'
+            raise PviError(self._result)
+
 
     @property
     def time(self) -> datetime.datetime:
@@ -171,9 +174,15 @@ class Cpu(PviObject):
         t = struct_tm()       
         self._result = PviRead( self._linkID, POBJ_ACC_DATE_TIME , None, 0, byref(t), sizeof(t) )
         try:
-            return datetime.datetime( year = t.tm_year+1900, month = t.tm_mon+1, day=t.tm_mday, hour=t.tm_hour, minute = t.tm_min, second = t.tm_sec)
+            time =  datetime.datetime( year = t.tm_year+1900, month = t.tm_mon+1, day=t.tm_mday, hour=t.tm_hour, minute = t.tm_min, second = t.tm_sec)
         except ValueError:
-            return datetime.datetime( year = 1970, month = 1, day = 1 )
+            time = datetime.datetime( year = 1970, month = 1, day = 1 )
+        if self._result == 0:
+            return time            
+        else:
+            raise PviError(self._result)
+            
+
 
 
      

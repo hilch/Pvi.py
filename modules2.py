@@ -11,7 +11,6 @@
 
 
 from time import sleep
-import datetime
 from tkinter import FALSE
 from pvi import *
 
@@ -26,51 +25,47 @@ device = Device( line, 'TCP', CD='/IF=TcpIp' )
 cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
 module = Module( cpu, 'bigmod' )
 
-startTime = datetime.datetime.now()
 
-step = 0
+run = True
     
 def callback_progress(percent):
     print( f'progress: {percent} %\r', end="")   
 
 
 def callback_downloaded():
-    global step
+    global run
     modules = cpu.modules
     if 'bigmod' in modules:
         print(" 'bigmod' was sucessfully downloaded !")
         module.upload( uploaded = callback_uploaded, progress = callback_progress )
         print("start uploading...")
-        step = 2
+        
     else:
         print("error: 'bigmod' not found !")
-        step = 99 #exit
+        run = False #exit
 
 
 def callback_uploaded( data ):
-    global step
+    global run
     print(f"'bigmod' uploaded, len={len(data)} !")
-    step = 99 #exit
+    run = False #exit
 
 
-while step < 99:
-    pviConnection.doEvents() # must be cyclically called
-    if step == 0:
+def cpuErrorChanged( error : int ):
+    if error == 0:    
         s = cpu.status
         if s == 'RUN' or s == 'SERV':
             step = 1
             cpu.downloadModule( bytes(5000000), MN='bigmod', MT='BRT', progress = callback_progress , downloaded = callback_downloaded )
-            print("downloading...")
+            print("downloading...")        
+    else:
+        raise PviError( error )
 
-    elif step == 1: # wait until downloaded
-        pass
+cpu.errorChanged = cpuErrorChanged
 
-    elif step == 2: # wait until uploaded
-        pass
 
-    elif datetime.datetime.now() - startTime > datetime.timedelta(seconds = 20): # timeout
-        print("timeout !")
-        step = 99 # exit
+while run:
+    pviConnection.doEvents() # must be cyclically called
     sleep(0.1)
 
 

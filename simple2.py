@@ -34,6 +34,16 @@ run = True
 warmUp = False
 coolDown = False
 
+
+def cpuErrorChanged( error : int ):
+    global run
+
+    if error != 0:
+        raise PviError(error)
+
+cpu.errorChanged = cpuErrorChanged
+
+
 while run:
     pviConnection.doEvents() # must be cyclically called
 

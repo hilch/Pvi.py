@@ -28,6 +28,9 @@ from .Object import PviObject
 
 
 class Connection():
+    '''
+    class representing a connection to PVI manager
+    '''
     # ----------------------------------------------------------------------------------
     def __init__(self, debug = False):
         self._debug = debug
@@ -50,6 +53,9 @@ class Connection():
     # ----------------------------------------------------------------------------------
     @property
     def root(self):
+        '''
+        return base object 'Pvi'
+        '''
         return self._rootObject
 
     @property
@@ -68,6 +74,8 @@ class Connection():
                 return state, hardware, burlicence, dongle, str(li.LcName)
             except IndexError:
                 pass
+        else:
+            raise PviError(self._result)
         return ('undefined', '', '', '', '', '' )
 
     # ----------------------------------------------------------------------------------

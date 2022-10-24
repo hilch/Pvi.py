@@ -185,6 +185,8 @@ class Variable(PviObject):
         elif vt == 'f64':
             data = c_double(v)
             self._result = PviWrite( self._linkID, POBJ_ACC_DATA, byref(data), sizeof(data), None, 0 )
+        if self._result:
+            raise PviError(self._result)
 
     @property
     def valueChanged(self):

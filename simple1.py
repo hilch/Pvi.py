@@ -32,6 +32,15 @@ temperature.valueChanged = lambda value : print(f'{temperature.name} = {value}')
 startTime = datetime.datetime.now()
 run = True
 
+def cpuErrorChanged( error : int ):
+    global run
+
+    if error != 0:
+        raise PviError(error)
+
+cpu.errorChanged = cpuErrorChanged
+
+
 while run:
     pviConnection.doEvents() # must be cyclically called
     if datetime.datetime.now() - startTime > datetime.timedelta(seconds = 10):

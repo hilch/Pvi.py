@@ -21,6 +21,9 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     
 class PviError(Exception):
+    '''
+    Pvi Error
+    '''
     _messages = {   
       4000: 'Error from coding function (_CPinfo)',
       4001: 'Error from decoding function (_CPinfo)',
@@ -1682,7 +1685,11 @@ class PviError(Exception):
     }
 
 
-    def __init__(self, error):
+    def __init__(self, error : int ):
+        '''
+        Pvi Error
+        raised when a PVI built-in function returns nonzero
+        '''
         message = self._messages.get(error, "")        
         super().__init__( f"\n\nPvi-Error {error} : {message}" )
 
