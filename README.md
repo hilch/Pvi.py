@@ -39,3 +39,6 @@ this simple example creates a module on CPU by downloading a bytestream and afte
 this example searches for B&R plc in local network with PVI's 'SNMP' line and lists their properties
 (if you are looking for a 'real' program consider to use [brsnmp](https://github.com/hilch/brsnmp) )
 
+## [list_objects1.py](list_objects1.py)
+this example lists objects with 'global scope' (modules, task and global variables)
+from 'coffe machine' cpu
