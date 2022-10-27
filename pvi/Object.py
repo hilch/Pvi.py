@@ -136,8 +136,8 @@ class PviObject():
             self._type, bytes(descr, 'ascii'), PVI_HMSG_NIL, SET_PVIFUNCTION, 0, linkDescriptor)
         if self._result == 0: # object creation successful
             self._linkID = linkID.value
-            if self._type == T_POBJ_TYPE.POBJ_PVAR: # read variable's data type
-                PviReadRequest( self._linkID, POBJ_ACC_TYPE, PVI_HMSG_NIL, SET_PVIFUNCTION, 0 )
+            # if self._type == T_POBJ_TYPE.POBJ_PVAR: # read variable's data type
+            #     PviReadRequest( self._linkID, POBJ_ACC_TYPE, PVI_HMSG_NIL, SET_PVIFUNCTION, 0 )
             pvi._linkIDs[self._linkID] = self # store object for backward reference  
         else:
             print( f"PviCreate {self.name} = {self._result}")

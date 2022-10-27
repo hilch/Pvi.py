@@ -28,12 +28,16 @@ from .Error import PviError
 from .Object import PviObject
 
 class Variable(PviObject):
+    __patternDataTypeInformation = re.compile(r"([A-Z]{2}=\w+)|(\{[^}]+\})")
+    __patternStructureElementDefinition = re.compile(r"(\x2E\w+)|([A-Z]{2}=\w+)")
+
     def __init__( self, parent, name, **objectDescriptor ):
         if parent._type != T_POBJ_TYPE.POBJ_CPU and  parent._type != T_POBJ_TYPE.POBJ_TASK and  parent._type != T_POBJ_TYPE.POBJ_STATION:
             raise PviError(12009)        
         self._value = None 
         self._valueChanged = None 
         objectDescriptor.update({'CD':name})
+        self._structureElements = None
         if not('RF' in objectDescriptor):
             objectDescriptor.update({'RF':0}) # do not cyclic refrehs variables by default       
         super().__init__( parent, 'POBJ_PVAR', name, **objectDescriptor)
@@ -60,9 +64,40 @@ class Variable(PviObject):
         return vt and 'r' in access # data type already read and read access ?
 
 
+    def _updateElementDefinition(self, s):
+        '''
+        Variable: parses result of POBJ_ACC_TYPE_EXTERN 
+            and updates list with element description
+            > s: string with data type information
+        '''
+        matches = Variable.__patternStructureElementDefinition.finditer(s)
+        element = dict()
+        for m in matches:
+            ex = m.group()
+            if ex.startswith('.'):
+                element.update({'name' : ex[1:]})
+            else:
+                element.update({ex[0:2]: ex[3:]})
+        self._structureElements.append(element)
+
+
     def _updateDataTypeInformation(self, s ):
-        for x in  re.findall( "([A-Z]{2}=[a-zA-z0-9]+)", s ):
-            self._objectDescriptor.update({ x[0:2]: x[3:]})         
+        '''
+        Variable: parses result of POBJ_ACC_TYPE or POBJ_ACC_TYPE_EXTERN 
+            and updates object descriptor
+            > s: string with data type information
+        '''
+        self._structureElements = list()
+        matches = Variable.__patternDataTypeInformation.finditer(s)
+        for m in matches:
+            ex = m.group()
+            if ex.startswith('{'): # structure element definition
+                self._updateElementDefinition(ex)
+            else:
+                self._objectDescriptor.update({ex[0:2]: ex[3:]}) 
+        if self._objectDescriptor.get('VT') == 'struct':
+            self._structureElements.sort( key = lambda e: int(e.get('VO')) ) # sort element list according to variable offset VO
+
 
     def _readRawData(self, wParam, responseInfo):
         vt = self.dataType # variable data type
@@ -88,31 +123,36 @@ class Variable(PviObject):
         elif vt == 'f32':
             data = c_float()
         elif vt == 'f64':
-            data = c_double()
+            data = c_double() 
         elif vt == 'string':
             data = create_string_buffer(b'\000' * vl)
+        elif vt == 'struct':
+            data = create_string_buffer(b'\000' * vl)
+        elif vt == 'dt':
+            data = c_uint32()
         else: # not handled data type
-            data = c_uint8()
-            self._value = None
-            self._result = PviReadResponse( wParam, None, 0 ) # just acknowledge
-            if callable(self.errorChanged):
-                self.errorChanged(0)               
+            data = c_uint8()    
 
         if responseInfo: # data is answer of a request
             self._result = PviReadResponse( wParam, byref(data), sizeof(data) )
-            if vt == 'string':
-                self._value = data.value.decode('ascii')
+            if self._result == 0:
+                if vt == 'string':
+                    self._value = data.value.decode('ascii')
+                else:
+                    self._value = data.value
+                if callable(self.errorChanged):
+                    self.errorChanged(0)
             else:
-                self._value = data.value
-
-            if callable(self.errorChanged):
-                self.errorChanged(0)       
+                raise PviError( self._result )
         else: # data shall be immediately read
+            if vn > 1: 
+                pass
             self._result = PviRead( self._linkID, POBJ_ACC_DATA, None, 0, byref(data), sizeof(data) )
             if self._result == 0:
                 self._value = data.value
             else:
                 raise PviError(self._result)
+
 
     def _eventData( self, wParam, responseInfo ):
         self._readRawData( wParam, responseInfo )
@@ -121,7 +161,7 @@ class Variable(PviObject):
 
 
     def _eventDataType( self, wParam, responseInfo ):
-        s = create_string_buffer(b'\000' * 64)       
+        s = create_string_buffer(b'\000' * 64*1024)       
         self._result = PviReadResponse( wParam, s, sizeof(s) )
         if self._result == 0:
             s = str(s, 'ascii').rstrip('\x00')
@@ -169,7 +209,7 @@ class Variable(PviObject):
             self._result = PviWrite( self._linkID, POBJ_ACC_DATA, byref(data), sizeof(data), None, 0 )
         elif vt == 'f64':
             data = c_double(v)
-            self._result = PviWrite( self._linkID, POBJ_ACC_DATA, byref(data), sizeof(data), None, 0 )
+            self._result = PviWrite( self._linkID, POBJ_ACC_DATA, byref(data), sizeof(data), None, 0 )            
         if self._result:
             raise PviError(self._result)
 
@@ -199,11 +239,11 @@ class Variable(PviObject):
         vt = self._objectDescriptor.get('VT') # variable data type
 
         if vt == None:
-            s = create_string_buffer(b'\000' * 64) 
-            self._result = PviRead( self._linkID, POBJ_ACC_TYPE, None, 0, s, sizeof(s) )
+            s = create_string_buffer(b'\000' * 64*1024) 
+            self._result = PviRead( self._linkID, POBJ_ACC_TYPE_EXTERN, None, 0, s, sizeof(s) )
             if self._result == 0:
                 s = str(s, 'ascii').rstrip('\x00')
-                self._updateDataTypeInformation(s) 
+                self._updateDataTypeInformation(s)                               
                 vt = self._objectDescriptor.get('VT') # variable data type
             else:
                 raise PviError(self._result)
