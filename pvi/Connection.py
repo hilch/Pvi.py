@@ -21,7 +21,6 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from ctypes import *
-from sqlite3 import Date
 from .include import *
 from .Error import PviError
 from .Object import PviObject
@@ -49,6 +48,16 @@ class Connection():
                     raise PviError(self._result)
         else:
             raise PviError(self._result)
+
+    # ----------------------------------------------------------------------------------
+    def __repr__(self):
+        return f"Connection()"
+
+    # ----------------------------------------------------------------------------------
+    def __del__(self):
+        if self._debug:
+            print("PviDeinitialize")
+        PviDeinitialize()
 
     # ----------------------------------------------------------------------------------
     @property
@@ -111,13 +120,6 @@ class Connection():
                 return o
         return None        
 
-
-    # ----------------------------------------------------------------------------------
-    def __del__(self):
-        if self._debug:
-            print("PviDeinitialize")
-        PviDeinitialize()
-
     # ----------------------------------------------------------------------------------
     def _eventPviConnect( self, wParam, responseInfo ):
         """
@@ -166,7 +168,7 @@ class Connection():
     # ----------------------------------------------------------------------------------
     def doEvents(self):
         """         
-        event loop 
+        event loop - must be cyclically called
         """
         wParam = WPARAM()
         lParam = LPARAM()
