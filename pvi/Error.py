@@ -19,7 +19,11 @@
 # IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-    
+
+
+from typing import Any
+
+
 class PviError(Exception):
     '''
     Pvi Error
@@ -1685,12 +1689,14 @@ class PviError(Exception):
     }
 
 
-    def __init__(self, error : int ):
+    def __init__(self, error : int, source : Any = None ):
         '''
         Pvi Error
         raised when a PVI built-in function returns nonzero
         '''
-        message = self._messages.get(error, "")        
+        message = self._messages.get(error, "") 
+        message += "\n( " + repr(source) + " )" if source else ""
+           
         super().__init__( f"\n\nPvi-Error {error} : {message}" )
 
 if __name__ == '__main__':

@@ -29,7 +29,7 @@ from .Error import PviError
 class Task(PviObject):
     def __init__( self, parent, name, **objectDescriptor ):
         if parent._type != T_POBJ_TYPE.POBJ_CPU:
-            raise PviError(12009)
+            raise PviError(12009, self)
         objectDescriptor.update({'CD':name})
         super().__init__( parent, 'POBJ_TASK', name, **objectDescriptor)
 
@@ -40,7 +40,7 @@ class Task(PviObject):
         s = create_string_buffer(b"ST=Start")
         self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
         if self._result != 0:
-            raise PviError(self._result)  
+            raise PviError(self._result, self)  
 
     def resume(self):
         '''
@@ -49,7 +49,7 @@ class Task(PviObject):
         s = create_string_buffer(b"ST=Resume")
         self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
         if self._result != 0:
-            raise PviError(self._result)                         
+            raise PviError(self._result, self)                         
 
     def stop(self):
         '''
@@ -58,7 +58,7 @@ class Task(PviObject):
         s = create_string_buffer(b"ST=Stop")
         self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
         if self._result != 0:
-            raise PviError(self._result)                  
+            raise PviError(self._result, self)                  
 
     def __repr__(self):
         return f"Task( name={self._name}, linkID={self._linkID} )"

@@ -29,7 +29,7 @@ from .Error import PviError
 class Line(PviObject):
     def __init__( self, parent, name, **objectDescriptor ):
         if parent._type != T_POBJ_TYPE.POBJ_PVI:
-            raise PviError(12009)         
+            raise PviError(12009, self)         
         super().__init__( parent, 'POBJ_LINE', name, **objectDescriptor)
 
     def __repr__(self):

@@ -33,7 +33,7 @@ class Variable(PviObject):
 
     def __init__( self, parent, name, **objectDescriptor ):
         if parent._type != T_POBJ_TYPE.POBJ_CPU and  parent._type != T_POBJ_TYPE.POBJ_TASK and  parent._type != T_POBJ_TYPE.POBJ_STATION:
-            raise PviError(12009)        
+            raise PviError(12009, self )        
         self._value = None 
         self._valueChanged = None 
         objectDescriptor.update({'CD':name})
@@ -167,14 +167,14 @@ class Variable(PviObject):
             s = str(s, 'ascii').rstrip('\x00')
             self._updateDataTypeInformation(s) 
         else:
-            raise PviError(self._result)
+            raise PviError(self._result, self)
 
     @property
     def value(self):
         '''
         Variable : read value
         '''
-        self._readRawData( 0, None )
+        self.__readRawData( 0, None )
         return self._value
 
     @value.setter
@@ -211,7 +211,7 @@ class Variable(PviObject):
             data = c_double(v)
             self._result = PviWrite( self._linkID, POBJ_ACC_DATA, byref(data), sizeof(data), None, 0 )            
         if self._result:
-            raise PviError(self._result)
+            raise PviError(self._result, self)
 
     @property
     def valueChanged(self):
@@ -246,5 +246,5 @@ class Variable(PviObject):
                 self._updateDataTypeInformation(s)                               
                 vt = self._objectDescriptor.get('VT') # variable data type
             else:
-                raise PviError(self._result)
+                raise PviError(self._result, self)
         return vt

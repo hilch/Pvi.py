@@ -141,7 +141,7 @@ class PviObject():
             pvi._linkIDs[self._linkID] = self # store object for backward reference  
         else:
             print( f"PviCreate {self.name} = {self._result}")
-            raise PviError(self._result)
+            raise PviError(self._result, self)
         return self._result                
 
 
@@ -179,7 +179,7 @@ class PviObject():
                     token = m.split("=")
                     st.update( {token[0]:token[1]})
         else:
-            raise PviError(self._result)  
+            raise PviError(self._result, self)  
         return st    
 
 
@@ -193,4 +193,4 @@ class PviObject():
             self._result = PviUnlink(self._linkID)
             self._linkID = 0
             if self._result != 0:
-                raise PviError(self._result)
+                raise PviError(self._result, self)

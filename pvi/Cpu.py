@@ -32,7 +32,7 @@ from .Error import PviError
 class Cpu(PviObject):
     def __init__( self, parent, name, **objectDescriptor ):
         if parent._type != T_POBJ_TYPE.POBJ_DEVICE and parent._type != T_POBJ_TYPE.POBJ_STATION:
-            raise PviError(12009)                    
+            raise PviError(12009, self )                    
         super().__init__( parent, 'POBJ_CPU', name, **objectDescriptor) 
         self._downloaded = None
         self._progress = None       
@@ -55,7 +55,7 @@ class Cpu(PviObject):
             if self._downloaded:
                 self._downloaded()
         else:
-            raise PviError(self._result)      
+            raise PviError(self._result, self)      
 
     def _eventProceeding( self, wParam, responseInfo : T_RESPONSE_INFO ):    
         proceedingInfo = T_PROCEEDING_INFO()
@@ -64,7 +64,7 @@ class Cpu(PviObject):
             if self._progress:
                 self._progress(int(proceedingInfo.Percent))
         else:
-            raise PviError(self._result)   
+            raise PviError(self._result, self)   
 
     def warmStart(self) -> None:
         '''
@@ -74,7 +74,7 @@ class Cpu(PviObject):
         s = create_string_buffer(b"ST=WarmStart")
         self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
         if self._result != 0:
-            raise PviError(self._result)
+            raise PviError(self._result, self)
 
     def coldStart(self) -> None:
         '''
@@ -84,7 +84,7 @@ class Cpu(PviObject):
         s = create_string_buffer(b"ST=ColdStart")
         self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
         if self._result != 0:
-            raise PviError(self._result)
+            raise PviError(self._result, self)
 
     def downloadModule(self, data : bytes, **kwargs ):
         '''
@@ -126,7 +126,7 @@ class Cpu(PviObject):
         s = create_string_buffer(bytes(arguments,'ascii') + b'\0' + bytes(data) )            
         self._result = PviWriteRequest( self._linkID, POBJ_ACC_DOWNLOAD_STM, byref(s), sizeof(s), PVI_HMSG_NIL, SET_PVIFUNCTION, 0)
         if self._result:
-            raise PviError( self._result )
+            raise PviError( self._result, self )
 
 
     @property
@@ -141,7 +141,7 @@ class Cpu(PviObject):
             s = str(s, 'ascii').rstrip('\x00')
             return s.split('\t')
         else:
-            raise PviError(self._result)
+            raise PviError(self._result, self)
 
 
     @property       
@@ -163,14 +163,14 @@ class Cpu(PviObject):
         """
         t = struct_tm()       
         self._result = PviRead( self._linkID, POBJ_ACC_DATE_TIME , None, 0, byref(t), sizeof(t) )
-        try:
-            time =  datetime.datetime( year = t.tm_year+1900, month = t.tm_mon+1, day=t.tm_mday, hour=t.tm_hour, minute = t.tm_min, second = t.tm_sec)
-        except ValueError:
-            time = datetime.datetime( year = 1970, month = 1, day = 1 )
         if self._result == 0:
+            try:
+                time =  datetime.datetime( year = t.tm_year+1900, month = t.tm_mon+1, day=t.tm_mday, hour=t.tm_hour, minute = t.tm_min, second = t.tm_sec)
+            except ValueError:
+                time = datetime.datetime( year = 1970, month = 1, day = 1 )            
             return time            
         else:
-            raise PviError(self._result)
+            raise PviError(self._result, self)
             
 
 

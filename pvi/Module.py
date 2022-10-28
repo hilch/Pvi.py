@@ -29,7 +29,7 @@ from .Error import PviError
 class Module(PviObject):
     def __init__( self, parent, name, **objectDescriptor ):
         if parent._type != T_POBJ_TYPE.POBJ_CPU:
-            raise PviError(12009)
+            raise PviError(12009, self)
         objectDescriptor.update({'CD':name})                    
         super().__init__( parent, 'POBJ_MODULE', name, **objectDescriptor)
         self._uploaded = None
@@ -46,7 +46,7 @@ class Module(PviObject):
             if self._uploaded:
                 self._uploaded(s.raw)
         else:
-            raise PviError(self._result)
+            raise PviError(self._result, self)
 
 
     def _eventProceeding( self, wParam, responseInfo : T_RESPONSE_INFO ):    
@@ -56,7 +56,7 @@ class Module(PviObject):
             if self._progress:
                 self._progress(int(proceedingInfo.Percent))
         else:
-            raise PviError(self._result)               
+            raise PviError(self._result, self)               
 
 
     def upload(self, **args ):

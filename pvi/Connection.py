@@ -75,7 +75,7 @@ class Connection():
             except IndexError:
                 pass
         else:
-            raise PviError(self._result)
+            raise PviError(self._result, self )
         return ('undefined', '', '', '', '', '' )
 
     # ----------------------------------------------------------------------------------
