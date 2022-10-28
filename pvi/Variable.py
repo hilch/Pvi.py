@@ -22,7 +22,8 @@
 
 from ctypes import *
 import re
-from sqlite3 import Date
+import datetime
+import time
 from .include import *
 from .Error import PviError
 from .Object import PviObject
@@ -75,9 +76,9 @@ class Variable(PviObject):
         for m in matches:
             ex = m.group()
             if ex.startswith('.'):
-                element.update({'name' : ex[1:]})
+                element.update({'name' : ex[1:]}) # element's name
             else:
-                element.update({ex[0:2]: ex[3:]})
+                element.update({ex[0:2]: ex[3:]}) # element's parameter
         self._structureElements.append(element)
 
 
@@ -99,7 +100,29 @@ class Variable(PviObject):
             self._structureElements.sort( key = lambda e: int(e.get('VO')) ) # sort element list according to variable offset VO
 
 
-    def _readRawData(self, wParam, responseInfo):
+
+    def __castRawData(self, vt, data ):
+        '''
+        cast result data returned by PVI_ACC_DATA or PVI_EVENT_DATA
+        > vt: variable type
+        > data: c_type data
+        '''
+        if vt == 'dt':
+            return datetime.datetime.fromtimestamp(data)
+        elif vt == 'date':
+            return datetime.date.fromtimestamp(data)                    
+        elif vt == 'time':
+            return time.gmtime(data)
+        else:
+            return data        
+
+
+    def __readRawData(self, wParam, responseInfo):
+        '''
+        reads data (byte) from PVI_ACC_DATA or PVI_EVENT_DATA
+        > wParam: points to response data
+        > responseInfo: responseInfo or 'None' in case of synchronous read request
+        '''
         vt = self.dataType # variable data type
         vl = int(self._objectDescriptor.get('VL')) # sizeof(variable)
         vn = int(self._objectDescriptor.get('VN')) # number of array elements
@@ -107,55 +130,51 @@ class Variable(PviObject):
         data = None
 
         if vt == 'boolean':
-            data = c_uint8()
+            data = (c_uint8*vn)()
         elif vt == 'u8':
-            data = c_uint8()
+            data = (c_uint8*vn)()
         elif vt == 'i8':
-            data = c_int8()
+            data = (c_int8*vn)()
         elif vt == 'u16':
-            data = c_uint16()
+            data = (c_uint16*vn)()
         elif vt == 'i16':
-            data = c_int16()
+            data = (c_int16*vn)()
         elif vt == 'u32':
-            data = c_uint32()
+            data = (c_uint32*vn)()
         elif vt == 'i32':
-            data = c_int32()
+            data = (c_int32*vn)()
         elif vt == 'f32':
-            data = c_float()
+            data = (c_float*vn)()
         elif vt == 'f64':
-            data = c_double() 
+            data = (c_double*vn)() 
         elif vt == 'string':
-            data = create_string_buffer(b'\000' * vl)
+            data = create_string_buffer(b'\000' * vl*vn)
         elif vt == 'struct':
-            data = create_string_buffer(b'\000' * vl)
-        elif vt == 'dt':
-            data = c_uint32()
+            data = create_string_buffer(b'\000' * vl*vn)
+        elif vt == 'dt' or vt == 'time' or vt == 'date':
+            data = (c_uint32*vn)()
         else: # not handled data type
-            data = c_uint8()    
+            data = (c_uint8*vn)()    
 
         if responseInfo: # data is answer of a request
             self._result = PviReadResponse( wParam, byref(data), sizeof(data) )
-            if self._result == 0:
-                if vt == 'string':
-                    self._value = data.value.decode('ascii')
-                else:
-                    self._value = data.value
-                if callable(self.errorChanged):
-                    self.errorChanged(0)
-            else:
-                raise PviError( self._result )
         else: # data shall be immediately read
-            if vn > 1: 
-                pass
             self._result = PviRead( self._linkID, POBJ_ACC_DATA, None, 0, byref(data), sizeof(data) )
-            if self._result == 0:
-                self._value = data.value
-            else:
-                raise PviError(self._result)
+
+        if self._result == 0:
+            if vn == 1: # single value
+                self._value = self.__castRawData(vt, data[0])
+            else: # array: send a tuple
+                self._value = tuple([ self.__castRawData(vt, _) for _ in data])
+        else:
+            raise PviError(self._result, self)
+
+        if self._errorChanged: # fire callback in case of response
+            self._errorChanged(0)
 
 
     def _eventData( self, wParam, responseInfo ):
-        self._readRawData( wParam, responseInfo )
+        self.__readRawData( wParam, responseInfo )
         if callable(self._valueChanged):
             self._valueChanged(self._value)
 
