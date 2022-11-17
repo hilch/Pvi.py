@@ -29,7 +29,7 @@ from ctypes import c_uint64 as WPARAM
 from ctypes import c_int64 as LPARAM
 from ctypes import c_void_p as HANDLE
 from ctypes import c_uint8 as BYTE
-from enum import IntEnum
+from enum import IntEnum, Enum
 
 
 class T_POBJ_TYPE(IntEnum):
@@ -50,6 +50,91 @@ SET_PVIFUNCTION = 0xfffffffc
 POBJ_EVENT_PVI_CONNECT = 240
 POBJ_EVENT_PVI_DISCONN = 241
 POBJ_EVENT_PVI_ARRANGE = 242
+
+
+class PvType(Enum):
+    '''
+    Type of process variable PV
+    '''
+    UNKNON = "?"
+    I8	= "i8"
+    '''
+    1 byte signed integer
+    '''
+    I16	= "i16"
+    '''
+    2 byte signed integer
+    '''
+    I32 = "i32"
+    '''
+    4 byte signed integer
+    '''
+    I64 = "i64"
+    '''
+    8 byte signed integer
+    '''
+    U8 = "u8"
+    '''
+    1 byte unsigned integer
+    '''
+    U16 = "u16"
+    '''
+    byte unsigned integer
+    '''
+    U32 = "u32"
+    '''
+    4 byte unsigned integer
+    '''
+    U64 = "u64"
+    '''
+    8 byte unsigned integer
+    '''
+    F32 = "f32"
+    '''
+    4 byte float
+    '''
+    F64 = "f64"
+    '''
+    8 byte float (double)
+    '''
+    BOOLEAN = "boolean"
+    '''
+    bit (size = 1 byte)
+    '''
+    STRING = "string"
+    '''
+    byte character string
+    '''
+    WSTRING = "wstring"
+    '''
+    wide character string
+    '''
+    STRUCT = "struct"
+    '''
+    structure
+    '''
+    DATA = "data"
+    '''
+    generic type
+    '''
+    TIME = "time"
+    '''
+    time
+    '''
+    DT = "dt"
+    '''
+    date and time
+    '''
+    DATE = "date"
+    '''
+    date
+    '''
+    TOD = "tod"
+    '''
+    time of day
+    '''
+
+
 
 # response and event message information structure:
 # typedef struct t_response_info
