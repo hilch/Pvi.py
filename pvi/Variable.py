@@ -68,7 +68,8 @@ class Variable(PviObject):
         > responseInfo: responseInfo or 'None' in case of synchronous read request
         '''
         _ = self.dataType # ensure variable data type is known
-        buffer = self._variableType.allocateBuffer()
+        
+        buffer = create_string_buffer(self._variableType.vn * self._variableType.vl)
 
         if responseInfo: # data is answer of a request
             self._result = PviReadResponse( wParam, byref(buffer), sizeof(buffer) )
@@ -76,7 +77,7 @@ class Variable(PviObject):
             self._result = PviRead( self._linkID, POBJ_ACC_DATA, None, 0, byref(buffer), sizeof(buffer) )
         
         if self._result == 0:
-            self._value = self._variableType.readFromBuffer(buffer)
+            self._value = self._variableType.readFromBuffer(bytes(buffer))
         else:
             raise PviError(self._result, self)
 
@@ -149,15 +150,17 @@ class Variable(PviObject):
         Variable: returns datatype
         '''
         try:
-            return PvType(self._objectDescriptor.get('VT')) # variable data type
+            return self._variableType.vt.value \
+            + f'[{self._variableType.vn}]' if self._variableType.vn > 1 else '' # variable data type 
 
-        except ValueError:
+        except AttributeError:
             s = create_string_buffer(b'\000' * 64*1024) 
-            self._result = PviRead( self._linkID, POBJ_ACC_TYPE_EXTERN, None, 0, s, sizeof(s) )
+            self._result = PviRead( self._linkID, POBJ_ACC_TYPE_INTERN, None, 0, s, sizeof(s) )
             if self._result == 0:
                 s = str(s, 'ascii').rstrip('\x00')
                 self._variableType = VariableType(s)
                 self._objectDescriptor |= self._variableType.objectDescriptor
-                return self._variableType.vt # variable data type                      
+                return self._variableType.vt.value \
+                + f'[{self._variableType.vn}]' if self._variableType.vn > 1 else '' # variable data type                      
             else:
                 raise PviError(self._result, self)
