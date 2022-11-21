@@ -63,7 +63,7 @@ def cpuErrorChanged( error : int):
             status = { "Name" : name }
             status.update( variable.status )
             status.update( { "Value" : variable.value} )
-            status.update( { "DataType" : variable.dataType} )            
+            status.update( { "Type" : variable.dataType} )            
             globalVariables.append(status)
             variable.kill()
 

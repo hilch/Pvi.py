@@ -26,15 +26,16 @@ import time
 from ctypes import *
 import re
 import struct
-from collections import namedtuple
-from pvi.include.pvi_h import PvType
+from collections import namedtuple, OrderedDict
+from .Error import PviError
+from .Object import PviObject
+from .include import *
 
-from ctypes import *
 
 patternDataTypeInformation = re.compile(r"([A-Z]{2}=\w+)|(\{[^}]+\})")
 patternStructureElementDefinition = re.compile(r"(\x2E[a-zA-z0-9_.]+)|([A-Z]{2}=\w+)")
 
-StructMember = namedtuple( 'StructMember', ['sn', 'name', 'vt', 'vn', 'vo', 'vl'])
+StructMember = namedtuple( 'StructMember', ['name', 'vt', 'vn', 'vo', 'vl'])
 '''
 helper class for structure member 
 '''
@@ -44,61 +45,58 @@ class VariableType():
     '''
     helper class for class Variable to parse data type information
     '''
-    def __init__(self, s : str):
+    def __init__(self, object : PviObject ):
         '''
-        s: structure type definition returned by POBJ_ACC_TYPE_INTERN
-           e.g. 'AT=rwe SC=l AL=1 VT=struct SN=MyStruct VL=84 VN=1 {.ton VT=struct SN=TON VL=20 VN=1 VO=0} { ...'
-        '''
+        object: Variable object
+        '''        
+        self._parentObject = object
+
+        s = create_string_buffer(b'\000' * 64*1024) 
+        object._result = PviRead( self._parentObject._linkID, POBJ_ACC_TYPE_INTERN, None, 0, s, sizeof(s) )
+        if self._parentObject._result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+        else:
+            raise PviError(self._parentObject._result, self._parentObject)
+
+ 
         self._members = None # let's assume a basic variable type
         '''
         list of all data type (structure) members if this variable is a struct
         '''
 
-        self.objectDescriptor = dict({'VN' : 1, 'VL' : 1 })
-        '''
-        dict with extracted object description
-        '''
+        self._parentObject._objectDescriptor.update({'VN' : 1, 'VL' : 1 })
 
         self._updateObjectDescriptor(s) # udpate objects descriptor
-        self.vt = PvType( self.objectDescriptor.get('VT')) 
+        self.vt = PvType( self._parentObject._objectDescriptor.get('VT')) 
         '''
         PVI Variable Type : PvType
         '''
 
-        self.vn = int(self.objectDescriptor.get('VN'))
+        self.vn = int(self._parentObject._objectDescriptor.get('VN'))
         '''
         number of array elements : int
         '''
 
-        self.vl = int(self.objectDescriptor.get('VL'))
+        self.vl = int(self._parentObject._objectDescriptor.get('VL'))
         '''
         variable byte length : int
         '''
-        if self.vt == PvType.STRUCT:
-            pass
 
 
     def _updateObjectDescriptor(self, s):
         '''
         update object descriptor and find all members if this PV is a structure
         '''
-        self._currentInnerStructTypeName = ""
-        self._currentInnerStructName = ""
-        self._currentInnerStructOffset = 0
-
+        self._innerStructOffsets = dict() # save vo of inner structs to correct their members' offsets
         for m in patternDataTypeInformation.finditer(s) : # update object descriptor
             ex = m.group()
-            if ex.startswith('{'): # ignore structure member definition
+            if ex.startswith('{'): # structure member definition
                 if self._members == None:
                     self._members = list()
                 self._updateMemberList(ex)
             else:
-                self.objectDescriptor.update({ex[0:2]: ex[3:]}) 
-        del(self._currentInnerStructTypeName)
-        del(self._currentInnerStructName)
-        del(self._currentInnerStructOffset)
-        # self._members.sort( key = lambda _ : _.vo ) # sort members by offset
-
+                self._parentObject._objectDescriptor.update({ex[0:2]: ex[3:]}) 
+        del self._innerStructOffsets
 
 
     def _updateMemberList(self, s ):
@@ -120,18 +118,15 @@ class VariableType():
         vn = int(desc.get('VN'))
         vl = int(desc.get('VL'))        
         name = desc.get('name')
+        parentStruct = name.rpartition('.')[0]
 
-        if name.startswith(self._currentInnerStructName): # does member belong to an inner struct ?
-            vo += self._currentInnerStructOffset
-        else:
-            self._currentInnerStructTypeName = ""
-
+        if parentStruct in self._innerStructOffsets: # does member belong to an inner struct ?
+            vo += self._innerStructOffsets[parentStruct]
+ 
         if vt == PvType.STRUCT: # is member itself an inner structure ?
-            self._currentInnerStructTypeName = desc.get('SN')
-            self._currentInnerStructName = name + "." # then save it's name
-            self._currentInnerStructOffset = vo
+            self._innerStructOffsets.update( { name :vo } )
         else:
-            self._members.append(  StructMember( self._currentInnerStructTypeName, name, vt, vn, vo, vl ) )
+            self._members.append(  StructMember( name, vt, vn, vo, vl ) )
 
 
     def _unpackRawData(self, data : bytes, vt : PvType, vl :int):
@@ -185,28 +180,38 @@ class VariableType():
             return bytes(''.join( chr(_) for _ in data if _ != 0 ), 'ascii')
         elif vt == PvType.WSTRING:
             return ''.join( chr(int(data[_]) + int(data[_+1])) for _ in range(0,len(data),2) if int(data[_]))
+        else:
+            raise BaseException("not implemented")
 
 
     def readFromBuffer(self, buffer : bytes):
         '''
-        gets the value from raw buffer data
+        gets the value from raw buffer data.
+        returns a tuple in case of array.
+
         buffer : raw buffer data from POBJ_ACC_DATA
         '''
-        if self.vn == 1: # single value
+        arrayBuffers = ( buffer[_:_+self.vl] for _ in range(0,len(buffer), self.vl)) # split buffer into array elements
+        result = list()
+
+        for elementBuffer in arrayBuffers:
             if self.vt == PvType.STRUCT:
-                result = dict()
+                structResult = OrderedDict()
                 for m in self._members:
-                    buf = buffer[m.vo : m.vo+m.vl]
-                    value = self._unpackRawData( buf, m.vt, m.vl )
-                    result.update( { m.name : value } )
-                return result
+                    if m.vn == 1: # struct member is asingle value
+                        buf = elementBuffer[m.vo : m.vo+m.vl]
+                        value = self._unpackRawData( buf, m.vt, m.vl )
+                    else: # struct member is an array
+                        memberBuffers = ( elementBuffer[_:_+m.vl] for _ in range( m.vo, m.vo + m.vl*m.vn, m.vl)) # split buffer
+                        value = tuple( self._unpackRawData( _, m.vt, m.vl ) for _ in memberBuffers )
+                    structResult.update( { m.name : value } )
+                result.append( structResult )
             else:
-                return self._unpackRawData( buffer, self.vt, self.vl )
-        else: # array: return a tuple
-            buffers = ( buffer[_:_+self.vl] for _ in range(0,len(buffer), self.vl)) # split buffer
-            if self.vt == PvType.STRUCT:
-                pass
-            else:
-                return tuple( self._unpackRawData( _, self.vt, self.vl ) for _ in buffers )
+                result.append( self._unpackRawData( elementBuffer, self.vt, self.vl ) )
+
+        if len(result) == 1: # single value
+            return result[0]
+        else:
+            return tuple(result)
 
 

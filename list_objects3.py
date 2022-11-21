@@ -22,7 +22,7 @@ pviConnection = Connection() # start a Pvi connection
 line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
 device = Device( line, 'TCP', CD='/IF=TcpIp' )
 cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
-task = Task( cpu, 'NewProgram' )
+task = Task( cpu, 'conveyor' )
 
 
 run = True
@@ -40,7 +40,7 @@ def cpuErrorChanged( error : int):
                 value = variable.value
             except PviError as e:
                 print(e)
-            variables.append( { "Name" : variableName, "DataType" : dataType, "Value" : value} )
+            variables.append( { "Name" : variableName, "Type" : dataType, "Value" : value} )
             variable.kill()
 
         # write content to file

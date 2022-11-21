@@ -46,7 +46,7 @@ def cpuErrorChanged( error : int):
                     value = variable.value
                 except PviError as e:
                     print(e)
-                variables.append( { "Name" : variableName, "DataType" : dataType, "Value" : value} )
+                variables.append( { "Name" : variableName, "Type" : dataType, "Value" : value} )
                 variable.kill()
             tasks.update({ taskName : variables })
             task.kill
@@ -57,8 +57,8 @@ def cpuErrorChanged( error : int):
         # write content to file
         with open('content.txt', 'w') as f: 
             pprint(tasks, stream=f, indent = 4)
-        #     f.write("\nglobalVars =\n")
-        #     pprint(globalVars, stream=f)  
+            # f.write("\nglobalVars =\n")
+            # pprint(globalVars, stream=f)  
         print('content.txt was created !')                      
         run = False
     

@@ -20,7 +20,6 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#from collections import namedtuple
 from .include import *
 from .Error import PviError
 from .Object import PviObject
@@ -95,11 +94,7 @@ class Variable(PviObject):
         s = create_string_buffer(b'\000' * 64*1024)       
         self._result = PviReadResponse( wParam, s, sizeof(s) )
         if self._result == 0:
-            s = str(s, 'ascii').rstrip('\x00')
-            self._variableType = VariableType(s)
-            self._objectDescriptor |= self._variableType.objectDescriptor
-        else:
-            raise PviError(self._result, self)
+            pass # TODO
 
             
     @property
@@ -109,6 +104,7 @@ class Variable(PviObject):
         '''
         self.__readRawData( 0, None )
         return self._value
+
 
     @value.setter
     def value(self,v):
@@ -125,6 +121,7 @@ class Variable(PviObject):
 
         if self._result:
             raise PviError(self._result, self)
+
 
     @property
     def valueChanged(self):
@@ -147,20 +144,18 @@ class Variable(PviObject):
     @property
     def dataType(self) -> str:
         '''
-        Variable: returns datatype
+        Variable: returns variable's type
         '''
+        t = None
         try:
-            return self._variableType.vt.value \
-            + f'[{self._variableType.vn}]' if self._variableType.vn > 1 else '' # variable data type 
+            t = self._variableType.vt.value
 
-        except AttributeError:
-            s = create_string_buffer(b'\000' * 64*1024) 
-            self._result = PviRead( self._linkID, POBJ_ACC_TYPE_INTERN, None, 0, s, sizeof(s) )
-            if self._result == 0:
-                s = str(s, 'ascii').rstrip('\x00')
-                self._variableType = VariableType(s)
-                self._objectDescriptor |= self._variableType.objectDescriptor
-                return self._variableType.vt.value \
-                + f'[{self._variableType.vn}]' if self._variableType.vn > 1 else '' # variable data type                      
-            else:
-                raise PviError(self._result, self)
+        except AttributeError: # variable's type wasn't determined yet
+            self._variableType = VariableType(self)
+            t = self._variableType.vt.value            
+
+        if self._variableType.vn > 1: # is variable an array ?
+            t += f'[{self._variableType.vn}]'
+
+        return t
+
