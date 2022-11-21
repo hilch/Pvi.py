@@ -215,3 +215,45 @@ class VariableType():
             return tuple(result)
 
 
+    def writeToBuffer(self, value):
+        '''
+        packs Python data type to byte buffer
+        value: value
+        '''      
+        if self.vt == PvType.BOOLEAN:
+            buffer = c_bool(value)
+        elif self.vt == PvType.U8:
+            buffer = c_uint8(value)
+        elif self.vt == PvType.I8:
+            buffer = c_int8(value)
+        elif self.vt == PvType.U16:
+            buffer = c_uint16(value)
+        elif self.vt == PvType.I16:
+            buffer = c_int16(value)
+        elif self.vt == PvType.U32:
+            buffer = c_uint32(value)
+        elif self.vt == PvType.DT:
+            buffer = c_uint32(value)
+        elif self.vt == PvType.DATE:
+            buffer = c_uint32(value)
+        elif self.vt == PvType.TOD:
+            buffer = c_uint32(value)
+        elif self.vt == PvType.TIME:
+            buffer = c_int32(value)
+        elif self.vt == PvType.I32:
+            buffer = c_int32(value)
+        elif self.vt == PvType.U64:
+            buffer = c_uint64(value)
+        elif self.vt == PvType.I64:
+            buffer = c_int64(value)
+        elif self.vt == PvType.F32:
+            buffer = c_float(value)
+        elif self.vt == PvType.F64:
+            buffer = c_double(value)
+        elif self.vt == PvType.STRING:
+            buffer = c_char(value)
+        elif self.vt == PvType.WSTRING:
+            buffer = c_wchar(value)
+        else:
+            raise BaseException("not implemented")
+        return buffer

@@ -116,7 +116,7 @@ class Variable(PviObject):
         if vt == PvType.STRUCT:
             self._result = 0
         else:
-            buffer = self._variableType.allocateBuffer(v)
+            buffer = self._variableType.writeToBuffer(v)
             self._result = PviWrite( self._linkID, POBJ_ACC_DATA, byref(buffer), sizeof(buffer), None, 0 )  
 
         if self._result:
