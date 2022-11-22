@@ -22,7 +22,6 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
-import time
 from ctypes import *
 import re
 import struct
@@ -81,8 +80,7 @@ class VariableType():
         '''
         variable byte length : int
         '''
-
-
+ 
     def _updateObjectDescriptor(self, s):
         '''
         update object descriptor and find all members if this PV is a structure
@@ -137,7 +135,7 @@ class VariableType():
         vl: variable byte length 
         '''        
         if vt == PvType.BOOLEAN:
-            return struct.unpack('<?', data )[0] 
+            return bool(struct.unpack('<?', data )[0])
         elif vt == PvType.U8:
             return struct.unpack('<B', data )[0] 
         elif vt == PvType.I8:
@@ -164,8 +162,14 @@ class VariableType():
                 return value           
         elif vt == PvType.I32 or vt == PvType.TIME:
             value = struct.unpack('<l', data)[0]
-            if self.vt == PvType.TIME:
-                return time.gmtime(value)            
+            if vt == PvType.TIME:
+                absValue = abs(value)
+                sgn = 1 if value >= 0 else -1
+                days = int(absValue / 86400000 )
+                absValue %= 86400000
+                seconds = int(absValue/1000)
+                milliseconds = absValue % 1000
+                return sgn * datetime.timedelta( days = days, seconds = seconds, microseconds=milliseconds*1000 )           
             else:
                 return value
         elif vt == PvType.U64:
