@@ -29,6 +29,7 @@ run = True
 def cpuErrorChanged( error : int):
     global run
 
+     
     if error == 0:
         # read content
         allObjects = cpu.externalObjects
@@ -38,7 +39,7 @@ def cpuErrorChanged( error : int):
         for taskName in taskNames:
             task = Task( cpu, taskName )
             variableNames = [ _['name'] for _ in task.externalObjects]
-            variables = list()                        
+            variables = list()                    
             for variableName in variableNames:
                 variable = Variable(task, variableName)
                 try:
@@ -50,15 +51,28 @@ def cpuErrorChanged( error : int):
                 variable.kill()
             tasks.update({ taskName : variables })
             task.kill
-
-
-        globalVariableNames = [ _['name'] for _ in allObjects if _['type'] == 'Pvar'] # read names of global variables
-
         # write content to file
         with open('content.txt', 'w') as f: 
             pprint(tasks, stream=f, indent = 4)
-            # f.write("\nglobalVars =\n")
-            # pprint(globalVars, stream=f)  
+
+        globalVariableNames = [ _['name'] for _ in allObjects if _['type'] == 'Pvar'] # read names of global variables
+        variables = list()
+        for variableName in globalVariableNames:
+            variable = Variable(cpu, variableName)
+            try:
+                dataType = variable.dataType
+                value = variable.value
+            except PviError as e:
+                print(e)
+            variables.append( { "Name" : variableName, "Type" : dataType, "Value" : value} )
+            variable.kill()
+
+
+        # append the content to existing file
+        with open('content.txt', 'a') as f: 
+            f.write("\nglobalVars =\n")
+            pprint( variables, stream=f) 
+
         print('content.txt was created !')                      
         run = False
     
