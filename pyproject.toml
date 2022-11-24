@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pvipy"
+version = "0.2.0"
+authors = [
+  { name="Christoph Hilchenbach" },
+]
+description = "Python connector for B&R Pvi (process visualization interface)"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/hilch/Pvi.py"
+"Bug Tracker" = "https://github.com/hilch/Pvi.py/issues"
