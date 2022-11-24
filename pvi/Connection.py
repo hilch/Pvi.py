@@ -24,14 +24,16 @@ from ctypes import *
 from .include import *
 from .Error import PviError
 from .Object import PviObject
-
+import datetime
 
 class Connection():
     '''
     class representing a connection to PVI manager
     '''
     # ----------------------------------------------------------------------------------
-    def __init__(self, debug = False):
+    def __init__(self, debug = False, timeout = 5 ):
+        self._startTime = datetime.datetime.now()
+        self._pviTrialTimeCheck = datetime.timedelta(seconds=timeout +1)
         self._debug = debug
         self._objectsArranged = False
         self._pviObjects = []
@@ -39,7 +41,7 @@ class Connection():
         self._rootObject._pviConnection = self
         self.link(self._rootObject)
         self._linkIDs = {}
-        self._result = PviInitialize( 0, 0, "", None )
+        self._result = PviInitialize( timeout, 0, "", None )
         if self._result == 0:
             # set global events
             for m in (POBJ_EVENT_PVI_CONNECT, POBJ_EVENT_PVI_DISCONN, POBJ_EVENT_PVI_ARRANGE):
@@ -103,7 +105,7 @@ class Connection():
                 for oo in o:
                     self.link(oo)
             else:
-                raise ValueError("only PviObject of list of PviObjects allowed !")
+                raise ValueError("only PviObject or list of PviObjects allowed !")
     # ----------------------------------------------------------------------------------
 
     def findObjectByName(self, name : str) ->PviObject :
@@ -144,6 +146,8 @@ class Connection():
         """
         handle pvi arrange event
         """
+        self._pviTrialTimeCheck = None
+
         self._result = PviReadResponse( wParam, None, 0 )                
         if self._debug:
             print("POBJ_EVENT_PVI_ARRANGE")
@@ -152,10 +156,10 @@ class Connection():
         for po in self._pviObjects:
             po._createAndLink(self)
         self._objectsArranged = True
-        license = self.license
-        if self._debug:
-            print(f'PVI license: {license[0]} - running on {license[1]}' ) 
 
+        if self._debug:
+            license = self.license            
+            print(f'PVI license: {license[0]} - running on {license[1]}' ) 
 
     # ----------------------------------------------------------------------------------
     def _eventOther( self, wParam, responseInfo ):
@@ -236,7 +240,8 @@ class Connection():
             else:
                 self._eventOther( wParam, responseInfo )
     
-
-
+        if self._pviTrialTimeCheck:
+            if datetime.datetime.now() - self._startTime > self._pviTrialTimeCheck:
+                raise PviError(12040)
 
 
