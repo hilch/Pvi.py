@@ -30,36 +30,36 @@ Instead, look at the examples to use parts from this for your programs.
 # Examples
 
 ## Start here
-### ['simple1.py'](simple1.py) (ANSL)
+### ['simple1.py'](examples/simple1.py) (ANSL)
 this simple example just registers a variable, reads its value and then exit after a few seconds
 
-### ['simple2.py'](simple2.py) (ANSL)
+### ['simple2.py'](examples/simple2.py) (ANSL)
 this simple example just registers a variable for reading and another for writing. In fact we switch on the 'coffee machine' and watch its temperature ...
 
 ## Basics
-### [basics1.py](basics1.py) (ANSL)
+### [basics1.py](examples/basics1.py) (ANSL)
 shows reading and writing of basic data types
 
 ## Create Lists of objects
-### [list_objects1.py](list_objects1.py) (ANSL)
+### [list_objects1.py](examples/list_objects1.py) (ANSL)
 this example lists objects with 'global scope' (modules, task and global variables)
 from 'coffe machine' cpu and returns status information about them
 
-### [list_objects2.py](list_objects2.py) (ANSL)
+### [list_objects2.py](examples/list_objects2.py) (ANSL)
 this example lists global and local variables and their content
 
-### [list_objects3.py](list_objects3.py) (ANSL)
+### [list_objects3.py](examples/list_objects3.py) (ANSL)
 this example lists all local variables of a specific task and their content
 
 ## Handling modules
-### ['modules1.py'](modules1.py) (ANSL)
+### ['modules1.py'](examples/modules1.py) (ANSL)
 this simple example creates a module on CPU by downloading a bytestream and checks if it exists
 
-### ['modules2.py'](modules2.py) (ANSL)
+### ['modules2.py'](examples/modules2.py) (ANSL)
 this simple example creates a module on CPU by downloading a bytestream and afterwards uploads it again
 
 ## Simple Network Managament Protocol (SNMP)
-### [browse_for_targets.py](browse_for_targets.py)
+### [browse_for_targets.py](examples/browse_for_targets.py)
 this example searches for B&R plc in local network with PVI's 'SNMP' line and lists their properties
 (if you are looking for a 'real' program consider to use [brsnmp](https://github.com/hilch/brsnmp) )
 

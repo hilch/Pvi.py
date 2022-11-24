@@ -56,7 +56,7 @@
 
 from time import sleep
 from datetime import time, date, timedelta, datetime
-from pvi import *
+from ..pvi import *
 
 pviConnection = Connection() # start a Pvi connection
 
