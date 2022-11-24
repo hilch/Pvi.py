@@ -4,7 +4,13 @@
 
 # Pvi.py
 Python connector for [B&amp;R Pvi (process visualization interface)](https://www.br-automation.com/en/products/software/automation-software/automation-netpvi/).
-PVI is a complex software layer. In most cases it is used to communicate with B&R PLCs.
+
+In times of more modern protocols like OPC-UA, this may seem a bit old-fashioned. 
+But PVI has some hidden strengths and is also very versatile. 
+Have a look into the documentation of the 'Lines' (ANSL, INA2000, NET2000, MTC, ADI, DCAN, SNMP, MODBUS, MININET) and what they are used for.
+In most cases it is used just to communicate with B&R PLCs with 'ANSL' and 'SNMP'.
+Unfortunately its native C-language interface is very complex and also PVI Services (C#) can be a high barrier to entry.
+It's a lot more fun with Python !
 
 # PVI installation and license
 PVI needs a previous installation of 'PVI Development Setup' from [B&R's homepage](https://www.br-automation.com).
@@ -18,27 +24,43 @@ Contact your local B&R office to buy a valid license if trial license is not suf
 # Usage
 PVI uses a complex interface to define objects and their parameters but it is well documented
 in its online help system and also in Automation Studio help system.
-There is no point in repeating this here.
+There is no point in repeating this here since most of its parameters still apply in this Python interface.
 Instead, look at the examples to use parts from this for your programs.
 
 # Examples
 
-## ['simple1.py'](simple1.py)
+## Start here
+### ['simple1.py'](simple1.py) (ANSL)
 this simple example just registers a variable, reads its value and then exit after a few seconds
 
-## ['simple2.py'](simple2.py)
+### ['simple2.py'](simple2.py) (ANSL)
 this simple example just registers a variable for reading and another for writing. In fact we switch on the 'coffee machine' and watch its temperature ...
 
-## ['modules1.py'](modules1.py)
+## Basics
+### [basics1.py](basics1.py) (ANSL)
+shows reading and writing of basic data types
+
+## Create Lists of objects
+### [list_objects1.py](list_objects1.py) (ANSL)
+this example lists objects with 'global scope' (modules, task and global variables)
+from 'coffe machine' cpu and returns status information about them
+
+### [list_objects2.py](list_objects2.py) (ANSL)
+this example lists global and local variables and their content
+
+### [list_objects3.py](list_objects3.py) (ANSL)
+this example lists all local variables of a specific task and their content
+
+## Handling modules
+### ['modules1.py'](modules1.py) (ANSL)
 this simple example creates a module on CPU by downloading a bytestream and checks if it exists
 
-## ['modules2.py'](modules2.py)
+### ['modules2.py'](modules2.py) (ANSL)
 this simple example creates a module on CPU by downloading a bytestream and afterwards uploads it again
 
-## [browse_for_targets.py](browse_for_targets.py)
+## Simple Network Managament Protocol (SNMP)
+### [browse_for_targets.py](browse_for_targets.py)
 this example searches for B&R plc in local network with PVI's 'SNMP' line and lists their properties
 (if you are looking for a 'real' program consider to use [brsnmp](https://github.com/hilch/brsnmp) )
 
-## [list_objects1.py](list_objects1.py)
-this example lists objects with 'global scope' (modules, task and global variables)
-from 'coffe machine' cpu and returns status information about them
+
