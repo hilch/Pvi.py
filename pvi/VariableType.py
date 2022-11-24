@@ -80,7 +80,7 @@ class VariableType():
         '''
         variable byte length : int
         '''
- 
+         
     def _updateObjectDescriptor(self, s):
         '''
         update object descriptor and find all members if this PV is a structure
@@ -223,41 +223,168 @@ class VariableType():
         '''
         packs Python data type to byte buffer
         value: value
-        '''      
-        if self.vt == PvType.BOOLEAN:
-            buffer = c_bool(value)
-        elif self.vt == PvType.U8:
-            buffer = c_uint8(value)
-        elif self.vt == PvType.I8:
-            buffer = c_int8(value)
-        elif self.vt == PvType.U16:
-            buffer = c_uint16(value)
-        elif self.vt == PvType.I16:
-            buffer = c_int16(value)
-        elif self.vt == PvType.U32:
-            buffer = c_uint32(value)
-        elif self.vt == PvType.DT:
-            buffer = c_uint32(value)
-        elif self.vt == PvType.DATE:
-            buffer = c_uint32(value)
-        elif self.vt == PvType.TOD:
-            buffer = c_uint32(value)
-        elif self.vt == PvType.TIME:
-            buffer = c_int32(value)
-        elif self.vt == PvType.I32:
-            buffer = c_int32(value)
-        elif self.vt == PvType.U64:
-            buffer = c_uint64(value)
-        elif self.vt == PvType.I64:
-            buffer = c_int64(value)
-        elif self.vt == PvType.F32:
-            buffer = c_float(value)
-        elif self.vt == PvType.F64:
-            buffer = c_double(value)
-        elif self.vt == PvType.STRING:
-            buffer = c_char(value)
-        elif self.vt == PvType.WSTRING:
-            buffer = c_wchar(value)
-        else:
-            raise BaseException("not implemented")
+        '''     
+        buffer = None
+
+        if self.vn > 1 and not isinstance(value, list) and not isinstance(value, tuple): # variable is an array
+            value = [value for _ in range(0, self.vn)] # create a list with identical values
+
+        try:
+            if self.vt == PvType.BOOLEAN:
+                if self.vn == 1: # single value
+                    buffer = c_bool(value)
+                else: # array of BOOLEAN
+                    buffer = (c_bool*self.vn)(*value)
+
+            elif self.vt == PvType.U8:
+                if self.vn == 1: # single value
+                    buffer = c_uint8(value)
+                else: # array of U8
+                    buffer = (c_uint8*self.vn)(*value)
+
+            elif self.vt == PvType.I8:
+                if self.vn == 1: # single value
+                    buffer = c_int8(value)
+                else: # array of I8
+                    buffer = (c_int8*self.vn)(*value)
+
+            elif self.vt == PvType.U16:
+                if self.vn == 1: # single value
+                    buffer = c_uint16(value)
+                else: # array of U16
+                    buffer = (c_uint16*self.vn)(*value)
+
+            elif self.vt == PvType.I16:
+                if self.vn == 1: # single value
+                    buffer = c_int16(value)
+                else: # array of I16
+                    buffer = (c_int16*self.vn)(*value)
+
+            elif self.vt == PvType.U32:
+                if self.vn == 1: # single value
+                    buffer = c_uint32(value)
+                else: # array of U32
+                    buffer = (c_uint32*self.vn)(*value)
+
+            elif self.vt == PvType.DT:
+                if self.vn == 1: # single value
+                    if type(value) == datetime.datetime:
+                        buffer = c_uint32( int(value.timestamp()) )
+                    elif type(value) == int:
+                        buffer = c_uint32(value)
+                else: # array of DT
+                    if type(value[0]) == datetime.datetime:
+                        v = (int(v.timestamp()) for v in value)
+                        buffer = (c_uint32*self.vn)( *v )
+                    elif type(value[0]) == int:
+                        buffer = (c_uint32*self.vn)(*value)
+
+            elif self.vt == PvType.DATE:
+                if self.vn == 1: # single value
+                    if type(value) == datetime.date:
+                        value = datetime.datetime.combine(value, datetime.time())
+                        buffer = c_uint32( int(value.timestamp()) )
+                    elif type(value) == int:
+                        buffer = c_uint32(value)
+                else: # array of DATE
+                    if type(value[0]) == datetime.date:
+                        v = (int(datetime.datetime.combine(v, datetime.time()).timestamp()) for v in value)
+                        buffer = (c_uint32*self.vn)( *v )
+                    elif type(value[0]) == int:
+                        buffer = (c_uint32*self.vn)(*value)            
+
+            elif self.vt == PvType.TOD:
+                if self.vn == 1: # single value
+                    if type(value) == datetime.time:
+                        buffer = c_uint32( value.hour * 3600000 + value.minute * 60000 + value.second * 1000 + int(value.microsecond / 1000) )
+                    elif type(value) == int:
+                        buffer = c_uint32(value)
+                else: # array of TOD
+                    if type(value[0]) == datetime.time:
+                        v = (v.hour * 3600000 + v.minute * 60000 + v.second * 1000 + int(v.microsecond / 1000) for v in value)
+                        buffer = (c_uint32*self.vn)( *v )
+                    elif type(value[0]) == int:
+                        buffer = (c_uint32*self.vn)(*value)
+
+            elif self.vt == PvType.TIME:
+                if self.vn == 1: # single value
+                    if type(value) == datetime.timedelta: 
+                        buffer = c_int32( int( value / datetime.timedelta(milliseconds=1)) )
+                    elif type(value) == int:
+                        buffer = c_int32(value)
+                else: # array of TIME
+                    if type(value[0]) == datetime.timedelta: 
+                        v = (int( v / datetime.timedelta(milliseconds=1)) for v in value)
+                        buffer = (c_int32*self.vn)( *v)
+                    elif type(value[0]) == int:
+                        buffer = (c_int32*self.vn)(value)
+
+            elif self.vt == PvType.I32:
+                if self.vn == 1: # single value
+                    buffer = c_int32(value)
+                else: # array of I32
+                    buffer = (c_int32*self.vn)(*value)                
+
+            elif self.vt == PvType.U64:
+                if self.vn == 1: # single value
+                    buffer = c_uint64(value)
+                else: # array of U64
+                    buffer = (c_uint64*self.vn)(*value)                
+
+            elif self.vt == PvType.I64:
+                if self.vn == 1: # single value 
+                    buffer = c_int64(value)
+                else: # array of I64
+                    buffer = (c_int64*self.vn)(*value)                                
+
+            elif self.vt == PvType.F32:
+                if self.vn == 1: # single value
+                    buffer = c_float(value)
+                else: # array of F32
+                    buffer = (c_float*self.vn)(*value)                
+
+            elif self.vt == PvType.F64:
+                if self.vn == 1: # single value
+                    buffer = c_double(value)
+                else: # array of F64
+                    buffer = (c_double*self.vn)(*value)                
+
+            elif self.vt == PvType.STRING:
+                if self.vn == 1: # single value
+                    if type(value) == bytes:
+                        buffer = (c_char * self.vl)(*value)
+                else: # array of STRING
+                    if type(value[0]) == bytes:
+                        buffer = ((c_char * self.vl) * self.vn)()
+                        for n, v in enumerate(value):
+                            s = (c_char*self.vl)(*v)
+                            buffer[n] = s
+
+            elif self.vt == PvType.WSTRING:
+                ch = int(self.vl/2) # no of characters
+                if self.vn == 1:
+                    if type(value) == bytes:
+                        value = value.decode()                
+                    buffer = (c_wchar * ch )(*value)                
+                else: # array of WSTRING
+                    buffer = ((c_wchar * (ch)*self.vn))()
+                    for n, v in enumerate(value):
+                        if type(v) == bytes:
+                            v = v.decode()
+                        for j,c in enumerate(v):
+                            buffer[n][j] = c
+
+                    
+
+            else:
+                raise BaseException( "data type " + str(self.vt) + " not implemented")
+            
+        except IndexError:
+            raise IndexError(f'wrong length writing {value}\nto {repr(self._parentObject)}')            
+        except BaseException as e:
+            raise e
+                    
+        if buffer == None:
+            raise ValueError(f'wrong data type {type(value)} used\nwriting {repr(self._parentObject)}')
+
         return buffer

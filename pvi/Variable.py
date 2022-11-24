@@ -66,7 +66,8 @@ class Variable(PviObject):
         > wParam: points to response data
         > responseInfo: responseInfo or 'None' in case of synchronous read request
         '''
-        _ = self.dataType # ensure variable data type is known
+        if self._variableType == None:
+            _ = self.dataType # ensure variable data type is known            
         
         buffer = create_string_buffer(self._variableType.vn * self._variableType.vl)
 
@@ -111,14 +112,16 @@ class Variable(PviObject):
         '''
         Variable: set value
         '''
+        if self._variableType == None:
+            _ = self.dataType # ensure variable data type is known           
+
         vt = self._variableType.vt
 
-        if vt == PvType.STRUCT:
-            self._result = 0
+        if vt == PvType.STRUCT: 
+            raise ValueError(f'Writing of struct not implemented\n{repr(self)}')
         else:
             buffer = self._variableType.writeToBuffer(v)
             self._result = PviWrite( self._linkID, POBJ_ACC_DATA, byref(buffer), sizeof(buffer), None, 0 )  
-
         if self._result:
             raise PviError(self._result, self)
 
