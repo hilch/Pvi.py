@@ -63,6 +63,10 @@ this simple example creates a module on CPU by downloading a bytestream and chec
 ### [modules2.py](examples/modules2.py) (ANSL)
 this simple example creates a module on CPU by downloading a bytestream and afterwards uploads it again
 
+## GUI
+### [gui1.py](examples/gui1.py) (ANSL)
+this example shows the usage of Pvi.py in tkinter
+
 ## IO
 ### [linknode1.py](examples/linknode1.py) (ANSL)
 this simple example just toggles an forced output
