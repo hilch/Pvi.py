@@ -182,7 +182,15 @@ class PviObject():
             raise PviError(self._result, self)  
         return st    
 
+    
+    @status.setter
+    def status(self, st : bytes):
+        s = create_string_buffer(st)
+        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 ) 
+        if self._result:
+            raise PviError(self._result, self)        
 
+        
     def kill(self):
         '''
         PviObject.kill: kills this object
