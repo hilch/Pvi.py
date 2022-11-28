@@ -48,7 +48,7 @@ def cpuErrorChanged( error : int):
         # read task names
         taskNames = [ _['name'] for _ in allObjects if _['type'] == 'Task'] 
         tasks = list()
-        for name in moduleNames:  # read the tasks' status
+        for name in taskNames:  # read the tasks' status
             task = Task( cpu, name )
             status = { "Name" : name }
             status.update( task.status )
