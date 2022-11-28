@@ -45,7 +45,7 @@ class PviObject():
             self._pviConnection = parent._pviConnection
             self._pviConnection.link(self)
             self._debug = self._pviConnection._debug
-
+            
     def __hash__(self):
         return hash( (self._name, self._type) )
 
@@ -190,10 +190,14 @@ class PviObject():
         if self._result:
             raise PviError(self._result, self)        
 
-        
+    def __del__(self):
+        self.kill
+
     def kill(self):
         '''
         PviObject.kill: kills this object
+        this should be called when object is not beeing used anymore
+        to save PVI resources
         '''
         if self._linkID != 0:
             self._pviConnection._linkIDs.pop(self._linkID) # remove from linkIDs
