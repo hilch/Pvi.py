@@ -35,10 +35,10 @@ Instead, look at the examples to use parts from this for your programs.
 # Examples
 
 ## Start here
-### ['simple1.py'](examples/simple1.py) (ANSL)
+### [simple1.py](examples/simple1.py) (ANSL)
 this simple example just registers a variable, reads its value and then exit after a few seconds
 
-### ['simple2.py'](examples/simple2.py) (ANSL)
+### [simple2.py](examples/simple2.py) (ANSL)
 this simple example just registers a variable for reading and another for writing. In fact we switch on the 'coffee machine' and watch its temperature ...
 
 ## Basics
@@ -57,15 +57,24 @@ this example lists global and local variables and their content
 this example lists all local variables of a specific task and their content
 
 ## Handling modules
-### ['modules1.py'](examples/modules1.py) (ANSL)
+### [modules1.py](examples/modules1.py) (ANSL)
 this simple example creates a module on CPU by downloading a bytestream and checks if it exists
 
-### ['modules2.py'](examples/modules2.py) (ANSL)
+### [modules2.py](examples/modules2.py) (ANSL)
 this simple example creates a module on CPU by downloading a bytestream and afterwards uploads it again
 
+## IO
+### [linknode1.py](examples/linknode1.py) (ANSL)
+this simple example just toggles an forced output
+
 ## Simple Network Managament Protocol (SNMP)
+(if you are looking for a 'real' program consider to use [brsnmp](https://github.com/hilch/brsnmp) )
+
 ### [browse_for_targets.py](examples/browse_for_targets.py)
 this example searches for B&R plc in local network with PVI's 'SNMP' line and lists their properties
-(if you are looking for a 'real' program consider to use [brsnmp](https://github.com/hilch/brsnmp) )
+
+### [set_ip_address.py](examples/set_ip_address.py)
+this example searches for a specific B&R plc in local network with PVI's 'SNMP' line and changes its IP address
+
 
 
