@@ -80,5 +80,7 @@ this example searches for B&R plc in local network with PVI's 'SNMP' line and li
 ### [set_ip_address.py](examples/set_ip_address.py)
 this example searches for a specific B&R plc in local network with PVI's 'SNMP' line and changes its IP address
 
+## Test environment
+Current test environment is AS4.1.17.113 / PVI 4.1.12 which can be [downloaded from B&R website](https://www.br-automation.com/en/downloads/software/automation-studio/automation-studio-41/automation-studio-v41/) and Python 3.8
 
 
