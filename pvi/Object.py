@@ -41,6 +41,7 @@ class PviObject():
         self._pviError = int(0)
         self._errorChanged = None
         self._debug = False
+        self._parent = parent
         if parent: # all objects but '@Pvi' have a parent
             self._pviConnection = parent._pviConnection
             self._pviConnection.link(self)
