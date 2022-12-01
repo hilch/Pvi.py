@@ -29,13 +29,13 @@ def callback_progress( percent):
     print( f'progress: {percent} %\r', end="")   
 
 
-def callback_uploaded( module : str, data ):
+def callback_uploaded( module : Module, data ):
     global run
     global uploadedLoggerModules
 
     print(f"{ module } uploaded, len={len(data)} !")
     # write content to file
-    filename = f'{module}.txt'
+    filename = f'{module.objectName}.txt'
     with open( filename, 'w') as f: 
         pprint(data, stream=f, indent = 4)
     print(f"{ filename } saved !")

@@ -42,7 +42,6 @@ class Module(PviObject):
         super().__init__( parent, 'POBJ_MODULE', name, **objectDescriptor)
         self._uploaded = None
         self._progress = None
-        self._moduleName = name
 
 
     def __repr__(self):
@@ -59,7 +58,7 @@ class Module(PviObject):
             if self._uploaded:
                 sig = inspect.signature(self._uploaded)
                 if len(sig.parameters) == 2:
-                    self._uploaded(self._moduleName, s.raw)
+                    self._uploaded(self, s.raw)
                 elif len(sig.parameters) == 1:
                     self._uploaded(s.raw)                      
         else:
@@ -93,7 +92,7 @@ class Module(PviObject):
             if self._uploaded:
                 sig = inspect.signature(self._uploaded)
                 if len(sig.parameters) == 2:
-                    self._uploaded(self._moduleName, entries)
+                    self._uploaded(self, entries)
                 elif len(sig.parameters) == 1:
                     self._uploaded(entries)      
         else:
@@ -146,7 +145,7 @@ class Module(PviObject):
             if self._uploaded:
                 sig = inspect.signature(self._uploaded)
                 if len(sig.parameters) == 2:
-                    self._uploaded(self._moduleName, entries)
+                    self._uploaded(self, entries)
                 elif len(sig.parameters) == 1:
                     self._uploaded(entries)                    
         else:
@@ -163,7 +162,7 @@ class Module(PviObject):
             if self._progress:
                 sig = inspect.signature(self._progress)
                 if len(sig.parameters) == 2:
-                    self._progress(self._moduleName, int(proceedingInfo.Percent))
+                    self._progress(self, int(proceedingInfo.Percent))
                 elif len(sig.parameters) == 1:                         
                     self._progress(int(proceedingInfo.Percent))
         else:
@@ -222,5 +221,3 @@ class Module(PviObject):
             if self._result:
                 raise PviError(self._result)           
                             
-
- 
