@@ -76,7 +76,7 @@ class Module(PviObject):
             logger = ET.fromstring(s) 
             entries = list()
             for entry in logger:
-                cols = {'Version','RecordId', 'EventId', 'AddDataSize', 'AddDataFormat', 'Severity', 'Info'}
+                cols = {'Version','RecordId', 'OriginRecordId', 'EventId', 'AddDataSize', 'AddDataFormat', 'Severity', 'Info'}
                 for c in cols:
                     try: # try to convert columns into integer values
                         value = int(entry.attrib[c])
