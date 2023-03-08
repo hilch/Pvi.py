@@ -36,11 +36,7 @@ class BrLoggerFile(BrFile):
         super().__init__(filename)
         if self._fileType != BrFileType.LOGGER_MODULE:
             raise TypeError(f'content is not a B&R logger module (Type is {self._fileType})')
-        self._BUFFER_START = 0xbc
-        self._bufferEnd = self._BUFFER_START + self.logDataLength - self.invalidLength
         self._BASE_OFFSET = 0xc0        
-        self._currentRow = 1
-
 
 
     ## offset 0x80: b'83 B9 57 2A 9C F3 60 00 83 B9 57 2A 9C F3 60 00' ??
@@ -114,25 +110,22 @@ class BrLoggerFile(BrFile):
         '''
         number of logger entries
         '''
-        return self.actIndex - self.refIndex + 1
+        return self.actIndex - self.refIndex
 
 
     def _readEntry(self) -> bytes:
         '''
         read and decode an entry
         '''
+        readOffset = self._entryOffset
         entry = bytearray()
         for _ in range(12): # read header
-            entry.append( self._content[self._readOffset] )
-            self._readOffset += 1
-            if self._readOffset >= self._bufferEnd:
-                self._readOffset = self._BUFFER_START
+            entry.append( self._content[readOffset] )
+            readOffset += 1
         recordId, lengthOfPrevious, lengthOfEntry = struct.unpack_from('<III', entry, 0) # decode header fields
         for _ in range(12,lengthOfEntry): # read complete entry
-            entry.append( self._content[self._readOffset] )
-            self._readOffset += 1
-            if self._readOffset >= self._bufferEnd:
-                self._readOffset = self._BUFFER_START
+            entry.append( self._content[readOffset] )
+            readOffset += 1
         info1, info2, time, nanosecond, severity, code, objectId, eventId, originId \
              = struct.unpack_from('<HHIIII36sII', entry, 0x14)
         time = datetime.fromtimestamp( time )
@@ -155,29 +148,47 @@ class BrLoggerFile(BrFile):
             binaryData = binaryData[binaryData.find(b'\x00')+1:]
 
         # entry[-8:] = ??
+        #print( f'{recordId}: {hex(self._entryOffset)}')
 
-        return BrLoggerFileEntry(
-                RecordID = recordId,
-                Time = time,
-                Nanosec= nanosecond,
-                ObjectID = objectId,
-                Severity = severity,
-                EventID= eventId,
-                OriginID = originId,
-                Code= code,
-                AsciiData = asciiData,
-                BinaryData = binaryData
-            )               
+        if self._entryOffset == self._BASE_OFFSET:
+            self._entryOffset = self._BASE_OFFSET - lengthOfPrevious + self.logDataLength - self.invalidLength
+        elif (self._entryOffset - lengthOfPrevious) < self._BASE_OFFSET:
+              self._entryOffset = self._entryOffset - lengthOfPrevious + self.logDataLength - self.invalidLength
+        else:  
+            self._entryOffset -= lengthOfPrevious # point to the previous entry
+
+        previousId = struct.unpack_from('<I', self._content[self._entryOffset:self._entryOffset+4], 0)[0] # decode header fields
+        if (previousId+1) == recordId: # check if previous Id is valid
+            return BrLoggerFileEntry(
+                    RecordID = int(recordId),
+                    Time = time,
+                    Nanosec= nanosecond,
+                    ObjectID = objectId,
+                    Severity = severity,
+                    EventID= eventId,
+                    OriginID = originId,
+                    Code= code,
+                    AsciiData = asciiData,
+                    BinaryData = binaryData
+                ) 
+        else:
+            return None              
 
     
     @property
     def entries(self) -> list:
-        self._readOffset = self.refOffset + self._BASE_OFFSET 
-        entries = list()
-        for _ in range(0, self.numberOfEntries ):
-            entries.append( self._readEntry() )
-            self._currentRow += 1
-        return entries
+        rows = 0
+        self._entryOffset = self.actOffset + self._BASE_OFFSET
+        self._lastOffset = self._entryOffset
+        l = list()
+        while True:
+            entry = self._readEntry() 
+            if entry:    
+                l.append( entry )
+                rows += 1
+            else:
+                break
+        return l
 
 
     @property
