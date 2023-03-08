@@ -34,19 +34,29 @@ class BrLoggerFile(BrFile):
     '''
     def __init__(self, filename: str):
         super().__init__(filename)
-        if self._fileType != BrFileType.LOGGER_MODULE:
+        if self.fileType != BrFileType.LOGGER_MODULE:
             raise TypeError(f'content is not a B&R logger module (Type is {self._fileType})')
-        self._BASE_OFFSET = 0xc0        
-
+        self.__entries = None
+        self.__BASE_OFFSET = 0xc0
+        self.__logDataLength = struct.unpack_from('<I', self._content, 0x90)[0] # uint32
+        self.__version = struct.unpack_from('<H', self._content, 0x94)[0] # uint16
+        self.__actIndex = struct.unpack_from('<I', self._content, 0x9c)[0] # uint32
+        self.__actOffset = struct.unpack_from('<I', self._content, 0xa0)[0] # uint32
+        self.__writeOffset = struct.unpack_from('<I', self._content, 0xa4)[0] # uint32
+        self.__refIndex = struct.unpack_from('<I', self._content, 0xa8)[0] # uint32
+        self.__refOffset = struct.unpack_from('<I', self._content, 0xac)[0] # uint32
+        self.__invalidLength = struct.unpack_from('<I', self._content, 0xb0)[0] # uint32
+        self.__offsetUtc = struct.unpack_from('<h', self._content, 0xb4)[0] # int16
+        self.__daylightSaving = struct.unpack_from('<H', self._content, 0xb6)[0] # uint16
 
     ## offset 0x80: b'83 B9 57 2A 9C F3 60 00 83 B9 57 2A 9C F3 60 00' ??
 
     @property
     def logDataLength(self) -> int:
         '''
-        logger length (bytes)
+        configured logger length (bytes)
         '''
-        return struct.unpack_from('<I', self._content, 0x90)[0] # uint32
+        return self.__logDataLength
 
 
     @property
@@ -54,55 +64,23 @@ class BrLoggerFile(BrFile):
         '''
         log format version
         '''
-        return struct.unpack_from('<H', self._content, 0x94)[0] # uint16
+        return self.__version
 
 
     @property
-    def actIndex(self) -> int:
+    def offsetUtc(self) -> int:
         '''
-        actual record id
+        offset to UTC in minutes
         '''
-        return struct.unpack_from('<I', self._content, 0x9c)[0] # uint32
+        return self.__offsetUtc
 
 
     @property
-    def actOffset(self) -> int:
+    def dst(self) -> bool:
         '''
-        actual offset
+        daylight saving time active ?
         '''
-        return struct.unpack_from('<I', self._content, 0xa0)[0] # uint32
-
-
-    @property
-    def writeOffset(self) -> int:
-        '''
-        write offset
-        '''
-        return struct.unpack_from('<I', self._content, 0xa4)[0] # uint32
-
-
-    @property
-    def refIndex(self) -> int:
-        '''
-        reference record id
-        '''
-        return struct.unpack_from('<I', self._content, 0xa8)[0] # uint32
-
-
-    @property
-    def refOffset(self) -> int:
-        '''
-        reference offset
-        '''
-        return struct.unpack_from('<I', self._content, 0xac)[0] # uint32
-
-
-    @property
-    def invalidLength(self) -> int:
-        '''
-        invalid length
-        '''
-        return struct.unpack_from('<I', self._content, 0xb0)[0] # uint32
+        return bool(self.__daylightSaving)
 
 
     @property
@@ -110,27 +88,38 @@ class BrLoggerFile(BrFile):
         '''
         number of logger entries
         '''
-        return self.actIndex - self.refIndex
+        return len(self.entries)
 
 
-    def _readEntry(self) -> bytes:
+    @property
+    def lowestRecordID(self) -> int:
+       '''
+       lowest ID contained in this logger
+       '''
+       return self.entries[-1].RecordID
+
+    @property
+    def highestRecordID(self) -> int:
+       '''
+       highest ID contained in this logger
+       '''       
+       return self.entries[0].RecordID
+
+
+    def __readEntry(self) -> bytes:
         '''
-        read and decode an entry
-        '''
-        readOffset = self._entryOffset
-        entry = bytearray()
-        for _ in range(12): # read header
-            entry.append( self._content[readOffset] )
-            readOffset += 1
-        recordId, lengthOfPrevious, lengthOfEntry = struct.unpack_from('<III', entry, 0) # decode header fields
-        for _ in range(12,lengthOfEntry): # read complete entry
-            entry.append( self._content[readOffset] )
-            readOffset += 1
-        info1, info2, time, nanosecond, severity, code, objectId, eventId, originId \
-             = struct.unpack_from('<HHIIII36sII', entry, 0x14)
-        time = datetime.fromtimestamp( time )
+        (internal) read and decode an entry
+        '''              
+        recordId, lengthOfPrevious, lengthOfEntry, lengthOfBinaryData = struct.unpack_from('<IIII', self._content[self.__entryOffset:self.__entryOffset+0x10], 0) # decode header fields
+        if recordId != (self.__lastRecordId - 1):
+            return None # end of logger
+        self.__lastRecordId = recordId # save for next call
+        entry = bytes(self._content[self.__entryOffset:self.__entryOffset+lengthOfEntry])
+        # entry[0x10:0x14] ?
+        info1, info2, time, nanosecond, severity, code, objectId, eventId, originId, binaryData = struct.unpack_from(f'<HHIIII36sII{lengthOfBinaryData}s', entry, 0x14)
+        time = datetime.utcfromtimestamp( time )
         microsecond, nanosecond = divmod(nanosecond,1000)
-        time += timedelta( microseconds= microsecond )
+        time += timedelta( microseconds = microsecond, minutes = self.__offsetUtc)
         if severity < 4:        
             severity = ('Success', 'Info', 'Warning', 'Error')[severity]
         else:
@@ -139,7 +128,7 @@ class BrLoggerFile(BrFile):
         if code == 0 and eventId != 0: # new logger format ?
             code = eventId & 0xffff        
 
-        binaryData =  bytes(entry[0x54:-8])
+#        binaryData =  entry[0x54:0x54+lengthOfBinaryData] #bytes(self._content[off+0x54:off+lengthOfEntry-8]) 
         asciiData = ''
         if info1 == 8 and info2 == 1: # binary data contains ASCII string -> remove trailing bytes
             asciiData = binaryData[:binaryData.find(b'\x00')].decode(encoding = 'utf-8', errors = 'ignore')
@@ -148,19 +137,16 @@ class BrLoggerFile(BrFile):
             binaryData = binaryData[binaryData.find(b'\x00')+1:]
 
         # entry[-8:] = ??
-        #print( f'{recordId}: {hex(self._entryOffset)}')
 
-        if self._entryOffset == self._BASE_OFFSET:
-            self._entryOffset = self._BASE_OFFSET - lengthOfPrevious + self.logDataLength - self.invalidLength
-        elif (self._entryOffset - lengthOfPrevious) < self._BASE_OFFSET:
-              self._entryOffset = self._entryOffset - lengthOfPrevious + self.logDataLength - self.invalidLength
+        if self.__entryOffset == self.__BASE_OFFSET:
+            self.__entryOffset = self.__BASE_OFFSET - lengthOfPrevious + self.logDataLength - self.__invalidLength
+        elif (self.__entryOffset - lengthOfPrevious) < self.__BASE_OFFSET:
+              self.__entryOffset = self.__entryOffset - lengthOfPrevious + self.logDataLength - self.__invalidLength
         else:  
-            self._entryOffset -= lengthOfPrevious # point to the previous entry
+            self.__entryOffset -= lengthOfPrevious # point to the previous entry
 
-        previousId = struct.unpack_from('<I', self._content[self._entryOffset:self._entryOffset+4], 0)[0] # decode header fields
-        if (previousId+1) == recordId: # check if previous Id is valid
-            return BrLoggerFileEntry(
-                    RecordID = int(recordId),
+        return BrLoggerFileEntry(
+                    RecordID = recordId,
                     Time = time,
                     Nanosec= nanosecond,
                     ObjectID = objectId,
@@ -171,24 +157,19 @@ class BrLoggerFile(BrFile):
                     AsciiData = asciiData,
                     BinaryData = binaryData
                 ) 
-        else:
-            return None              
+        
+
 
     
     @property
     def entries(self) -> list:
-        rows = 0
-        self._entryOffset = self.actOffset + self._BASE_OFFSET
-        self._lastOffset = self._entryOffset
-        l = list()
-        while True:
-            entry = self._readEntry() 
-            if entry:    
-                l.append( entry )
-                rows += 1
-            else:
-                break
-        return l
+        if self.__entries == None:
+            self.__entries = list()
+            self.__entryOffset = self.__actOffset + self.__BASE_OFFSET
+            self.__lastRecordId = self.__actIndex + 1    
+            while entry := self.__readEntry():  
+                self.__entries.append( entry )
+        return self.__entries
 
 
     @property
@@ -203,4 +184,5 @@ class BrLoggerFile(BrFile):
             
 
     def __repr__(self) -> str:
-        return f'BrLoggerFile, Entries: {self.numberOfEntries}, Length {self.logDataLength}, RecordId: {self.refIndex} to {self.actIndex}'            
+        return f'BrLoggerFile V{self.version}, Entries: {self.numberOfEntries}, Length {self.logDataLength}, RecordId: {self.lowestRecordID} to {self.highestRecordID}'            
+    

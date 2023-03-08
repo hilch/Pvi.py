@@ -58,23 +58,23 @@ class BrFile():
     base class for all *.br files
     '''
     def __init__(self, filename : str ):
-        self._name = os.path.basename(filename)
+        self.__name = os.path.basename(filename)
         with open(filename, 'rb') as f:
             self._content = f.read()
         magic_number = struct.unpack_from('>H', self._content, 0)[0]
         if magic_number != 0x2b97:
             raise TypeError('content is not a B&R module !')
         try:
-            self._fileType = BrFileType(self._content[2])
+            self.__fileType = BrFileType(self._content[2])
         except ValueError:
-            self._fileType = hex(self._content[2])
+            self.__fileType = hex(self._content[2])
 
     @property
     def fileType(self)-> BrFileType:
-        return self._fileType
+        return self.__fileType
 
     def __repr__(self) -> str:
-        return f'File ({str(self._fileType)})'
+        return f'File ({str(self.__fileType)})'
 
 
 
