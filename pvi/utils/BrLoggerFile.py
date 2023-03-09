@@ -116,7 +116,7 @@ class BrLoggerFile(BrFile):
         self.__lastRecordId = recordId # save for next call
         entry = bytes(self._content[self.__entryOffset:self.__entryOffset+lengthOfEntry])
         # entry[0x10:0x14] ?
-        info1, info2, time, nanosecond, severity, code, objectId, eventId, originId, binaryData = struct.unpack_from(f'<HHIIII36sII{lengthOfBinaryData}s', entry, 0x14)
+        info1, info2, time, nanosecond, severity, code, objectId, eventId, originId, binaryData = struct.unpack_from(f'<HHIIII36sii{lengthOfBinaryData}s', entry, 0x14)
         time = datetime.utcfromtimestamp( time )
         microsecond, nanosecond = divmod(nanosecond,1000)
         time += timedelta( microseconds = microsecond, minutes = self.__offsetUtc)
@@ -126,9 +126,7 @@ class BrLoggerFile(BrFile):
             severity = hex(severity)
         objectId = objectId[:objectId.find(b'\x00')].decode(encoding = 'utf-8', errors = 'ignore') 
         if code == 0 and eventId != 0: # new logger format ?
-            code = eventId & 0xffff        
-
-#        binaryData =  entry[0x54:0x54+lengthOfBinaryData] #bytes(self._content[off+0x54:off+lengthOfEntry-8]) 
+            code = eventId & 0xffff         
         asciiData = ''
         if info1 == 8 and info2 == 1: # binary data contains ASCII string -> remove trailing bytes
             asciiData = binaryData[:binaryData.find(b'\x00')].decode(encoding = 'utf-8', errors = 'ignore')
