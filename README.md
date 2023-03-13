@@ -64,7 +64,7 @@ this simple example creates a module on CPU by downloading a bytestream and chec
 this simple example creates a module on CPU by downloading a bytestream and afterwards uploads it again
 
 ### [modules3.py](examples/modules3.py) 
-in this exammple we search for BR files (*.br) in a folder and read the type their content
+in this exammple we search for BR files (*.br) in a folder and read the type of content
 
 ## Handling logger data
 
