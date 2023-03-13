@@ -63,8 +63,17 @@ this simple example creates a module on CPU by downloading a bytestream and chec
 ### [modules2.py](examples/modules2.py) (ANSL)
 this simple example creates a module on CPU by downloading a bytestream and afterwards uploads it again
 
-### [modules3.py](examples/modules3.py) (ANSL)
+### [modules3.py](examples/modules3.py) 
+in this exammple we search for BR files (*.br) in a folder and read the type their content
+
+## Handling logger data
+
+### [logger1.py](examples/logger1.py) (ANSL)
 this example uploads some loggers from CPU
+
+### [logger2.py](examples/logger2.py) 
+extract all logger from a systemdump container and save them as csv
+
 
 ## GUI
 ### [gui1.py](examples/gui1.py) (ANSL)

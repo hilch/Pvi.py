@@ -134,3 +134,4 @@ content.txt
 $arlogsys.txt
 $arlogusr.txt
 $fieldbus.txt
+*.csv
