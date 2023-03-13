@@ -166,8 +166,7 @@ class Connection():
         """
         handle other events
         """
-        self._result = PviReadResponse( wParam, None, 0 )                
-        print("self.Info.nType", responseInfo.nType)      
+        self._result = PviReadResponse( wParam, None, 0 )
 
     # ----------------------------------------------------------------------------------
     def doEvents(self):
@@ -230,16 +229,33 @@ class Connection():
                 if po:
                     po._eventProceeding( wParam, responseInfo ) 
                 else:
-                    raise ValueError("linkID not found !")                                         
+                    raise ValueError("linkID not found !")   
+            elif responseInfo.nType == POBJ_ACC_LN_XML_LOGM_DATA:
+                po = self._linkIDs.get(responseInfo.LinkID, None )
+                if po:
+                    po._eventUploadLogData( wParam, responseInfo, dataLen.value ) 
+                else:
+                    raise ValueError("linkID not found !") 
+            elif responseInfo.nType == POBJ_ACC_MOD_DATA:
+                po = self._linkIDs.get(responseInfo.LinkID, None )
+                if po:
+                    po._eventUploadModData( wParam, responseInfo, dataLen.value ) 
+                else:
+                    raise ValueError("linkID not found !")                                                                    
             elif responseInfo.nType == POBJ_EVENT_ERROR:
                 po = self._linkIDs.get(responseInfo.LinkID, None )
                 if po:
+                    if self._debug and responseInfo.ErrCode != 0:
+                        print( f'{repr(po)}: error {responseInfo.ErrCode}')
                     po._eventError( wParam, responseInfo )
                 else:
                     raise ValueError("linkID not found !")
             else:
                 self._eventOther( wParam, responseInfo )
-    
+                if self._debug:
+                    po = self.findObjectByLinkID(responseInfo.LinkID)
+                    print(f'{po.name} : nMode = {responseInfo.nMode}, nType = {responseInfo.nType}, ErrCode = {responseInfo.ErrCode}')                
+        
         if self._pviTrialTimeCheck:
             if datetime.datetime.now() - self._startTime > self._pviTrialTimeCheck:
                 raise PviError(12040)

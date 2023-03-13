@@ -1,0 +1,7 @@
+V0.03
+- uploading logger data
+- converting br files with logger data
+- extend signature of some callbacks
+- add property 'objectName' for all objects
+
+

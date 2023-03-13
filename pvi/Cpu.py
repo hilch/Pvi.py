@@ -35,10 +35,12 @@ class Cpu(PviObject):
             raise PviError(12009, self )                    
         super().__init__( parent, 'POBJ_CPU', name, **objectDescriptor) 
         self._downloaded = None
-        self._progress = None       
+        self._progress = None  
+  
 
     def __repr__(self):
         return f"Cpu( name={self._name}, linkID={self._linkID} )" 
+
 
     def _eventStatus( self, wParam, responseInfo ):
         """         
@@ -53,18 +55,28 @@ class Cpu(PviObject):
         self._result = PviWriteResponse( wParam )
         if self._result == 0:
             if self._downloaded:
-                self._downloaded()
+                sig = inspect.signature(self._downloaded)
+                if len(sig.parameters) == 0:
+                    self._downloaded()
+                elif len(sig.parameters == 1):
+                    self._downloaded(self)
         else:
             raise PviError(self._result, self)      
+
 
     def _eventProceeding( self, wParam, responseInfo : T_RESPONSE_INFO ):    
         proceedingInfo = T_PROCEEDING_INFO()
         self._result = PviReadResponse( wParam, byref(proceedingInfo), sizeof(proceedingInfo) )
         if self._result == 0:
             if self._progress:
-                self._progress(int(proceedingInfo.Percent))
+                sig = inspect.signature(self._progress)
+                if len(sig.parameters) == 1:
+                    self._progress(int(proceedingInfo.Percent))
+                elif len(sig.parameters) == 2:
+                    self._progress(self, int(proceedingInfo.Percent))                    
         else:
             raise PviError(self._result, self)   
+
 
     def warmStart(self) -> None:
         '''
@@ -76,6 +88,7 @@ class Cpu(PviObject):
         if self._result != 0:
             raise PviError(self._result, self)
 
+
     def coldStart(self) -> None:
         '''
         Cpu.coldStart() -> None
@@ -85,6 +98,7 @@ class Cpu(PviObject):
         self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
         if self._result != 0:
             raise PviError(self._result, self)
+
 
     def downloadModule(self, data : bytes, **kwargs ):
         '''
@@ -97,17 +111,15 @@ class Cpu(PviObject):
                MN - module name
                MV - module version
                LD - memory type e.g. 'Ram', 'Dram', 'Rom'
-               downloaded - callback() if module was downloaded
-               progress - callback(p) to show progress
+               downloaded - callback() or callback(Cpu) if module was downloaded
+               progress - callback(p) or callback (Cpu, p) to show progress
         '''
         if not(isinstance(data, bytes)):
             raise TypeError(inspect.currentframe().f_code.co_name + " - data: only bytes accepted !")
-            return
         if 'MT' not in kwargs:
             kwargs.update( { 'MT' : 'BRT' } )
         if 'MN' not in kwargs:
             raise KeyError( inspect.currentframe().f_code.co_name + " - argument 'MN' is missing !")
-            return            
 
         arguments = ''
         for key, value in kwargs.items():
@@ -172,7 +184,6 @@ class Cpu(PviObject):
         else:
             raise PviError(self._result, self)
             
-
 
 
      

@@ -22,6 +22,7 @@
 
 from ctypes import *
 import re
+import inspect
 from .include import *
 from .Error import PviError
 
@@ -32,6 +33,12 @@ class PviObject():
     the base of all objects
     """
     def __init__(self, parent , type, name, **objectDescriptor ):
+        '''
+        > parent: parent PviObject
+        > type:    POBJ_PVI, POBJ_LINE, POBJ_DEVICE, POBJ_STATION, POBJ_CPU, POBJ_MODULE, POBJ_TASK, POBJ_PVAR
+        > name: name of object in PVI's hierarchy
+        > objectDescriptor: CD=""
+        '''
         parentName = re.findall('(\S+)',parent.name)[0]+'/' if parent else ''
         self._name = f'{parentName}{name}'
         self._linkID = 0
@@ -41,6 +48,7 @@ class PviObject():
         self._pviError = int(0)
         self._errorChanged = None
         self._debug = False
+        self._parent = parent
         if parent: # all objects but '@Pvi' have a parent
             self._pviConnection = parent._pviConnection
             self._pviConnection.link(self)
@@ -65,6 +73,17 @@ class PviObject():
         '''
         return self._name
 
+    @property
+    def objectName(self) -> str:
+        '''
+        PviObject: object name
+        '''            
+        x = self._name.rpartition('/')
+        try:
+            return x[2]
+        except IndexError:
+            return self._name
+        
 
     @property
     def descriptor(self) -> str:
@@ -75,15 +94,17 @@ class PviObject():
 
     @property
     def errorChanged(self) -> callable:
-        '''
-        PviObject: callback for 'error changed'
-        '''
-        return self._errorChanged
+       '''
+       PviObject: set callback for 'error changed'
+       > cb: callback( PviObject, int ) or callback( int )
+       '''
+       return self._errorChanged
 
     @errorChanged.setter
     def errorChanged(self, cb : callable):
         '''
         PviObject: set callback for 'error changed'
+        > cb: callback( PviObject, int ) or callback( int )
         '''
         if callable(cb):
             self._errorChanged = cb
@@ -119,8 +140,12 @@ class PviObject():
         handle error events
         """      
         self._result = PviReadResponse( wParam, None, 0 )
-        if callable(self.errorChanged):
-            self.errorChanged(responseInfo.ErrCode)
+        if callable(self._errorChanged):
+            sig = inspect.signature(self._errorChanged)
+            if len(sig.parameters) == 1:
+                self._errorChanged(responseInfo.ErrCode)
+            elif len(sig.parameters) == 2:
+                self._errorChanged( self, responseInfo.ErrCode)
  
     def _createAndLink(self, pvi):
         descriptor_items = []
@@ -206,3 +231,5 @@ class PviObject():
             self._linkID = 0
             if self._result != 0:
                 raise PviError(self._result, self)
+
+    
