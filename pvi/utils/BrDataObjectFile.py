@@ -25,7 +25,7 @@ from .BrFile import *
 
 class BrDataObjectFile(BrFile):
     '''
-    class for a *.br file containing logger data
+    class for a *.br file containing data object
     '''
     def __init__(self, filename: str):
         super().__init__(filename)
