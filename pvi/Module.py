@@ -209,7 +209,7 @@ class Module(PviObject):
                 if self._result:
                     raise PviError(self._result)           
             elif self._result == 12058: # access not aupported ?
-                s = create_string_buffer(b'DN=10000000')
+                s = create_string_buffer(b'DN=100000') # maximum possible is undocumented.
                 self._result = PviReadArgumentRequest( self._linkID, POBJ_ACC_MOD_DATA, byref(s), sizeof(s), PVI_HMSG_NIL, SET_PVIFUNCTION, 0    ) 
                 if self._result:
                     raise PviError(self._result)           
