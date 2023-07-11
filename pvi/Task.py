@@ -60,6 +60,22 @@ class Task(PviObject):
         if self._result != 0:
             raise PviError(self._result, self)                  
 
+    @property
+    def variables(self):
+        """     
+        Task.variables : list of str
+        get a list of local variables
+        """
+        s = create_string_buffer(b'\000' * 65536)   
+        self._result = PviRead( self._linkID, POBJ_ACC_LIST_PVAR, None, 0, byref(s), sizeof(s) )
+        if( self._result == 0 ):
+            s = str(s, 'ascii').rstrip('\x00')
+            variables = [v.split(' ')[0] for v in s.split('\t')]
+            return variables
+        else:
+            raise PviError(self._result, self)
+
+
     def __repr__(self):
         return f"Task( name={self._name}, linkID={self._linkID} )"
 
