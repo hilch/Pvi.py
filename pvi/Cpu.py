@@ -30,6 +30,7 @@ from .Error import PviError
 
 # ----------------------------------------------------------------------------------
 class Cpu(PviObject):
+
     def __init__( self, parent, name, **objectDescriptor ):
         if parent._type != T_POBJ_TYPE.POBJ_DEVICE and parent._type != T_POBJ_TYPE.POBJ_STATION:
             raise PviError(12009, self )                    
@@ -145,13 +146,44 @@ class Cpu(PviObject):
     def modules(self):
         """     
         Cpu.modules : list of str
-        get a list a modules 
+        get a list of all modules 
         """
         s = create_string_buffer(b'\000' * 4096)   
         self._result = PviRead( self._linkID, POBJ_ACC_LIST_MODULE, None, 0, byref(s), sizeof(s) )
         if self._result == 0:
             s = str(s, 'ascii').rstrip('\x00')
             return s.split('\t')
+        else:
+            raise PviError(self._result, self)
+
+
+    @property
+    def tasks(self):
+        """     
+        Cpu.tasks : list of str
+        get a list of all tasks
+        """
+        s = create_string_buffer(b'\000' * 4096)   
+        self._result = PviRead( self._linkID, POBJ_ACC_LIST_TASK, None, 0, byref(s), sizeof(s) )
+        if self._result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+            return s.split('\t')
+        else:
+            raise PviError(self._result, self)
+
+
+    @property
+    def variables(self):
+        """     
+        Cpu.variables : list of str
+        get a list of global variables
+        """
+        s = create_string_buffer(b'\000' * 65536)   
+        self._result = PviRead( self._linkID, POBJ_ACC_LIST_PVAR, None, 0, byref(s), sizeof(s) )
+        if( self._result == 0 ):
+            s = str(s, 'ascii').rstrip('\x00')
+            variables = [v.split(' ')[0] for v in s.split('\t')]
+            return variables
         else:
             raise PviError(self._result, self)
 
