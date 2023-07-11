@@ -53,13 +53,30 @@ shows reading and writing of basic data types
 ## Create Lists of objects
 ### [list_objects1.py](examples/list_objects1.py) (ANSL)
 this example lists objects with 'global scope' (modules, task and global variables)
-from 'coffe machine' cpu and returns status information about them
+from 'coffee machine' cpu and returns status information about them
 
 ### [list_objects2.py](examples/list_objects2.py) (ANSL)
 this example lists global and local variables and their content
 
 ### [list_objects3.py](examples/list_objects3.py) (ANSL)
 this example lists all local variables of a specific task and their content
+
+### [list_objects4.py](examples/list_objects4.py) (INA2000)
+this example lists objects with 'global scope' (modules, task and global variables)
+from 'coffee machine' cpu and returns status information about them
+
+This is similar to list_objects1.py but since we use a control running < AR 4.x ANSL is not available here and we change to good old INA2000
+
+### [list_objects5.py](examples/list_objects5.py) (INA2000)
+this example lists global and local variables and their content
+
+This is similar to list_objects2.py but since we use a control running < AR 4.x ANSL is not available here and we change to good old INA2000
+
+### [list_objects6.py](examples/list_objects6.py) (INA2000)
+this example lists all local variables of a specific task and their content
+
+This is similar to list_objects3.py but since we use a control running < AR 4.x ANSL is not available here and we change to good old INA2000
+
 
 ## Handling modules
 ### [modules1.py](examples/modules1.py) (ANSL)
@@ -78,6 +95,11 @@ this example uploads some loggers from CPU
 
 ### [logger2.py](examples/logger2.py) 
 extract all logger from a systemdump container and save them as csv
+
+### [logger3.py](examples/logger3.py) (INA2000)
+this example uploads some loggers from CPU
+
+This is similar to logger1.py but since we use a control running < AR 4.x ANSL is not available here and we change to good old INA2000
 
 
 ## GUI
