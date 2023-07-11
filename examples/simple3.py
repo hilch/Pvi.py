@@ -1,13 +1,14 @@
 # simple3.py
 # An example that shows the application possibilities of https://github.com/hilch/Pvi.py
 #
-# PLC counterpart is B&R's 'coffee machine' running on ArSim 
+# PLC counterpart is B&R's 'coffee machine' running on PP65 with AR 3.x
 # as provided with Automation Studio 4.1.17.113 (which
 # can be downloaded free of charge from https://www.br-automation.com)
 #
 # this simple example just registers a variable for reading and another
 # for writing. In fact we switch on the 'coffee machine' and watch its temperature ...
-# This is similar to simple2.py but we use a control running AR 3.x.
+#
+# This is similar to simple2.py but since we use a control running < AR 4.x
 # ANSL is not available here and we change to good old INA2000
 
 
