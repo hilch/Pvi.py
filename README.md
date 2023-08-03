@@ -101,6 +101,10 @@ this example uploads some loggers from CPU
 
 This is similar to logger1.py but since we use a control running < AR 4.x ANSL is not available here and we change to good old INA2000
 
+## Handling profiler data
+
+### [profiler1.py](examples/profiler1.py)
+extract all profiler data from a systemdump container and save it to csv
 
 ## GUI
 ### [gui1.py](examples/gui1.py) (ANSL)
