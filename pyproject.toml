@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pvipy"
-version = "0.4.0"
+dynamic = ["version"]
 authors = [
   { name="Christoph Hilchenbach" },
 ]
@@ -16,6 +16,12 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: Microsoft :: Windows",
 ]
+
+[tool.hatch.build.targets.wheel]
+only-include = ["pvi"]
+
+[tool.hatch.version]
+path = "pvi/__about__.py"
 
 [project.urls]
 "Homepage" = "https://github.com/hilch/Pvi.py"
