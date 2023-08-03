@@ -1,10 +1,6 @@
 # logger2.py
 # An example that shows the application possibilities of https://github.com/hilch/Pvi.py
 #
-# PLC counterpart is B&R's 'coffee machine' running on ArSim 
-# as provided with Automation Studio 4.1.17.113 (which
-# can be downloaded free of charge from https://www.br-automation.com)
-#
 # extract all logger from a systemdump container and save them as csv.
 #
 
