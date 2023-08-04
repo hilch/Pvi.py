@@ -27,6 +27,7 @@ import struct
 
 @unique
 class BrFileType(Enum):
+    UNKNOWN = 0
     CYCLIC_RESOURCE = 0x11
     SYSTEM_OBJECT = 0x12
     IDLE_TIME_OBJECT = 0x13
@@ -51,7 +52,10 @@ class BrFileType(Enum):
     TEXT_CONFIG = 0x88
     TC_DATA = 0xd1
     UNIT_DEFINITION_MODULE = 0xd2
-
+    
+    @classmethod
+    def _missing_(cls, value):
+        return BrFileType.UNKNOWN
 
 class BrFile():
     '''
@@ -61,20 +65,18 @@ class BrFile():
         self.__name = os.path.basename(filename)
         with open(filename, 'rb') as f:
             self._content = f.read()
-        magic_number = struct.unpack_from('>H', self._content, 0)[0]
-        if magic_number != 0x2b97:
+        magicNumber, self._fileType, self._subType, self._fileSize  = struct.unpack_from('>HBB10xI', self._content, 0) # big-endian
+        if magicNumber != 0x2b97:
             raise TypeError('content is not a B&R module !')
-        try:
-            self.__fileType = BrFileType(self._content[2])
-        except ValueError:
-            self.__fileType = hex(self._content[2])
+
 
     @property
-    def fileType(self)-> BrFileType:
-        return self.__fileType
+    def fileType(self):
+        return BrFileType(self._fileType)
+
 
     def __repr__(self) -> str:
-        return f'File ({str(self.__fileType)})'
+        return f'File ({str(self._fileType)})'
 
 
 

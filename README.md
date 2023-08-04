@@ -104,6 +104,9 @@ This is similar to logger1.py but since we use a control running < AR 4.x ANSL i
 ## Handling profiler data
 
 ### [profiler1.py](examples/profiler1.py)
+extract all profiler data *.pd file and save it to csv
+
+### [profiler2.py](examples/profiler2.py)
 extract all profiler data from a systemdump container and save it to csv
 
 ## GUI

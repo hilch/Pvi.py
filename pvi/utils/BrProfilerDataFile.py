@@ -26,14 +26,15 @@ import struct
 from enum import IntEnum
 from .BrFile import *
 
-BrProfilerEvent = namedtuple('ProfilerEvent', [ 'microseconds', 'objectIdent', 'objectName', 'event', 'eventDescription'])
+BrProfilerEvent = namedtuple('BrProfilerEvent', [ 'microseconds', 'objectIdent', 'objectName', 'event', 'eventDescription'])
 
 class BrProfilerObjectType(IntEnum):
 	UNKNOWN = 0
-	TASK_CLASS = 1
-	CYCLIC_TASK = 2
-	SYSTEM_TASK = 3
-	INTERRUPT_VECTOR = 4
+	LIBRARY_FUNCTION = 1
+	TASK_CLASS = 2
+	CYCLIC_TASK = 3
+	SYSTEM_TASK = 4
+	INTERRUPT_VECTOR = 5
 
 
 BrCyclicObjectEvents = {
@@ -73,11 +74,12 @@ class BrProfilerDataFile(BrFile):
 	class for a *.br file containing profiler data
 	'''
 	SIZEOF_RECORD_ENTRY = 16
-	OFFSET_TASKCLASS_ENTRY = 0x1cc
+	SIZEOF_LIBRARY_FUNCTION_ENTRY = 28
 	SIZEOF_TASKCLASS_ENTRY = 70
 	OFFSET_OBJECT_ENTRY = 0x442
 	SIZEOF_OBJECT_ENTRY = 62
 	SIZEOF_SYSTEMOBJECT_ENTRY = 70
+	MIN_SIZE_INTERRUPT_VECTOR = 32
 
 	def __init__(self, filename: str):
 		super().__init__(filename)
@@ -88,20 +90,33 @@ class BrProfilerDataFile(BrFile):
 		self.__maxSize = struct.unpack_from('<I', self._content, 0xa4)[0] # uint32 maximal size of profiler data object
 		self.__additionalDatasizePerEntry = struct.unpack_from('<I', self._content, 0xa8)[0] # uint32
 		self.__bufferForCreatedTask = struct.unpack_from('<I', self._content, 0xac)[0] # uint32		
-		self.__bufferForCreatedUserTask = struct.unpack_from('<I', self._content, 0xbc)[0] # uint32				
-		self.__arversion = str(self._content[0x11c:0x11e], encoding = 'ascii') + '.' \
-					+ str(self._content[0x11e:0x120], encoding = 'ascii')
-		self.__bridcode = hex(struct.unpack_from('<I', self._content, 0x120)[0]) # uint32
-		self.__firstRecordAtOffset = struct.unpack_from('<I', self._content, 0x124)[0] # uint32
-		#self.__lastRecordAtOffset = struct.unpack_from('<I', self._content, 0x128)[0] # uint32
-		self.__tickFrequencyMhz = struct.unpack_from('<I', self._content, 0x12c)[0] # uint32
-		year, month, day, _ , hour, minute, second  = struct.unpack_from('<HBBBBBB', self._content, 0x130)
+		self.__bufferForCreatedUserTask = struct.unpack_from('<I', self._content, 0xbc)[0] # uint32
+		head = 0x116
+		# optional library functions
+		libraryFunctions = bytearray()
+		while struct.unpack_from('<H', self._content, head)[0] != 0:
+			c = self._content[head]
+			libraryFunctions.append( self._content[head])
+			head +=1
+		if len(libraryFunctions) > 0:
+			head +=1
+			self.__libraryFunctions = str(libraryFunctions, 'ascii').split('\0')
+			del libraryFunctions
+		self.__sgType = 'SG' + str(struct.unpack_from('<B', self._content, head+2)[0])
+		self.__arversion = str(self._content[head+6:head+8], encoding = 'ascii') + '.' \
+					+ str(self._content[head+8:head+10], encoding = 'ascii')
+		self.__bridcode = hex(struct.unpack_from('<I', self._content, head+10)[0]) # uint32
+		self.__firstRecordAtOffset = struct.unpack_from('<I', self._content, head+14)[0] # uint32
+		#self.__lastRecordAtOffset = struct.unpack_from('<I', self._content, head+18)[0] # uint32
+		self.__tickFrequencyMhz = struct.unpack_from('<I', self._content, head+22)[0] # uint32
+		year, month, day, _ , hour, minute, second  = struct.unpack_from('<HBBBBBB', self._content, head+26)
 		self.__profilingTimestamp = datetime( year, month, day, hour, minute, second)
-		self.__noOfCyclicTasks = struct.unpack_from('<I', self._content, 0x156)[0] # uint32
-		self.__noOfSystemTasks = struct.unpack_from('<I', self._content, 0x15e)[0] # uint32		
-		self.__profiledTargetType = str(self._content[0x16a:0x179], encoding='ascii').rstrip('\x00')
+		self.__noOfCyclicTasks = struct.unpack_from('<I', self._content, head+64)[0] # uint32
+		self.__noOfSystemTasks = struct.unpack_from('<I', self._content, head+72)[0] # uint32		
+		self.__profiledTargetType = str(self._content[head+84:head+99], encoding='ascii').rstrip('\x00')
 		self.__countEntries = int(self.__maxSize / (__class__.SIZEOF_RECORD_ENTRY + self.__additionalDatasizePerEntry))
 		self.__systemTick = 1 / (self.__tickFrequencyMhz)
+		self.__offsetObjectEntry = head + 0xb6
 		self.__objects = None
 		self.__entries = None
 
@@ -110,6 +125,7 @@ class BrProfilerDataFile(BrFile):
 	def info(self) -> dict:
 		return({
 			"startDateOfProfiling" : self.__profilingTimestamp,
+			"sg" : self.__sgType,
 			"profiledTarget" : self.__profiledTargetType,
 			"targetIdCode"   : self.__bridcode,
 			"tickFrequencyMhz"  : self.__tickFrequencyMhz,
@@ -125,10 +141,18 @@ class BrProfilerDataFile(BrFile):
 	@property
 	def objects(self) -> dict:
 		if not( self.__objects):
+			offset = self.__offsetObjectEntry
 			self.__objects = dict()
+			## dummy entries for library functions
+			for n in range( len(self.__libraryFunctions) ):
+				ident, nameIndex = struct.unpack_from('<I20xI', self._content, offset)
+				fname = self.__libraryFunctions[nameIndex]
+				print(ident,nameIndex, fname)
+				self.__objects.update( { ident : { 'type' : BrProfilerObjectType.LIBRARY_FUNCTION , 
+				      		'name' : fname } } )				
+				offset += __class__.SIZEOF_LIBRARY_FUNCTION_ENTRY
+
 			# add task classes
-			offset = __class__.OFFSET_TASKCLASS_ENTRY
-			self.__taskClasses = list()
 			for n in range(9):
 				ident, cycleTime, toleranceTime, prio, name = struct.unpack_from('<I20xIII34s', self._content, offset)
 				name = str(name, 'ascii').rstrip('\x00')
@@ -137,8 +161,7 @@ class BrProfilerDataFile(BrFile):
 				      											'toleranceTime' : toleranceTime, 'objectPriority' : objectPriority } })
 				offset += __class__.SIZEOF_TASKCLASS_ENTRY
 
-			# add cyclic tasks
-			offset = __class__.OFFSET_OBJECT_ENTRY			
+			# add cyclic tasks	
 			for n in range(self.__noOfCyclicTasks):
 				ident, taskclass, name = struct.unpack_from('<I20xI34s', self._content, offset)
 				if ident:
@@ -159,12 +182,12 @@ class BrProfilerDataFile(BrFile):
 
 			#add interrupt vectors
 			n = 0
-			while offset < self.__offsetRecords - 32:
+			while offset < self.__offsetRecords - __class__.MIN_SIZE_INTERRUPT_VECTOR:
 				n += 1
 				if n == 224:
 					n = n
 				ident, interruptNr, length = struct.unpack_from('<I20xII', self._content, offset)
-				offset += 32
+				offset += __class__.MIN_SIZE_INTERRUPT_VECTOR
 				if ident != 0:
 					name = bytearray()
 					if length > 0:
