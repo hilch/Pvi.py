@@ -94,7 +94,9 @@ in this exammple we search for BR files (*.br) in a folder and read the type of 
 this example uploads some loggers from CPU
 
 ### [logger2.py](examples/logger2.py) 
-extract all logger from a systemdump container and save them as csv
+extract all logger from a systemdump container and save them as csv.
+Handling logger files is still beta since the file format is not public.
+The known structure was found out by reverse engineering.
 
 ### [logger3.py](examples/logger3.py) (INA2000)
 this example uploads some loggers from CPU
@@ -102,6 +104,9 @@ this example uploads some loggers from CPU
 This is similar to logger1.py but since we use a control running < AR 4.x ANSL is not available here and we change to good old INA2000
 
 ## Handling profiler data
+
+handling profiler files is still beta since the file format is not public.
+The known structure was found out by reverse engineering.
 
 ### [profiler1.py](examples/profiler1.py)
 extract all profiler data *.pd file and save it to csv
