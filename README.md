@@ -3,7 +3,7 @@
 [![Made For B&R](https://github.com/hilch/BandR-badges/blob/main/Made-For-BrAutomation.svg)](https://www.br-automation.com)
 
 # Pvi.py
-Python wrapper for [B&amp;R Pvi (process visualization interface)](https://www.br-automation.com/en/products/software/automation-software/automation-netpvi/).
+Python wrapper for [B&amp;R PVI (process visualization interface)](https://www.br-automation.com/en/products/software/automation-software/automation-netpvi/).
 
 In times of more modern protocols like OPC-UA, this may seem a bit old-fashioned. 
 But PVI has some hidden strengths and is also very versatile. 
