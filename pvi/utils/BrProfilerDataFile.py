@@ -36,13 +36,18 @@ class BrProfilerObjectType(IntEnum):
 	SYSTEM_TASK = 4
 	INTERRUPT_VECTOR = 5
 
+BrLibraryFunctionEvents = {
+	0x03000000 : 'library function started',
+	0x03000001 : 'library function finished'
+}
 
-BrCyclicObjectEvents = {
+
+BrCyclicTaskEvents = {
 	0x02000000 : 'cyclic task started',
 	0x02000001 : 'cyclic task finished'
 }
 
-BrTaskClassObjectEvents = {
+BrTaskClassEvents = {
 	0x1e000000 : 'taskclass started',
 	0x1e000001 : 'taskclass stopped',
 	0x1e000001 : 'input scheduler finished',
@@ -61,7 +66,8 @@ BrSystemObjectEvents = {
 	0x00fcfc02 : 'TcIdleFiller is now running',
 	0x01000000 : 'system task started',
 	0x01000001 : 'system task stopped',
-	0x00212102 : 'system task is now running'
+	0x00212102 : 'system task is now running',
+	0x11000001 : 'system task deleted'
 }
 
 BrInterruptHandlerEvents = {
@@ -93,15 +99,14 @@ class BrProfilerDataFile(BrFile):
 		self.__bufferForCreatedUserTask = struct.unpack_from('<I', self._content, 0xbc)[0] # uint32
 		head = 0x116
 		# optional library functions
-		libraryFunctions = bytearray()
+		libraryFunctionsList = bytearray()
 		while struct.unpack_from('<H', self._content, head)[0] != 0:
 			c = self._content[head]
-			libraryFunctions.append( self._content[head])
+			libraryFunctionsList.append( self._content[head])
 			head +=1
-		if len(libraryFunctions) > 0:
+		if len(libraryFunctionsList) > 0:
 			head +=1
-			self.__libraryFunctions = str(libraryFunctions, 'ascii').split('\0')
-			del libraryFunctions
+			libraryFunctionsList = str(libraryFunctionsList, 'ascii').split('\0')
 		self.__sgType = 'SG' + str(struct.unpack_from('<B', self._content, head+2)[0])
 		self.__arversion = str(self._content[head+6:head+8], encoding = 'ascii') + '.' \
 					+ str(self._content[head+8:head+10], encoding = 'ascii')
@@ -115,9 +120,71 @@ class BrProfilerDataFile(BrFile):
 		self.__noOfSystemTasks = struct.unpack_from('<I', self._content, head+72)[0] # uint32		
 		self.__profiledTargetType = str(self._content[head+84:head+99], encoding='ascii').rstrip('\x00')
 		self.__countEntries = int(self.__maxSize / (__class__.SIZEOF_RECORD_ENTRY + self.__additionalDatasizePerEntry))
-		self.__systemTick = 1 / (self.__tickFrequencyMhz)
+		self.__systemTick = 1000 / (self.__tickFrequencyMhz)
 		self.__offsetObjectEntry = head + 0xb6
-		self.__objects = None
+
+		# now get the profiled objects:
+		self.__objectTypes = dict()
+		# 1. optional library functions
+		self.__libraryFunctions = dict()
+		offset = self.__offsetObjectEntry
+		# read the dummy entries for library functions
+		for n in range( len(libraryFunctionsList) ):
+			ident, nameIndex = struct.unpack_from('<I20xI', self._content, offset)
+			fname = libraryFunctionsList[nameIndex]
+			self.__libraryFunctions.update( { ident : { 'name' : fname } } )
+			self.__objectTypes.update( { -ident : BrProfilerObjectType.LIBRARY_FUNCTION } ) # use negative ident since lib.func. use their own counting
+			offset += __class__.SIZEOF_LIBRARY_FUNCTION_ENTRY
+
+
+		self.__objectTypes = dict()
+		# 2. task classes
+		self.__taskClasses = dict()
+		for n in range(9):
+			ident, cycleTime, toleranceTime, prio, name = struct.unpack_from('<I20xIII34s', self._content, offset)
+			name = str(name, 'ascii').rstrip('\x00')
+			objectPriority = 255- prio
+			self.__taskClasses.update( { ident : { 'name' : name, 'cycleTime' : cycleTime, 'toleranceTime' : toleranceTime, 'objectPriority' : objectPriority } })
+			self.__objectTypes.update( { ident : BrProfilerObjectType.TASK_CLASS } )
+			offset += __class__.SIZEOF_TASKCLASS_ENTRY			
+
+		# 3. cyclic tasks	
+		self.__cyclicTasks = dict()
+		for n in range(self.__noOfCyclicTasks):
+			ident, taskclass, name = struct.unpack_from('<I20xI34s', self._content, offset)
+			if ident:
+				name = str(name, 'ascii').rstrip('\x00')
+				self.__cyclicTasks.update( { ident : { 'name' : name, 'taskClass' : taskclass } } )
+				self.__objectTypes.update( { ident : BrProfilerObjectType.CYCLIC_TASK } )
+			offset += __class__.SIZEOF_OBJECT_ENTRY
+
+		# 4. system tasks
+		self.__systemTasks = dict()
+		for n in range(self.__noOfSystemTasks):
+			ident, prio, stackSize, freeStack, name = struct.unpack_from('<I20xIII34s', self._content, offset)
+			if ident:
+				name = str(name, 'ascii').rstrip('\x00')
+				objectPriority = 255 - prio
+				self.__systemTasks.update( { ident : { 'name' : name, 'objectPriority' : objectPriority, 'stackSize' : stackSize, 'freeStack' : freeStack} } )
+				self.__objectTypes.update( { ident : BrProfilerObjectType.SYSTEM_TASK } )				
+			offset += __class__.SIZEOF_SYSTEMOBJECT_ENTRY
+
+		# 3. interrupt handler
+		self.__interruptHandler = dict()
+		while offset < self.__offsetRecords - __class__.MIN_SIZE_INTERRUPT_VECTOR:
+			ident, interruptNr, length = struct.unpack_from('<I20xII', self._content, offset)
+			offset += __class__.MIN_SIZE_INTERRUPT_VECTOR
+			if ident != 0:
+				name = bytearray()
+				if length > 0:
+					name = self._content[offset:offset+length]
+					offset += length
+				name = f'Interrupt {interruptNr} ({str( name, "ascii")})'
+				self.__interruptHandler.update( { ident : { 'name' : name, 'interrupt' : interruptNr } } )
+				self.__objectTypes.update( { ident : BrProfilerObjectType.INTERRUPT_VECTOR } )				
+			else:
+				break
+
 		self.__entries = None
 
 
@@ -139,68 +206,26 @@ class BrProfilerDataFile(BrFile):
 
 
 	@property
-	def objects(self) -> dict:
-		if not( self.__objects):
-			offset = self.__offsetObjectEntry
-			self.__objects = dict()
-			## dummy entries for library functions
-			for n in range( len(self.__libraryFunctions) ):
-				ident, nameIndex = struct.unpack_from('<I20xI', self._content, offset)
-				fname = self.__libraryFunctions[nameIndex]
-				print(ident,nameIndex, fname)
-				self.__objects.update( { ident : { 'type' : BrProfilerObjectType.LIBRARY_FUNCTION , 
-				      		'name' : fname } } )				
-				offset += __class__.SIZEOF_LIBRARY_FUNCTION_ENTRY
-
-			# add task classes
-			for n in range(9):
-				ident, cycleTime, toleranceTime, prio, name = struct.unpack_from('<I20xIII34s', self._content, offset)
-				name = str(name, 'ascii').rstrip('\x00')
-				objectPriority = 255- prio
-				self.__objects.update( { ident : { 'type' : BrProfilerObjectType.TASK_CLASS, 'ident' : ident, 'name' : name, 'cycleTime' : cycleTime, 
-				      											'toleranceTime' : toleranceTime, 'objectPriority' : objectPriority } })
-				offset += __class__.SIZEOF_TASKCLASS_ENTRY
-
-			# add cyclic tasks	
-			for n in range(self.__noOfCyclicTasks):
-				ident, taskclass, name = struct.unpack_from('<I20xI34s', self._content, offset)
-				if ident:
-					name = str(name, 'ascii').rstrip('\x00')
-					self.__objects.update( { ident : { 'type' : BrProfilerObjectType.CYCLIC_TASK , 'name' : name, 'taskClass' : taskclass } } )
-				offset += __class__.SIZEOF_OBJECT_ENTRY
-			#offset += self.___bufferForCreatedUserTask * __class__.SIZEOF_OBJECT_ENTRY
-
-			# add system tasks
-			for n in range(self.__noOfSystemTasks):
-				ident, prio, stackSize, freeStack, name = struct.unpack_from('<I20xIII34s', self._content, offset)
-				if ident:
-					name = str(name, 'ascii').rstrip('\x00')
-					objectPriority = 255 - prio
-					self.__objects.update( { ident : { 'type' : BrProfilerObjectType.SYSTEM_TASK, 'name' : name, 
-				       				'objectPriority' : objectPriority, 'stackSize' : stackSize, 'freeStack' : freeStack} } )
-				offset += __class__.SIZEOF_SYSTEMOBJECT_ENTRY
-
-			#add interrupt vectors
-			n = 0
-			while offset < self.__offsetRecords - __class__.MIN_SIZE_INTERRUPT_VECTOR:
-				n += 1
-				if n == 224:
-					n = n
-				ident, interruptNr, length = struct.unpack_from('<I20xII', self._content, offset)
-				offset += __class__.MIN_SIZE_INTERRUPT_VECTOR
-				if ident != 0:
-					name = bytearray()
-					if length > 0:
-						name = self._content[offset:offset+length]
-						offset += length
-					name = f'Interrupt {interruptNr} ({str( name, "ascii")})'
-					self.__objects.update( { ident : { 'type' : BrProfilerObjectType.INTERRUPT_VECTOR, 'name' : name, 'interrupt' : interruptNr } } )
-				else:
-					break
-
-		return self.__objects	
+	def libraryFunctions(self) -> dict:
+		return self.__libraryFunctions	
 	
-	
+
+	@property
+	def taskClasses(self) -> dict:
+		return self.__taskClasses
+
+	@property
+	def cyclicTasks(self) -> dict:
+		return self.__cyclicTasks
+
+	@property
+	def systemTasks(self) -> dict:
+		return self.__systemTasks
+
+	@property
+	def interruptHandler(self) -> dict:
+		return self.__interruptHandler
+
 
 	@property
 	def entries(self) -> list:
@@ -214,21 +239,39 @@ class BrProfilerDataFile(BrFile):
 				if not(startticks):
 					startticks = ticks
 				micros = (ticks-startticks) * self.__systemTick
-				object = self.objects.get( objectIdent, None )
+
 				objectName = ''
 				eventDescription = ''
-				if n == 13:
-					n = n
-				if object:
+
+				if event in BrLibraryFunctionEvents and objectIdent in self.__libraryFunctions:
+					object = self.__libraryFunctions[objectIdent]
 					objectName = object['name']
-					if object['type'] == BrProfilerObjectType.CYCLIC_TASK:
-						eventDescription = BrCyclicObjectEvents.get(event, '')
-					elif object['type'] == BrProfilerObjectType.TASK_CLASS:
-						eventDescription = BrTaskClassObjectEvents.get(event, '')
-					elif object['type'] == BrProfilerObjectType.SYSTEM_TASK:
-						eventDescription = BrSystemObjectEvents.get(event, '')
-					elif object['type']	== BrProfilerObjectType.INTERRUPT_VECTOR:
-						eventDescription = BrInterruptHandlerEvents.get(event, '')
+					eventDescription = BrLibraryFunctionEvents[event]
+
+				else:
+					objectType = self.__objectTypes.get(objectIdent, BrProfilerObjectType.UNKNOWN )
+					if objectType == BrProfilerObjectType.UNKNOWN:
+						objectName = 'Unknown Object'
+					elif objectType == BrProfilerObjectType.TASK_CLASS:
+						object = self.__taskClasses[objectIdent]
+						objectName = object['name']
+						eventDescription = BrTaskClassEvents.get( event, '' )
+					elif objectType == BrProfilerObjectType.CYCLIC_TASK:
+						object = self.__cyclicTasks[objectIdent]
+						objectName = object['name']
+						eventDescription = BrCyclicTaskEvents.get( event, '' )
+					elif objectType == BrProfilerObjectType.SYSTEM_TASK:
+						object = self.__systemTasks[objectIdent]
+						objectName = object['name']
+						eventDescription = BrSystemObjectEvents.get( event, '' )
+					elif objectType == BrProfilerObjectType.INTERRUPT_VECTOR:
+						object = self.__interruptHandler[objectIdent]
+						objectName = object['name']
+						eventDescription = BrInterruptHandlerEvents.get( event, '' ) 
+					else:
+						raise ValueError("Unknown profiler object type")
+
+
 				self.__entries.append( BrProfilerEvent( micros, objectIdent, objectName, event, eventDescription) )
 				if offset >= maxOffset:
 					offset = self.__offsetRecords

@@ -1,6 +1,6 @@
 # test against 'coffee machine' in AS 4.1.17.113 SP
 import sys
-sys.path.append('C:\\projects\Pvi.py')
+sys.path.append('C:\\projects\\Pvi.py')
 
 from time import sleep
 import hashlib
@@ -22,7 +22,7 @@ def cpuErrorChanged( error : int):
         # read content
         allObjects = cpu.externalObjects
 
-
+        dataType = None
         tasks = dict()
         for taskName in ['mainlogic', 'feeder', 'conveyor', 'brewing', 'heating', 'visCtrl','visAlarm', 'visTrend' ] :
             task = Task( cpu, taskName )
@@ -30,6 +30,7 @@ def cpuErrorChanged( error : int):
             variables = list()                    
             for variableName in variableNames:
                 variable = Variable(task, variableName)
+
                 try:
                     dataType = variable.dataType
                     value = variable.value

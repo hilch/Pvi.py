@@ -38,8 +38,16 @@ with tempfile.TemporaryDirectory() as t:
                 pp = PrettyPrinter( indent = 4, stream = f )
                 print( dataFileName,  '\n\nSummary:\n', file = f)
                 pp.pprint( profilerData.info )
-                print( '\n\nObjects:\n', file = f )
-                pp.pprint( profilerData.objects )                
+                print( '\n\ntask classes:\n', file = f )
+                pp.pprint( profilerData.taskClasses )                
+                print( '\n\ncyclic tasks:\n', file = f )
+                pp.pprint( profilerData.cyclicTasks )                
+                print( '\n\nsystem tasks:\n', file = f )
+                pp.pprint( profilerData.systemTasks )                
+                print( '\n\ninterrupt handler:\n', file = f )
+                pp.pprint( profilerData.interruptHandler )                
+                print( '\n\nprofiled library functions:\n', file = f )
+                pp.pprint( profilerData.libraryFunctions )                 
                 
                 
             with open(f'{dataFileName}.csv', 'w', newline = '') as f: 
