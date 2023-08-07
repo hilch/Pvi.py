@@ -1,11 +1,15 @@
 # test against 'coffee machine' in AS 4.1.17.113 SP
+from pathlib import Path
+import time
 import sys
-sys.path.append('C:\\projects\\Pvi.py')
-
-from time import sleep
 import hashlib
-from pvi import *
 
+pviPath = str(Path(__file__).parents[1])
+cwd = str(Path(__file__).parents[0])
+
+sys.path.append( pviPath )
+
+from pvi import *
 
 pviConnection = Connection() # start a Pvi connection
 line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
@@ -72,6 +76,6 @@ cpu.errorChanged = cpuErrorChanged
 
 while run:
     pviConnection.doEvents() # must be cyclically called
-    sleep(0.1)
+    time.sleep(0.1)
 
 

@@ -1,12 +1,12 @@
 from pathlib import Path
 import sys
+import hashlib
 
 pviPath = str(Path(__file__).parents[1])
 cwd = str(Path(__file__).parents[0])
 
 sys.path.append( pviPath )
 
-import hashlib
 from pvi.utils import BrProfilerDataFile
 
 for f, c in {'profiler1.pd' : '9b1e4d7c33dd77f59f429e6d706513c5e098a1fe225e4be54a08a203929e1baa', 
