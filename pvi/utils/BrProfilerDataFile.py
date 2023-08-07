@@ -112,14 +112,14 @@ class BrProfilerDataFile(BrFile):
 					+ str(self._content[head+8:head+10], encoding = 'ascii')
 		self.__bridcode = hex(struct.unpack_from('<I', self._content, head+10)[0]) # uint32
 		self.__firstRecordAtOffset = struct.unpack_from('<I', self._content, head+14)[0] # uint32
-		#self.__lastRecordAtOffset = struct.unpack_from('<I', self._content, head+18)[0] # uint32
+		self.__lastRecordAtOffset = struct.unpack_from('<I', self._content, head+18)[0] # uint32
 		self.__tickFrequencyMhz = struct.unpack_from('<I', self._content, head+22)[0] # uint32
 		year, month, day, _ , hour, minute, second  = struct.unpack_from('<HBBBBBB', self._content, head+26)
 		self.__profilingTimestamp = datetime( year, month, day, hour, minute, second)
 		self.__noOfCyclicTasks = struct.unpack_from('<I', self._content, head+64)[0] # uint32
 		self.__noOfSystemTasks = struct.unpack_from('<I', self._content, head+72)[0] # uint32		
 		self.__profiledTargetType = str(self._content[head+84:head+99], encoding='ascii').rstrip('\x00')
-		self.__countEntries = int(self.__maxSize / (__class__.SIZEOF_RECORD_ENTRY + self.__additionalDatasizePerEntry))
+		self.__maxPossibleEntries = int(self.__maxSize / (__class__.SIZEOF_RECORD_ENTRY + self.__additionalDatasizePerEntry))
 		self.__systemTick = 1000 / (self.__tickFrequencyMhz)
 		self.__offsetObjectEntry = head + 0xb6
 
@@ -200,7 +200,7 @@ class BrProfilerDataFile(BrFile):
 			"additionalDataSizePerEntry" : self.__additionalDatasizePerEntry,
 			"bufferForCreatedTask" : self.__bufferForCreatedTask,
 			"bufferForCreatedUserTask" : self.__bufferForCreatedUserTask,
-			"entries" : self.__countEntries,
+			"entries" : self.__maxPossibleEntries,
 			"AR" : self.__arversion
 		})
 
@@ -231,10 +231,15 @@ class BrProfilerDataFile(BrFile):
 	def entries(self) -> list:
 		if not(self.__entries):
 			offset = self.__offsetRecords + self.__firstRecordAtOffset * __class__.SIZEOF_RECORD_ENTRY
-			maxOffset = self.__offsetRecords + (self.__countEntries-1) * __class__.SIZEOF_RECORD_ENTRY
+			maxOffset = self.__offsetRecords + (self.__maxPossibleEntries-1) * __class__.SIZEOF_RECORD_ENTRY
+			noOfValidEntries = self.__maxPossibleEntries
+			if self.__lastRecordAtOffset > self.__firstRecordAtOffset:
+				noOfValidEntries = self.__lastRecordAtOffset - self.__firstRecordAtOffset + 1
+			else:
+				noOfValidEntries = self.__lastRecordAtOffset + self.__maxPossibleEntries - self.__firstRecordAtOffset + 1
 			self.__entries = list()
 			startticks = None
-			for n in range( self.__countEntries):
+			for n in range( noOfValidEntries):
 				ticks, event, objectIdent = struct.unpack_from('<QII', self._content, offset)
 				if not(startticks):
 					startticks = ticks
