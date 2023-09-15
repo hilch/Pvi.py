@@ -23,11 +23,9 @@
 import ctypes
 import winreg
 
-from ctypes import *
+from ctypes import c_uint32, c_int32, c_uint64, c_int64, c_void_p, c_char_p
+from ctypes import Structure, WinDLL
 from ctypes import c_uint32 as DWORD
-from ctypes import c_uint64 as WPARAM
-from ctypes import c_int64 as LPARAM
-from ctypes import c_void_p as HANDLE
 from ctypes import c_uint8 as BYTE
 from enum import IntEnum, Enum
 
@@ -316,7 +314,7 @@ if pviDllPath == None:
     print("Pvi is not installed")
     exit(1)
 
-pviDll = WinDLL ( pviDllPath + r"\PviCom64.dll")
+pviDll = WinDLL ( str(pviDllPath) + r"\PviCom64.dll")
 
 #
 # int PviInitialize (INT Timeout, INT RetryTime, LPCSTR pInitParam, LPVOID pRes)

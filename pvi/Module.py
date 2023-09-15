@@ -20,7 +20,6 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from ctypes import *
 import xml.etree.ElementTree as ET
 import re
 import datetime
@@ -80,12 +79,12 @@ class Module(PviObject):
                 for c in cols:
                     try: # try to convert columns into integer values
                         value = int(entry.attrib[c])
-                        entry.attrib.update({c : value} )
+                        entry.attrib.update({c : str(value)} )
                     except:
                         pass
                 try: # try to convert timestamp into Python datatype
                     value = datetime.datetime.fromtimestamp( float(entry.attrib['TimestampUtc']) )
-                    entry.attrib.update({ 'TimestampUtc' : value} )
+                    entry.attrib.update({ 'TimestampUtc' : str(value)} )
                 except:
                     pass
                 entries.append(entry.attrib)

@@ -20,7 +20,7 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from ctypes import *
+from ctypes import c_uint64 as WPARAM, c_int64 as LPARAM, c_void_p as HANDLE, byref, sizeof
 from .include import *
 from .Error import PviError
 from .Object import PviObject
@@ -112,7 +112,7 @@ class Connection():
         for o in self._pviObjects:
             if o.name == name:
                 return o
-        return None
+        raise KeyError('PviObject not found by name')
 
     # ----------------------------------------------------------------------------------
 
@@ -120,7 +120,7 @@ class Connection():
         for o in self._pviObjects:
             if o._linkID == linkID:
                 return o
-        return None        
+        raise KeyError('PviObject not found by LinkID')      
 
     # ----------------------------------------------------------------------------------
     def _eventPviConnect( self, wParam, responseInfo ):
