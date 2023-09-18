@@ -20,22 +20,25 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from ctypes import create_string_buffer, sizeof, byref
+from typing import Any
 from .include import *
 from .Error import PviError
 from .Object import PviObject
-from .VariableType import VariableType
+from .VariableTypeDescription import VariableTypeDescription
+
 
 
 class Variable(PviObject):
 
-    def __init__( self, parent, name, **objectDescriptor ):
+    def __init__( self, parent, name, **objectDescriptor):
         if parent._type != T_POBJ_TYPE.POBJ_CPU and  parent._type != T_POBJ_TYPE.POBJ_TASK and  parent._type != T_POBJ_TYPE.POBJ_STATION:
             raise PviError(12009, self )        
         self._value = None 
         self._valueChanged = None 
-        self._variableType = None
+        self._variableTypeDescription = VariableTypeDescription()
         objectDescriptor.update({'CD':name})
-        if not('RF' in objectDescriptor):
+        if 'RF' not in objectDescriptor:
             objectDescriptor.update({'RF':0}) # do not cyclic refrehs variables by default       
         super().__init__( parent, 'POBJ_PVAR', name, **objectDescriptor)
 
@@ -44,21 +47,26 @@ class Variable(PviObject):
 
 
     @property
-    def writable(self):
+    def writable(self) -> bool:
         '''
         Variable: signals if this variable can be written
         '''
-        access = self._objectDescriptor.get('AT')    
-        return self._variableType != None and 'w' in access # data type already read and write access ?
+        if self._variableTypeDescription.vt != PvType.UNKNOWN:
+            access = self._objectDescriptor.get('AT', '')  
+            return 'w' in access # data type already read and write access ?
+        else:
+            return False
 
     @property
-    def readable(self):
+    def readable(self) -> bool:
         '''
         Variable: signals if this variable can be read
-        '''        
-        access = self._objectDescriptor.get('AT')
-        return self._variableType != None and 'r' in access # data type already read and read access ?
-
+        '''
+        if self._variableTypeDescription.vt != PvType.UNKNOWN:
+            access = self._objectDescriptor.get('AT', '')
+            return 'r' in access # data type already read and read access ?
+        else:
+            return False
 
     def __readRawData(self, wParam, responseInfo):
         '''
@@ -66,10 +74,10 @@ class Variable(PviObject):
         > wParam: points to response data
         > responseInfo: responseInfo or 'None' in case of synchronous read request
         '''
-        if self._variableType == None:
-            _ = self.dataType # ensure variable data type is known            
-        
-        buffer = create_string_buffer(self._variableType.vn * self._variableType.vl)
+        if self._variableTypeDescription.vt == PvType.UNKNOWN:
+            self._variableTypeDescription.readFrom(self)
+
+        buffer = create_string_buffer(self._variableTypeDescription.vn * self._variableTypeDescription.vl)
 
         if responseInfo: # data is answer of a request
             self._result = PviReadResponse( wParam, byref(buffer), sizeof(buffer) )
@@ -77,7 +85,7 @@ class Variable(PviObject):
             self._result = PviRead( self._linkID, POBJ_ACC_DATA, None, 0, byref(buffer), sizeof(buffer) )
         
         if self._result == 0:
-            self._value = self._variableType.readFromBuffer(bytes(buffer))
+            self._value = self._variableTypeDescription.readFromBuffer(bytes(buffer))
         else:
             raise PviError(self._result, self)
 
@@ -99,7 +107,7 @@ class Variable(PviObject):
 
             
     @property
-    def value(self):
+    def value(self) -> Any:
         '''
         Variable : read value
         '''
@@ -108,19 +116,17 @@ class Variable(PviObject):
 
 
     @value.setter
-    def value(self,v):
+    def value(self,v : Any):
         '''
         Variable: set value
         '''
-        if self._variableType == None:
-            _ = self.dataType # ensure variable data type is known           
+        if self._variableTypeDescription.vt == PvType.UNKNOWN:
+            self._variableTypeDescription.readFrom(self)
 
-        vt = self._variableType.vt
-
-        if vt == PvType.STRUCT: 
+        if self._variableTypeDescription.vt == PvType.STRUCT: 
             raise ValueError(f'Writing of struct not implemented\n{repr(self)}')
         else:
-            buffer = self._variableType.writeToBuffer(v)
+            buffer = self._variableTypeDescription.writeToBuffer(v)
             self._result = PviWrite( self._linkID, POBJ_ACC_DATA, byref(buffer), sizeof(buffer), None, 0 )  
         if self._result:
             raise PviError(self._result, self)
@@ -144,21 +150,15 @@ class Variable(PviObject):
             raise ValueError
 
 
-    @property
     def dataType(self) -> str:
         '''
-        Variable: returns variable's type
+        Variable: returns variable's type as string
         '''
-        t = None
-        try:
-            t = self._variableType.vt.value
-
-        except AttributeError: # variable's type wasn't determined yet
-            self._variableType = VariableType(self)
-            t = self._variableType.vt.value            
-
-        if self._variableType.vn > 1: # is variable an array ?
-            t += f'[{self._variableType.vn}]'
-
+        t = "?"
+        if self._variableTypeDescription.vt == PvType.UNKNOWN:
+            self._variableTypeDescription.readFrom(self)
+            t = self._variableTypeDescription.vt.value
+            if self._variableTypeDescription.vn > 1: # is variable an array ?
+                t += f'[{self._variableTypeDescription._vn}]'
         return t
 

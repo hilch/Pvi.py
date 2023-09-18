@@ -24,6 +24,7 @@ import xml.etree.ElementTree as ET
 import re
 import datetime
 import inspect
+from ctypes import create_string_buffer, byref, sizeof
 from .include import *
 from .Object import PviObject
 from .Error import PviError

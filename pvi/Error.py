@@ -1149,7 +1149,7 @@ class PviError(Exception):
       13096: 'Failed to set up thread',
       13097: 'Station number not found',
       13098: 'Winsock not installed.'
-            '\nSolution: Win95: Execute installer file ...\Pvi\SysSetup\TcpIp\Sock2295.exe.',        
+            '\nSolution: Win95: Execute installer file ...\\Pvi\\SysSetup\\TcpIp\\Sock2295.exe.',        
       13200: 'Internal error in CAN driver',
       13201: 'Invalid parameter.'
             '\nAn invalid parameter was passed to DeviceIoControl,'

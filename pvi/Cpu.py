@@ -20,9 +20,9 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from ctypes import *
 import datetime
 import inspect
+from ctypes import create_string_buffer, byref, sizeof
 from .include import *
 from .Object import PviObject
 from .Error import PviError
@@ -48,8 +48,6 @@ class Cpu(PviObject):
         handle status events
         """      
         self._result = PviReadResponse( wParam, None, 0 ) 
-        if callable(self._statusChanged):
-            self._statusChanged( responseInfo )
 
 
     def _eventDownloadStream( self, wParam, responseInfo : T_RESPONSE_INFO):    
@@ -59,7 +57,7 @@ class Cpu(PviObject):
                 sig = inspect.signature(self._downloaded)
                 if len(sig.parameters) == 0:
                     self._downloaded()
-                elif len(sig.parameters == 1):
+                elif len(sig.parameters) == 1:
                     self._downloaded(self)
         else:
             raise PviError(self._result, self)      
@@ -115,12 +113,17 @@ class Cpu(PviObject):
                downloaded - callback() or callback(Cpu) if module was downloaded
                progress - callback(p) or callback (Cpu, p) to show progress
         '''
+        currentFrame = inspect.currentframe()
+        currentFunctionName = ''
+        if currentFrame:
+            currentFunctionName = currentFrame.f_code.co_name
+
         if not(isinstance(data, bytes)):
-            raise TypeError(inspect.currentframe().f_code.co_name + " - data: only bytes accepted !")
+            raise TypeError(currentFunctionName + " - data: only bytes accepted !")
         if 'MT' not in kwargs:
             kwargs.update( { 'MT' : 'BRT' } )
         if 'MN' not in kwargs:
-            raise KeyError( inspect.currentframe().f_code.co_name + " - argument 'MN' is missing !")
+            raise KeyError( currentFunctionName + " - argument 'MN' is missing !")
 
         arguments = ''
         for key, value in kwargs.items():
@@ -195,7 +198,7 @@ class Cpu(PviObject):
         read the CPU status
         """
         st = super().status
-        runState = { "WarmStart" : "RUN", "ColdStart" : "RUN", "Diagnose" : "DIAG", "Error" : "SERV", "Reset" : "SERV"}.get(st.get("ST"), "<unknown>")
+        runState = { "WarmStart" : "RUN", "ColdStart" : "RUN", "Diagnose" : "DIAG", "Error" : "SERV", "Reset" : "SERV"}.get(st.get("ST", "<unknown>"))
         st.update({"RunState" : runState})
         return st
         

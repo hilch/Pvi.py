@@ -20,7 +20,9 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from ctypes import *
+from ctypes import create_string_buffer, byref, sizeof
+from ctypes import c_uint32, c_int32, c_uint64, c_int64, c_void_p, c_char_p
+from typing import Callable, Dict, Any
 import re
 import inspect
 from .include import *
@@ -32,14 +34,14 @@ class PviObject():
     """
     the base of all objects
     """
-    def __init__(self, parent , type, name, **objectDescriptor ):
+    def __init__(self, parent , type, name, **objectDescriptor):
         '''
         > parent: parent PviObject
         > type:    POBJ_PVI, POBJ_LINE, POBJ_DEVICE, POBJ_STATION, POBJ_CPU, POBJ_MODULE, POBJ_TASK, POBJ_PVAR
         > name: name of object in PVI's hierarchy
         > objectDescriptor: CD=""
         '''
-        parentName = re.findall('(\S+)',parent.name)[0]+'/' if parent else ''
+        parentName = re.findall('(\\S+)',parent.name)[0]+'/' if parent else ''
         self._name = f'{parentName}{name}'
         self._linkID = 0
         self._objectDescriptor = objectDescriptor
@@ -86,22 +88,26 @@ class PviObject():
         
 
     @property
-    def descriptor(self) -> str:
+    def descriptor(self) -> Dict[str, str]:
         '''
         PviObject: object descriptor string
         '''
         return self._objectDescriptor
 
     @property
-    def errorChanged(self) -> callable:
-       '''
-       PviObject: set callback for 'error changed'
-       > cb: callback( PviObject, int ) or callback( int )
-       '''
-       return self._errorChanged
+    def errorChanged(self) -> Callable:
+        '''
+        PviObject: set callback for 'error changed'
+        > cb: callback( PviObject, int ) or callback( int )
+        '''
+        if self._errorChanged:
+            return self._errorChanged
+        else:
+            raise ValueError("Object.errorChanged is empty")
+
 
     @errorChanged.setter
-    def errorChanged(self, cb : callable):
+    def errorChanged(self, cb : Callable):
         '''
         PviObject: set callback for 'error changed'
         > cb: callback( PviObject, int ) or callback( int )
@@ -109,7 +115,7 @@ class PviObject():
         if callable(cb):
             self._errorChanged = cb
         else:
-            raise TypeError("only callable allowed for 'errorChanged'")
+            raise TypeError("only callable allowed for Object.errorChanged")
 
 
     def _eventData( self, wParam, responseInfo ):
@@ -150,7 +156,7 @@ class PviObject():
     def _createAndLink(self, pvi):
         descriptor_items = []
         for key, value in self._objectDescriptor.items():
-            quote = '"' if re.search( "[\/\.\s]", str(value) ) is not None else ''
+            quote = '"' if re.search( r"[\/\.\s]", str(value) ) is not None else ''
             descriptor_items += [f'{key}={quote}{value}{quote}']
         descr = ' '.join(descriptor_items) 
         linkID = DWORD(0)

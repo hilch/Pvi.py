@@ -54,7 +54,7 @@ class PvType(Enum):
     '''
     Type of process variable PV
     '''
-    UNKNON = "?"
+    UNKNOWN = "?"
     I8	= "i8"
     '''
     1 byte signed integer
