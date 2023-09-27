@@ -1,0 +1,23 @@
+(********************************************************************
+ * COPYRIGHT -- B&R
+ ********************************************************************
+ * Package: Brewing
+ * File: brewing.var
+ * Author: B&R
+ * Created: June 14, 2007
+ *******************************************************************)
+VAR
+	pBrewingText : UDINT := 0;
+END_VAR
+VAR CONSTANT
+	sSTANDBY : UINT := 0;
+	sDOSING : UINT := 10;
+	sBREWING : UINT := 20;
+	sFINISH : UINT := 30;
+END_VAR
+VAR
+	milkTP : TP;
+	coffeeTP : TP;
+	sugarTP : TP;
+	waterTP : TP;
+END_VAR

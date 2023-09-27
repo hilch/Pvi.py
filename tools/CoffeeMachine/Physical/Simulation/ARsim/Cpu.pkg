@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=4.1.17.113 SP?>
+<Cpu xmlns="http://br-automation.co.at/AS/Cpu">
+  <Objects>
+    <Object Type="File" Description="Software configuration">Cpu.sw</Object>
+    <Object Type="File" Description="Declaration of permanent variables">Cpu.per</Object>
+    <Object Type="File" Description="IO mapping file">IoMap.iom</Object>
+    <Object Type="File" Description="PV mapping file">PvMap.vvm</Object>
+    <Object Type="Package">Motion</Object>
+  </Objects>
+  <Configuration ClassID="1A4000.00" GeneratePPCode="false" HasNcOperatingSystem="true" LocalVariablesMemory="MemoryPool" ModuleID="AR000" OnlineConfigurationName="ARsimCoffeeMachine" Target="SG4">
+    <AutomationRuntime Version="G4.09" />
+    <Build AdditionalBuildOptions="-D CONFIG_SIMULATION -ansic" GccVersion="4.1.2" />
+    <DefaultTargetMemory DataObjects="UserROM" Libraries="UserROM" Tasks="UserROM" />
+    <TaskClasses DefaultIoTaskClass="Cyclic4" DefaultTaskClass="Cyclic4" />
+    <Transfer AllowWarmRestart="true" DownloadMode="Copy" GeneratePviTransferList="true" IgnoreBrDependencies="false" IgnoreTargetOnlyObjects="false" PackedArConfig="false" PackedIoMap="false" PromptBeforeProject="false" PromptBeforeTask="false" TransferOnlyRelevantChanges="false" />
+    <Vc FirmwareVersion="V4.15.9" />
+    <Io ArConfigDataModule="false" ArConfigDataModulePath="$(AS_CPU_PATH)\AS\CfgData.br" IoMapDataModule="false" IoMapDataModulePath="$(AS_CPU_PATH)\AS\IomData.br" />
+    <Safety SafetyRelease="0.0" />
+    <OnlineConfiguration Name="ARsimCoffeeMachine" DeviceType="TCPIP" DeviceParameters="/IF=tcpip /LOPO=11159 /SA=100" ConnectionParameters="/RT=1000 /DAIP=127.0.0.1 /CKDA=0 /REPO=11160 /ANSL=1 /AM=*" Description="" />
+  </Configuration>
+</Cpu>

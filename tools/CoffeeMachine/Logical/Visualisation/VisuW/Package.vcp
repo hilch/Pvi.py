@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?AutomationStudio Version="4.0.14.207"?>
+<Project xmlns="http://br-automation.co.at/AS/VC/Project">
+  <Property Name="Backlight" Value="False"/>
+  <Property Name="BacklightIgnoreFirst" Value="False"/>
+  <Property Name="BeepKey" Value="False"/>
+  <Property Name="BeepTouch" Value="False"/>
+  <Property Name="CalibrationDatapoint" Value="None"/>
+  <Property Name="CalibrationStateDatapoint" Value="None"/>
+  <Property Name="ColorMode" Value="32Bit"/>
+  <Property Name="ConfigureTemplate" Value="0"/>
+  <Property Name="ConnectionErrorPage" Value="None"/>
+  <Property Name="DefaultKeyLevelNumeric" Value="None"/>
+  <Property Name="DefaultKeyLevelString" Value="None"/>
+  <Property Name="DefaultLanguage" Value="en"/>
+  <Property Name="DefaultPage" Value="Source[local].Page[P00_StartPage]"/>
+  <Property Name="DefaultStyleSheet" Value="Source[local].StyleSheet[Color]"/>
+  <Property Name="FocusControlDatapoint" Value="None"/>
+  <Property Name="FontAntialiasing" Value="Off"/>
+  <Property Name="HelpControlDatapoint" Value="None"/>
+  <Property Name="IPAddressDatapoint" Value="None"/>
+  <Property Name="KeyLevelChangeDatapoint" Value="None"/>
+  <Property Name="KeyLevelCurrentDatapoint" Value="None"/>
+  <Property Name="KeyMatrix" Value="None"/>
+  <Property Name="KeyRepeatDelay" Value="500"/>
+  <Property Name="KeyRepeatRate" Value="200"/>
+  <Property Name="LEDMatrix" Value="None"/>
+  <Property Name="LanguageChangeDatapoint" Value="Source[global].Variable[Local.gMainLogic.cmd.vis.newLanguage]"/>
+  <Property Name="LanguageCurrentDatapoint" Value="Source[global].Variable[Local.gMainLogic.status.curLanguage]"/>
+  <Property Name="LifeSignDatapoint" Value="None"/>
+  <Property Name="ManualStart" Value="False"/>
+  <Property Name="PageChangeDatapoint" Value="Source[global].Variable[Local.gMainLogic.cmd.vis.newPage]"/>
+  <Property Name="PageCurrentDatapoint" Value="Source[global].Variable[Local.gMainLogic.status.curPage]"/>
+  <Property Name="ScreenSaver" Value="Source[local].Page[P00_StartPage]"/>
+  <Property Name="ScreenSaverDatapoint" Value="None"/>
+  <Property Name="ScreenSaverTimeDatapoint" Value="None"/>
+  <Property Name="ScreenSaverTimeout" Value="120"/>
+  <Property Name="ScreenSaver_Activate" Value="True"/>
+  <Property Name="TargetResourceRoot" Value=""/>
+  <Property Name="TextLengthOverrunBackColor" Value="None"/>
+  <Property Name="TextLengthOverrunCut" Value="False"/>
+  <Property Name="TextLengthOverrunForeColor" Value="None"/>
+  <Property Name="TouchPadCancel" Value="Default"/>
+  <Property Name="VCCVersion" Value="9"/>
+  <Property Name="WheelCountDatapoint" Value="None"/>
+  <Property Name="WheelEnterDatapoint" Value="None"/>
+  <SourceFiles>
+    <Source File="TextGroups\BypassState_short.txtgrp"/>
+    <Source File="TextGroups\AlarmState_long.txtgrp"/>
+    <Source File="TextGroups\AlarmState_short.txtgrp"/>
+    <Source File="TextGroups\BypassState_long.txtgrp"/>
+    <Source File="TextGroups\AcknowledgeState_short.txtgrp"/>
+    <Source File="TextGroups\AlarmEvent_long.txtgrp"/>
+    <Source File="TextGroups\AlarmEvent_short.txtgrp"/>
+    <Source File="TextGroups\AcknowledgeState_long.txtgrp"/>
+    <Source File="TextGroups\DateTimeFormats.txtgrp"/>
+    <Source File="TextGroups\ProgressStrings.txtgrp"/>
+    <Source File="TextGroups\InstantMessages.txtgrp"/>
+    <Source File="TextGroups\HeaderBar.txtgrp"/>
+    <Source File="TextGroups\PageNames.txtgrp"/>
+    <Source File="TextGroups\Buttons_PageTexts.txtgrp"/>
+    <Source File="TextGroups\Languages.txtgrp"/>
+    <Source File="TextGroups\ScrollFunction.txtgrp"/>
+    <Source File="TextGroups\Trend_TimeAxis.txtgrp"/>
+    <Source File="TextGroups\CoffeeTypes.txtgrp"/>
+    <Source File="Fonts\Arial10pxBold.fninfo"/>
+    <Source File="Fonts\Arial12pxRegular.fninfo"/>
+    <Source File="Fonts\Arial18pxRegular.fninfo"/>
+    <Source File="Fonts\Arial9pxBold.fninfo"/>
+    <Source File="Fonts\Arial9pxRegular.fninfo"/>
+    <Source File="Fonts\Arial9pxValue.fninfo"/>
+    <Source File="Fonts\Arial12pxBold.fninfo"/>
+    <Source File="Fonts\Arial9px.fninfo"/>
+    <Source File="Fonts\Arial8pxSDM.fninfo"/>
+    <Source File="Bitmaps\NumPad_pressed.bminfo"/>
+    <Source File="Bitmaps\NumPad.bminfo"/>
+    <Source File="Bitmaps\AcknowledgeReset.bminfo"/>
+    <Source File="Bitmaps\AlarmActive.bminfo"/>
+    <Source File="Bitmaps\AlarmBypassOFF.bminfo"/>
+    <Source File="Bitmaps\AlarmBypassON.bminfo"/>
+    <Source File="Bitmaps\AlarmInactive.bminfo"/>
+    <Source File="Bitmaps\AlarmLatched.bminfo"/>
+    <Source File="Bitmaps\AlarmNotQuit.bminfo"/>
+    <Source File="Bitmaps\AlarmQuit.bminfo"/>
+    <Source File="Bitmaps\Reset.bminfo"/>
+    <Source File="Bitmaps\ResetAcknowledge.bminfo"/>
+    <Source File="Bitmaps\Triggered.bminfo"/>
+    <Source File="Bitmaps\euro2.bminfo"/>
+    <Source File="Bitmaps\euro1.bminfo"/>
+    <Source File="Bitmaps\cent50.bminfo"/>
+    <Source File="Bitmaps\cent20.bminfo"/>
+    <Source File="Bitmaps\cent10.bminfo"/>
+    <Source File="Bitmaps\cent5.bminfo"/>
+    <Source File="Bitmaps\cent2.bminfo"/>
+    <Source File="Bitmaps\cent1.bminfo"/>
+    <Source File="Bitmaps\ProgressBorder.bminfo"/>
+    <Source File="Bitmaps\radio_active.bminfo"/>
+    <Source File="Bitmaps\radio_pressed.bminfo"/>
+    <Source File="Bitmaps\coffee.bminfo"/>
+    <Source File="Bitmaps\cappucino.bminfo"/>
+    <Source File="Bitmaps\espresso.bminfo"/>
+    <Source File="Bitmaps\checkbox_off_small.bminfo"/>
+    <Source File="Bitmaps\checkbox_on_small.bminfo"/>
+    <Source File="Bitmaps\BorderSlider09x09.bminfo"/>
+    <Source File="Bitmaps\SliderArrowRightRed.bminfo"/>
+    <Source File="Bitmaps\SliderBallGray.bminfo"/>
+    <Source File="Bitmaps\ListPadVer.bminfo"/>
+    <Source File="Bitmaps\ListPadHor_pressed.bminfo"/>
+    <Source File="Bitmaps\ListPadHor.bminfo"/>
+    <Source File="Bitmaps\ListPadVer_pressed.bminfo"/>
+    <Source File="Bitmaps\button_global_area.bminfo"/>
+    <Source File="Bitmaps\BackgroundWVGA_NoLogo.bminfo"/>
+    <Source File="Bitmaps\FrameDark.bminfo"/>
+    <Source File="Bitmaps\FrameLight.bminfo"/>
+    <Source File="Bitmaps\switchOff.bminfo"/>
+    <Source File="Bitmaps\switchOn.bminfo"/>
+    <Source File="Bitmaps\switchReady.bminfo"/>
+    <Source File="Bitmaps\switchError.bminfo"/>
+    <Source File="Bitmaps\FrameInvisible.bminfo"/>
+    <Source File="Bitmaps\btnControl.bminfo"/>
+    <Source File="Bitmaps\btnControl_Pressed.bminfo"/>
+    <Source File="Bitmaps\InsertCoin.bminfo"/>
+    <Source File="Bitmaps\Dosiereinheit.bminfo"/>
+    <Source File="Bitmaps\btnScollDown.bminfo"/>
+    <Source File="Bitmaps\btnScrollDown_pressed.bminfo"/>
+    <Source File="Bitmaps\btnScrollLeft.bminfo"/>
+    <Source File="Bitmaps\btnScrollLeft_pressed.bminfo"/>
+    <Source File="Bitmaps\btnScrollRight.bminfo"/>
+    <Source File="Bitmaps\btnScrollRight_pressed.bminfo"/>
+    <Source File="Bitmaps\btnScrollUp.bminfo"/>
+    <Source File="Bitmaps\btnScrollUp_pressed.bminfo"/>
+    <Source File="Bitmaps\btnScrollDownMulti.bminfo"/>
+    <Source File="Bitmaps\btnScrollDownMulti_pressed.bminfo"/>
+    <Source File="Bitmaps\btnScrollUpMulti.bminfo"/>
+    <Source File="Bitmaps\btnScrollUpMulti_pressed.bminfo"/>
+    <Source File="Bitmaps\BackgroundWVGA_StartScreen.bminfo"/>
+    <Source File="Bitmaps\Help.bminfo"/>
+    <Source File="Bitmaps\CoffeeMachineOverview.bminfo"/>
+    <Source File="Bitmaps\CoffeeCup.bminfo"/>
+    <Source File="Bitmaps\Transport_belt.bminfo"/>
+    <Source File="Bitmaps\BusyNeedle.bminfo"/>
+    <Source File="Bitmaps\button_default.bminfo"/>
+    <Source File="Bitmaps\button_default_pressed.bminfo"/>
+    <Source File="Bitmaps\button_global_area_pressed.bminfo"/>
+    <Source File="Bitmaps\Img_Warning.bminfo"/>
+    <Source File="Bitmaps\Img_Trend.bminfo"/>
+    <Source File="Bitmaps\Img_Config.bminfo"/>
+    <Source File="Bitmaps\Img_Small_Water.bminfo"/>
+    <Source File="Bitmaps\Img_Small_CoffeeBean.bminfo"/>
+    <Source File="Bitmaps\Img_Small_Milk.bminfo"/>
+    <Source File="Bitmaps\Img_Small_Sugar.bminfo"/>
+    <Source File="Bitmaps\Img_Small_Temp.bminfo"/>
+    <Source File="Bitmaps\Img_Diagnostics.bminfo"/>
+    <Source File="Bitmaps\Img_Home.bminfo"/>
+    <Source File="Bitmaps\LanguageDialog.bminfo"/>
+    <Source File="Bitmaps\TransparentBackground.bminfo"/>
+    <Source File="Bitmaps\LabelBoarder.bminfo"/>
+    <Source File="Bitmaps\GroupControl.bminfo"/>
+    <Source File="Bitmaps\InputBorder.bminfo"/>
+    <Source File="Bitmaps\OutputBorder.bminfo"/>
+    <Source File="Bitmaps\AlphaPad_lower.bminfo"/>
+    <Source File="Bitmaps\AlphaPad_lowerPressed.bminfo"/>
+    <Source File="Bitmaps\AlphaPad_upper.bminfo"/>
+    <Source File="Bitmaps\AlphaPad_upperPressed.bminfo"/>
+    <Source File="Bitmaps\AlphaPad_numeric.bminfo"/>
+    <Source File="Bitmaps\AlphaPad_numericPressed.bminfo"/>
+    <Source File="Bitmaps\AlphaPad_numeric2.bminfo"/>
+    <Source File="Bitmaps\AlphaPad_numeric2Pressed.bminfo"/>
+    <Source File="Bitmaps\EditPad_lower.bminfo"/>
+    <Source File="Bitmaps\EditPad_upper.bminfo"/>
+    <Source File="Bitmaps\EditPad_numeric.bminfo"/>
+    <Source File="Bitmaps\EditPad_numeric2.bminfo"/>
+    <Source File="Bitmaps\EditPad_lowerPressed.bminfo"/>
+    <Source File="Bitmaps\EditPad_upperPressed.bminfo"/>
+    <Source File="Bitmaps\EditPad_numericPressed.bminfo"/>
+    <Source File="Bitmaps\EditPad_numeric2Pressed.bminfo"/>
+    <Source File="BitmapGroups\NumPad.bmgrp"/>
+    <Source File="BitmapGroups\AlphaPad.bmgrp"/>
+    <Source File="BitmapGroups\AlarmEvent.bmgrp"/>
+    <Source File="BitmapGroups\AlarmState.bmgrp"/>
+    <Source File="BitmapGroups\BypassState.bmgrp"/>
+    <Source File="BitmapGroups\AcknowledgeState.bmgrp"/>
+    <Source File="BitmapGroups\NavigationPad.bmgrp"/>
+    <Source File="BitmapGroups\EuroCoins.bmgrp"/>
+    <Source File="BitmapGroups\Borders.bmgrp"/>
+    <Source File="BitmapGroups\CoffeeTypes.bmgrp"/>
+    <Source File="BitmapGroups\KeyRings.bmgrp"/>
+    <Source File="BitmapGroups\EditPad.bmgrp"/>
+    <Source File="Pages\P10_MainPage.page"/>
+    <Source File="Pages\P11_TakeoutPage.page"/>
+    <Source File="Pages\P00_StartPage.page"/>
+    <Source File="Pages\P60_Setup.page"/>
+    <Source File="Pages\P20_TrendPage.page"/>
+    <Source File="Pages\P30_AlarmPage.page"/>
+    <Source File="Pages\P31_AlarmHistoryPage.page"/>
+    <Source File="Pages\P61_SystemDiagnostics.page"/>
+    <Source File="Pages\P12_InfoPage.page"/>
+    <Source File="Layers\globalArea.layer"/>
+    <Source File="Layers\BackgroundVGA.layer"/>
+    <Source File="Layers\BackgroundStartScreen.layer"/>
+    <Source File="Layers\LanguageLayer.layer"/>
+    <Source File="StyleSheets\Color.vcs"/>
+    <Source File="Borders\Raised.bdr"/>
+    <Source File="Borders\Sunken.bdr"/>
+    <Source File="Borders\Etched.bdr"/>
+    <Source File="Borders\Bump.bdr"/>
+    <Source File="Borders\SunkenOuter.bdr"/>
+    <Source File="Borders\RaisedInner.bdr"/>
+    <Source File="Borders\Flat_black.bdr"/>
+    <Source File="Borders\Flat_grey.bdr"/>
+    <Source File="Borders\CheckBoxOff.bdr"/>
+    <Source File="Borders\CheckBoxOn.bdr"/>
+    <Source File="Borders\DefaultButton.bdr"/>
+    <Source File="Borders\DefaultButtonPressed.bdr"/>
+    <Source File="Borders\ProgressBarBorder.bdr"/>
+    <Source File="Borders\globalAreaFrenchActive.bdr"/>
+    <Source File="Borders\globalAreaFrenchPressed.bdr"/>
+    <Source File="Borders\SliderBorder09.bdr"/>
+    <Source File="Borders\KeyRingOff.bdr"/>
+    <Source File="Borders\KeyRingOn.bdr"/>
+    <Source File="Borders\FrameInvisible.bdr"/>
+    <Source File="Borders\ButtonScrollUp.bdr"/>
+    <Source File="Borders\ButtonScrollUpPressed.bdr"/>
+    <Source File="Borders\ButtonScrollDown.bdr"/>
+    <Source File="Borders\ButtonScrollDownPressed.bdr"/>
+    <Source File="Borders\ButtonScrollRight.bdr"/>
+    <Source File="Borders\ButtonScrollRightPressed.bdr"/>
+    <Source File="Borders\ButtonScrollLeft.bdr"/>
+    <Source File="Borders\ButtonScrollLeftPressed.bdr"/>
+    <Source File="Borders\ButtonMultiUp.bdr"/>
+    <Source File="Borders\ButtonMultiUpPressed.bdr"/>
+    <Source File="Borders\ButtonMultiDown.bdr"/>
+    <Source File="Borders\ButtonMultiDownPressed.bdr"/>
+    <Source File="Borders\KeyRingStart.bdr"/>
+    <Source File="Borders\RadioButtonInactive.bdr"/>
+    <Source File="Borders\RadioButtonActive.bdr"/>
+    <Source File="Borders\CoffeeCup.bdr"/>
+    <Source File="Borders\LabelBoarder.bdr"/>
+    <Source File="Borders\GroupControl.bdr"/>
+    <Source File="Borders\InputBorder.bdr"/>
+    <Source File="Borders\OutputBorder.bdr"/>
+    <Source File="Borders\LanguageListbox.bdr"/>
+    <Source File="Borders\ControlButton.bdr"/>
+    <Source File="Borders\ControlButtonPressed.bdr"/>
+    <Source File="TouchPads\NavigationPad_ver.tpr"/>
+    <Source File="TouchPads\NumPad.tpr"/>
+    <Source File="TouchPads\NavigationPad_hor.tpr"/>
+    <Source File="TouchPads\AlphaPad.tpr"/>
+    <Source File="TouchPads\EditPad.tpr"/>
+    <Source File="Trends\TrendData.tdc"/>
+    <Source File="Trends\ActTemperature.trd"/>
+    <Source File="Trends\CpuTemperature.trd"/>
+    <Source File="Trends\Trend_Temperature.tre"/>
+    <Source File="Trends\Trend_InfoTemp.tre"/>
+    <Source File="ColorMaps\Cursor1ValueValid.clm"/>
+    <Source File="ColorMaps\Cursor2ValueValid.clm"/>
+    <Source File="VirtualKeys.vcvk"/>
+    <Source File="Palette.vcr"/>
+  </SourceFiles>
+</Project>

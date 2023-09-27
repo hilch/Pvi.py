@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=3.0.71.2?>
+<Library xmlns="http://br-automation.co.at/AS/Library">
+  <Files>
+    <File Description="Exported functions and function blocks">CoffeeLib.fun</File>
+    <File Description="Implementation file">CoffeeLib.st</File>
+  </Files>
+</Library>

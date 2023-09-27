@@ -1,0 +1,25 @@
+(********************************************************************
+ * COPYRIGHT -- Bernecker + Rainer
+ ********************************************************************
+ * Program: visTrend
+ * File: visTrend.var
+ * Author: B&R
+ * Created: June 11, 2008
+ ********************************************************************
+ * Local variables of program visTrend
+ ********************************************************************)
+VAR
+	displayTimeRange : UINT := 0;
+	newTimeRange : BOOL := FALSE;
+	scrollOnOff : BOOL := FALSE;
+	statusScrollRange : UINT := 0;
+	statusTimeRange : UINT := 0;
+	TrendControl : Trend_type := (0);
+	trendRangeMax : UINT := 0;
+	trendRangeMin : UINT := 0;
+	viewBuffer : BOOL := FALSE;
+END_VAR
+VAR CONSTANT
+	trendSampleRate : UINT := 100;
+	trendSampleCount : UINT := 5000;
+END_VAR

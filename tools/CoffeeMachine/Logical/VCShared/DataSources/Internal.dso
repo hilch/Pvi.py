@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?AutomationStudio Version="4.0.14.207"?>
+<DataSource xmlns="http://br-automation.co.at/AS/VC/Project" Name="Internal">
+  <Property Name="AutoRefresh" Value="True" />
+  <Property Name="DefaultUpdateTime" Value="200" />
+  <Property Name="Description" Value="" />
+  <Property Name="IsIntern" Value="True" />
+  <Property Name="TextGroup" Value="None" />
+  <DataPoints>
+    <Folder Name="Display">
+      <Property Name="Description" Value="" />
+      <Property Name="FolderType" Value="Struct" />
+      <DataPoint Name="Brightness">
+        <Property Name="Description" Value="" />
+        <Property Name="PLCType" Value="USINT" />
+        <Property Name="UpdateTime" Value="Default" />
+        <Property Name="UserID" Value="None" />
+        <Property Name="VCType" Value="INTEGER" />
+        <Property Name="ConnectingVisus" Value="Visualisation\VisuW,Visualisation\Visu1" />
+        <Property Name="ConnectedBySharedResource" Value="False" />
+      </DataPoint>
+      <DataPoint Name="Contrast">
+        <Property Name="Description" Value="" />
+        <Property Name="PLCType" Value="USINT" />
+        <Property Name="UpdateTime" Value="Default" />
+        <Property Name="UserID" Value="None" />
+        <Property Name="VCType" Value="INTEGER" />
+        <Property Name="ConnectingVisus" Value="Visualisation\VisuW,Visualisation\Visu1" />
+        <Property Name="ConnectedBySharedResource" Value="False" />
+      </DataPoint>
+    </Folder>
+    <Folder Name="Connection">
+      <Property Name="Description" Value="" />
+      <Property Name="FolderType" Value="Struct" />
+      <DataPoint Name="IPAddress">
+        <Property Name="Description" Value="" />
+        <Property Name="PLCType" Value="STRING" />
+        <Property Name="StringLength" Value="65535" />
+        <Property Name="UpdateTime" Value="Default" />
+        <Property Name="UserID" Value="None" />
+        <Property Name="VCType" Value="STRING" />
+        <Property Name="ConnectingVisus" Value="Visualisation\VisuW,Visualisation\Visu1" />
+        <Property Name="ConnectedBySharedResource" Value="False" />
+      </DataPoint>
+      <DataPoint Name="NodeNumber">
+        <Property Name="Description" Value="" />
+        <Property Name="PLCType" Value="USINT" />
+        <Property Name="UpdateTime" Value="Default" />
+        <Property Name="UserID" Value="None" />
+        <Property Name="VCType" Value="INTEGER" />
+        <Property Name="ConnectingVisus" Value="Visualisation\VisuW,Visualisation\Visu1" />
+        <Property Name="ConnectedBySharedResource" Value="False" />
+      </DataPoint>
+    </Folder>
+    <Folder Name="Temperature">
+      <Property Name="Description" Value="" />
+      <Property Name="FolderType" Value="Struct" />
+      <DataPoint Name="CPU">
+        <Property Name="DPLimit" Value="Default" />
+        <Property Name="Description" Value="" />
+        <Property Name="PLCType" Value="USINT" />
+        <Property Name="PLCUnit" Value="None" />
+        <Property Name="UnitGroup" Value="Source[global].UnitGroup[Temperatures]" />
+        <Property Name="UpdateTime" Value="Default" />
+        <Property Name="UserID" Value="None" />
+        <Property Name="VCType" Value="SCALED" />
+        <Property Name="ConnectingVisus" Value="Visualisation\VisuW,Visualisation\Visu1" />
+        <Property Name="ConnectedBySharedResource" Value="False" />
+      </DataPoint>
+    </Folder>
+  </DataPoints>
+</DataSource>

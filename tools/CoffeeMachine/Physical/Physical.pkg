@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=4.1.17.113 SP?>
+<Physical xmlns="http://br-automation.co.at/AS/Physical">
+  <Objects>
+    <Object Type="Configuration">Simulation</Object>
+    <Object Type="Configuration">PP400based</Object>
+    <Object Type="Configuration">PP400mcSim</Object>
+    <Object Type="Configuration">PP500mcSim</Object>
+    <Object Type="Configuration">PP65mcSim</Object>
+  </Objects>
+</Physical>

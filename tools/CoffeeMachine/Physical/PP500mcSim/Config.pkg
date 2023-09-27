@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=4.0.7.41?>
+<Configuration xmlns="http://br-automation.co.at/AS/Configuration">
+  <Objects>
+    <Object Type="File" Description="Hardware topology">Hardware.hw</Object>
+    <Object Type="File" Description="Graphical hardware layout">Hardware.hwl</Object>
+    <Object Type="Cpu" Description="Files belonging to this PLC">PP500</Object>
+  </Objects>
+  <Sources Download="false" IncludeUpgrades="true" Mode="ProjectTransfer" Option="Complete" />
+</Configuration>

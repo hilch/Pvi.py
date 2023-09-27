@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=4.1.14.23 SP?>
+<Cpu xmlns="http://br-automation.co.at/AS/Cpu">
+  <Objects>
+    <Object Type="File" Description="Software configuration">Cpu.sw</Object>
+    <Object Type="File" Description="Declaration of permanent variables">Cpu.per</Object>
+    <Object Type="File" Description="IO mapping file">IoMap.iom</Object>
+    <Object Type="File" Description="PV mapping file">PvMap.vvm</Object>
+    <Object Type="File" Description="Key mapping for PS2-Keyboard">PS2-Keyboard0.dis</Object>
+    <Object Type="Package">Motion</Object>
+  </Objects>
+  <Configuration ClassID="4PP420.1043-75" GeneratePPCode="false" HasNcOperatingSystem="true" LocalVariablesMemory="MemoryPool" ModuleID="PP400" OnlineConfigurationName="PP400CoffeeMachine" Target="SG4">
+    <AutomationRuntime Version="E3.10" />
+    <Build GccVersion="4.1.2" />
+    <DefaultTargetMemory DataObjects="UserROM" Libraries="UserROM" Tasks="UserROM" />
+    <TaskClasses DefaultIoTaskClass="Cyclic4" DefaultTaskClass="Cyclic4" />
+    <Transfer AllowWarmRestart="true" DownloadMode="Copy" GeneratePviTransferList="true" IgnoreBrDependencies="false" IgnoreTargetOnlyObjects="false" PackedArConfig="false" PackedIoMap="false" PromptBeforeProject="false" PromptBeforeTask="false" TransferOnlyRelevantChanges="false" />
+    <Vc FirmwareVersion="V4.15.9" />
+    <Io ArConfigDataModule="false" ArConfigDataModulePath="$(AS_CPU_PATH)\AS\CfgData.br" IoMapDataModule="false" IoMapDataModulePath="$(AS_CPU_PATH)\AS\IomData.br" />
+    <Safety SafetyRelease="0.0" />
+    <OnlineConfiguration Name="PP400CoffeeMachine" DeviceType="TCPIP" DeviceParameters="/IF=tcpip /LOPO=11159 /SA=217" ConnectionParameters="/RT=1000 /DAIP=PP400CoffeeMachine /REPO=11159 /ANSL=1 /AM=*" Description="" />
+  </Configuration>
+</Cpu>

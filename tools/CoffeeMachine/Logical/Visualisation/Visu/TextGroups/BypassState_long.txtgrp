@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?AutomationStudio Version="4.0.14.207"?>
+<TextGroup xmlns="http://br-automation.co.at/AS/VC/Project" Name="BypassState_long">
+  <Property Name="Description" Value=""/>
+  <Property Name="Index" Value="5"/>
+  <TextSnippets/>
+  <TextLayer LanguageId="en">
+    <Text ID="86" Value="Bypassed"/>
+    <Text ID="87" Value="Not Bypassed"/>
+  </TextLayer>
+  <TextLayer LanguageId="de">
+    <Text ID="86" Value="Gebrückt"/>
+    <Text ID="87" Value="Entbrückt"/>
+  </TextLayer>
+  <TextLayer LanguageId="zh-CN">
+    <Text ID="86" Value=""/>
+    <Text ID="87" Value=""/>
+  </TextLayer>
+  <IndexMap>
+    <Index ID="86" Value="1"/>
+    <Index ID="87" Value="0"/>
+  </IndexMap>
+</TextGroup>

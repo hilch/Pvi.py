@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=3.0.90.11?>
+<Package xmlns="http://br-automation.co.at/AS/Package">
+  <Objects>
+    <Object Type="DataObject" Language="Ax" Description="Conveyor axis configuration">conv_ini</Object>
+    <Object Type="Program" Language="IEC" Description="Conveyor Logic Control">conveyor</Object>
+  </Objects>
+</Package>

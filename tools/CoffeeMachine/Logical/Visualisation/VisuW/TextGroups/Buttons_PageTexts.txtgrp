@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?AutomationStudio Version="4.0.14.207"?>
+<TextGroup xmlns="http://br-automation.co.at/AS/VC/Project" Name="Buttons_PageTexts">
+  <Property Name="Description" Value=""/>
+  <Property Name="Index" Value="14"/>
+  <TextSnippets/>
+  <TextLayer LanguageId="en">
+    <Text ID="89135" Value="Contrast"/>
+    <Text ID="89136" Value="Touch calibration"/>
+    <Text ID="89137" Value="Setup"/>
+    <Text ID="89138" Value="Home"/>
+    <Text ID="89139" Value="Service"/>
+    <Text ID="89142" Value="Brightness"/>
+    <Text ID="89290" Value="Select Coffee"/>
+    <Text ID="89291" Value="History"/>
+    <Text ID="89296" Value="Coffee Recipe"/>
+    <Text ID="89302" Value="Select language"/>
+    <Text ID="89304" Value="Touch configuration"/>
+    <Text ID="89308" Value="Coin Slot"/>
+    <Text ID="89310" Value="Price"/>
+    <Text ID="89311" Value="Cream"/>
+    <Text ID="89312" Value="Sugar"/>
+    <Text ID="89313" Value="Coffee Powder"/>
+    <Text ID="89314" Value="Water"/>
+    <Text ID="89315" Value="Feeder"/>
+    <Text ID="89318" Value="Off"/>
+    <Text ID="89319" Value="Speed"/>
+    <Text ID="89320" Value="On"/>
+    <Text ID="89321" Value="Position"/>
+    <Text ID="89328" Value="Start"/>
+    <Text ID="89523" Value="Network settings"/>
+    <Text ID="89526" Value="IP address"/>
+    <Text ID="89527" Value="Node number"/>
+    <Text ID="89888" Value="On/Off"/>
+    <Text ID="89889" Value="Conveyor"/>
+    <Text ID="89982" Value="Change"/>
+    <Text ID="89983" Value="Return"/>
+    <Text ID="89989" Value="2  Euro"/>
+    <Text ID="89990" Value=""/>
+    <Text ID="89991" Value="1  Euro"/>
+    <Text ID="89992" Value=""/>
+    <Text ID="89993" Value="50 Cent"/>
+    <Text ID="89994" Value="20 Cent"/>
+    <Text ID="89995" Value="10 Cent"/>
+    <Text ID="89996" Value="5  Cent"/>
+    <Text ID="89997" Value="2  Cent"/>
+    <Text ID="89998" Value="1 Cent"/>
+    <Text ID="89999" Value=""/>
+    <Text ID="90122" Value="HH:MM:SS"/>
+    <Text ID="90123" Value="yyyy/mm/dd"/>
+    <Text ID="90125" Value="Time and Date"/>
+    <Text ID="90202" Value=""/>
+    <Text ID="90203" Value=""/>
+    <Text ID="90204" Value=""/>
+    <Text ID="90205" Value="Language"/>
+    <Text ID="90206" Value="Instruction"/>
+    <Text ID="90207" Value="CPU"/>
+    <Text ID="90208" Value="Take Out"/>
+    <Text ID="90209" Value="Pump"/>
+    <Text ID="90210" Value="Doser"/>
+    <Text ID="90211" Value="Brewing Assembly"/>
+    <Text ID="90212" Value="Cup Storage"/>
+    <Text ID="90213" Value="Heating"/>
+    <Text ID="90214" Value="€"/>
+    <Text ID="91312" Value="Alarm"/>
+    <Text ID="91313" Value="Trend"/>
+    <Text ID="91515" Value="Diagnostic"/>
+    <Text ID="92537" Value=""/>
+    <Text ID="92538" Value=""/>
+    <Text ID="92539" Value="Water temp."/>
+    <Text ID="92540" Value=""/>
+    <Text ID="92541" Value=""/>
+    <Text ID="92542" Value="Cpu temp."/>
+    <Text ID="92543" Value="Auto refresh"/>
+    <Text ID="92545" Value="Trend control"/>
+    <Text ID="92546" Value="Cursor 1"/>
+    <Text ID="92547" Value="Cursor 2"/>
+    <Text ID="92548" Value="View all"/>
+    <Text ID="92549" Value="Time [s]"/>
+    <Text ID="92553" Value=""/>
+    <Text ID="92557" Value=""/>
+    <Text ID="92558" Value="Alarm control"/>
+    <Text ID="92559" Value=""/>
+    <Text ID="92560" Value=""/>
+    <Text ID="93067" Value=""/>
+    <Text ID="93737" Value="Metric"/>
+    <Text ID="93738" Value="Imperial"/>
+    <Text ID="93745" Value=" Unit system"/>
+    <Text ID="94706" Value="Select Language"/>
+    <Text ID="94711" Value="Date &amp; Time"/>
+  </TextLayer>
+  <TextLayer LanguageId="de">
+    <Text ID="89135" Value="Kontrast"/>
+    <Text ID="89136" Value="Touch kalibrieren"/>
+    <Text ID="89137" Value="Setup"/>
+    <Text ID="89138" Value="Home"/>
+    <Text ID="89139" Value="Service"/>
+    <Text ID="89142" Value="Helligkeit"/>
+    <Text ID="89290" Value="Kaffee Auswahl"/>
+    <Text ID="89291" Value="Historie"/>
+    <Text ID="89296" Value="Kaffee Rezept"/>
+    <Text ID="89302" Value="Sprache Auswählen"/>
+    <Text ID="89304" Value="Touch Konfiguration"/>
+    <Text ID="89308" Value="Münzeinwurf"/>
+    <Text ID="89310" Value="Preis"/>
+    <Text ID="89311" Value="Milch"/>
+    <Text ID="89312" Value="Zucker"/>
+    <Text ID="89313" Value="Kaffee Pulver"/>
+    <Text ID="89314" Value="Wasser"/>
+    <Text ID="89315" Value="Zuführung"/>
+    <Text ID="89318" Value="Aus"/>
+    <Text ID="89319" Value="Geschw"/>
+    <Text ID="89320" Value="Ein"/>
+    <Text ID="89321" Value="Position"/>
+    <Text ID="89328" Value="Start"/>
+    <Text ID="89523" Value="Netzwerk Einstellungen"/>
+    <Text ID="89526" Value="IP Adresse"/>
+    <Text ID="89527" Value="Knotennummer"/>
+    <Text ID="89888" Value="Ein/Aus"/>
+    <Text ID="89889" Value="Transportband"/>
+    <Text ID="89982" Value="Wechselgeld"/>
+    <Text ID="89983" Value="Zurück"/>
+    <Text ID="89989" Value="2  Euro"/>
+    <Text ID="89990" Value=""/>
+    <Text ID="89991" Value="1  Euro"/>
+    <Text ID="89992" Value=""/>
+    <Text ID="89993" Value="50 Cent"/>
+    <Text ID="89994" Value="20 Cent"/>
+    <Text ID="89995" Value="10 Cent"/>
+    <Text ID="89996" Value="5  Cent"/>
+    <Text ID="89997" Value="2  Cent"/>
+    <Text ID="89998" Value="1 Cent"/>
+    <Text ID="89999" Value=""/>
+    <Text ID="90122" Value="HH:MM:SS"/>
+    <Text ID="90123" Value="yyyy/mm/dd"/>
+    <Text ID="90125" Value="Zeit und Datum"/>
+    <Text ID="90202" Value=""/>
+    <Text ID="90203" Value=""/>
+    <Text ID="90204" Value=""/>
+    <Text ID="90205" Value="Sprachen"/>
+    <Text ID="90206" Value="Instruktion"/>
+    <Text ID="90207" Value="CPU"/>
+    <Text ID="90208" Value="Entnahme"/>
+    <Text ID="90209" Value="Pumpe"/>
+    <Text ID="90210" Value="Dosierung"/>
+    <Text ID="90211" Value="Brühgruppe"/>
+    <Text ID="90212" Value="Becher Speicher"/>
+    <Text ID="90213" Value="Heizung"/>
+    <Text ID="90214" Value="€"/>
+    <Text ID="91312" Value="Alarm"/>
+    <Text ID="91313" Value="Trend"/>
+    <Text ID="91515" Value="Diagnose"/>
+    <Text ID="92537" Value=""/>
+    <Text ID="92538" Value=""/>
+    <Text ID="92539" Value="Wassertemp."/>
+    <Text ID="92540" Value=""/>
+    <Text ID="92541" Value=""/>
+    <Text ID="92542" Value="CPU-Temp."/>
+    <Text ID="92543" Value="Auto Scrollen"/>
+    <Text ID="92545" Value="Trendsteuerung"/>
+    <Text ID="92546" Value="Cursor 1"/>
+    <Text ID="92547" Value="Cursor 2"/>
+    <Text ID="92548" Value="Zeige alles"/>
+    <Text ID="92549" Value="Zeit [s]"/>
+    <Text ID="92553" Value=""/>
+    <Text ID="92557" Value=""/>
+    <Text ID="92558" Value="Alarmsteuerung"/>
+    <Text ID="92559" Value=""/>
+    <Text ID="92560" Value=""/>
+    <Text ID="93067" Value=""/>
+    <Text ID="93737" Value="Metrisch"/>
+    <Text ID="93738" Value="Imperial"/>
+    <Text ID="93745" Value="Einheitensystem"/>
+    <Text ID="94706" Value="Sprache Auswählen"/>
+    <Text ID="94711" Value="Datum &amp; Uhrzeit"/>
+  </TextLayer>
+  <TextLayer LanguageId="zh-CN">
+    <Text ID="89135" Value="对比度"/>
+    <Text ID="89136" Value="触摸调试"/>
+    <Text ID="89137" Value="设置"/>
+    <Text ID="89138" Value="主页"/>
+    <Text ID="89139" Value="服务"/>
+    <Text ID="89142" Value="亮度"/>
+    <Text ID="89290" Value="咖啡"/>
+    <Text ID="89291" Value="历史"/>
+    <Text ID="89296" Value="咖啡配方"/>
+    <Text ID="89302" Value="语言选择"/>
+    <Text ID="89304" Value="触摸设置"/>
+    <Text ID="89308" Value="投币"/>
+    <Text ID="89310" Value="价格"/>
+    <Text ID="89311" Value="牛奶"/>
+    <Text ID="89312" Value="糖"/>
+    <Text ID="89313" Value="咖啡粉"/>
+    <Text ID="89314" Value="水"/>
+    <Text ID="89315" Value="输入"/>
+    <Text ID="89318" Value="关闭"/>
+    <Text ID="89319" Value="速度"/>
+    <Text ID="89320" Value="运行"/>
+    <Text ID="89321" Value="位置"/>
+    <Text ID="89328" Value="开始"/>
+    <Text ID="89523" Value="网络设置"/>
+    <Text ID="89526" Value="IP 地址:"/>
+    <Text ID="89527" Value="节点号:"/>
+    <Text ID="89888" Value="控制"/>
+    <Text ID="89889" Value="传输带"/>
+    <Text ID="89982" Value="找零钱"/>
+    <Text ID="89983" Value="返回"/>
+    <Text ID="89989" Value="2 欧元"/>
+    <Text ID="89990" Value=""/>
+    <Text ID="89991" Value="1 欧元"/>
+    <Text ID="89992" Value=""/>
+    <Text ID="89993" Value="50 欧分"/>
+    <Text ID="89994" Value="20 欧分"/>
+    <Text ID="89995" Value="10 欧分"/>
+    <Text ID="89996" Value="5  欧分"/>
+    <Text ID="89997" Value="2 欧分"/>
+    <Text ID="89998" Value="1 欧分"/>
+    <Text ID="89999" Value=""/>
+    <Text ID="90122" Value="HH:MM:SS"/>
+    <Text ID="90123" Value="yyyy/mm/dd"/>
+    <Text ID="90125" Value="事件和日期"/>
+    <Text ID="90202" Value=""/>
+    <Text ID="90203" Value=""/>
+    <Text ID="90204" Value=""/>
+    <Text ID="90205" Value="語"/>
+    <Text ID="90206" Value="教学"/>
+    <Text ID="90207" Value="的"/>
+    <Text ID="90208" Value="取出"/>
+    <Text ID="90209" Value="加压"/>
+    <Text ID="90210" Value="灌装"/>
+    <Text ID="90211" Value="咖啡加工"/>
+    <Text ID="90212" Value="杯子存储量"/>
+    <Text ID="90213" Value="加热"/>
+    <Text ID="90214" Value="€"/>
+    <Text ID="91312" Value="警钟"/>
+    <Text ID="91313" Value="趋势图"/>
+    <Text ID="91515" Value="診斷"/>
+    <Text ID="92537" Value=""/>
+    <Text ID="92538" Value=""/>
+    <Text ID="92539" Value="水温"/>
+    <Text ID="92540" Value=""/>
+    <Text ID="92541" Value=""/>
+    <Text ID="92542" Value="CPU温度"/>
+    <Text ID="92543" Value="自动刷新"/>
+    <Text ID="92545" Value="指针控制"/>
+    <Text ID="92546" Value="指针 1"/>
+    <Text ID="92547" Value="指针 2"/>
+    <Text ID="92548" Value="显示所有"/>
+    <Text ID="92549" Value="时间 [s]"/>
+    <Text ID="92553" Value=""/>
+    <Text ID="92557" Value=""/>
+    <Text ID="92558" Value="报警控制"/>
+    <Text ID="92559" Value=""/>
+    <Text ID="92560" Value=""/>
+    <Text ID="93067" Value=""/>
+    <Text ID="93737" Value="Metric"/>
+    <Text ID="93738" Value="Imperial"/>
+    <Text ID="93745" Value="单位系统"/>
+    <Text ID="94706" Value="语言选择"/>
+    <Text ID="94711" Value="日期和时间"/>
+  </TextLayer>
+  <IndexMap>
+    <Index ID="89135" Value="6009"/>
+    <Index ID="89136" Value="6008"/>
+    <Index ID="89137" Value="2"/>
+    <Index ID="89138" Value="1"/>
+    <Index ID="89139" Value="0"/>
+    <Index ID="89142" Value="6010"/>
+    <Index ID="89290" Value="1000"/>
+    <Index ID="89291" Value="6"/>
+    <Index ID="89296" Value="1001"/>
+    <Index ID="89302" Value="6000"/>
+    <Index ID="89304" Value="6001"/>
+    <Index ID="89308" Value="1002"/>
+    <Index ID="89310" Value="1004"/>
+    <Index ID="89311" Value="1005"/>
+    <Index ID="89312" Value="1006"/>
+    <Index ID="89313" Value="1007"/>
+    <Index ID="89314" Value="1008"/>
+    <Index ID="89315" Value="1101"/>
+    <Index ID="89318" Value="1010"/>
+    <Index ID="89319" Value="1102"/>
+    <Index ID="89320" Value="1009"/>
+    <Index ID="89321" Value="1103"/>
+    <Index ID="89328" Value="1011"/>
+    <Index ID="89523" Value="6002"/>
+    <Index ID="89526" Value="6003"/>
+    <Index ID="89527" Value="6004"/>
+    <Index ID="89888" Value="1003"/>
+    <Index ID="89889" Value="1100"/>
+    <Index ID="89982" Value="1104"/>
+    <Index ID="89983" Value="1105"/>
+    <Index ID="89989" Value="1150"/>
+    <Index ID="89990" Value="1106"/>
+    <Index ID="89991" Value="1151"/>
+    <Index ID="89992" Value="1025"/>
+    <Index ID="89993" Value="1152"/>
+    <Index ID="89994" Value="1153"/>
+    <Index ID="89995" Value="1154"/>
+    <Index ID="89996" Value="1155"/>
+    <Index ID="89997" Value="1156"/>
+    <Index ID="89998" Value="1157"/>
+    <Index ID="89999" Value="1163"/>
+    <Index ID="90122" Value="6005"/>
+    <Index ID="90123" Value="6006"/>
+    <Index ID="90125" Value="6007"/>
+    <Index ID="90202" Value="1024"/>
+    <Index ID="90203" Value="1023"/>
+    <Index ID="90204" Value="1022"/>
+    <Index ID="90205" Value="1021"/>
+    <Index ID="90206" Value="1020"/>
+    <Index ID="90207" Value="1019"/>
+    <Index ID="90208" Value="1018"/>
+    <Index ID="90209" Value="1017"/>
+    <Index ID="90210" Value="1016"/>
+    <Index ID="90211" Value="1015"/>
+    <Index ID="90212" Value="1014"/>
+    <Index ID="90213" Value="1013"/>
+    <Index ID="90214" Value="1012"/>
+    <Index ID="91312" Value="5"/>
+    <Index ID="91313" Value="3"/>
+    <Index ID="91515" Value="7"/>
+    <Index ID="92537" Value="1162"/>
+    <Index ID="92538" Value="1161"/>
+    <Index ID="92539" Value="1200"/>
+    <Index ID="92540" Value="1159"/>
+    <Index ID="92541" Value="1158"/>
+    <Index ID="92542" Value="1201"/>
+    <Index ID="92543" Value="1202"/>
+    <Index ID="92545" Value="1203"/>
+    <Index ID="92546" Value="1204"/>
+    <Index ID="92547" Value="1205"/>
+    <Index ID="92548" Value="1206"/>
+    <Index ID="92549" Value="1207"/>
+    <Index ID="92553" Value="1208"/>
+    <Index ID="92557" Value="1209"/>
+    <Index ID="92558" Value="1600"/>
+    <Index ID="92559" Value="1211"/>
+    <Index ID="92560" Value="1212"/>
+    <Index ID="93067" Value="8"/>
+    <Index ID="93737" Value="6013"/>
+    <Index ID="93738" Value="6012"/>
+    <Index ID="93745" Value="6011"/>
+    <Index ID="94706" Value="4"/>
+    <Index ID="94711" Value="6014"/>
+  </IndexMap>
+</TextGroup>

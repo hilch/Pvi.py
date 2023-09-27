@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=4.1.4.367?>
+<Package xmlns="http://br-automation.co.at/AS/Package">
+  <Objects>
+    <Object Type="Library" Language="Binary" Description="This library contains function interfaces for IEC 1131-3 conversion functions.">Convert</Object>
+    <Object Type="Library" Language="Binary" Description="This library contains runtime functions for IEC tasks.">Runtime</Object>
+    <Object Type="Library" Language="Binary">sys_lib</Object>
+    <Object Type="Library" Language="Binary">brsystem</Object>
+    <Object Type="Library" Language="Binary" Description="IEC 61131-3 Standard Functions">Standard</Object>
+    <Object Type="Library" Language="Binary">AsString</Object>
+    <Object Type="Library" Language="Binary" Description="DataObj: Verwalten von Speicherbereichen">DataObj</Object>
+    <Object Type="Library" Language="Binary">FileIO</Object>
+    <Object Type="Library" Language="Binary" Description="This library contains function interfaces for IEC1131-3 operator functions. For the most part, these are mathematical and logical functions.">operator</Object>
+    <Object Type="Library" Language="Binary">AsTime</Object>
+    <Object Type="Library" Language="IEC">CoffeeLib</Object>
+    <Object Type="Library" Language="Binary" Description="This library contains control algorithms.">LoopConR</Object>
+    <Object Type="Library" Language="Binary" Description="The Visapi library provides support to access and control visualizations at runtime.">Visapi</Object>
+    <Object Type="Library" Language="Binary" Description="The AsArSdm library supports the System Diagnostics Manager">AsArSdm</Object>
+    <Object Type="Library" Language="Binary" Description="The AsArProf library is used to operate ">AsArProf</Object>
+    <Object Type="Library" Language="Binary" Description="Motion Control Manager">Acp10man</Object>
+    <Object Type="Library" Language="Binary" Description="ACOPOS Parameters">Acp10par</Object>
+    <Object Type="Library" Language="Binary" Description="Global NC functions">NcGlobal</Object>
+    <Object Type="Library" Language="Binary" Description="Smart Device Controller">Acp10sdc</Object>
+    <Object Type="Library" Language="Binary" Description="ACOPOS Simulation">Acp10sim</Object>
+    <Object Type="Library" Language="Binary" Description="PLCopen Motion Control function blocks">Acp10_MC</Object>
+  </Objects>
+</Package>

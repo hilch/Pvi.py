@@ -1,0 +1,30 @@
+(********************************************************************
+ * COPYRIGHT -- B&R
+ ********************************************************************
+ * File: Global.var
+ * Author: B&R
+ * Created: June 06, 2007
+ ********************************************************************
+ * Global variables of project coffee
+ ********************************************************************)
+VAR
+	axFeeder : ACP10AXIS_typ; (*axis information of feeder*)
+	axConveyor : ACP10AXIS_typ; (*axis information of conveyor*)
+	doCupPull : BOOL := FALSE; (*pulls cup out of storage*)
+	gMainLogic : main_typ; (*info structure of main logic*)
+	gFeeder : feeder_typ := (0); (*info structure of feeder*)
+	gBrewing : brewing_typ := (0); (*info structure of brewing assembly*)
+	doDoseMilk : BOOL := FALSE; (*doser: milk*)
+	doDoseSugar : BOOL := FALSE; (*doser: sugar*)
+	doDoseCoffee : BOOL := FALSE; (*doser: coffee*)
+	gConveyor : conveyor_typ := (0);
+	gHeating : heating_typ := (0); (*info structure of heating*)
+	doPumpWater : BOOL := FALSE; (*water pump*)
+	aoHeating : INT := 0; (*heating control*)
+	atWaterTemp : INT := 0; (*actual temperature of water*)
+	diStartCoffee : BOOL := FALSE; (*start making coffee*)
+	gActConveyorVelocity : REAL; (*actual conveyor velocity*)
+	gActFeederVelocity : REAL; (*actual feeder velocity*)
+	gActFeederPosition : REAL; (*actual feeder position*)
+	gActConveyorPosition : REAL; (*actual conveyor position*)
+END_VAR

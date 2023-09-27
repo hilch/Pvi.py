@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=4.1.17.113 SP?>
+<Cpu xmlns="http://br-automation.co.at/AS/Cpu">
+  <Objects>
+    <Object Type="File" Description="Software configuration">Cpu.sw</Object>
+    <Object Type="File" Description="Declaration of permanent variables">Cpu.per</Object>
+    <Object Type="File" Description="IO mapping file">IoMap.iom</Object>
+    <Object Type="File" Description="PV mapping file">PvMap.vvm</Object>
+    <Object Type="Package">Motion</Object>
+  </Objects>
+  <Configuration HasNcOperatingSystem="true" LocalVariablesMemory="MemoryPool" ModuleId="4PP065.0571-P74">
+    <AutomationRuntime Version="E3.10" />
+    <Build GccVersion="4.1.2" GeneratePPCode="false" />
+    <DefaultTargetMemory DataObjects="UserROM" Libraries="UserROM" Tasks="UserROM" />
+    <Opc EncryptOpcs="false" UseShortNames="false" WindowsServer="true" />
+    <TaskClasses DefaultIoTaskClass="Automatic" DefaultTaskClass="Cyclic4" />
+    <Transfer AllowWarmRestart="true" DownloadMode="Overload" GeneratePviTransferList="true" IgnoreBrDependencies="false" IgnoreTargetOnlyObjects="false" PackedArConfig="false" PackedIoMap="false" PromptBeforeProject="false" PromptBeforeTask="false" TransferInServiceMode="false" TransferOnlyRelevantChanges="false" />
+    <Vc FirmwareVersion="V4.15.9" />
+    <Io ArConfigDataModule="false" ArConfigDataModulePath="$(AS_CPU_PATH)\AS\CfgData.br" DisabledHardware="false" IoMapDataModule="false" IoMapDataModulePath="$(AS_CPU_PATH)\AS\IomData.br" ManualIoOffsets="false" Supervision="true" />
+    <Simulation StartAR000="true" TerminateAR000="true" />
+    <Safety SafetyRelease="0.0" />
+    <OnlineConfiguration Name="4PP065.0571-P74" DeviceType="TCPIP" DeviceParameters="/IF=tcpip /LOPO=11159 /SA=113" ConnectionParameters="/RT=1000 /AM=* /SDT=5 /DAIP=10.49.40.222 /REPO=11159 /ANSL=1 /PT=11169" Description="" />
+  </Configuration>
+</Cpu>

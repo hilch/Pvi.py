@@ -1,0 +1,41 @@
+(********************************************************************
+ * COPYRIGHT -- Bernecker + Rainer
+ ********************************************************************
+ * Library: Visapi
+ * File: Visapi.var
+ * Created: 11.11.2003
+ ********************************************************************
+ * 
+ ********************************************************************)
+VAR CONSTANT
+	vaERR_VISAPI_NOT_INITIALIZED : UINT := 100; (*visapi not initialized*)
+	vaERR_RESOURCE_WRONG_FORMAT : UINT := 7197; (*resource has wrong format*)
+	vaERR_RESOURCE_NOT_FOUND : UINT := 7196; (*resource not found*)
+	vaERR_NO_MORE : UINT := 7195; (*no data found*)
+	vaERR_ALREADY : UINT := 7190; (*connection already exists*)
+	vaERR_RESOURCES : UINT := 7180; (*resource error*)
+	vaERR_MEMORY : UINT := 7170; (*no memory*)
+	vaERR_VERSION : UINT := 7160; (*version conflict*)
+	vaERR_ARGUMENT : UINT := 7150; (*wrong arguments*)
+	vaERR_TIMEOUT : UINT := 7140; (*timeout*)
+	vaERR_CONNECTION_LOST : UINT := 7130; (*connection lost*)
+	vaERR_OVERFLOW : UINT := 7120; (*memory overflow*)
+	vaERR_ACCESS : UINT := 7111; (*access error*)
+	vaERR_NO_ACCESS : UINT := 7110; (*access error*)
+	vaERR_EXISTS : UINT := 7101; (*resource exists already*)
+	vaERR_CREATE_TASK_FAILED : UINT := 7100; (*create task failed*)
+	vaERR_PARAMETER : UINT := 7090; (*parameter error*)
+	vaERR_NOT_SUPPORTED : UINT := 7080; (*function not supported*)
+	vaERR_KEYMATRIX_NOT_VALID : UINT := 7070; (*keymatrix not valid*)
+	vaERR_FONTMODULE_NOT_FOUND : UINT := 7060; (*fontmodul no found*)
+	vaERR_UNDEFINED_ERROR_CODE : UINT := 7050; (*undefined error code*)
+	vaERR_WRONG_MODULE_NAME : UINT := 7030; (*wrong module name*)
+	vaERR_DRIVER_NOT_FOUND : UINT := 7020; (*driver not found*)
+	vaERR_INTERPRETER_NOT_READY : UINT := 7010; (*interpreter not ready*)
+	aERR_BUSY_ALARMSYSTEM : UINT := 247; (*alarmsystem busy*)
+	vaERR_DELHISLIST : UINT := 246; (*error delting alarm history*)
+	vaERR_NOALARMQUIT : UINT := 245; (*error in quiting alarm*)
+	vaERR_EMPTY_ALARMLIST : UINT := 240; (*empty alarm list*)
+	vaERR_BUSY : UINT := 7000; (*busy*)
+	vaERR_EMPTY_HISTORYLIST : UINT := 248; (*empty alarm history*)
+END_VAR

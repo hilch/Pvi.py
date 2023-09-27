@@ -1,0 +1,16 @@
+(********************************************************************
+ * COPYRIGHT (C) BERNECKER + RAINER, AUSTRIA, A-5142 EGGELSBERG
+ ********************************************************************
+ * Library: AsTime
+ * File: AsTime.var
+ * Created: 11.11.2003
+ ********************************************************************
+ * Constants of library AsTime
+ ********************************************************************)
+VAR CONSTANT
+	timEXSETTIME_NO_LOGENTRY	: USINT	:= 1;
+	timEXSETTIME_NO_OPTION	: USINT	:= 0;
+	DATE_AND_TIME_MAX	: UDINT	:= 4102444799;
+	TIME_MIN	: DINT	:= -2073600000;
+	TIME_MAX	: DINT	:= 2073600000;
+END_VAR

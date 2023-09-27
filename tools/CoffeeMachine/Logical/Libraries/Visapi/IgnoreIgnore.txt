@@ -1,0 +1,6 @@
+Just for internal use. Do not modify or delete this file!!
+
+This file indicates that the default library structure for versioned libraries will be ignored and the libary is treated as Ar or Vc dependent library.
+Only counts for AS 3.00.80.xx or higher versions.
+
+Therefore if a library folder contains this file but no library declaration files the library isn't valid anymore.

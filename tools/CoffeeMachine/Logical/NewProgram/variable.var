@@ -1,0 +1,16 @@
+(********************************************************************
+ * COPYRIGHT -- B&R Industrial Automation GmbH
+ ********************************************************************
+ * Program: NewProgram
+ * File: variable.var
+ * Author: hilchenbachc
+ * Created: October 28, 2022
+ ********************************************************************
+ * Local variables of program NewProgram
+ ********************************************************************)
+VAR
+	timedelta : TIME := T#0S;
+	n : INT := 0; (*myStructArray : ARRAY[0..9] OF MyStruct := [10(0)];*) (*floatarray : ARRAY[0..2] OF REAL;*)
+	sizeofmystruct : UDINT := 0;
+	_mystruct : MyStruct := (0);
+END_VAR

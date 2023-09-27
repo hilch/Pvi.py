@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=4.0.14.207?>
+<Hardware xmlns="http://br-automation.co.at/AS/Hardware">
+  <Module Name="5LS182.6-1" Type="5LS182.6-1" Version="1.2.2.1">
+    <Connection Connector="SL" TargetModule="ARsim" TargetConnector="SL1" />
+  </Module>
+  <Module Name="8AC114.60-2" Type="8AC114.60-2" Version="1.0.0.5">
+    <Connection Connector="SS" TargetModule="axFeeder" TargetConnector="SS1" />
+    <Connection Connector="PLK1" TargetModule="5LS182.6-1" TargetConnector="IF1" NodeNumber="1" />
+  </Module>
+  <Module Name="8AC114.60-2a" Type="8AC114.60-2" Version="1.0.0.5">
+    <Connection Connector="SS" TargetModule="axConveyor" TargetConnector="SS1" />
+    <Connection Connector="PLK1" TargetModule="8AC114.60-2" TargetConnector="PLK2" NodeNumber="2" />
+  </Module>
+  <Module Name="ARsim" Type="PC_any" Version="1.1.0.0" OrderNumber="PC">
+    <Connector Name="IF3">
+      <Group ID="Vnc1" />
+      <Parameter ID="VncVcObjectName1" Value="Visu" />
+      <Parameter ID="VncAuthentication1" Value="1" />
+      <Parameter ID="VncPasswordViewOnly1" Value="v" />
+      <Parameter ID="VncPasswordViewControl1" Value="c" />
+      <Parameter ID="VncRefreshRate1" Value="200" />
+      <Parameter ID="VncTitle1" Value="VNC - B&amp;R Coffee Machine" />
+    </Connector>
+    <Parameter ID="PreserveNonVolatileSystemSettings" Value="0" />
+    <Parameter ID="BRObjects" Value="450" />
+    <Parameter ID="XLinkUseDefault" Value="0" />
+    <Parameter ID="Cyclic1Duration" Value="10000" />
+    <Parameter ID="Cyclic1Tolerance" Value="0" />
+    <Parameter ID="EthernetHostName" Value="AR000CoffeeMachine" />
+    <Parameter ID="ActivateOpcUa" Value="1" />
+  </Module>
+  <Module Name="axConveyor" Type="8V1045.00-2" Version="1.0.0.2">
+    <Parameter ID="Simulate" Value="standard" />
+  </Module>
+  <Module Name="axFeeder" Type="8V1045.00-2" Version="1.0.0.2">
+    <Parameter ID="Simulate" Value="standard" />
+  </Module>
+</Hardware>

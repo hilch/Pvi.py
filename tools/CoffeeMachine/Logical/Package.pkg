@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=4.1.17.113 SP?>
+<Package xmlns="http://br-automation.co.at/AS/Package">
+  <Objects>
+    <Object Type="Package" Description="Project Documentation">Doc</Object>
+    <Object Type="File" Description="Global Data Types">Global.typ</Object>
+    <Object Type="File" Description="Global Variables">Global.var</Object>
+    <Object Type="Program" Language="IEC" Description="Main Logic Control">mainlogic</Object>
+    <Object Type="Package" Description="Conveyor Control">ConveyorBelt</Object>
+    <Object Type="Package" Description="Brewing &amp; Dosing">BrewingAssembly</Object>
+    <Object Type="Package" Description="Feeder Control">FeederArm</Object>
+    <Object Type="Package" Description="Heater Control">FlowHeater</Object>
+    <Object Type="Package" Description="Coffee Recipes">Recipes</Object>
+    <Object Type="Package" Description="Visualization">Visualisation</Object>
+    <Object Type="Package" Description="Global Libraries">Libraries</Object>
+    <Object Type="Program" Language="IEC" Description="Program">NewProgram</Object>
+    <Object Type="Program" Language="IEC" Description="Program">myProg</Object>
+    <Object Type="DataObject" Language="Cnc" Description="CNC Program">cnc3</Object>
+    <Object Type="DataObject" Language="Cnc" Description="CNC Program">cnc1</Object>
+    <Object Type="DataObject" Language="Cnc" Description="CNC Program">cnc2</Object>
+    <Object Type="DataObject" Language="Simple" Description="Simple data object">data</Object>
+  </Objects>
+</Package>

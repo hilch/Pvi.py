@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=4.1.4.281?>
+<Hardware xmlns="http://br-automation.co.at/AS/Hardware">
+  <Module Name="PP420" Type="4PP420.1043-75" Version="1.0.0.0">
+    <Connector Name="IF5">
+      <Parameter ID="ActivateDevice" Value="1" />
+      <Group ID="Vnc1" />
+      <Parameter ID="VncVcObjectName1" Value="Visu" />
+      <Parameter ID="VncAuthentication1" Value="1" />
+      <Parameter ID="VncPasswordViewOnly1" Value="v" />
+      <Parameter ID="VncPasswordViewControl1" Value="c" />
+      <Parameter ID="VncTitle1" Value="VNC - B&amp;R Coffee Machine" />
+    </Connector>
+    <Parameter ID="BRObjects" Value="450" />
+    <Parameter ID="Cyclic1Duration" Value="2000" />
+    <Parameter ID="Cyclic1Tolerance" Value="0" />
+    <Parameter ID="Cyclic2Duration" Value="20000" />
+    <Parameter ID="Cyclic2Tolerance" Value="20000" />
+    <Parameter ID="Cyclic3Duration" Value="50000" />
+    <Parameter ID="Cyclic3Tolerance" Value="50000" />
+    <Parameter ID="Cyclic4Duration" Value="100000" />
+    <Parameter ID="Cyclic4Tolerance" Value="100000" />
+    <Parameter ID="Cyclic5Duration" Value="200000" />
+    <Parameter ID="Cyclic5Tolerance" Value="200000" />
+    <Parameter ID="Cyclic6Duration" Value="500000" />
+    <Parameter ID="Cyclic6Tolerance" Value="500000" />
+    <Parameter ID="Cyclic7Duration" Value="1000000" />
+    <Parameter ID="Cyclic7Tolerance" Value="1000000" />
+    <Parameter ID="Cyclic8Duration" Value="10000" />
+    <Parameter ID="Cyclic8Tolerance" Value="30000000" />
+    <Parameter ID="EthernetHostName" Value="PP400CoffeeMachine" />
+    <Parameter ID="ActivateDns" Value="1" />
+    <Parameter ID="GetDnsFromDhcp" Value="2" />
+    <Parameter ID="VcObjectName" Value="Visu" />
+  </Module>
+</Hardware>

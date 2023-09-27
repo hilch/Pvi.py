@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?AutomationStudio Version="4.0.14.207"?>
+<BitmapGroup xmlns="http://br-automation.co.at/AS/VC/Project" Name="AlarmEvent">
+  <Property Name="Description" Value=""/>
+  <Property Name="Index" Value="6"/>
+  <Property Name="Translate" Value="False"/>
+  <BitmapLayer LanguageId="neutral">
+    <BitmapRef ID="280" Value="Source[local].Bitmap[Triggered]"/>
+    <BitmapRef ID="281" Value="Source[local].Bitmap[AlarmBypassOFF]"/>
+    <BitmapRef ID="282" Value="Source[local].Bitmap[AlarmBypassON]"/>
+    <BitmapRef ID="283" Value="Source[local].Bitmap[Reset]"/>
+    <BitmapRef ID="284" Value="Source[local].Bitmap[ResetAcknowledge]"/>
+    <BitmapRef ID="285" Value="Source[local].Bitmap[AcknowledgeReset]"/>
+  </BitmapLayer>
+  <IndexMap>
+    <Index ID="280" Value="0"/>
+    <Index ID="281" Value="3"/>
+    <Index ID="282" Value="2"/>
+    <Index ID="283" Value="1"/>
+    <Index ID="284" Value="4"/>
+    <Index ID="285" Value="5"/>
+  </IndexMap>
+</BitmapGroup>

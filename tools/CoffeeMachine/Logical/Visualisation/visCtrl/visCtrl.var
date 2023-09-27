@@ -1,0 +1,53 @@
+(********************************************************************
+ * COPYRIGHT -- B&R
+ ********************************************************************
+ * Program: visCtrl
+ * File: visCtrl.var
+ * Author: B&R
+ * Created: June 20, 2007
+ ********************************************************************
+ * Local variables of program visCtrl
+ ********************************************************************)
+VAR
+	systemHMI : sysset_typ;
+	dateTime : DATE_AND_TIME := DT#1970-01-01-00:00:00;
+	systemSetTime : DTSetTime;
+	systemGetTime : DTGetTime;
+	cmdStartCoffee : BOOL := FALSE;
+	setPage : UINT := 0;
+	setPageOld : UINT := 0;
+	initTimeoutEnable : BOOL := TRUE;
+END_VAR
+VAR CONSTANT
+	sP31_AlarmHistoryPage : UINT := 31;
+	sP20_TrendPage : UINT := 20;
+	sP30_AlarmPage : UINT := 30;
+	sP00_StartPage : UINT := 0;
+	sP11_TakeoutPage : UINT := 11;
+	sP12_InfoPage : USINT := 12;
+	sP10_MainPage : UINT := 10;
+	sP60_Setup : UINT := 60;
+	sP60_SystemDiagnostics : UINT := 61;
+END_VAR
+VAR
+	startPageTON : TON;
+	urlSDM : STRING[128] := '';
+	waterLevel : INT;
+	brewingTON : TON;
+	statusInsertCoin : UINT;
+	statusProgressStep : UINT;
+	unitSystem : INT;
+	unitMetric : BOOL;
+	unitImperial : BOOL;
+	unitMetricLocked : UINT;
+	unitImperialLocked : UINT;
+	calibrateTouch : INT;
+	calibrationStatus : INT;
+	cupPosition : INT;
+	cupPositionCnt : INT;
+	showInfo : INT;
+	showBusyValue : INT;
+	showBusyLayer : UINT;
+	diagIsLoading : BOOL;
+	openLanguage : UINT;
+END_VAR

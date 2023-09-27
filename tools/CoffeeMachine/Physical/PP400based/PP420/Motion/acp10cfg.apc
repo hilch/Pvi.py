@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=?>
+<AcoposParameterConfiguration>
+  <Root Name="SL1.SS1.IF2.ST2" Description="8V1016.50-2">
+    <Group Name="SS2" Description="8AC120.00" StructureEdit="FALSE" ModuleDisabled="FALSE">
+      <Parameter Name="ENCOD_TYPE" ID="97" Value="ncENDAT" />
+    </Group>
+  </Root>
+  <Root Name="SL1.SS1.IF2.ST1" Description="8V1016.50-2">
+    <Group Name="SS2" Description="8AC120.00" StructureEdit="FALSE" ModuleDisabled="FALSE">
+      <Parameter Name="ENCOD_TYPE" ID="97" Value="ncENDAT" />
+    </Group>
+  </Root>
+</AcoposParameterConfiguration>

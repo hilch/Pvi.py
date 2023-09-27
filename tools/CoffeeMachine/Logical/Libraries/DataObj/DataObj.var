@@ -1,0 +1,34 @@
+(********************************************************************
+ * COPYRIGHT (C) BERNECKER + RAINER, AUSTRIA, A-5142 EGGELSBERG
+ ********************************************************************
+ * Library: DataObj
+ * File: DataObj.var
+ * Created: 11.11.2003
+ ********************************************************************
+ * Constants of library DataObj
+ ********************************************************************)
+VAR CONSTANT
+	doERR_TOOLONG_MODULNAME	: UINT	:= 20613;
+	doERR_CHECKSUM_WARNING	: UINT	:= 20630;
+	doERR_MODULNOTFOUND	: UINT	:= 20609;
+	doERR_ILLEGALLENGTH	: UINT	:= 20608;
+	doERR_STARTHANDLER	: UINT	:= 20612;
+	doERR_ILLPARAMETER	: UINT	:= 20600;
+	doERR_WRONGOFFSET	: UINT	:= 20607;
+	doERR_ILLOBJTYPE	: UINT	:= 20606;
+	doERR_ILLMEMTYPE	: UINT	:= 20602;
+	doERR_WRONGTIME	: UINT	:= 20610;
+	doERR_ILLOBJECT	: UINT	:= 20605;
+	doERR_DUPOBJECT	: UINT	:= 20601;
+	doERR_BRINSTALL	: UINT	:= 20604;
+	doERR_NOMEMORY	: UINT	:= 20603;
+	doERR_ILLSTATE	: UINT	:= 20611;
+	doERR_BURNINGOBJECT : UINT := 20614;
+	doSYSROM	: USINT	:= 0;
+	doNO_CS	  : USINT	:= 1;
+	doUSRROM	: USINT	:= 2;
+	doUSRRAM	: USINT	:= 3;
+	doMEMCARD : USINT	:= 4;
+	doFIXRAM  : USINT	:= 5;
+	doTEMP	: USINT	:= 65;
+END_VAR

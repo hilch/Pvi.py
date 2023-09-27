@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?AutomationStudio Version="4.0.14.207"?>
+<TextGroup xmlns="http://br-automation.co.at/AS/VC/Project" Name="AlarmEvent_short">
+  <Property Name="Description" Value=""/>
+  <Property Name="Index" Value="8"/>
+  <TextSnippets/>
+  <TextLayer LanguageId="en">
+    <Text ID="29" Value="T"/>
+    <Text ID="30" Value="R"/>
+    <Text ID="31" Value="B"/>
+    <Text ID="32" Value="nB"/>
+    <Text ID="33" Value="RA"/>
+    <Text ID="34" Value="AR"/>
+  </TextLayer>
+  <TextLayer LanguageId="de">
+    <Text ID="29" Value="T"/>
+    <Text ID="30" Value="R"/>
+    <Text ID="31" Value="B"/>
+    <Text ID="32" Value="nB"/>
+    <Text ID="33" Value="RA"/>
+    <Text ID="34" Value="AR"/>
+  </TextLayer>
+  <TextLayer LanguageId="zh-CN">
+    <Text ID="29" Value=""/>
+    <Text ID="30" Value=""/>
+    <Text ID="31" Value=""/>
+    <Text ID="32" Value=""/>
+    <Text ID="33" Value=""/>
+    <Text ID="34" Value=""/>
+  </TextLayer>
+  <IndexMap>
+    <Index ID="29" Value="0"/>
+    <Index ID="30" Value="1"/>
+    <Index ID="31" Value="2"/>
+    <Index ID="32" Value="3"/>
+    <Index ID="33" Value="4"/>
+    <Index ID="34" Value="5"/>
+  </IndexMap>
+</TextGroup>

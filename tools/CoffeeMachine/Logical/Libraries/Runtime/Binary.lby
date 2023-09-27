@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=3.0.80.12?>
+<Library Description="This library contains runtime functions for IEC tasks." xmlns="http://br-automation.co.at/AS/Library">
+  <Files>
+    <File>runtime.var</File>
+    <File>runtime.typ</File>
+    <File>runtime.fun</File>
+  </Files>
+</Library>

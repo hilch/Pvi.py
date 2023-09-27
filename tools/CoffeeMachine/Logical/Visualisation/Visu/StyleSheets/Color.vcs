@@ -1,0 +1,1556 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?AutomationStudio Version="4.0.14.207"?>
+<StyleSheet xmlns="http://br-automation.co.at/AS/VC/Project" Name="Color">
+  <Property Name="Description" Value=""/>
+  <StyleGroup ClassId="0x00000400">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[default]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="default">
+      <Property Name="BackColor" Value="252"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="EditBackColor" Value="234"/>
+      <Property Name="EditColorDatapoint" Value="None"/>
+      <Property Name="EditForeColor" Value="0"/>
+      <Property Name="FocusBackColor" Value="None"/>
+      <Property Name="FocusColorDatapoint" Value="None"/>
+      <Property Name="FocusForeColor" Value="None"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="HelpBackColor" Value="9"/>
+      <Property Name="HelpColorDatapoint" Value="None"/>
+      <Property Name="HelpForeColor" Value="15"/>
+      <Property Name="LockPage" Value="False"/>
+      <Property Name="LockedBackColor" Value="255"/>
+      <Property Name="LockedColorDatapoint" Value="None"/>
+      <Property Name="LockedForeColor" Value="16"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00001001">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[Shape]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="Shape">
+      <Property Name="BackColor" Value="7"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="FillStyle" Value="Opaque"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="LineWidth" Value="1"/>
+      <Property Name="Shape" Value="Rectangle"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00001002">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[ControlButton]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="ControlButton">
+      <Property Name="AlignmentHorizontal" Value="Left"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="BitmapAlignmentHorizontal" Value="Left"/>
+      <Property Name="BitmapAlignmentVertical" Value="Center"/>
+      <Property Name="Border" Value="Source[local].Border[ControlButton]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial9pxBold]"/>
+      <Property Name="ForeColor" Value="15"/>
+      <Property Name="KeyMode" Value="Immediate"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Multiline" Value="Disable"/>
+      <Property Name="PressedBackColor" Value="15"/>
+      <Property Name="PressedBorder" Value="Source[local].Border[ControlButtonPressed]"/>
+      <Property Name="PressedColorDatapoint" Value="None"/>
+      <Property Name="PressedColorMap" Value="None"/>
+      <Property Name="PressedForeColor" Value="233"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="SpacingHorizontal" Value="4"/>
+      <Property Name="SpacingVertical" Value="2"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="NavigationButtonRight">
+      <Property Name="AlignmentHorizontal" Value="Left"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="0"/>
+      <Property Name="BitmapAlignmentHorizontal" Value="Left"/>
+      <Property Name="BitmapAlignmentVertical" Value="Center"/>
+      <Property Name="Border" Value="Source[local].Border[globalAreaFrenchActive]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial9pxBold]"/>
+      <Property Name="ForeColor" Value="255"/>
+      <Property Name="KeyMode" Value="Immediate"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Multiline" Value="Disable"/>
+      <Property Name="PressedBackColor" Value="0"/>
+      <Property Name="PressedBorder" Value="Source[local].Border[globalAreaFrenchPressed]"/>
+      <Property Name="PressedColorDatapoint" Value="None"/>
+      <Property Name="PressedColorMap" Value="None"/>
+      <Property Name="PressedForeColor" Value="255"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="SpacingHorizontal" Value="4"/>
+      <Property Name="SpacingVertical" Value="2"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="RadioButton">
+      <Property Name="AlignmentHorizontal" Value="Left"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="BitmapAlignmentHorizontal" Value="Left"/>
+      <Property Name="BitmapAlignmentVertical" Value="Center"/>
+      <Property Name="Border" Value="Source[local].Border[RadioButtonInactive]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="254"/>
+      <Property Name="KeyMode" Value="Immediate"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Multiline" Value="Disable"/>
+      <Property Name="PressedBackColor" Value="15"/>
+      <Property Name="PressedBorder" Value="Source[local].Border[RadioButtonActive]"/>
+      <Property Name="PressedColorDatapoint" Value="None"/>
+      <Property Name="PressedColorMap" Value="None"/>
+      <Property Name="PressedForeColor" Value="254"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="SpacingHorizontal" Value="4"/>
+      <Property Name="SpacingVertical" Value="2"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="TabButton">
+      <Property Name="AlignmentHorizontal" Value="Left"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="0"/>
+      <Property Name="BitmapAlignmentHorizontal" Value="Left"/>
+      <Property Name="BitmapAlignmentVertical" Value="Center"/>
+      <Property Name="Border" Value="None"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial9pxBold]"/>
+      <Property Name="ForeColor" Value="15"/>
+      <Property Name="KeyMode" Value="Immediate"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Multiline" Value="Disable"/>
+      <Property Name="PressedBackColor" Value="0"/>
+      <Property Name="PressedBorder" Value="None"/>
+      <Property Name="PressedColorDatapoint" Value="None"/>
+      <Property Name="PressedColorMap" Value="None"/>
+      <Property Name="PressedForeColor" Value="0"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="SpacingHorizontal" Value="4"/>
+      <Property Name="SpacingVertical" Value="2"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="ControlActiveButton">
+      <Property Name="AlignmentHorizontal" Value="Center"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="BitmapAlignmentHorizontal" Value="Left"/>
+      <Property Name="BitmapAlignmentVertical" Value="Center"/>
+      <Property Name="Border" Value="None"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial9pxBold]"/>
+      <Property Name="ForeColor" Value="254"/>
+      <Property Name="KeyMode" Value="Immediate"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Multiline" Value="Disable"/>
+      <Property Name="PressedBackColor" Value="254"/>
+      <Property Name="PressedBorder" Value="None"/>
+      <Property Name="PressedColorDatapoint" Value="None"/>
+      <Property Name="PressedColorMap" Value="None"/>
+      <Property Name="PressedForeColor" Value="15"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="SpacingHorizontal" Value="4"/>
+      <Property Name="SpacingVertical" Value="2"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="default">
+      <Property Name="AlignmentHorizontal" Value="Left"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="BitmapAlignmentHorizontal" Value="Left"/>
+      <Property Name="BitmapAlignmentVertical" Value="Center"/>
+      <Property Name="Border" Value="Source[local].Border[DefaultButton]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial9pxRegular]"/>
+      <Property Name="ForeColor" Value="254"/>
+      <Property Name="KeyMode" Value="Immediate"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Multiline" Value="Disable"/>
+      <Property Name="PressedBackColor" Value="15"/>
+      <Property Name="PressedBorder" Value="Source[local].Border[DefaultButtonPressed]"/>
+      <Property Name="PressedColorDatapoint" Value="None"/>
+      <Property Name="PressedColorMap" Value="None"/>
+      <Property Name="PressedForeColor" Value="254"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="SpacingHorizontal" Value="4"/>
+      <Property Name="SpacingVertical" Value="2"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="KeyRingOnOff">
+      <Property Name="AlignmentHorizontal" Value="Center"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="0"/>
+      <Property Name="BitmapAlignmentHorizontal" Value="Left"/>
+      <Property Name="BitmapAlignmentVertical" Value="Center"/>
+      <Property Name="Border" Value="Source[local].Border[KeyRingOff]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="KeyMode" Value="Immediate"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Multiline" Value="Disable"/>
+      <Property Name="PressedBackColor" Value="0"/>
+      <Property Name="PressedBorder" Value="Source[local].Border[KeyRingOn]"/>
+      <Property Name="PressedColorDatapoint" Value="None"/>
+      <Property Name="PressedColorMap" Value="None"/>
+      <Property Name="PressedForeColor" Value="0"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="SpacingHorizontal" Value="4"/>
+      <Property Name="SpacingVertical" Value="2"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="ButtonUp">
+      <Property Name="AlignmentHorizontal" Value="Center"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="BitmapAlignmentHorizontal" Value="Left"/>
+      <Property Name="BitmapAlignmentVertical" Value="Center"/>
+      <Property Name="Border" Value="Source[local].Border[ButtonScrollUp]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="254"/>
+      <Property Name="KeyMode" Value="Immediate"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Multiline" Value="Disable"/>
+      <Property Name="PressedBackColor" Value="15"/>
+      <Property Name="PressedBorder" Value="Source[local].Border[ButtonScrollUpPressed]"/>
+      <Property Name="PressedColorDatapoint" Value="None"/>
+      <Property Name="PressedColorMap" Value="None"/>
+      <Property Name="PressedForeColor" Value="254"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="SpacingHorizontal" Value="4"/>
+      <Property Name="SpacingVertical" Value="2"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="ButtonDown">
+      <Property Name="AlignmentHorizontal" Value="Center"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="BitmapAlignmentHorizontal" Value="Left"/>
+      <Property Name="BitmapAlignmentVertical" Value="Center"/>
+      <Property Name="Border" Value="Source[local].Border[ButtonScrollDown]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="254"/>
+      <Property Name="KeyMode" Value="Immediate"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Multiline" Value="Disable"/>
+      <Property Name="PressedBackColor" Value="15"/>
+      <Property Name="PressedBorder" Value="Source[local].Border[ButtonScrollDownPressed]"/>
+      <Property Name="PressedColorDatapoint" Value="None"/>
+      <Property Name="PressedColorMap" Value="None"/>
+      <Property Name="PressedForeColor" Value="254"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="SpacingHorizontal" Value="4"/>
+      <Property Name="SpacingVertical" Value="2"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="ButtonLeft">
+      <Property Name="AlignmentHorizontal" Value="Center"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="BitmapAlignmentHorizontal" Value="Left"/>
+      <Property Name="BitmapAlignmentVertical" Value="Center"/>
+      <Property Name="Border" Value="Source[local].Border[ButtonScrollLeft]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="254"/>
+      <Property Name="KeyMode" Value="Immediate"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Multiline" Value="Disable"/>
+      <Property Name="PressedBackColor" Value="15"/>
+      <Property Name="PressedBorder" Value="Source[local].Border[ButtonScrollLeftPressed]"/>
+      <Property Name="PressedColorDatapoint" Value="None"/>
+      <Property Name="PressedColorMap" Value="None"/>
+      <Property Name="PressedForeColor" Value="254"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="SpacingHorizontal" Value="4"/>
+      <Property Name="SpacingVertical" Value="2"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="ButtonRight">
+      <Property Name="AlignmentHorizontal" Value="Center"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="BitmapAlignmentHorizontal" Value="Left"/>
+      <Property Name="BitmapAlignmentVertical" Value="Center"/>
+      <Property Name="Border" Value="Source[local].Border[ButtonScrollRight]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="254"/>
+      <Property Name="KeyMode" Value="Immediate"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Multiline" Value="Disable"/>
+      <Property Name="PressedBackColor" Value="15"/>
+      <Property Name="PressedBorder" Value="Source[local].Border[ButtonScrollRightPressed]"/>
+      <Property Name="PressedColorDatapoint" Value="None"/>
+      <Property Name="PressedColorMap" Value="None"/>
+      <Property Name="PressedForeColor" Value="254"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="SpacingHorizontal" Value="4"/>
+      <Property Name="SpacingVertical" Value="2"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="ButtonPgDown">
+      <Property Name="AlignmentHorizontal" Value="Center"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="BitmapAlignmentHorizontal" Value="Left"/>
+      <Property Name="BitmapAlignmentVertical" Value="Center"/>
+      <Property Name="Border" Value="Source[local].Border[ButtonMultiDown]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="254"/>
+      <Property Name="KeyMode" Value="Immediate"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Multiline" Value="Disable"/>
+      <Property Name="PressedBackColor" Value="15"/>
+      <Property Name="PressedBorder" Value="Source[local].Border[ButtonMultiDownPressed]"/>
+      <Property Name="PressedColorDatapoint" Value="None"/>
+      <Property Name="PressedColorMap" Value="None"/>
+      <Property Name="PressedForeColor" Value="254"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="SpacingHorizontal" Value="4"/>
+      <Property Name="SpacingVertical" Value="2"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="ButtonPgUp">
+      <Property Name="AlignmentHorizontal" Value="Center"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="BitmapAlignmentHorizontal" Value="Left"/>
+      <Property Name="BitmapAlignmentVertical" Value="Center"/>
+      <Property Name="Border" Value="Source[local].Border[ButtonMultiUp]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="254"/>
+      <Property Name="KeyMode" Value="Immediate"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Multiline" Value="Disable"/>
+      <Property Name="PressedBackColor" Value="15"/>
+      <Property Name="PressedBorder" Value="Source[local].Border[ButtonMultiUpPressed]"/>
+      <Property Name="PressedColorDatapoint" Value="None"/>
+      <Property Name="PressedColorMap" Value="None"/>
+      <Property Name="PressedForeColor" Value="254"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="SpacingHorizontal" Value="4"/>
+      <Property Name="SpacingVertical" Value="2"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="Checkbox">
+      <Property Name="AlignmentHorizontal" Value="Center"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="BitmapAlignmentHorizontal" Value="Left"/>
+      <Property Name="BitmapAlignmentVertical" Value="Center"/>
+      <Property Name="Border" Value="Source[local].Border[CheckBoxOff]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="254"/>
+      <Property Name="KeyMode" Value="Immediate"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Multiline" Value="Disable"/>
+      <Property Name="PressedBackColor" Value="15"/>
+      <Property Name="PressedBorder" Value="Source[local].Border[CheckBoxOn]"/>
+      <Property Name="PressedColorDatapoint" Value="None"/>
+      <Property Name="PressedColorMap" Value="None"/>
+      <Property Name="PressedForeColor" Value="254"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="SpacingHorizontal" Value="4"/>
+      <Property Name="SpacingVertical" Value="2"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="KeyRingStart">
+      <Property Name="AlignmentHorizontal" Value="Center"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="0"/>
+      <Property Name="BitmapAlignmentHorizontal" Value="Left"/>
+      <Property Name="BitmapAlignmentVertical" Value="Center"/>
+      <Property Name="Border" Value="Source[local].Border[KeyRingOff]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="KeyMode" Value="Immediate"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Multiline" Value="Disable"/>
+      <Property Name="PressedBackColor" Value="0"/>
+      <Property Name="PressedBorder" Value="Source[local].Border[KeyRingStart]"/>
+      <Property Name="PressedColorDatapoint" Value="None"/>
+      <Property Name="PressedColorMap" Value="None"/>
+      <Property Name="PressedForeColor" Value="0"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="SpacingHorizontal" Value="4"/>
+      <Property Name="SpacingVertical" Value="2"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00001003">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[HotSpot]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="HotSpot">
+      <Property Name="Description" Value=""/>
+      <Property Name="KeyMode" Value="Immediate"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00001004">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[Text]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="Text">
+      <Property Name="AlignmentHorizontal" Value="Left"/>
+      <Property Name="AlignmentVertical" Value="Top"/>
+      <Property Name="Border" Value="None"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="FillStyle" Value="Transparent"/>
+      <Property Name="Font" Value="Source[local].Font[Arial9pxRegular]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="HighlightingBackColor" Value="8"/>
+      <Property Name="HighlightingBorder" Value="None"/>
+      <Property Name="HighlightingDatapoint" Value="None"/>
+      <Property Name="HighlightingForeColor" Value="0"/>
+      <Property Name="Multiline" Value="Disable"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="GroupControl">
+      <Property Name="AlignmentHorizontal" Value="Left"/>
+      <Property Name="AlignmentVertical" Value="Top"/>
+      <Property Name="Border" Value="Source[local].Border[GroupControl]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="FillStyle" Value="Transparent"/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="254"/>
+      <Property Name="HighlightingBackColor" Value="8"/>
+      <Property Name="HighlightingBorder" Value="None"/>
+      <Property Name="HighlightingDatapoint" Value="None"/>
+      <Property Name="HighlightingForeColor" Value="0"/>
+      <Property Name="Multiline" Value="Disable"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="BubbleText">
+      <Property Name="AlignmentHorizontal" Value="Left"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="Border" Value="Source[local].Border[LabelBoarder]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="FillStyle" Value="Transparent"/>
+      <Property Name="Font" Value="Source[local].Font[Arial9pxRegular]"/>
+      <Property Name="ForeColor" Value="254"/>
+      <Property Name="HighlightingBackColor" Value="8"/>
+      <Property Name="HighlightingBorder" Value="None"/>
+      <Property Name="HighlightingDatapoint" Value="None"/>
+      <Property Name="HighlightingForeColor" Value="0"/>
+      <Property Name="Multiline" Value="Disable"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00001005">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[Bitmap]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="Bitmap">
+      <Property Name="AlignmentHorizontal" Value="Left"/>
+      <Property Name="AlignmentVertical" Value="Top"/>
+      <Property Name="BackColor" Value="7"/>
+      <Property Name="Border" Value="None"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="FillStyle" Value="Opaque"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00001006">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[BarGraph]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="BarGraph">
+      <Property Name="BackColor" Value="249"/>
+      <Property Name="Border" Value="Source[local].Border[Flat_black]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="ColorMode" Value="Uniform"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Orientation" Value="Right"/>
+      <Property Name="Origin" Value="0"/>
+      <Property Name="Range" Value="1"/>
+      <Property Name="Range[0].Color" Value="253"/>
+      <Property Name="Range[0].Start" Value="0"/>
+      <Property Name="Range[1].Color" Value="1"/>
+      <Property Name="Range[1].Start" Value="20"/>
+      <Property Name="Range[2].Color" Value="1"/>
+      <Property Name="Range[2].Start" Value="40"/>
+      <Property Name="Range[3].Color" Value="1"/>
+      <Property Name="Range[3].Start" Value="60"/>
+      <Property Name="Range[4].Color" Value="1"/>
+      <Property Name="Range[4].Start" Value="80"/>
+      <Property Name="Segments" Value="10"/>
+      <Property Name="Spacing" Value="1"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="ProgressBar">
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="Border" Value="Source[local].Border[ProgressBarBorder]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="ColorMode" Value="Uniform"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Orientation" Value="Right"/>
+      <Property Name="Origin" Value="0"/>
+      <Property Name="Range" Value="1"/>
+      <Property Name="Range[0].Color" Value="253"/>
+      <Property Name="Range[0].Start" Value="0"/>
+      <Property Name="Range[1].Color" Value="1"/>
+      <Property Name="Range[1].Start" Value="20"/>
+      <Property Name="Range[2].Color" Value="1"/>
+      <Property Name="Range[2].Start" Value="40"/>
+      <Property Name="Range[3].Color" Value="1"/>
+      <Property Name="Range[3].Start" Value="60"/>
+      <Property Name="Range[4].Color" Value="1"/>
+      <Property Name="Range[4].Start" Value="80"/>
+      <Property Name="Segments" Value="100"/>
+      <Property Name="Spacing" Value="0"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00001007">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[Output]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="Output">
+      <Property Name="AddFractionDigits" Value="0"/>
+      <Property Name="AddFractionDigitsDatapoint" Value="None"/>
+      <Property Name="AlignmentHorizontal" Value="Right"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="Border" Value="Source[local].Border[OutputBorder]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="CompletionDatapoint" Value="None"/>
+      <Property Name="CompletionValue" Value="0"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial9pxValue]"/>
+      <Property Name="ForeColor" Value="255"/>
+      <Property Name="Input" Value="False"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="MinIntegerDigits" Value="1"/>
+      <Property Name="MinMaxViolation" Value="Limit to Min/Max"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="UnitText" Value="None"/>
+      <Property Name="UnitTextAlignment" Value="Left"/>
+      <Property Name="UnitTextPosition" Value="Right"/>
+      <Property Name="UnitTextWidth" Value="0"/>
+    </StyleClass>
+    <StyleClass Name="Input">
+      <Property Name="AddFractionDigits" Value="0"/>
+      <Property Name="AddFractionDigitsDatapoint" Value="None"/>
+      <Property Name="AlignmentHorizontal" Value="Right"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="Border" Value="Source[local].Border[InputBorder]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="CompletionDatapoint" Value="None"/>
+      <Property Name="CompletionValue" Value="0"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial9pxValue]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="Input" Value="True"/>
+      <Property Name="InputCancel" Value="Lost Focus"/>
+      <Property Name="InputComma" Value="Explicit"/>
+      <Property Name="InputConfirm" Value="Enter"/>
+      <Property Name="InputMinus" Value="Normal"/>
+      <Property Name="InputNext" Value="Enter"/>
+      <Property Name="InputStart" Value="Any Key"/>
+      <Property Name="InputTouchpad" Value="Source[local].TouchPad[NumPad]"/>
+      <Property Name="InputUpDown" Value="Disabled"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="MinIntegerDigits" Value="1"/>
+      <Property Name="MinMaxViolation" Value="Limit to Min/Max"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="UnitText" Value="None"/>
+      <Property Name="UnitTextAlignment" Value="Left"/>
+      <Property Name="UnitTextPosition" Value="Right"/>
+      <Property Name="UnitTextWidth" Value="0"/>
+    </StyleClass>
+    <StyleClass Name="OutputFrameless">
+      <Property Name="AddFractionDigits" Value="0"/>
+      <Property Name="AddFractionDigitsDatapoint" Value="None"/>
+      <Property Name="AlignmentHorizontal" Value="Right"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="252"/>
+      <Property Name="Border" Value="Source[local].Border[FrameInvisible]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="CompletionDatapoint" Value="None"/>
+      <Property Name="CompletionValue" Value="0"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial9pxValue]"/>
+      <Property Name="ForeColor" Value="254"/>
+      <Property Name="Input" Value="False"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="MinIntegerDigits" Value="1"/>
+      <Property Name="MinMaxViolation" Value="Limit to Min/Max"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="UnitText" Value="None"/>
+      <Property Name="UnitTextAlignment" Value="Left"/>
+      <Property Name="UnitTextPosition" Value="Right"/>
+      <Property Name="UnitTextWidth" Value="0"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00001008">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[Input]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="Input">
+      <Property Name="AdjustContent" Value="Always"/>
+      <Property Name="AlignmentHorizontal" Value="Right"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="Border" Value="Source[local].Border[Flat_black]"/>
+      <Property Name="ButtonsBackColor" Value="0"/>
+      <Property Name="ButtonsBorder" Value="None"/>
+      <Property Name="ButtonsForeColor" Value="0"/>
+      <Property Name="ButtonsPressedBorder" Value="None"/>
+      <Property Name="ButtonsSlider" Value="Never"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="CompletionDatapoint" Value="None"/>
+      <Property Name="CompletionValue" Value="0"/>
+      <Property Name="CursorBorder" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="DisabledBackColor" Value="59"/>
+      <Property Name="DisabledColorDatapoint" Value="None"/>
+      <Property Name="DisabledForeColor" Value="8"/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="Input" Value="True"/>
+      <Property Name="InputCancel" Value="Lost Focus"/>
+      <Property Name="InputConfirm" Value="Enter"/>
+      <Property Name="InputNext" Value="Disable"/>
+      <Property Name="InputStart" Value="Any Key"/>
+      <Property Name="InputTouchpad" Value="Source[local].TouchPad[NavigationPad_ver]"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="SelectedBackColor" Value="253"/>
+      <Property Name="SelectedColorDatapoint" Value="None"/>
+      <Property Name="SelectedForeColor" Value="15"/>
+      <Property Name="SingleTouchSelection" Value="False"/>
+      <Property Name="SliderBackColor" Value="0"/>
+      <Property Name="SliderColorDatapoint" Value="None"/>
+      <Property Name="SliderForeColor" Value="0"/>
+      <Property Name="SpacingVertical" Value="0"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="WrapMode" Value="Stop"/>
+    </StyleClass>
+    <StyleClass Name="Output">
+      <Property Name="AdjustContent" Value="Always"/>
+      <Property Name="AlignmentHorizontal" Value="Left"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="Border" Value="Source[local].Border[Flat_black]"/>
+      <Property Name="ButtonsBackColor" Value="0"/>
+      <Property Name="ButtonsBorder" Value="None"/>
+      <Property Name="ButtonsForeColor" Value="0"/>
+      <Property Name="ButtonsPressedBorder" Value="None"/>
+      <Property Name="ButtonsSlider" Value="Never"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="CompletionDatapoint" Value="None"/>
+      <Property Name="CompletionValue" Value="0"/>
+      <Property Name="CursorBorder" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="DisabledBackColor" Value="252"/>
+      <Property Name="DisabledColorDatapoint" Value="None"/>
+      <Property Name="DisabledForeColor" Value="7"/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="Input" Value="False"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="SelectedBackColor" Value="253"/>
+      <Property Name="SelectedColorDatapoint" Value="None"/>
+      <Property Name="SelectedForeColor" Value="15"/>
+      <Property Name="SliderBackColor" Value="0"/>
+      <Property Name="SliderColorDatapoint" Value="None"/>
+      <Property Name="SliderForeColor" Value="0"/>
+      <Property Name="SpacingVertical" Value="0"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x0000100A">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[DateTime]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="DateTime">
+      <Property Name="AlignmentHorizontal" Value="Left"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="Border" Value="None"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="FillStyle" Value="Transparent"/>
+      <Property Name="Font" Value="Source[local].Font[Arial9pxRegular]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x0000100B">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[Output]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="Output">
+      <Property Name="AlignmentHorizontal" Value="Center"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="Border" Value="Source[local].Border[OutputBorder]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="CompletionDatapoint" Value="None"/>
+      <Property Name="CompletionValue" Value="0"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial9pxValue]"/>
+      <Property Name="ForeColor" Value="254"/>
+      <Property Name="Input" Value="False"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="MaxChars" Value="None"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="Input">
+      <Property Name="AlignmentHorizontal" Value="Right"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="Border" Value="Source[local].Border[InputBorder]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="CompletionDatapoint" Value="None"/>
+      <Property Name="CompletionValue" Value="0"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial9pxValue]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="Input" Value="True"/>
+      <Property Name="InputCancel" Value="Lost Focus"/>
+      <Property Name="InputConfirm" Value="Enter"/>
+      <Property Name="InputMode" Value="Auto"/>
+      <Property Name="InputNext" Value="Disable"/>
+      <Property Name="InputStart" Value="Any Key"/>
+      <Property Name="InputTabSize" Value="0"/>
+      <Property Name="InputTouchpad" Value="Source[local].TouchPad[AlphaPad]"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="MaxChars" Value="None"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x0000100C">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[Password]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="Password">
+      <Property Name="AlignmentHorizontal" Value="Right"/>
+      <Property Name="AlignmentVertical" Value="Top"/>
+      <Property Name="BackColor" Value="248"/>
+      <Property Name="Border" Value="Source[local].Border[Sunken]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="CompletionDatapoint" Value="None"/>
+      <Property Name="CompletionValue" Value="0"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="15"/>
+      <Property Name="InputCancel" Value="Lost Focus"/>
+      <Property Name="InputConfirm" Value="Enter"/>
+      <Property Name="InputMode" Value="Password"/>
+      <Property Name="InputNext" Value="Disable"/>
+      <Property Name="InputPasswordChar" Value="*"/>
+      <Property Name="InputStart" Value="Any Key"/>
+      <Property Name="InputTouchpad" Value="Source[local].TouchPad[AlphaPad]"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="MaxChars" Value="None"/>
+      <Property Name="MaxLevel" Value="3"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x0000100D">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[Line]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="Line">
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="LineWidth" Value="1"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00002003">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[default]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="default">
+      <Property Name="Alignment" Value="Center"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="FillCharacter" Value=""/>
+      <Property Name="MaxChars" Value="None"/>
+      <Property Name="MinChars" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00002004">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[default]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="default">
+      <Property Name="Alignment" Value="Left"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="FillCharacter" Value=""/>
+      <Property Name="MaxChars" Value="None"/>
+      <Property Name="MinChars" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00002001">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[default]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="default">
+      <Property Name="AddFractionDigits" Value="0"/>
+      <Property Name="Alignment" Value="Right"/>
+      <Property Name="Content" Value="Value Unittext"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="FillCharacter" Value=""/>
+      <Property Name="MaxChars" Value="None"/>
+      <Property Name="MinChars" Value="None"/>
+      <Property Name="MinIntegerDigits" Value="1"/>
+      <Property Name="UnitText" Value="Abbreviation"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00002002">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[default]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="default">
+      <Property Name="Alignment" Value="Left"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="FillCharacter" Value=""/>
+      <Property Name="MaxChars" Value="None"/>
+      <Property Name="MinChars" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00001009">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[Alarm]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="Alarm">
+      <Property Name="AlarmDatapoint" Value="None"/>
+      <Property Name="AlignmentHorizontal" Value="Left"/>
+      <Property Name="BackColor" Value="252"/>
+      <Property Name="Border" Value="Source[local].Border[Sunken]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="ControlDatapoint" Value="None"/>
+      <Property Name="Cursor_AdjustContent" Value="Always"/>
+      <Property Name="Cursor_Border" Value="Source[local].Border[Flat_black]"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial9pxRegular]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="GroupDatapoint" Value="None"/>
+      <Property Name="Input" Value="True"/>
+      <Property Name="InputAcknowledge" Value="Enable"/>
+      <Property Name="InputBypass" Value="Enable"/>
+      <Property Name="InputCancel" Value="Lost Focus"/>
+      <Property Name="InputNext" Value="Disable"/>
+      <Property Name="InputStart" Value="Any Key"/>
+      <Property Name="InputTouchpad" Value="None"/>
+      <Property Name="InputWrapmode" Value="Stop"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="PriorityDatapoint" Value="None"/>
+      <Property Name="SpacingHorizontal" Value="0"/>
+      <Property Name="SpacingVertical" Value="0"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="TimeDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="AlarmCurrentEdit">
+      <Property Name="AlarmDatapoint" Value="None"/>
+      <Property Name="AlignmentHorizontal" Value="Left"/>
+      <Property Name="BackColor" Value="252"/>
+      <Property Name="Border" Value="Source[local].Border[Flat_black]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="ControlDatapoint" Value="None"/>
+      <Property Name="Cursor_AdjustContent" Value="Always"/>
+      <Property Name="Cursor_Border" Value="Source[local].Border[Flat_black]"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial9px]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="GroupDatapoint" Value="None"/>
+      <Property Name="Input" Value="True"/>
+      <Property Name="InputAcknowledge" Value="Enable"/>
+      <Property Name="InputBypass" Value="Enable"/>
+      <Property Name="InputCancel" Value="Enter"/>
+      <Property Name="InputNext" Value="Enter"/>
+      <Property Name="InputStart" Value="Any Key"/>
+      <Property Name="InputTouchpad" Value="None"/>
+      <Property Name="InputWrapmode" Value="Stop"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="PriorityDatapoint" Value="None"/>
+      <Property Name="SpacingHorizontal" Value="0"/>
+      <Property Name="SpacingVertical" Value="0"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="TimeDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="AlarmCurrentView">
+      <Property Name="AlarmDatapoint" Value="None"/>
+      <Property Name="AlignmentHorizontal" Value="Left"/>
+      <Property Name="BackColor" Value="252"/>
+      <Property Name="Border" Value="Source[local].Border[Flat_grey]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="ControlDatapoint" Value="None"/>
+      <Property Name="Cursor_AdjustContent" Value="Always"/>
+      <Property Name="Cursor_Border" Value="Source[local].Border[Flat_black]"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial9px]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="GroupDatapoint" Value="None"/>
+      <Property Name="Input" Value="False"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="PriorityDatapoint" Value="None"/>
+      <Property Name="SpacingHorizontal" Value="0"/>
+      <Property Name="SpacingVertical" Value="0"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="TimeDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x0000100F">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[DrawBox]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="DrawBox">
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="Border" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00001018">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[DropDown]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="DropDown">
+      <Property Name="AdjustContent" Value="Always"/>
+      <Property Name="AlignmentHorizontal" Value="Left"/>
+      <Property Name="AlignmentVertical" Value="Center"/>
+      <Property Name="BackColor" Value="16"/>
+      <Property Name="Border" Value="Source[local].Border[Sunken]"/>
+      <Property Name="ButtonsBackColor" Value="7"/>
+      <Property Name="ButtonsBorder" Value="Source[local].Border[Raised]"/>
+      <Property Name="ButtonsDropdown" Value="True"/>
+      <Property Name="ButtonsForeColor" Value="0"/>
+      <Property Name="ButtonsPressedBorder" Value="Source[local].Border[Sunken]"/>
+      <Property Name="ButtonsSlider" Value="Always"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="CompletionDatapoint" Value="None"/>
+      <Property Name="CompletionValue" Value="0"/>
+      <Property Name="CursorBorder" Value="Source[local].Border[Flat_grey]"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="DisabledBackColor" Value="7"/>
+      <Property Name="DisabledColorDatapoint" Value="None"/>
+      <Property Name="DisabledForeColor" Value="0"/>
+      <Property Name="DropdownBackColor" Value="16"/>
+      <Property Name="DropdownBorder" Value="Source[local].Border[Flat_black]"/>
+      <Property Name="DropdownColorDatapoint" Value="None"/>
+      <Property Name="DropdownDirection" Value="Auto"/>
+      <Property Name="DropdownForeColor" Value="0"/>
+      <Property Name="DropdownMaxHeight" Value="None"/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="InputCancel" Value="Lost Focus"/>
+      <Property Name="InputConfirm" Value="Enter"/>
+      <Property Name="InputNext" Value="Disable"/>
+      <Property Name="InputStart" Value="Any Key"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="RightToLeftLayout" Value="False"/>
+      <Property Name="SelectedBackColor" Value="1"/>
+      <Property Name="SelectedColorDatapoint" Value="None"/>
+      <Property Name="SelectedForeColor" Value="15"/>
+      <Property Name="SingleTouchSelection" Value="False"/>
+      <Property Name="SpacingVertical" Value="0"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="WrapMode" Value="Stop"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00001011">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[TrendWindow]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="TrendWindow">
+      <Property Name="BackColor" Value="249"/>
+      <Property Name="Border" Value="Source[local].Border[Flat_grey]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="CompletionDatapoint" Value="None"/>
+      <Property Name="CompletionValue" Value="0"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="Input" Value="False"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="RefreshTime" Value="250"/>
+      <Property Name="SelectItemDatapoint" Value="None"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="Trend">
+      <Property Name="BackColor" Value="252"/>
+      <Property Name="Border" Value="Source[local].Border[Flat_grey]"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="CompletionDatapoint" Value="None"/>
+      <Property Name="CompletionValue" Value="0"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="Input" Value="False"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="RefreshTime" Value="250"/>
+      <Property Name="SelectItemDatapoint" Value="None"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00001012">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[Scale]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="Scale">
+      <Property Name="BackColor" Value="8"/>
+      <Property Name="Border" Value="None"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="LineWidth" Value="3"/>
+      <Property Name="MajorPitchLines" Value="3"/>
+      <Property Name="MajorPitchLinesLength" Value="10"/>
+      <Property Name="MajorPitchLinesWidth" Value="2"/>
+      <Property Name="Marker" Value="Bitmap + Value"/>
+      <Property Name="MarkerBitmap" Value="None"/>
+      <Property Name="MarkerFont" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="MarkerSpacing" Value="0"/>
+      <Property Name="MinorPitchLines" Value="3"/>
+      <Property Name="MinorPitchLinesLength" Value="8"/>
+      <Property Name="MinorPitchLinesWidth" Value="1"/>
+      <Property Name="Orientation" Value="Right"/>
+      <Property Name="Range" Value="True"/>
+      <Property Name="RangeColor" Value="4"/>
+      <Property Name="RangeColorDatapoint" Value="None"/>
+      <Property Name="RangeSpacing" Value="0"/>
+      <Property Name="RangeWidth" Value="10"/>
+      <Property Name="Spacing" Value="0"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="UnitText" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00001013">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[Edit]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="Edit">
+      <Property Name="BackColor" Value="8"/>
+      <Property Name="Border" Value="None"/>
+      <Property Name="BusyDatapoint" Value="None"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="CommandRequestDatapoint" Value="None"/>
+      <Property Name="CommandResponseDatapoint" Value="None"/>
+      <Property Name="CommandStatusDatapoint" Value="None"/>
+      <Property Name="CompletionDatapoint" Value="None"/>
+      <Property Name="CompletionValue" Value="0"/>
+      <Property Name="CursorBackColor" Value="1"/>
+      <Property Name="CursorColorDatapoint" Value="None"/>
+      <Property Name="CursorColumnDatapoint" Value="None"/>
+      <Property Name="CursorLineDatapoint" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="Input" Value="False"/>
+      <Property Name="InsertModeDatapoint" Value="None"/>
+      <Property Name="LineEndings" Value="Windows (CR LF)"/>
+      <Property Name="LineEndingsDatapoint" Value="None"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="ModifiedDatapoint" Value="None"/>
+      <Property Name="SelectedBackColor" Value="15"/>
+      <Property Name="SelectedColorDatapoint" Value="None"/>
+      <Property Name="SelectedForeColor" Value="0"/>
+      <Property Name="SelectionModeDatapoint" Value="None"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="EditControl">
+      <Property Name="BackColor" Value="8"/>
+      <Property Name="Border" Value="None"/>
+      <Property Name="BusyDatapoint" Value="None"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="CommandRequestDatapoint" Value="None"/>
+      <Property Name="CommandResponseDatapoint" Value="None"/>
+      <Property Name="CommandStatusDatapoint" Value="None"/>
+      <Property Name="CompletionDatapoint" Value="None"/>
+      <Property Name="CompletionValue" Value="0"/>
+      <Property Name="CursorBackColor" Value="1"/>
+      <Property Name="CursorColorDatapoint" Value="None"/>
+      <Property Name="CursorColumnDatapoint" Value="None"/>
+      <Property Name="CursorLineDatapoint" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial9px]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="Input" Value="False"/>
+      <Property Name="InsertModeDatapoint" Value="None"/>
+      <Property Name="LineEndings" Value="Windows (CR LF)"/>
+      <Property Name="LineEndingsDatapoint" Value="None"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="ModifiedDatapoint" Value="None"/>
+      <Property Name="SelectedBackColor" Value="15"/>
+      <Property Name="SelectedColorDatapoint" Value="None"/>
+      <Property Name="SelectedForeColor" Value="0"/>
+      <Property Name="SelectionModeDatapoint" Value="None"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00001014">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[StyleClass_1]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="StyleClass_1">
+      <Property Name="BackColor" Value="8"/>
+      <Property Name="Border" Value="None"/>
+      <Property Name="BusyDatapoint" Value="None"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="HTTPErrorCodeDatapoint" Value="None"/>
+      <Property Name="LinkForeColor" Value="1"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="ValidatorEnable" Value="False"/>
+    </StyleClass>
+    <StyleClass Name="HTMLView">
+      <Property Name="BackColor" Value="249"/>
+      <Property Name="Border" Value="None"/>
+      <Property Name="BusyDatapoint" Value="None"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial9px]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="HTTPErrorCodeDatapoint" Value="None"/>
+      <Property Name="LinkForeColor" Value="1"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="ValidatorEnable" Value="False"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00001015">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[StyleClass_1]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="StyleClass_1">
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="GridMode" Value="Manual"/>
+      <Property Name="SpacingHorizontal" Value="50"/>
+      <Property Name="SpacingVertical" Value="50"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="TrendGrid">
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="GridMode" Value="Manual"/>
+      <Property Name="SpacingHorizontal" Value="50"/>
+      <Property Name="SpacingVertical" Value="50"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00001016">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[StyleClass_1]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="StyleClass_1">
+      <Property Name="BackColor" Value="2"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="ForeColor" Value="4"/>
+      <Property Name="MarkerForeColor" Value="4"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="TrendCurve">
+      <Property Name="BackColor" Value="2"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="ForeColor" Value="4"/>
+      <Property Name="MarkerForeColor" Value="4"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00001017">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[StyleClass_1]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="StyleClass_1">
+      <Property Name="BackColor" Value="8"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="LabelSpacing" Value="50"/>
+      <Property Name="LineWidth" Value="2"/>
+      <Property Name="MajorPitchLines" Value="Auto"/>
+      <Property Name="MajorPitchLinesLength" Value="10"/>
+      <Property Name="MinorPitchLines" Value="Auto"/>
+      <Property Name="MinorPitchLinesLength" Value="8"/>
+      <Property Name="PitchLineSpacing" Value="5"/>
+      <Property Name="ScrollDatapoint" Value="None"/>
+      <Property Name="Spacing" Value="5"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="UnitText" Value="None"/>
+      <Property Name="ZoomDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="TrendValueScale">
+      <Property Name="BackColor" Value="252"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial9pxValue]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="LabelSpacing" Value="50"/>
+      <Property Name="LineWidth" Value="1"/>
+      <Property Name="MajorPitchLines" Value="Auto"/>
+      <Property Name="MajorPitchLinesLength" Value="8"/>
+      <Property Name="MinorPitchLines" Value="Auto"/>
+      <Property Name="MinorPitchLinesLength" Value="5"/>
+      <Property Name="PitchLineSpacing" Value="5"/>
+      <Property Name="ScrollDatapoint" Value="None"/>
+      <Property Name="Spacing" Value="1"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="UnitText" Value="None"/>
+      <Property Name="ZoomDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00001019">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[StyleClass_1]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="StyleClass_1">
+      <Property Name="BackColor" Value="7"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="TrendScaleContainer">
+      <Property Name="BackColor" Value="7"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x0000101A">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[StyleClass_1]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="StyleClass_1">
+      <Property Name="BackColor" Value="8"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="LabelSpacing" Value="50"/>
+      <Property Name="LineWidth" Value="2"/>
+      <Property Name="MajorPitchLines" Value="Auto"/>
+      <Property Name="MajorPitchLinesLength" Value="10"/>
+      <Property Name="MinorPitchLines" Value="Auto"/>
+      <Property Name="MinorPitchLinesLength" Value="8"/>
+      <Property Name="ModeDatapoint" Value="None"/>
+      <Property Name="PitchLineSpacing" Value="5"/>
+      <Property Name="ScrollDatapoint" Value="None"/>
+      <Property Name="Spacing" Value="5"/>
+      <Property Name="StartTimeDatapoint" Value="None"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="TimeSpanDatapoint" Value="None"/>
+      <Property Name="UnitText" Value="None"/>
+      <Property Name="ZoomDatapoint" Value="None"/>
+      <Property Name="ZoomMode" Value="Factor"/>
+    </StyleClass>
+    <StyleClass Name="TrendTimeContainer">
+      <Property Name="BackColor" Value="8"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial9pxValue]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="LabelSpacing" Value="50"/>
+      <Property Name="LineWidth" Value="1"/>
+      <Property Name="MajorPitchLines" Value="Auto"/>
+      <Property Name="MajorPitchLinesLength" Value="8"/>
+      <Property Name="MinorPitchLines" Value="Auto"/>
+      <Property Name="MinorPitchLinesLength" Value="6"/>
+      <Property Name="ModeDatapoint" Value="None"/>
+      <Property Name="PitchLineSpacing" Value="5"/>
+      <Property Name="ScrollDatapoint" Value="None"/>
+      <Property Name="Spacing" Value="1"/>
+      <Property Name="StartTimeDatapoint" Value="None"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="TimeSpanDatapoint" Value="None"/>
+      <Property Name="UnitText" Value="None"/>
+      <Property Name="ZoomDatapoint" Value="None"/>
+      <Property Name="ZoomMode" Value="Factor"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x0000101B">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[StyleClass_1]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="StyleClass_1">
+      <Property Name="BackColor" Value="7"/>
+      <Property Name="Border" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="MediaAutoplay" Value="False"/>
+      <Property Name="MediaAutosize" Value="True"/>
+      <Property Name="MediaFormat" Value="Video"/>
+      <Property Name="MediaRepeat" Value="False"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="Media">
+      <Property Name="BackColor" Value="249"/>
+      <Property Name="Border" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="MediaAutoplay" Value="False"/>
+      <Property Name="MediaAutosize" Value="True"/>
+      <Property Name="MediaFormat" Value="Video"/>
+      <Property Name="MediaRepeat" Value="False"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x0000101C">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[StyleClass_1]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="StyleClass_1">
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="Border" Value="None"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="FillStyle" Value="Opaque"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="LineWidth" Value="1"/>
+      <Property Name="StartDegree" Value="0"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+    <StyleClass Name="PieChart">
+      <Property Name="BackColor" Value="252"/>
+      <Property Name="Border" Value="None"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="FillStyle" Value="Opaque"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="LineWidth" Value="1"/>
+      <Property Name="StartDegree" Value="0"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x0000101F">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[SliderArrowRedHorizontal]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="SliderArrowRedHorizontal">
+      <Property Name="Border" Value="None"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="CompletionDatapoint" Value="None"/>
+      <Property Name="CompletionValue" Value="0"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="FillStyle" Value="Transparent"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="Input" Value="True"/>
+      <Property Name="InputConfirm" Value="Enter"/>
+      <Property Name="InputNext" Value="Enter"/>
+      <Property Name="InputStart" Value="Any Key"/>
+      <Property Name="InputUpdateDatapoints" Value="Confirm"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Orientation" Value="LeftToRight"/>
+      <Property Name="PitchLinesDivisions" Value="10"/>
+      <Property Name="PitchLinesLength" Value="4"/>
+      <Property Name="PitchLinesSpacing" Value="24"/>
+      <Property Name="PitchLinesStyle" Value="Left/Top"/>
+      <Property Name="SliderBorder" Value="None"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="ThumbBitmap" Value="Source[local].Bitmap[SliderArrowRightRed]"/>
+      <Property Name="ThumbSnapToPitchLines" Value="True"/>
+      <Property Name="ThumbSpacing" Value="10"/>
+    </StyleClass>
+    <StyleClass Name="SliderBallHorizontal">
+      <Property Name="Border" Value="None"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="CompletionDatapoint" Value="None"/>
+      <Property Name="CompletionValue" Value="0"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="FillStyle" Value="Transparent"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="Input" Value="True"/>
+      <Property Name="InputConfirm" Value="Enter"/>
+      <Property Name="InputNext" Value="Enter"/>
+      <Property Name="InputStart" Value="Any Key"/>
+      <Property Name="InputUpdateDatapoints" Value="Confirm"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Orientation" Value="LeftToRight"/>
+      <Property Name="PitchLinesDivisions" Value="10"/>
+      <Property Name="PitchLinesLength" Value="0"/>
+      <Property Name="PitchLinesSpacing" Value="0"/>
+      <Property Name="PitchLinesStyle" Value="Left/Top"/>
+      <Property Name="SliderBorder" Value="Source[local].Border[SliderBorder09]"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="ThumbBitmap" Value="Source[local].Bitmap[SliderBallGray]"/>
+      <Property Name="ThumbSnapToPitchLines" Value="True"/>
+      <Property Name="ThumbSpacing" Value="17"/>
+    </StyleClass>
+    <StyleClass Name="SliderBallVertical">
+      <Property Name="Border" Value="None"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="CompletionDatapoint" Value="None"/>
+      <Property Name="CompletionValue" Value="0"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="FillStyle" Value="Transparent"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="Input" Value="True"/>
+      <Property Name="InputConfirm" Value="Enter"/>
+      <Property Name="InputNext" Value="Enter"/>
+      <Property Name="InputStart" Value="Any Key"/>
+      <Property Name="InputUpdateDatapoints" Value="Confirm"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Orientation" Value="BottomToTop"/>
+      <Property Name="PitchLinesDivisions" Value="10"/>
+      <Property Name="PitchLinesLength" Value="0"/>
+      <Property Name="PitchLinesSpacing" Value="0"/>
+      <Property Name="PitchLinesStyle" Value="Both"/>
+      <Property Name="SliderBorder" Value="None"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="ThumbBitmap" Value="Source[local].Bitmap[SliderBallGray]"/>
+      <Property Name="ThumbSnapToPitchLines" Value="True"/>
+      <Property Name="ThumbSpacing" Value="17"/>
+    </StyleClass>
+    <StyleClass Name="CoffeeCup">
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="Border" Value="None"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="CompletionDatapoint" Value="None"/>
+      <Property Name="CompletionValue" Value="0"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="FillStyle" Value="Opaque"/>
+      <Property Name="ForeColor" Value="1"/>
+      <Property Name="Input" Value="False"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Orientation" Value="LeftToRight"/>
+      <Property Name="PitchLinesDivisions" Value="10"/>
+      <Property Name="PitchLinesLength" Value="5"/>
+      <Property Name="PitchLinesSpacing" Value="10"/>
+      <Property Name="PitchLinesStyle" Value="None"/>
+      <Property Name="SliderBorder" Value="None"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="ThumbBitmap" Value="Source[local].Bitmap[CoffeeCup]"/>
+      <Property Name="ThumbSnapToPitchLines" Value="True"/>
+      <Property Name="ThumbSpacing" Value="5"/>
+    </StyleClass>
+    <StyleClass Name="default">
+      <Property Name="Border" Value="None"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="CompletionDatapoint" Value="None"/>
+      <Property Name="CompletionValue" Value="0"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="FillStyle" Value="Transparent"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="Input" Value="True"/>
+      <Property Name="InputConfirm" Value="Enter"/>
+      <Property Name="InputNext" Value="Enter"/>
+      <Property Name="InputStart" Value="Any Key"/>
+      <Property Name="InputUpdateDatapoints" Value="Confirm"/>
+      <Property Name="Locking" Value="Never"/>
+      <Property Name="Orientation" Value="LeftToRight"/>
+      <Property Name="PitchLinesDivisions" Value="10"/>
+      <Property Name="PitchLinesLength" Value="0"/>
+      <Property Name="PitchLinesSpacing" Value="0"/>
+      <Property Name="PitchLinesStyle" Value="Left/Top"/>
+      <Property Name="SliderBorder" Value="Source[local].Border[SliderBorder09]"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="ThumbBitmap" Value="Source[local].Bitmap[SliderBallGray]"/>
+      <Property Name="ThumbSnapToPitchLines" Value="True"/>
+      <Property Name="ThumbSpacing" Value="17"/>
+    </StyleClass>
+  </StyleGroup>
+  <StyleGroup ClassId="0x00001020">
+    <Property Name="DefaultStyleClass" Value="Source[relative:StyleGroup].StyleClass[StyleClass_1]"/>
+    <Property Name="Description" Value=""/>
+    <StyleClass Name="StyleClass_1">
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="BackgroundBitmap" Value="None"/>
+      <Property Name="Border" Value="None"/>
+      <Property Name="CenterPointHorizontalOffset" Value="0"/>
+      <Property Name="CenterPointVerticalOffset" Value="0"/>
+      <Property Name="ColorDatapoint" Value="None"/>
+      <Property Name="ColorMap" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Divisions" Value="5"/>
+      <Property Name="FillStyle" Value="Opaque"/>
+      <Property Name="Font" Value="Source[local].Font[Arial10pxBold]"/>
+      <Property Name="ForeColor" Value="0"/>
+      <Property Name="NeedleBitmap" Value="None"/>
+      <Property Name="NeedleBitmapCenterOffset" Value="20"/>
+      <Property Name="NeedleColor" Value="0"/>
+      <Property Name="NeedleLength" Value="20"/>
+      <Property Name="NeedleType" Value="Bitmap"/>
+      <Property Name="NeedleWidth" Value="1"/>
+      <Property Name="PitchLinesLength" Value="2"/>
+      <Property Name="RotationAngle" Value="300"/>
+      <Property Name="Scale" Value="True"/>
+      <Property Name="ScaleRadius" Value="20"/>
+      <Property Name="StartAngle" Value="30"/>
+      <Property Name="StatusDatapoint" Value="None"/>
+      <Property Name="UnitTextFormat" Value="None"/>
+      <Property Name="UnitTextHPosition" Value="Center"/>
+      <Property Name="UnitTextVPosition" Value="Bottom"/>
+    </StyleClass>
+  </StyleGroup>
+</StyleSheet>

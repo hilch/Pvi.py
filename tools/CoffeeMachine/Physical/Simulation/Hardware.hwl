@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<BR.AS.HardwareTopology Version="0.0.0.1">
+  <Modules>
+    <Module Name="ARsim" Type="PC_any" X="516" Y="-330" />
+    <Module Name="5LS182.6-1" Type="5LS182.6-1" X="834" Y="-305" />
+    <Module Name="axConveyor" Type="8V1045.00-2" X="1032.2" Y="-276.900024" />
+    <Module Name="8AC114.60-2a" Type="8AC114.60-2" X="1035.7" Y="-74.60002" />
+    <Module Name="axFeeder" Type="8V1045.00-2" X="956" Y="-276.599976" />
+    <Module Name="8AC114.60-2" Type="8AC114.60-2" X="959.5" Y="-74.29997" />
+  </Modules>
+  <Links />
+</BR.AS.HardwareTopology>

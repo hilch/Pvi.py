@@ -1,0 +1,51 @@
+(********************************************************************
+ * COPYRIGHT (C) BERNECKER + RAINER, AUSTRIA, A-5142 EGGELSBERG
+ ********************************************************************
+ * Library: BrSystem
+ * File: BrSystem.var
+ * Created: 11.11.2003
+ ********************************************************************
+ * Constants of library BrSystem
+ ********************************************************************)
+VAR CONSTANT
+	brSYSCONF_SET_NON_VOLATILE	: BOOL	:= TRUE;
+	brERR_INVALID_PARAMETER	: UINT	:= 27251;
+	brSYSCONF_SET_VOLATILE	: BOOL	:= FALSE;
+	INIT_REASON_WARMSTART	: SINT	:= 1;
+	INIT_REASON_COLDSTART	: SINT	:= 2;
+	brERR_INVALID_DEVICE	: UINT	:= 27250;
+	brAUTOMATION_RUNTIME	: USINT	:= 4;
+	TARGET_LITTLE_ENDIAN	: USINT	:= 1;
+	INIT_REASON_DOWNLOAD	: SINT	:= 3;
+	INIT_REASON_UNKNOWN	: SINT	:= -1;
+	brBATTERY_MISSING	: USINT	:= 3;
+	TARGET_BIG_ENDIAN	: USINT	:= 2;
+	brBATTERY_NOTEST	: USINT	:= 2;
+	brSYSTEM_MODULE	: USINT	:= 2;
+	brPLUGIN_MODULE	: USINT	:= 10;
+	brLOGICSCANNER	: USINT	:= 3;
+	brBATTERY_LOW	: USINT	:= 0;
+	brPOWERPANEL	: USINT	:= 5;
+	brBATTERY_OK	: USINT	:= 1;
+	brREMOTE_IO	: USINT	:= 4;
+	brNO_FAMILY	: USINT	:= 255;
+	brETHER_IO	: USINT	:= 6;
+	brPRODUCT	: USINT	:= 0;
+	brBASE_IO	: USINT	:= 3;
+	brCAN_IO	: USINT	:= 5;
+	brACOPOS	: USINT	:= 7;
+	brUSRRAM	: UDINT	:= 1;
+	brSYSROM	: UDINT := 2;
+	brUSRROM	: UDINT := 3;
+	brPANEL	: USINT	:= 6;
+	brADDON	: USINT	:= 7;
+	brC300	: USINT	:= 8;
+	brC200	: USINT	:= 9;
+	br2010	: USINT	:= 0;
+	br2005	: USINT	:= 1;
+	br2003	: USINT	:= 2;
+	brDRAM	: UDINT	:= 0;
+	brKEY	: USINT	:= 8;
+	brCPU	: USINT	:= 1;
+	brPP	: USINT	:= 255;
+END_VAR

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?AutomationStudio Version="4.0.14.207"?>
+<BitmapGroup xmlns="http://br-automation.co.at/AS/VC/Project" Name="EuroCoins">
+  <Property Name="Description" Value=""/>
+  <Property Name="Index" Value="8"/>
+  <Property Name="Translate" Value="False"/>
+  <BitmapLayer LanguageId="neutral">
+    <BitmapRef ID="363" Value="Source[local].Bitmap[euro2]"/>
+    <BitmapRef ID="364" Value="Source[local].Bitmap[euro1]"/>
+    <BitmapRef ID="365" Value="Source[local].Bitmap[cent50]"/>
+    <BitmapRef ID="366" Value="Source[local].Bitmap[cent20]"/>
+    <BitmapRef ID="367" Value="Source[local].Bitmap[cent10]"/>
+    <BitmapRef ID="368" Value="Source[local].Bitmap[cent5]"/>
+    <BitmapRef ID="369" Value="Source[local].Bitmap[cent2]"/>
+    <BitmapRef ID="370" Value="Source[local].Bitmap[cent1]"/>
+  </BitmapLayer>
+  <IndexMap>
+    <Index ID="363" Value="0"/>
+    <Index ID="364" Value="1"/>
+    <Index ID="365" Value="2"/>
+    <Index ID="366" Value="3"/>
+    <Index ID="367" Value="4"/>
+    <Index ID="368" Value="5"/>
+    <Index ID="369" Value="6"/>
+    <Index ID="370" Value="7"/>
+  </IndexMap>
+</BitmapGroup>

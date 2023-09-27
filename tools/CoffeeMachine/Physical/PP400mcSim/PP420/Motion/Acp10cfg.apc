@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=?>
+<AcoposParameterConfiguration>
+  <Root Name="MO1.IF1.ST2" Description="SimACOPOS" />
+  <Root Name="MO1.IF1.ST1" Description="SimACOPOS" />
+</AcoposParameterConfiguration>

@@ -1,0 +1,261 @@
+(********************************************************************
+ * COPYRIGHT (C) BERNECKER + RAINER, AUSTRIA, A-5142 EGGELSBERG
+ ********************************************************************
+ * Library: Standard
+ * File: Standard.fun
+ * Created: 11.11.2003
+ ********************************************************************
+ * Functions and function blocks of library Standard
+ ********************************************************************)
+FUNCTION_BLOCK RF_TRIG (* Rising and Falling Trigger *)
+	VAR_INPUT
+		CLK	:BOOL;
+	END_VAR
+	VAR_OUTPUT
+		Q	:BOOL;
+	END_VAR
+	VAR
+		M	:BOOL;
+	END_VAR
+END_FUNCTION_BLOCK
+FUNCTION_BLOCK CTUD (* IEC1131-3: Counter Up Down *)
+	VAR_INPUT
+		CU	:BOOL;
+		CD	:BOOL;
+		RESET	:BOOL;
+		LOAD	:BOOL;
+		PV	:INT;
+	END_VAR
+	VAR_OUTPUT
+		QU	:BOOL;
+		QD	:BOOL;
+		CV	:INT;
+	END_VAR
+	VAR
+		MU	:BOOL;
+		MD	:BOOL;
+	END_VAR
+END_FUNCTION_BLOCK
+FUNCTION_BLOCK CTD (* IEC1131-3: Counter Down *)
+	VAR_INPUT
+		CD	:BOOL;
+		LOAD	:BOOL;
+		PV	:UINT;
+	END_VAR
+	VAR_OUTPUT
+		Q	:BOOL;
+		CV	:UINT;
+	END_VAR
+	VAR
+		M	:BOOL;
+	END_VAR
+END_FUNCTION_BLOCK
+FUNCTION_BLOCK CTU (* IEC1131-3: Counter Up *)
+	VAR_INPUT
+		CU	:BOOL;
+		RESET	:BOOL;
+		PV	:UINT;
+	END_VAR
+	VAR_OUTPUT
+		Q	:BOOL;
+		CV	:UINT;
+	END_VAR
+	VAR
+		M	:BOOL;
+	END_VAR
+END_FUNCTION_BLOCK
+FUNCTION_BLOCK F_TRIG (* IEC1131-3: Falling Trigger *)
+	VAR_INPUT
+		CLK	:BOOL;
+	END_VAR
+	VAR_OUTPUT
+		Q	:BOOL;
+	END_VAR
+	VAR
+		M	:BOOL;
+	END_VAR
+END_FUNCTION_BLOCK
+FUNCTION_BLOCK R_TRIG (* IEC1131-3: Raising Trigger *)
+	VAR_INPUT
+		CLK	:BOOL;
+	END_VAR
+	VAR_OUTPUT
+		Q	:BOOL;
+	END_VAR
+	VAR
+		M	:BOOL;
+	END_VAR
+END_FUNCTION_BLOCK
+FUNCTION_BLOCK SR (* IEC1131-3: FlipFlop dominant set *)
+	VAR_INPUT
+		SET1	:BOOL;
+		RESET	:BOOL;
+	END_VAR
+	VAR_OUTPUT
+		Q1	:BOOL;
+	END_VAR
+END_FUNCTION_BLOCK
+FUNCTION_BLOCK RS (* IEC1131-3: FlipFlop dominant reset *)
+	VAR_INPUT
+		SET	:BOOL;
+		RESET1	:BOOL;
+	END_VAR
+	VAR_OUTPUT
+		Q1	:BOOL;
+	END_VAR
+END_FUNCTION_BLOCK
+FUNCTION_BLOCK SEMA (* IEC1131-3: Semaphore *)
+	VAR_INPUT
+		CLAIM	:BOOL;
+		RELEASE	:BOOL;
+	END_VAR
+	VAR_OUTPUT
+		BUSY	:BOOL;
+	END_VAR
+	VAR
+		X	:BOOL;
+	END_VAR
+END_FUNCTION_BLOCK
+FUNCTION_BLOCK TON (* IEC1131-3: Timer On *)
+	VAR_INPUT
+		IN	:BOOL;
+		PT	:TIME;
+	END_VAR
+	VAR_OUTPUT
+		Q	:BOOL;
+		ET	:TIME;
+	END_VAR
+	VAR
+		StartTime	:TIME;
+		M	:BOOL;
+		Restart	:UDINT;
+	END_VAR
+END_FUNCTION_BLOCK
+FUNCTION_BLOCK TOF (* IEC1131-3: Timer Off *)
+	VAR_INPUT
+		IN	:BOOL;
+		PT	:TIME;
+	END_VAR
+	VAR_OUTPUT
+		Q	:BOOL;
+		ET	:TIME;
+	END_VAR
+	VAR
+		M	:BOOL;
+		StartTime	:TIME;
+		Restart	:UDINT;
+	END_VAR
+END_FUNCTION_BLOCK
+FUNCTION_BLOCK TP (* IEC1131-3: Pulse *)
+	VAR_INPUT
+		IN	:BOOL;
+		PT	:TIME;
+	END_VAR
+	VAR_OUTPUT
+		Q	:BOOL;
+		ET	:TIME;
+	END_VAR
+	VAR
+		StartTime	:TIME;
+		Restart	:UDINT;
+	END_VAR
+END_FUNCTION_BLOCK
+FUNCTION_BLOCK TON_10ms (* Timer on (10ms) *)
+	VAR_INPUT
+		IN	:BOOL;
+		PT	:UDINT;
+	END_VAR
+	VAR_OUTPUT
+		Q	:BOOL;
+		ET	:UDINT;
+	END_VAR
+	VAR
+		StartTime	:UDINT;
+		M	:BOOL;
+	END_VAR
+END_FUNCTION_BLOCK
+FUNCTION_BLOCK TOF_10ms (* Timer Off (10ms) *)
+	VAR_INPUT
+		IN	:BOOL;
+		PT	:UDINT;
+	END_VAR
+	VAR_OUTPUT
+		Q	:BOOL;
+		ET	:UDINT;
+	END_VAR
+	VAR
+		M	:BOOL;
+		StartTime	:UDINT;
+	END_VAR
+END_FUNCTION_BLOCK
+FUNCTION_BLOCK TP_10ms (* Pulse (10ms) *)
+	VAR_INPUT
+		IN	:BOOL;
+		PT	:UDINT;
+	END_VAR
+	VAR_OUTPUT
+		Q	:BOOL;
+		ET	:UDINT;
+	END_VAR
+	VAR
+		StartTime	:UDINT;
+	END_VAR
+END_FUNCTION_BLOCK
+FUNCTION LEN : INT (* IEC1131-3: String length function *)
+	VAR_INPUT
+		IN	:STRING[32767];
+	END_VAR
+END_FUNCTION
+FUNCTION LEFT : STRING[255] (* IEC1131-3: Leftmost L characters of IN *)
+	VAR_INPUT
+		IN	:STRING[32767];
+		L	:INT;
+	END_VAR
+END_FUNCTION
+FUNCTION RIGHT : STRING[255] (* IEC1131-3: Rightmost L characters of IN *)
+	VAR_INPUT
+		IN	:STRING[32767];
+		L	:INT;
+	END_VAR
+END_FUNCTION
+FUNCTION MID : STRING[255] (* IEC1131-3: L characters of IN, beginning at P *)
+	VAR_INPUT
+		IN	:STRING[32767];
+		L	:INT;
+		P	:INT;
+	END_VAR
+END_FUNCTION
+FUNCTION CONCAT : STRING[255] (* IEC1131-3: Concatenation *)
+	VAR_INPUT
+		IN1	:STRING[32767];
+		IN2	:STRING[32767];
+	END_VAR
+END_FUNCTION
+FUNCTION INSERT : STRING[255] (* IEC1131-3: Insert IN2 into IN1 after P *)
+	VAR_INPUT
+		IN1	:STRING[32767];
+		IN2	:STRING[32767];
+		P	:INT;
+	END_VAR
+END_FUNCTION
+FUNCTION DELETE : STRING[255] (* IEC1131-3: Delete L characters of IN, beginning at P *)
+	VAR_INPUT
+		IN	:STRING[32767];
+		L	:INT;
+		P	:INT;
+	END_VAR
+END_FUNCTION
+FUNCTION REPLACE : STRING[255] (* IEC1131-3: Replace L characters of IN1 by IN2, starting at P *)
+	VAR_INPUT
+		IN1	:STRING[32767];
+		IN2	:STRING[32767];
+		L	:INT;
+		P	:INT;
+	END_VAR
+END_FUNCTION
+FUNCTION FIND : INT (* IEC1131-3: Find character string position *)
+	VAR_INPUT
+		IN1	:STRING[32767];
+		IN2	:STRING[32767];
+	END_VAR
+END_FUNCTION

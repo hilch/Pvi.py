@@ -1,0 +1,13 @@
+(********************************************************************
+ * COPYRIGHT -- B&R
+ ********************************************************************
+ * Package: heating
+ * File: heating.var
+ * Author: B&R
+ * Created: June 15, 2007
+ *******************************************************************)
+VAR
+	tempLCRPIDpara : LCRPIDpara := (0);
+	tempLCRPID : LCRPID := (0);
+	simLCRPT2 : LCRPT2 := (0);
+END_VAR

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?AutomationStudio Version="4.0.14.207"?>
+<TextGroup xmlns="http://br-automation.co.at/AS/VC/Project" Name="InstantMessages">
+  <Property Name="Description" Value=""/>
+  <Property Name="Index" Value="10"/>
+  <TextSnippets>
+    <TextSnippet ClassId="0x00002001" Name="WaterTemp">
+      <Property Name="Datapoint" Value="Source[global].Variable[Local.gHeating.status.actTemp]"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[default]"/>
+    </TextSnippet>
+  </TextSnippets>
+  <TextLayer LanguageId="en">
+    <Text ID="87423" Value="Water temperature not yet stable {WaterTemp}"/>
+    <Text ID="87424" Value="Water set temperature reached {WaterTemp}"/>
+    <Text ID="87428" Value="Machine is switched off"/>
+  </TextLayer>
+  <TextLayer LanguageId="de">
+    <Text ID="87423" Value="Wassertemperatur noch nicht erreicht {WaterTemp}"/>
+    <Text ID="87424" Value="Wassertemperartur erreicht {WaterTemp}"/>
+    <Text ID="87428" Value="Maschine ist ausgeschaltet"/>
+  </TextLayer>
+  <TextLayer LanguageId="zh-CN">
+    <Text ID="87423" Value="水温尚未达到 {WaterTemp}"/>
+    <Text ID="87424" Value="水温已达到 {WaterTemp}"/>
+    <Text ID="87428" Value="机器已关闭"/>
+  </TextLayer>
+  <IndexMap>
+    <Index ID="87423" Value="1"/>
+    <Index ID="87424" Value="2"/>
+    <Index ID="87428" Value="0"/>
+  </IndexMap>
+</TextGroup>
