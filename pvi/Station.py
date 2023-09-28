@@ -21,11 +21,26 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from .include import *
-from .Object import PviObject
+from .Object import PviObject, PviObjectDescriptor
 from .Error import PviError
 
 class Station(PviObject):
-    def __init__( self, parent, name, **objectDescriptor ):
+    '''class representing station object
+        
+    ANSL & INA2000: can be used but is not necessary
+    SNMP specifies particular PLC
+    see PVI documentation for more details
+    '''
+    def __init__( self, parent : PviObject, name : str, **objectDescriptor : PviObjectDescriptor ):
+        '''
+        Args:
+            parent : device object  
+            name : name of station in PVI hierarchy
+            objectDescriptor :
+                ANSL : ''
+                INA2000 : ''
+                SNMP : MAC address, e.g. CD="/CN=00-60-65-02-f0-2c"
+        '''
         if parent._type != T_POBJ_TYPE.POBJ_DEVICE:
             raise PviError(12009, self)          
         super().__init__( parent, 'POBJ_STATION', name, **objectDescriptor)

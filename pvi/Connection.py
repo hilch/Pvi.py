@@ -29,9 +29,23 @@ import datetime
 class Connection():
     '''
     class representing a connection to PVI manager
+
+    Typical usage example:
+
+    ```
+        pviConnection = Connection() # start a Pvi connection
+
+        line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')    
+    ```
     '''
     # ----------------------------------------------------------------------------------
-    def __init__(self, debug = False, timeout = 5 ):
+    def __init__(self, debug : bool = False, timeout: float = 5 ):
+        """Initializes the connection to PVI manager
+
+        Args:
+            debug : True = verbose messages for debugging
+            timeout : timeout in [s] to PVI manager instance
+        """
         self._startTime = datetime.datetime.now()
         self._pviTrialTimeCheck = datetime.timedelta(seconds=timeout +1)
         self._debug = debug
@@ -63,18 +77,34 @@ class Connection():
 
     # ----------------------------------------------------------------------------------
     @property
-    def root(self):
-        '''
-        return base object 'Pvi'
-        '''
+    def root(self) ->PviObject:
+        """
+        Returns:
+           PviObject: the base object 'Pvi'
+        """
         return self._rootObject
 
     @property
-    def license(self):
-        """
-        read license information
+    def license(self) -> tuple:
+        """read PVI license information
+
+        Returns:
+            A tuple( state, hardware, license, dongle, license-name )
+
+        where    
+        state is 'undefined' or 'trial' or 'runtime' or 'developer' or 'locked',  
+        hardware is = 'B&R IPC' or 'PC',  
+        license is 'B&R License' or '',  
+        dongle is 'Pvi Dongle' or '',  
+        license-name is a string  
+
+        result may be ```('undefined', '', '', '', '', '')``` if PVI root object is not yet linked.
+
         """
         li = T_PVI_INFO_LICENCE()
+        if self.root._linkID == 0: # root object not yet valid
+            return ('undefined', '', '', '', '', '' )
+
         self._result = PviRead( self.root._linkID, POBJ_ACC_INFO_LICENCE  , None, 0, byref(li), sizeof(li) )
         if self._result == 0:
             try: 
@@ -172,6 +202,13 @@ class Connection():
     def doEvents(self):
         """         
         event loop - must be cyclically called
+
+        typical usage example:
+
+        ```
+        while run:  
+            pviConnection.doEvents()  
+        ```
         """
         wParam = WPARAM()
         lParam = LPARAM()

@@ -20,26 +20,38 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
 from ctypes import create_string_buffer, byref, sizeof
 from ctypes import c_uint32, c_int32, c_uint64, c_int64, c_void_p, c_char_p
-from typing import Callable, Dict, Any
+from typing import Callable, Dict, Any, Type, Union, TypedDict
 import re
 import inspect
 from .include import *
 from .Error import PviError
 
+
+class PviObjectDescriptor(TypedDict):
+    '''helper class representing PVI object description
+
+        e.g. AT=rwe, CD="/RO=View::TempValue" see PVI documentation
+    '''
+    name : str
+    value : Union[str,float,int]
+
+
 class PviObject():
+    '''super class representing a PVI object 
+
+    '''
     __patternParameterPairs = re.compile(r"\s*([A-Z]{2}=\w*)\s*")
 
-    """
-    the base of all objects
-    """
-    def __init__(self, parent , type, name, **objectDescriptor):
+    def __init__(self, parent : Type['PviObject'], type : T_POBJ_TYPE, name : str, **objectDescriptor : PviObjectDescriptor):
         '''
-        > parent: parent PviObject
-        > type:    POBJ_PVI, POBJ_LINE, POBJ_DEVICE, POBJ_STATION, POBJ_CPU, POBJ_MODULE, POBJ_TASK, POBJ_PVAR
-        > name: name of object in PVI's hierarchy
-        > objectDescriptor: CD=""
+        Args: 
+            parent: parent PviObject
+            type:    POBJ_PVI, POBJ_LINE, POBJ_DEVICE, POBJ_STATION, POBJ_CPU, POBJ_MODULE, POBJ_TASK, POBJ_PVAR
+            name: name of object in PVI hierarchy
+            objectDescriptor: e.g. AT=rwe, CD="/RO=View::TempValue" see PVI documentation
         '''
         parentName = re.findall('(\\S+)',parent.name)[0]+'/' if parent else ''
         self._name = f'{parentName}{name}'
@@ -88,7 +100,7 @@ class PviObject():
         
 
     @property
-    def descriptor(self) -> Dict[str, str]:
+    def descriptor(self) -> PviObjectDescriptor:
         '''
         PviObject: object descriptor string
         '''

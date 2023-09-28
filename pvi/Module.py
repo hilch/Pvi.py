@@ -26,15 +26,27 @@ import datetime
 import inspect
 from ctypes import create_string_buffer, byref, sizeof
 from .include import *
-from .Object import PviObject
+from .Object import PviObject, PviObjectDescriptor
 from .Error import PviError
 
 
 class Module(PviObject):
-    def __init__( self, parent, name, **objectDescriptor ):
+    '''class representing modules
+
+    SNMP : can be used but is not necessary
+
+    Typical usage example:
+    ```
+    cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
+    module = Module( cpu, 'bigmod' )
+    ```
+    '''
+    def __init__( self, parent : PviObject, name : str, **objectDescriptor : PviObjectDescriptor):
         '''
-        > uploaded : callback( moduleName, data ) or callback( data )
-        > progress : callback( moduleName, progress ) or callback( progress )
+        Args:
+            parent : CPU object
+            name : name of module
+            objectDescriptor : see PVI documentation for more details
         '''
         if parent._type != T_POBJ_TYPE.POBJ_CPU:
             raise PviError(12009, self)

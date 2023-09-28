@@ -24,14 +24,26 @@ from ctypes import create_string_buffer, sizeof, byref
 from typing import Any
 from .include import *
 from .Error import PviError
-from .Object import PviObject
+from .Object import PviObject, PviObjectDescriptor
 from .VariableTypeDescription import VariableTypeDescription
 
 
 
 class Variable(PviObject):
+    '''class representing variable object
 
-    def __init__( self, parent, name, **objectDescriptor):
+    '''
+    def __init__( self, parent : PviObject, name : str, **objectDescriptor : PviObjectDescriptor ):
+        '''
+        Args:
+            parent : the task object (or the CPU object in case of a global variable)
+            name : name of the variable in PVI hierarchy. Will be used for name of variable in plc if possible.
+            objectDescriptor : e.g.  - see PVI documentation for details
+                ANSL : e.g. CD="/RO=TempField[7] /ROI=1"
+                INA2000 : e.g. AT=rwe CD="/RO=View::TempField[7]"
+                SNMP : name of SNMP variable e.g. CD='serialNumber' or CD='ipAddress'
+                
+        '''
         if parent._type != T_POBJ_TYPE.POBJ_CPU and  parent._type != T_POBJ_TYPE.POBJ_TASK and  parent._type != T_POBJ_TYPE.POBJ_STATION:
             raise PviError(12009, self )        
         self._value = None 

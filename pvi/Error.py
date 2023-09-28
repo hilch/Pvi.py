@@ -25,8 +25,16 @@ from typing import Any
 
 
 class PviError(Exception):
-    '''
-    Pvi Error
+    '''exception class representing a PVI error
+	
+    Is internally used but can also be used by application.
+	
+    Typical usage example:
+	
+    ```
+    raise PviError(12009)
+    ```   
+	
     '''
     _messages = {   
       4000: 'Error from coding function (_CPinfo)',
@@ -1693,6 +1701,10 @@ class PviError(Exception):
         '''
         Pvi Error
         raised when a PVI built-in function returns nonzero
+	
+	    Args:
+            error : PVI error number
+			source : the source of the error for diagnosis
         '''
         message = self._messages.get(error, "") 
         message += "\n( " + repr(source) + " )" if source else ""

@@ -24,14 +24,33 @@ import datetime
 import inspect
 from ctypes import create_string_buffer, byref, sizeof
 from .include import *
-from .Object import PviObject
+from .Object import PviObject, PviObjectDescriptor
 from .Error import PviError
 
 
 # ----------------------------------------------------------------------------------
 class Cpu(PviObject):
+    '''representing a PVI CPU object
+    ANSL & INA2000 : specifies a cpu
+    SNMP : can be used but is not necessary
+    see PVI documentation for more details
 
-    def __init__( self, parent, name, **objectDescriptor ):
+    Typical usage example:
+    ```
+    cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
+    task1 = Task( cpu, 'mainlogic')    
+    ```        
+    '''
+    def __init__( self, parent : PviObject, name : str, **objectDescriptor : PviObjectDescriptor):
+        '''
+        Args:
+            parent : the device (or station) object  
+            name : name of the CPU in PVI hierarchy  
+            objectDescriptor : see PVI documentation for more details
+                ANSL : e.g. CD='/IP=127.0.0.1 /COMT=2500'  
+                INA2000 : e.g. CD='/DAIP=10.49.40.222'
+                SNMP : ''
+        '''
         if parent._type != T_POBJ_TYPE.POBJ_DEVICE and parent._type != T_POBJ_TYPE.POBJ_STATION:
             raise PviError(12009, self )                    
         super().__init__( parent, 'POBJ_CPU', name, **objectDescriptor) 

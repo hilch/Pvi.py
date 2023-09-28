@@ -21,15 +21,33 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from .include import *
-from .Object import PviObject
+from .Object import PviObject, PviObjectDescriptor
 from .Error import PviError
 
 
 class Device(PviObject):
-    def __init__( self, parent, name, **objectDescriptor ):
+    '''class representing a device
+
+        Typical usage example:
+        ```
+        line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
+        device = Device( line, 'TCP', CD='/IF=TcpIp' )
+        ```    
+    '''
+    def __init__( self, parent : PviObject, name : str, **objectDescriptor : PviObjectDescriptor):
+        '''
+        Args:
+            parent : line object  
+            name : the device's name in PVI hierarchy, e.g. 'TCP'  
+            objectDescriptor :  see PVI documentation for details
+                ANSL : CD='/IF=TcpIp'
+                INA2000 : e.g. CD='/IF=com1' or CD='/IF='tcpip /SA=113' or CD='inacan1'
+                SNMP : CD='/IF=snmp' 
+        '''
         if parent._type != T_POBJ_TYPE.POBJ_LINE:
             raise PviError(12009)            
         super().__init__( parent, 'POBJ_DEVICE', name, **objectDescriptor)
+
 
     def __repr__(self):
         return f"Device( name={self._name}, linkID={self._linkID} )"

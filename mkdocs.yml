@@ -1,0 +1,24 @@
+site_name: Pvi.py Docs
+
+theme: "material"
+
+plugins:
+  - mkdocstrings
+
+nav:
+  - index.md
+  - Tutorials : tutorials.md
+  - How-To : how-to-guides.md
+  - Reference:
+       - Connection : connection.md
+       - PviObject : object.md
+       - Line: line.md
+       - Device : device.md
+       - Station : station.md
+       - Cpu : cpu.md
+       - Task : task.md
+       - Variable : variable.md
+       - Module : module.md
+       - PVI Errors : error.md
+
+  

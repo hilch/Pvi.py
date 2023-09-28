@@ -21,12 +21,30 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from .include import *
-from .Object import PviObject
+from .Object import PviObject, PviObjectDescriptor
 from .Error import PviError
 
 # ----------------------------------------------------------------------------------
 class Line(PviObject):
-    def __init__( self, parent, name, **objectDescriptor ):
+    '''class representing a PVI Line
+
+        Typical usage example:
+        ```
+        line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
+        device = Device( line, 'TCP', CD='/IF=TcpIp' )
+        ```
+    '''
+    def __init__( self, parent : PviObject, name : str, **objectDescriptor : PviObjectDescriptor):
+        '''
+        Args: 
+            parent : PVI connection's root object
+            name : name of the line in PVI hierarchy, e.g. 'LNANSL'
+            objectDescriptor: 
+                ANSL : CD='LNANSL'  
+                INA2000 : CD='LNINA2'  
+                SNMP : CD='LNSNMP'
+
+        '''
         if parent._type != T_POBJ_TYPE.POBJ_PVI:
             raise PviError(12009, self)         
         super().__init__( parent, 'POBJ_LINE', name, **objectDescriptor)

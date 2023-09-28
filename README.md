@@ -14,11 +14,11 @@ It's a lot more fun with Python !
 
 # PVI installation and license
 PVI needs a previous installation of 'PVI Development Setup' from [B&R's homepage](https://www.br-automation.com).
-Without a PVI license 1TG0500.02 (+ TG Guard e.g. 0TG1000.02) PVI will run for two hours ("Trial license")
-). 
+Without a PVI license 1TG0500.02 (+ TG Guard e.g. 0TG1000.02) PVI will run for two hours ("Trial license")).  
+
 After this period all PVI based programs will stop working (or will not even start).
 In that case PVI-Manager must be stopped and restarted again. 
-This can be very annoying if Automation Studio is being used in the background at the same time, because it then has to be restarted as well.
+This can be very annoying when Automation Studio is being used in the background at the same time, because it then has to be restarted as well.
 Contact your local B&R office to buy a valid license if trial license is not sufficient for you.
 
 # Installation

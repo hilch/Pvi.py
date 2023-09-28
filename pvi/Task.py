@@ -22,12 +22,31 @@
 
 from ctypes import create_string_buffer, byref, sizeof
 from .include import *
-from .Object import PviObject
+from .Object import PviObject, PviObjectDescriptor
 from .Error import PviError
 
 
 class Task(PviObject):
-    def __init__( self, parent, name, **objectDescriptor ):
+    '''representing a task object
+
+    SNMP : can be used but is not necessary
+
+    Typical usage example:
+    ```
+    task1 = Task( cpu, 'mainlogic')
+    temperature = Variable( task1, 'gHeating.status.actTemp' )    
+    
+    ```       
+    '''
+    def __init__( self, parent : PviObject, name : str, **objectDescriptor : PviObjectDescriptor):
+        '''
+        Args:
+            parent: CPU object  
+            name : name of the task in PVI hierarchy. Will be used for name of task in plc if possible.
+            objectDescriptor : 
+                ANSL & INA2000 : see PVI documentation for details  
+            
+        '''
         if parent._type != T_POBJ_TYPE.POBJ_CPU:
             raise PviError(12009, self)
         objectDescriptor.update({'CD':name})
