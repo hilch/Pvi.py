@@ -20,13 +20,14 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from typing import Type
 import xml.etree.ElementTree as ET
 import re
 import datetime
 import inspect
 from ctypes import create_string_buffer, byref, sizeof
 from .include import *
-from .Object import PviObject, PviObjectDescriptor
+from .Object import PviObject
 from .Error import PviError
 
 
@@ -41,17 +42,17 @@ class Module(PviObject):
     module = Module( cpu, 'bigmod' )
     ```
     '''
-    def __init__( self, parent : PviObject, name : str, **objectDescriptor : PviObjectDescriptor):
+    def __init__( self, parent : Type['PviObject'], name : str, **objectDescriptor):
         '''
         Args:
             parent : CPU object
             name : name of module
             objectDescriptor : see PVI documentation for more details
         '''
-        if parent._type != T_POBJ_TYPE.POBJ_CPU:
+        if parent.type != T_POBJ_TYPE.POBJ_CPU:
             raise PviError(12009, self)
         objectDescriptor.update({'CD':name})                    
-        super().__init__( parent, 'POBJ_MODULE', name, **objectDescriptor)
+        super().__init__( parent, T_POBJ_TYPE.POBJ_MODULE, name, **objectDescriptor)
         self._uploaded = None
         self._progress = None
 

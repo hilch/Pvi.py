@@ -22,9 +22,10 @@
 
 import datetime
 import inspect
+from typing import Type
 from ctypes import create_string_buffer, byref, sizeof
 from .include import *
-from .Object import PviObject, PviObjectDescriptor
+from .Object import PviObject
 from .Error import PviError
 
 
@@ -41,7 +42,7 @@ class Cpu(PviObject):
     task1 = Task( cpu, 'mainlogic')    
     ```        
     '''
-    def __init__( self, parent : PviObject, name : str, **objectDescriptor : PviObjectDescriptor):
+    def __init__( self, parent : PviObject, name : str, **objectDescriptor):
         '''
         Args:
             parent : the device (or station) object  
@@ -51,9 +52,9 @@ class Cpu(PviObject):
                 INA2000 : e.g. CD='/DAIP=10.49.40.222'
                 SNMP : ''
         '''
-        if parent._type != T_POBJ_TYPE.POBJ_DEVICE and parent._type != T_POBJ_TYPE.POBJ_STATION:
+        if parent.type != T_POBJ_TYPE.POBJ_DEVICE and parent.type != T_POBJ_TYPE.POBJ_STATION:
             raise PviError(12009, self )                    
-        super().__init__( parent, 'POBJ_CPU', name, **objectDescriptor) 
+        super().__init__( parent, T_POBJ_TYPE.POBJ_CPU, name, **objectDescriptor) 
         self._downloaded = None
         self._progress = None  
   

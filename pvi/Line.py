@@ -20,8 +20,9 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from typing import Type
 from .include import *
-from .Object import PviObject, PviObjectDescriptor
+from .Object import PviObject
 from .Error import PviError
 
 # ----------------------------------------------------------------------------------
@@ -34,7 +35,7 @@ class Line(PviObject):
         device = Device( line, 'TCP', CD='/IF=TcpIp' )
         ```
     '''
-    def __init__( self, parent : PviObject, name : str, **objectDescriptor : PviObjectDescriptor):
+    def __init__( self, parent : PviObject, name : str, **objectDescriptor):
         '''
         Args: 
             parent : PVI connection's root object
@@ -45,9 +46,9 @@ class Line(PviObject):
                 SNMP : CD='LNSNMP'
 
         '''
-        if parent._type != T_POBJ_TYPE.POBJ_PVI:
+        if parent.type != T_POBJ_TYPE.POBJ_PVI:
             raise PviError(12009, self)         
-        super().__init__( parent, 'POBJ_LINE', name, **objectDescriptor)
+        super().__init__( parent, T_POBJ_TYPE.POBJ_LINE, name, **objectDescriptor)
 
     def __repr__(self):
         return f"Line( name={self._name}, linkID={self._linkID} )"

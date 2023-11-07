@@ -28,15 +28,7 @@ import re
 import inspect
 from .include import *
 from .Error import PviError
-
-
-class PviObjectDescriptor(TypedDict):
-    '''helper class representing PVI object description
-
-        e.g. AT=rwe, CD="/RO=View::TempValue" see PVI documentation
-    '''
-    name : str
-    value : Union[str,float,int]
+from .Connection import Connection
 
 
 class PviObject():
@@ -45,7 +37,7 @@ class PviObject():
     '''
     __patternParameterPairs = re.compile(r"\s*([A-Z]{2}=\w*)\s*")
 
-    def __init__(self, parent : Type['PviObject'], type : T_POBJ_TYPE, name : str, **objectDescriptor : PviObjectDescriptor):
+    def __init__(self, parent, objType : T_POBJ_TYPE, name : str, **objectDescriptor):
         '''
         Args: 
             parent: parent PviObject
@@ -53,20 +45,21 @@ class PviObject():
             name: name of object in PVI hierarchy
             objectDescriptor: e.g. AT=rwe, CD="/RO=View::TempValue" see PVI documentation
         '''
-        parentName = re.findall('(\\S+)',parent.name)[0]+'/' if parent else ''
+        parentName = re.findall('(\\S+)',str(parent.name))[0]+'/' if parent else ''
         self._name = f'{parentName}{name}'
         self._linkID = 0
         self._objectDescriptor = objectDescriptor
-        self._type = T_POBJ_TYPE[type]
+        self._type = objType
         self._result = int(0)      
         self._pviError = int(0)
         self._errorChanged = None
         self._debug = False
         self._parent = parent
+        self._connection : Union[Connection, None]= None
         if parent: # all objects but '@Pvi' have a parent
-            self._pviConnection = parent._pviConnection
-            self._pviConnection.link(self)
-            self._debug = self._pviConnection._debug
+            self._connection = parent._connection # type: ignore
+            self._connection.link(self)
+            self._debug = self._connection._debug
             
     def __hash__(self):
         return hash( (self._name, self._type) )
@@ -100,11 +93,18 @@ class PviObject():
         
 
     @property
-    def descriptor(self) -> PviObjectDescriptor:
+    def descriptor(self) -> dict:
         '''
-        PviObject: object descriptor string
+        PviObject: object descriptor
         '''
         return self._objectDescriptor
+
+
+    @property
+    def type(self) -> T_POBJ_TYPE:
+        return self._type
+
+
 
     @property
     def errorChanged(self) -> Callable:
@@ -243,9 +243,9 @@ class PviObject():
         this should be called when object is not beeing used anymore
         to save PVI resources
         '''
-        if self._linkID != 0:
-            self._pviConnection._linkIDs.pop(self._linkID) # remove from linkIDs
-            self._pviConnection._pviObjects.remove(self) # remove from PviObjects
+        if self._linkID != 0 and self._connection != None:
+            self._connection._linkIDs.pop(self._linkID) # remove from linkIDs
+            self._connection._pviObjects.remove(self) # remove from PviObjects
             self._result = PviUnlink(self._linkID)
             self._linkID = 0
             if self._result != 0:

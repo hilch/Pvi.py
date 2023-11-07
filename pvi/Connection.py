@@ -51,8 +51,8 @@ class Connection():
         self._debug = debug
         self._objectsArranged = False
         self._pviObjects = []
-        self._rootObject = PviObject(None, 'POBJ_PVI', '@Pvi')
-        self._rootObject._pviConnection = self
+        self._rootObject = PviObject(None, T_POBJ_TYPE.POBJ_PVI, '@Pvi')
+        self._rootObject._connection = self
         self.link(self._rootObject)
         self._linkIDs = {}
         self._result = PviInitialize( timeout, 0, "", None )

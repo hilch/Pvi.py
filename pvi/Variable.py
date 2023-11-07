@@ -20,11 +20,12 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from typing import Type
 from ctypes import create_string_buffer, sizeof, byref
 from typing import Any
 from .include import *
 from .Error import PviError
-from .Object import PviObject, PviObjectDescriptor
+from .Object import PviObject
 from .VariableTypeDescription import VariableTypeDescription
 
 
@@ -33,7 +34,7 @@ class Variable(PviObject):
     '''class representing variable object
 
     '''
-    def __init__( self, parent : PviObject, name : str, **objectDescriptor : PviObjectDescriptor ):
+    def __init__( self, parent : PviObject, name : str, **objectDescriptor  ):
         '''
         Args:
             parent : the task object (or the CPU object in case of a global variable)
@@ -44,7 +45,7 @@ class Variable(PviObject):
                 SNMP : name of SNMP variable e.g. CD='serialNumber' or CD='ipAddress'
                 
         '''
-        if parent._type != T_POBJ_TYPE.POBJ_CPU and  parent._type != T_POBJ_TYPE.POBJ_TASK and  parent._type != T_POBJ_TYPE.POBJ_STATION:
+        if parent.type != T_POBJ_TYPE.POBJ_CPU and  parent.type != T_POBJ_TYPE.POBJ_TASK and  parent.type != T_POBJ_TYPE.POBJ_STATION:
             raise PviError(12009, self )        
         self._value = None 
         self._valueChanged = None 
@@ -52,7 +53,7 @@ class Variable(PviObject):
         objectDescriptor.update({'CD':name})
         if 'RF' not in objectDescriptor:
             objectDescriptor.update({'RF':0}) # do not cyclic refrehs variables by default       
-        super().__init__( parent, 'POBJ_PVAR', name, **objectDescriptor)
+        super().__init__( parent, T_POBJ_TYPE.POBJ_PVAR, name, **objectDescriptor)
 
     def __repr__(self):
         return f"Variable( name={self._name}, linkID={self._linkID}, VT={self._objectDescriptor.get('VT')} )"

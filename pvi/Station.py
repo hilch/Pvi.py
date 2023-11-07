@@ -20,8 +20,9 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from typing import Type
 from .include import *
-from .Object import PviObject, PviObjectDescriptor
+from .Object import PviObject
 from .Error import PviError
 
 class Station(PviObject):
@@ -31,7 +32,7 @@ class Station(PviObject):
     SNMP specifies particular PLC
     see PVI documentation for more details
     '''
-    def __init__( self, parent : PviObject, name : str, **objectDescriptor : PviObjectDescriptor ):
+    def __init__( self, parent : PviObject, name : str, **objectDescriptor ):
         '''
         Args:
             parent : device object  
@@ -41,9 +42,9 @@ class Station(PviObject):
                 INA2000 : ''
                 SNMP : MAC address, e.g. CD="/CN=00-60-65-02-f0-2c"
         '''
-        if parent._type != T_POBJ_TYPE.POBJ_DEVICE:
+        if parent.type != T_POBJ_TYPE.POBJ_DEVICE:
             raise PviError(12009, self)          
-        super().__init__( parent, 'POBJ_STATION', name, **objectDescriptor)
+        super().__init__( parent, T_POBJ_TYPE.POBJ_STATION, name, **objectDescriptor)
 
     def __repr__(self):
         return f"Station( name={self._name}, linkID={self._linkID} )"
