@@ -20,7 +20,7 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Type
+from typing import Dict
 from .include import *
 from .Object import PviObject
 from .Error import PviError
@@ -31,6 +31,7 @@ class Line(PviObject):
 
         Typical usage example:
         ```
+        pviConnection = Connection()
         line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
         device = Device( line, 'TCP', CD='/IF=TcpIp' )
         ```

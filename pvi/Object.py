@@ -20,16 +20,15 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
+from __future__ import annotations
+from typing import Dict, Any
 from ctypes import create_string_buffer, byref, sizeof
 from ctypes import c_uint32, c_int32, c_uint64, c_int64, c_void_p, c_char_p
-from typing import Callable, Dict, Any, Type, Union, TypedDict
+from typing import Callable, Union
 import re
 import inspect
 from .include import *
 from .Error import PviError
-from .Connection import Connection
-
 
 class PviObject():
     '''super class representing a PVI object 
@@ -37,11 +36,11 @@ class PviObject():
     '''
     __patternParameterPairs = re.compile(r"\s*([A-Z]{2}=\w*)\s*")
 
-    def __init__(self, parent, objType : T_POBJ_TYPE, name : str, **objectDescriptor):
+    def __init__(self, parent : Union[PviObject,None], objType : T_POBJ_TYPE, name : str, **objectDescriptor : Dict[str, Any]):
         '''
         Args: 
-            parent: parent PviObject
-            type:    POBJ_PVI, POBJ_LINE, POBJ_DEVICE, POBJ_STATION, POBJ_CPU, POBJ_MODULE, POBJ_TASK, POBJ_PVAR
+            parent: the parent Pvi Object
+            objType:   Pvi Object Type
             name: name of object in PVI hierarchy
             objectDescriptor: e.g. AT=rwe, CD="/RO=View::TempValue" see PVI documentation
         '''
@@ -55,10 +54,9 @@ class PviObject():
         self._errorChanged = None
         self._debug = False
         self._parent = parent
-        self._connection : Union[Connection, None]= None
         if parent: # all objects but '@Pvi' have a parent
             self._connection = parent._connection # type: ignore
-            self._connection.link(self)
+            self._connection.link(self) 
             self._debug = self._connection._debug
             
     def __hash__(self):
@@ -76,15 +74,39 @@ class PviObject():
     @property
     def name(self) -> str:
         '''
-        PviObject: hierarchical object name
+        hierarchical PVI object name
+
+        example:
+        ```
+        temperature = Variable( task1, 'gHeating.status.actTemp' )
+        ...
+        print( "name=", temperature.name)
+        ```
+        results in:
+
+        ```
+        name= @Pvi/LNANSL/TCP/myArsim/mainlogic/gHeating.status.actTemp
+        ```
         '''
         return self._name
 
     @property
     def objectName(self) -> str:
         '''
-        PviObject: object name
-        '''            
+        object name
+
+        example:
+        ```
+        temperature = Variable( task1, 'gHeating.status.actTemp' )
+        ...
+        print( "oname=", temperature.name)
+        ```
+        results in:
+
+        ```
+        oname= gHeating.status.actTemp
+        ```
+        '''         
         x = self._name.rpartition('/')
         try:
             return x[2]
@@ -95,23 +117,48 @@ class PviObject():
     @property
     def descriptor(self) -> dict:
         '''
-        PviObject: object descriptor
-        '''
+        object descriptor
+        example:
+        ```
+        temperature = Variable( task1, 'gHeating.status.actTemp' )
+        ...
+        print( "descriptor=", temperature.name)
+        ```
+        results in:
+
+        ```
+        descriptor= {'CD': 'gHeating.status.actTemp', 'RF': 0}
+        ```
+        '''         
         return self._objectDescriptor
 
 
     @property
     def type(self) -> T_POBJ_TYPE:
+        '''
+        object type 
+
+        example:
+        ```
+        temperature = Variable( task1, 'gHeating.status.actTemp' )
+        ...
+        print( "type=", temperature.type)
+        ```
+        results in:
+
+        ```
+        type= T_POBJ_TYPE.POBJ_PVAR
+        ```
+        '''                 
         return self._type
 
 
 
     @property
     def errorChanged(self) -> Callable:
-        '''
-        PviObject: set callback for 'error changed'
-        > cb: callback( PviObject, int ) or callback( int )
-        '''
+        """
+        callback for 'error changed'
+        """
         if self._errorChanged:
             return self._errorChanged
         else:
@@ -120,10 +167,24 @@ class PviObject():
 
     @errorChanged.setter
     def errorChanged(self, cb : Callable):
-        '''
-        PviObject: set callback for 'error changed'
-        > cb: callback( PviObject, int ) or callback( int )
-        '''
+        """
+        set callback for 'error changed'
+            Args:
+                cb: callback( PviObject, int ) or callback( int )
+
+        typical example:
+
+        ```
+        cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
+        ...
+        def cpuErrorChanged( error : int ):
+            if error != 0:
+                raise PviError(error)
+  
+        cpu.errorChanged = cpuErrorChanged
+        ```
+
+        """
         if callable(cb):
             self._errorChanged = cb
         else:
@@ -132,7 +193,7 @@ class PviObject():
 
     def _eventData( self, wParam, responseInfo ):
         """
-        handle data events
+        (internal) handle data events
         """
         self._result = PviReadResponse( wParam, None, 0 )
         if callable(self._errorChanged):
@@ -140,12 +201,15 @@ class PviObject():
 
     def _eventDataType( self, wParam, responseInfo ):
         """
-        handle data type events
+        (internal) handle data type events
         """        
         self._result = PviReadResponse( wParam, None, 0 ) 
        
 
-    def _eventUploadStream( self, wParam, responseInfo, dataLen : int ):      
+    def _eventUploadStream( self, wParam, responseInfo, dataLen : int ):  
+        """
+        (internal) handle uploading data streams
+        """                   
         self._result = PviReadResponse( wParam, None, 0 ) 
 
 
@@ -155,7 +219,7 @@ class PviObject():
 
     def _eventError( self, wParam, responseInfo ):
         """         
-        handle error events
+        (internal) handle error events
         """      
         self._result = PviReadResponse( wParam, None, 0 )
         if callable(self._errorChanged):
@@ -165,7 +229,10 @@ class PviObject():
             elif len(sig.parameters) == 2:
                 self._errorChanged( self, responseInfo.ErrCode)
  
-    def _createAndLink(self, pvi):
+    def _createAndLink(self, connection):
+        """
+        (internal) create object and link it
+        """
         descriptor_items = []
         for key, value in self._objectDescriptor.items():
             quote = '"' if re.search( r"[\/\.\s]", str(value) ) is not None else ''
@@ -181,7 +248,7 @@ class PviObject():
             self._linkID = linkID.value
             # if self._type == T_POBJ_TYPE.POBJ_PVAR: # read variable's data type
             #     PviReadRequest( self._linkID, POBJ_ACC_TYPE, PVI_HMSG_NIL, SET_PVIFUNCTION, 0 )
-            pvi._linkIDs[self._linkID] = self # store object for backward reference  
+            connection._linkIDs[self._linkID] = self # store object for backward reference  
         else:
             print( f"PviCreate {self.name} = {self._result}")
             raise PviError(self._result, self)
@@ -192,8 +259,25 @@ class PviObject():
     def externalObjects(self):
         """     
         PviObject.externalObjects : list of dict
-        get a list of external objects
+        get a list of external objects retrieved by POBJ_ACC_LIST_EXTERN
         # only available with ANSL, not with INA2000
+
+        example:
+
+        ```
+        cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
+        ...
+        print("external objects", cpu.externalObjects )
+        ```
+
+        results in:
+
+        ```
+        external objects [{'name': '$$sysconf', 'type': 'Module'}, {'name': '$arlogsys', 'type': 'Module'}
+                    ...... name': 'visvc', 'type': 'Module'}]
+
+        ```
+
         """    
         s = create_string_buffer(b'\000' * 65536)   
         self._result = PviRead( self._linkID, POBJ_ACC_LIST_EXTERN, None, 0, byref(s), sizeof(s) )
@@ -210,8 +294,26 @@ class PviObject():
     def status(self) -> dict:
         """
         PviObject.status
-        read the object's status () 
-        """
+        read the object's status
+
+        example:
+
+        ```
+        cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
+        task1 = Task( cpu, 'mainlogic')
+        temperature = Variable( task1, 'gHeating.status.actTemp' )
+        ...
+        print("status=", cpu.status )
+        ```
+
+        results in:
+
+        ```
+        cpu.status= {'ST': 'WarmStart', 'RunState': 'RUN'}
+        task1.status {'ST': 'Running'}
+        temperature.status= {'ST': 'Var', 'SC': 'g'}
+        ```
+        """    
         s = create_string_buffer(b'\000' * 64)             
         self._result = PviRead( self._linkID, POBJ_ACC_STATUS, None, 0, byref(s), sizeof(s) )
         st = dict()        

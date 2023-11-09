@@ -20,7 +20,7 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Type
+from typing import Dict, Any
 import xml.etree.ElementTree as ET
 import re
 import datetime
@@ -42,7 +42,7 @@ class Module(PviObject):
     module = Module( cpu, 'bigmod' )
     ```
     '''
-    def __init__( self, parent : Type['PviObject'], name : str, **objectDescriptor):
+    def __init__( self, parent : PviObject, name : str, **objectDescriptor):
         '''
         Args:
             parent : CPU object
@@ -63,7 +63,7 @@ class Module(PviObject):
   
     def _eventUploadStream( self, wParam, responseInfo, dataLen : int ):
         '''
-        upload a data module as stream
+        (internal) upload a data module as stream
         '''
         s = create_string_buffer(dataLen)       
         self._result = PviReadResponse( wParam, s, sizeof(s) )
@@ -80,7 +80,7 @@ class Module(PviObject):
 
     def _eventUploadLogData( self, wParam, responseInfo, dataLen : int ):
         '''
-        upload XML logger data (ANSL only)
+        (internal) upload XML logger data (ANSL only)
         '''
         s = create_string_buffer(dataLen+256)       
         self._result = PviReadResponse( wParam, s, sizeof(s) )
@@ -114,7 +114,7 @@ class Module(PviObject):
 
     def _eventUploadModData( self, wParam, responseInfo, dataLen : int ):
         '''
-        upload logger data (INA2000)
+        (internal) upload logger data (INA2000)
         see GUID 75bf0748-45f2-4610-a68d-53760ab5fa98
         '''
         patternParameterPairs = re.compile(r"\s*([A-Z]{1,4}=\w*)\s*")        
@@ -167,7 +167,7 @@ class Module(PviObject):
 
     def _eventProceeding( self, wParam, responseInfo : T_RESPONSE_INFO ):  
         '''
-        return proceeding info
+        (internal) return proceeding info
         '''  
         proceedingInfo = T_PROCEEDING_INFO()
         self._result = PviReadResponse( wParam, byref(proceedingInfo), sizeof(proceedingInfo) )
@@ -182,17 +182,20 @@ class Module(PviObject):
             raise PviError(self._result, self)               
 
 
-    def upload(self, **args ):
+    def upload(self, **kwargs : Dict[str,Any]):
         '''
-        Module: uploadLoggerData 
-            loads logger data if module is a logger module else load binary data
-            > uploaded: callable - is fired when module was uploaded
-            > progress: callable(int) - returns percentage of progress
-            > MT : 'BRT', '_LOGM'
+        uploadLoggerData 
+        loads logger data if module is a logger module else load binary data
+
+        Args: 
+            kwargs:    
+                uploaded - callback - is fired when module was uploaded
+                progress - callback(int) - returns percentage of progress
+                MT - Moduletype e.g. 'BRT', '_LOGM'
         '''
         arguments = ''
         loggerModule = False
-        for key, value in args.items():
+        for key, value in kwargs.items():
             if key == 'uploaded':
                 if callable(value):
                     self._uploaded = value

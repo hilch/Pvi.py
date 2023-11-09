@@ -33,6 +33,7 @@ class Device(PviObject):
         ```
         line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
         device = Device( line, 'TCP', CD='/IF=TcpIp' )
+        cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
         ```    
     '''
     def __init__( self, parent : PviObject, name : str, **objectDescriptor):

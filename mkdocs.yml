@@ -1,6 +1,9 @@
 site_name: Pvi.py Docs
 
-theme: "material"
+theme: 
+  name : "material"
+  palette:
+    primary: orange
 
 plugins:
   - mkdocstrings

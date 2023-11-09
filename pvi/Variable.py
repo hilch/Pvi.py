@@ -31,8 +31,13 @@ from .VariableTypeDescription import VariableTypeDescription
 
 
 class Variable(PviObject):
-    '''class representing variable object
+    '''representing a PVI Variable object
 
+    Typical usage example:
+    ```
+    task1 = Task( cpu, 'mainlogic')  
+    temperature = Variable( task1, 'gHeating.status.actTemp' )  
+    ```        
     '''
     def __init__( self, parent : PviObject, name : str, **objectDescriptor  ):
         '''
@@ -41,7 +46,9 @@ class Variable(PviObject):
             name : name of the variable in PVI hierarchy. Will be used for name of variable in plc if possible.
             objectDescriptor : e.g.  - see PVI documentation for details
                 ANSL : e.g. CD="/RO=TempField[7] /ROI=1"
+
                 INA2000 : e.g. AT=rwe CD="/RO=View::TempField[7]"
+
                 SNMP : name of SNMP variable e.g. CD='serialNumber' or CD='ipAddress'
                 
         '''
@@ -62,7 +69,7 @@ class Variable(PviObject):
     @property
     def writable(self) -> bool:
         '''
-        Variable: signals if this variable can be written
+        signals if this variable can be written
         '''
         if self._variableTypeDescription.vt != PvType.UNKNOWN:
             access = self._objectDescriptor.get('AT', '')  
@@ -73,7 +80,7 @@ class Variable(PviObject):
     @property
     def readable(self) -> bool:
         '''
-        Variable: signals if this variable can be read
+        signals if this variable can be read
         '''
         if self._variableTypeDescription.vt != PvType.UNKNOWN:
             access = self._objectDescriptor.get('AT', '')
@@ -122,7 +129,7 @@ class Variable(PviObject):
     @property
     def value(self) -> Any:
         '''
-        Variable : read value
+        read value
         '''
         self.__readRawData( 0, None )
         return self._value
@@ -131,7 +138,7 @@ class Variable(PviObject):
     @value.setter
     def value(self,v : Any):
         '''
-        Variable: set value
+        set value
         '''
         if self._variableTypeDescription.vt == PvType.UNKNOWN:
             self._variableTypeDescription.readFrom(self)
@@ -148,14 +155,14 @@ class Variable(PviObject):
     @property
     def valueChanged(self):
         '''
-        Variable: read callback for 'value changed'
+        read callback for 'value changed'
         '''
         return self._valueChanged
 
     @valueChanged.setter
     def valueChanged(self, cb):
         '''
-        Variable: set callback for 'value changed'
+        set callback for 'value changed'
         '''
         if callable(cb):
             self._valueChanged = cb
@@ -163,9 +170,11 @@ class Variable(PviObject):
             raise ValueError
 
 
+    @property
     def dataType(self) -> str:
         '''
-        Variable: returns variable's type as string
+        variable's type as string. e.g 'i8', 'i16', 'f32', 'boolean', 'string'
+        in case of an array the string is surrouned by brackets, e.g. '[i32]'
         '''
         t = "?"
         if self._variableTypeDescription.vt == PvType.UNKNOWN:

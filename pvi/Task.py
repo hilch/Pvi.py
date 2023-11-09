@@ -20,7 +20,7 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Type
+from typing import List
 from ctypes import create_string_buffer, byref, sizeof
 from .include import *
 from .Object import PviObject
@@ -34,9 +34,9 @@ class Task(PviObject):
 
     Typical usage example:
     ```
+    cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
     task1 = Task( cpu, 'mainlogic')
-    temperature = Variable( task1, 'gHeating.status.actTemp' )    
-    
+    temperature = Variable( task1, 'gHeating.status.actTemp' )
     ```       
     '''
     def __init__( self, parent : PviObject, name : str, **objectDescriptor):
@@ -53,27 +53,27 @@ class Task(PviObject):
         objectDescriptor.update({'CD':name})
         super().__init__( parent, T_POBJ_TYPE.POBJ_TASK, name, **objectDescriptor)
 
-    def start(self):
+    def start(self)->None:
         '''
-        Task: start a task
+        start a task
         '''
         s = create_string_buffer(b"ST=Start")
         self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
         if self._result != 0:
             raise PviError(self._result, self)  
 
-    def resume(self):
+    def resume(self)->None:
         '''
-        Task: resume a stopped task
+        resume a stopped task
         '''
         s = create_string_buffer(b"ST=Resume")
         self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
         if self._result != 0:
             raise PviError(self._result, self)                         
 
-    def stop(self):
+    def stop(self)->None:
         '''
-        Task: stop task
+        stop task
         '''
         s = create_string_buffer(b"ST=Stop")
         self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
@@ -81,11 +81,10 @@ class Task(PviObject):
             raise PviError(self._result, self)                  
 
     @property
-    def variables(self):
-        """     
-        Task.variables : list of str
-        get a list of local variables
-        """
+    def variables(self)-> List[str]:
+        '''
+        list of local variables
+        '''
         s = create_string_buffer(b'\000' * 65536)   
         self._result = PviRead( self._linkID, POBJ_ACC_LIST_PVAR, None, 0, byref(s), sizeof(s) )
         if( self._result == 0 ):

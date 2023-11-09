@@ -22,7 +22,7 @@
 
 import datetime
 import inspect
-from typing import Type
+from typing import List
 from ctypes import create_string_buffer, byref, sizeof
 from .include import *
 from .Object import PviObject
@@ -38,8 +38,9 @@ class Cpu(PviObject):
 
     Typical usage example:
     ```
+    device = Device( line, 'TCP', CD='/IF=TcpIp' )
     cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
-    task1 = Task( cpu, 'mainlogic')    
+    task1 = Task( cpu, 'mainlogic')
     ```        
     '''
     def __init__( self, parent : PviObject, name : str, **objectDescriptor):
@@ -64,13 +65,16 @@ class Cpu(PviObject):
 
 
     def _eventStatus( self, wParam, responseInfo ):
-        """         
-        handle status events
-        """      
+        '''         
+        (internal) handle status events
+        '''      
         self._result = PviReadResponse( wParam, None, 0 ) 
 
 
-    def _eventDownloadStream( self, wParam, responseInfo : T_RESPONSE_INFO):    
+    def _eventDownloadStream( self, wParam, responseInfo : T_RESPONSE_INFO): 
+        '''
+        (internal) handle stream download
+        '''   
         self._result = PviWriteResponse( wParam )
         if self._result == 0:
             if self._downloaded:
@@ -99,7 +103,6 @@ class Cpu(PviObject):
 
     def warmStart(self) -> None:
         '''
-        Cpu.warmstart() -> None
         executes a warm restart
         '''
         s = create_string_buffer(b"ST=WarmStart")
@@ -110,7 +113,6 @@ class Cpu(PviObject):
 
     def coldStart(self) -> None:
         '''
-        Cpu.coldStart() -> None
         executes a cold restart
         '''        
         s = create_string_buffer(b"ST=ColdStart")
@@ -119,19 +121,19 @@ class Cpu(PviObject):
             raise PviError(self._result, self)
 
 
-    def downloadModule(self, data : bytes, **kwargs ):
+    def downloadModule(self, data : bytes, **kwargs )->None:
         '''
-        Cpu.downloadModule( data, **args )
         download given bytes as module
 
-        Parameters:
-        data : bytes  - data content
-        kwargs : MT - module type e.g. 'BRT'
-               MN - module name
-               MV - module version
-               LD - memory type e.g. 'Ram', 'Dram', 'Rom'
-               downloaded - callback() or callback(Cpu) if module was downloaded
-               progress - callback(p) or callback (Cpu, p) to show progress
+        Args:
+            data : bytes  - data content
+            kwargs : 
+                MT - module type e.g. 'BRT'
+                MN - module name
+                MV - module version
+                LD - memory type e.g. 'Ram', 'Dram', 'Rom'
+                downloaded - callback() or callback(Cpu) if module was downloaded
+                progress - callback(p) or callback (Cpu, p) to show progress
         '''
         currentFrame = inspect.currentframe()
         currentFunctionName = ''
@@ -166,10 +168,24 @@ class Cpu(PviObject):
 
 
     @property
-    def modules(self):
-        """     
-        Cpu.modules : list of str
-        get a list of all modules 
+    def modules(self)->List[str]:
+        """    
+        list of all modules on this CPU
+
+        example:
+
+        ```
+        cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
+        ...
+        print("cpu.modules=", cpu.modules)
+        ```
+
+        results in:
+
+        ```
+        cpu.modules= ['$$sysconf', '$arlogsys', '$arlogusr', '$fieldbus',
+                    ..... 'visTrend', 'visapi', 'visvc']
+        ```
         """
         s = create_string_buffer(b'\000' * 4096)   
         self._result = PviRead( self._linkID, POBJ_ACC_LIST_MODULE, None, 0, byref(s), sizeof(s) )
@@ -181,11 +197,24 @@ class Cpu(PviObject):
 
 
     @property
-    def tasks(self):
-        """     
-        Cpu.tasks : list of str
+    def tasks(self)->List[str]:
+        '''     
         get a list of all tasks
-        """
+
+        example:
+
+        ```
+        cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
+        ...
+        print("cpu.tasks=", cpu.tasks)
+        ```
+
+        results in:
+
+        ```
+        cpu.tasks= ['brewing', 'conveyor', 'feeder', 'heating', 'mainlogic', 'myProg', 'visAlarm', 'visCtrl', 'visTrend']
+        ```
+        '''
         s = create_string_buffer(b'\000' * 4096)   
         self._result = PviRead( self._linkID, POBJ_ACC_LIST_TASK, None, 0, byref(s), sizeof(s) )
         if self._result == 0:
@@ -196,11 +225,24 @@ class Cpu(PviObject):
 
 
     @property
-    def variables(self):
-        """     
-        Cpu.variables : list of str
+    def variables(self)->List[str]:
+        '''     
         get a list of global variables
-        """
+
+        example:
+        ```
+        cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
+        ...
+        print("cpu.variables=", cpu.variables)
+        ```
+
+        results in:
+
+        ```
+        cpu.variables= ['LCRPID_D_MODE_X', 'LCRPID_FBK_MODE_INTERN', 'LCRPID_MODE_AUTO', 'LCRPID_MODE_CLOSE', 'aoHeating', 
+                ...... 'sdm_APPMODE_ERROR', 'sdm_APPMODE_OK', 'sdm_APPMODE_WARNING']
+        ```
+        '''
         s = create_string_buffer(b'\000' * 65536)   
         self._result = PviRead( self._linkID, POBJ_ACC_LIST_PVAR, None, 0, byref(s), sizeof(s) )
         if( self._result == 0 ):
@@ -214,9 +256,25 @@ class Cpu(PviObject):
     @property       
     def status(self) -> dict:
         """
-        Cpu.status
         read the CPU status
-        """
+         example:
+
+        ```
+        cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
+        ...
+        print("status=", cpu.status )
+        ```
+
+        results in:
+
+        ```
+        cpu.status= {'ST': 'WarmStart', 'RunState': 'RUN'}
+        ```
+
+        possible values of 'ST' are: 'WarmStart', 'ColdStart', 'Diagnose', 'Error', 'Reset' and '<unknown>'
+        possible values of 'RunState' are: 'RUN', 'DIAG', 'SERV'
+
+        """    
         st = super().status
         runState = { "WarmStart" : "RUN", "ColdStart" : "RUN", "Diagnose" : "DIAG", "Error" : "SERV", "Reset" : "SERV"}.get(st.get("ST", "<unknown>"))
         st.update({"RunState" : runState})
@@ -226,7 +284,22 @@ class Cpu(PviObject):
     @property
     def time(self) -> datetime.datetime:
         """
-        Cpu: read the CPU's clock
+        Returns:
+            datetime : CPU's current clock time
+
+        example:
+
+        ```
+        cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
+        ...
+        print("cpu.time=", cpu.time)
+        ```
+
+        results in:
+
+        ```
+        cpu.time= 2023-11-09 13:44:02
+        ```
         """
         t = struct_tm()       
         self._result = PviRead( self._linkID, POBJ_ACC_DATE_TIME , None, 0, byref(t), sizeof(t) )
