@@ -182,7 +182,7 @@ class Module(PviObject):
             raise PviError(self._result, self)               
 
 
-    def upload(self, **kwargs : Dict[str,Any]):
+    def upload(self, **kwargs):
         '''
         uploadLoggerData 
         loads logger data if module is a logger module else load binary data
