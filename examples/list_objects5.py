@@ -44,9 +44,10 @@ def cpuErrorChanged( error : int):
                 try:
                     dataType = variable.dataType
                     value = variable.value
+                    variables.append( { "Name" : variableName, "Type" : dataType, "Value" : value} )
                 except PviError as e:
                     print(e)
-                variables.append( { "Name" : variableName, "Type" : dataType, "Value" : value} )
+
                 variable.kill()
             tasks.update({ taskName : variables })
             task.kill
@@ -60,11 +61,11 @@ def cpuErrorChanged( error : int):
             try:
                 dataType = variable.dataType
                 value = variable.value
+                variables.append( { "Name" : variableName, "Type" : dataType, "Value" : value} )
             except PviError as e:
                 print(e)
-            variables.append( { "Name" : variableName, "Type" : dataType, "Value" : value} )
-            variable.kill()
 
+            variable.kill()
 
         # append the content to existing file
         with open('content.txt', 'a') as f: 

@@ -38,9 +38,10 @@ def cpuErrorChanged( error : int):
             try:
                 dataType = variable.dataType
                 value = variable.value
+                variables.append( { "Name" : variableName, "Type" : dataType, "Value" : value} )
             except PviError as e:
                 print(e)
-            variables.append( { "Name" : variableName, "Type" : dataType, "Value" : value} )
+
             variable.kill()
 
         # write content to file
