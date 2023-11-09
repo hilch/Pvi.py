@@ -1,0 +1,1795 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../how-to-guides/">
+      
+      
+        <link rel="next" href="../object/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.2">
+    
+    
+      
+        <title>Connection - Pvi.py Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.d451bc0e.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.a5377069.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="orange" data-md-color-accent="indigo">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#pvi.Connection" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Pvi.py Docs" class="md-header__button md-logo" aria-label="Pvi.py Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Pvi.py Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Connection
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Pvi.py Docs" class="md-nav__button md-logo" aria-label="Pvi.py Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Pvi.py Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Pvi.py
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tutorials
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to-guides/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How-To
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Connection
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Connection
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pvi.Connection" class="md-nav__link">
+    Connection
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pvi.Connection.Connection" class="md-nav__link">
+    Connection
+  </a>
+  
+    <nav class="md-nav" aria-label="Connection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Connection.Connection.license" class="md-nav__link">
+    license
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Connection.Connection.root" class="md-nav__link">
+    root
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Connection.Connection.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Connection.Connection.doEvents" class="md-nav__link">
+    doEvents()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Connection.Connection.link" class="md-nav__link">
+    link()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../object/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PviObject
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../line/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Line
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../device/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Device
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../station/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Station
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cpu/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Cpu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../task/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../variable/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Variable
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../module/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../error/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PVI Errors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pvi.Connection" class="md-nav__link">
+    Connection
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pvi.Connection.Connection" class="md-nav__link">
+    Connection
+  </a>
+  
+    <nav class="md-nav" aria-label="Connection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Connection.Connection.license" class="md-nav__link">
+    license
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Connection.Connection.root" class="md-nav__link">
+    root
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Connection.Connection.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Connection.Connection.doEvents" class="md-nav__link">
+    doEvents()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Connection.Connection.link" class="md-nav__link">
+    link()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  <h1>Connection</h1>
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="pvi.Connection"></a>
+  <div class="doc doc-contents first">
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+
+<h2 id="pvi.Connection.Connection" class="doc doc-heading">
+          <code>Connection</code>
+
+
+</h2>
+
+
+  <div class="doc doc-contents ">
+
+  
+      <p>class representing a connection to PVI manager</p>
+<p>Typical usage example:</p>
+<pre><code>    pviConnection = Connection() # start a Pvi connection
+
+    line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')    
+</code></pre>
+
+            <details class="quote">
+              <summary>Source code in <code>pvi\Connection.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Connection</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    class representing a connection to PVI manager</span>
+
+<span class="sd">    Typical usage example:</span>
+
+<span class="sd">    ```</span>
+<span class="sd">        pviConnection = Connection() # start a Pvi connection</span>
+
+<span class="sd">        line = Line( pviConnection.root, &#39;LNANSL&#39;, CD=&#39;LNANSL&#39;)    </span>
+<span class="sd">    ```</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># ----------------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">debug</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the connection to PVI manager</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            debug : True = verbose messages for debugging</span>
+<span class="sd">            timeout : timeout in [s] to PVI manager instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_startTime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pviTrialTimeCheck</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">timeout</span> <span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span> <span class="o">=</span> <span class="n">debug</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_objectsArranged</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pviObjects</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rootObject</span> <span class="o">=</span> <span class="n">PviObject</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">T_POBJ_TYPE</span><span class="o">.</span><span class="n">POBJ_PVI</span><span class="p">,</span> <span class="s1">&#39;@Pvi&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rootObject</span><span class="o">.</span><span class="n">_connection</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rootObject</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviInitialize</span><span class="p">(</span> <span class="n">timeout</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># set global events</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">(</span><span class="n">POBJ_EVENT_PVI_CONNECT</span><span class="p">,</span> <span class="n">POBJ_EVENT_PVI_DISCONN</span><span class="p">,</span> <span class="n">POBJ_EVENT_PVI_ARRANGE</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviSetGlobEventMsg</span><span class="p">(</span> <span class="n">m</span><span class="p">,</span> <span class="n">PVI_HMSG_NIL</span><span class="p">,</span> <span class="n">SET_PVIFUNCTION</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">)</span>
+
+    <span class="c1"># ----------------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Connection()&quot;</span>
+
+    <span class="c1"># ----------------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PviDeinitialize&quot;</span><span class="p">)</span>
+        <span class="n">PviDeinitialize</span><span class="p">()</span>
+
+    <span class="c1"># ----------------------------------------------------------------------------------</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">root</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span><span class="n">PviObject</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">           PviObject: the base object &#39;Pvi&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rootObject</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">license</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;read PVI license information</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A tuple( state, hardware, license, dongle, license-name )</span>
+
+<span class="sd">        where    </span>
+<span class="sd">        state is &#39;undefined&#39; or &#39;trial&#39; or &#39;runtime&#39; or &#39;developer&#39; or &#39;locked&#39;,  </span>
+<span class="sd">        hardware is = &#39;B&amp;R IPC&#39; or &#39;PC&#39;,  </span>
+<span class="sd">        license is &#39;B&amp;R License&#39; or &#39;&#39;,  </span>
+<span class="sd">        dongle is &#39;Pvi Dongle&#39; or &#39;&#39;,  </span>
+<span class="sd">        license-name is a string  </span>
+
+<span class="sd">        result may be ```(&#39;undefined&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;)``` if PVI root object is not yet linked.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">li</span> <span class="o">=</span> <span class="n">T_PVI_INFO_LICENCE</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">_linkID</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># root object not yet valid</span>
+            <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;undefined&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span> <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviRead</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_INFO_LICENCE</span>  <span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">li</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">li</span><span class="p">)</span> <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span> 
+                <span class="n">state</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;undefined&#39;</span><span class="p">,</span> <span class="s1">&#39;trial&#39;</span><span class="p">,</span> <span class="s1">&#39;runtime&#39;</span><span class="p">,</span> <span class="s1">&#39;developer&#39;</span><span class="p">,</span> <span class="s1">&#39;locked&#39;</span><span class="p">)[</span><span class="n">li</span><span class="o">.</span><span class="n">PviWorkState0</span><span class="p">]</span>
+                <span class="n">hardware</span> <span class="o">=</span> <span class="s1">&#39;B&amp;R IPC&#39;</span> <span class="k">if</span> <span class="n">li</span><span class="o">.</span><span class="n">PviWorkState1</span> <span class="ow">and</span> <span class="mh">0x01</span> <span class="k">else</span> <span class="s1">&#39;PC&#39;</span>
+                <span class="n">burlicence</span> <span class="o">=</span> <span class="s1">&#39;B&amp;R License&#39;</span> <span class="k">if</span> <span class="n">li</span><span class="o">.</span><span class="n">PviWorkState1</span> <span class="ow">and</span> <span class="mh">0x02</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+                <span class="n">dongle</span> <span class="o">=</span> <span class="s1">&#39;Pvi Dongle&#39;</span> <span class="k">if</span> <span class="n">li</span><span class="o">.</span><span class="n">PviWorkState1</span> <span class="ow">and</span> <span class="mh">0x04</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">return</span> <span class="n">state</span><span class="p">,</span> <span class="n">hardware</span><span class="p">,</span> <span class="n">burlicence</span><span class="p">,</span> <span class="n">dongle</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">li</span><span class="o">.</span><span class="n">LcName</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">,</span> <span class="bp">self</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;undefined&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span> <span class="p">)</span>
+
+    <span class="c1"># ----------------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span> <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        registers new PviObject(s)</span>
+
+<span class="sd">        *args : PviObject of list of PviObjects</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">PviObject</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pviObjects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objectsArranged</span><span class="p">:</span>
+                    <span class="n">o</span><span class="o">.</span><span class="n">_createAndLink</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">list</span> <span class="p">):</span>
+                <span class="k">for</span> <span class="n">oo</span> <span class="ow">in</span> <span class="n">o</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="n">oo</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;only PviObject or list of PviObjects allowed !&quot;</span><span class="p">)</span>
+    <span class="c1"># ----------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">findObjectByName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span><span class="n">PviObject</span> <span class="p">:</span>
+        <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pviObjects</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">o</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">o</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;PviObject not found by name&#39;</span><span class="p">)</span>
+
+    <span class="c1"># ----------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">findObjectByLinkID</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">linkID</span> <span class="p">:</span> <span class="n">DWORD</span><span class="p">)</span> <span class="o">-&gt;</span><span class="n">PviObject</span> <span class="p">:</span>
+        <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pviObjects</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">o</span><span class="o">.</span><span class="n">_linkID</span> <span class="o">==</span> <span class="n">linkID</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">o</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;PviObject not found by LinkID&#39;</span><span class="p">)</span>      
+
+    <span class="c1"># ----------------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">_eventPviConnect</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        handle PVI connect event</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;POBJ_EVENT_PVI_CONNECT&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviReadResponse</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span>     
+
+    <span class="c1"># ----------------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">_eventPviDisconnect</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        handle PVI disconnect event</span>
+<span class="sd">        &quot;&quot;&quot;</span>  
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviReadResponse</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pviObjects</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_objectsArranged</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># ----------------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">_eventPviArrange</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">):</span> 
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        handle pvi arrange event</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pviTrialTimeCheck</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviReadResponse</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span>                
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;POBJ_EVENT_PVI_ARRANGE&quot;</span><span class="p">)</span>
+
+        <span class="c1"># create and link objects</span>
+        <span class="k">for</span> <span class="n">po</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pviObjects</span><span class="p">:</span>
+            <span class="n">po</span><span class="o">.</span><span class="n">_createAndLink</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_objectsArranged</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span><span class="p">:</span>
+            <span class="n">license</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">license</span>            
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PVI license: </span><span class="si">{</span><span class="n">license</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> - running on </span><span class="si">{</span><span class="n">license</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span> <span class="p">)</span> 
+
+    <span class="c1"># ----------------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">_eventOther</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        handle other events</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviReadResponse</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span>
+
+    <span class="c1"># ----------------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">doEvents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;         </span>
+<span class="sd">        event loop - must be cyclically called</span>
+
+<span class="sd">        typical usage example:</span>
+
+<span class="sd">        ```</span>
+<span class="sd">        while run:  </span>
+<span class="sd">            pviConnection.doEvents()  </span>
+<span class="sd">        ```</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">wParam</span> <span class="o">=</span> <span class="n">WPARAM</span><span class="p">()</span>
+        <span class="n">lParam</span> <span class="o">=</span> <span class="n">LPARAM</span><span class="p">()</span>
+        <span class="n">hMsg</span> <span class="o">=</span> <span class="n">HANDLE</span><span class="p">()</span>
+        <span class="n">dataLen</span> <span class="o">=</span> <span class="n">c_uint32</span><span class="p">()</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviGetNextResponse</span><span class="p">(</span> <span class="n">byref</span><span class="p">(</span><span class="n">wParam</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">lParam</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">hMsg</span><span class="p">),</span> <span class="kc">None</span> <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">wParam</span><span class="o">.</span><span class="n">value</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">responseInfo</span> <span class="o">=</span> <span class="n">T_RESPONSE_INFO</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviGetResponseInfo</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">dataLen</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">responseInfo</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">responseInfo</span><span class="p">)</span> <span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">ErrCode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findObjectByLinkID</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">po</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> : nMode = </span><span class="si">{</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">nMode</span><span class="si">}</span><span class="s1">, nType = </span><span class="si">{</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span><span class="si">}</span><span class="s1">, ErrCode = </span><span class="si">{</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">ErrCode</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_EVENT_PVI_CONNECT</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_eventPviConnect</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_EVENT_PVI_DISCONN</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_eventPviDisconnect</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_EVENT_PVI_ARRANGE</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_eventPviArrange</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_ACC_TYPE</span><span class="p">:</span>
+                <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+                <span class="k">if</span> <span class="n">po</span><span class="p">:</span>
+                    <span class="n">po</span><span class="o">.</span><span class="n">_eventDataType</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linkID not found !&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_EVENT_DATA</span><span class="p">:</span>
+                <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+                <span class="k">if</span> <span class="n">po</span><span class="p">:</span>
+                    <span class="n">po</span><span class="o">.</span><span class="n">_eventData</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linkID not found !&quot;</span><span class="p">)</span>                    
+            <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_ACC_UPLOAD_STM</span><span class="p">:</span>
+                <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+                <span class="k">if</span> <span class="n">po</span><span class="p">:</span>
+                    <span class="n">po</span><span class="o">.</span><span class="n">_eventUploadStream</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span><span class="p">,</span> <span class="n">dataLen</span><span class="o">.</span><span class="n">value</span> <span class="p">)</span> 
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linkID not found !&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_ACC_DOWNLOAD_STM</span><span class="p">:</span>
+                <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+                <span class="k">if</span> <span class="n">po</span><span class="p">:</span>
+                    <span class="n">po</span><span class="o">.</span><span class="n">_eventDownloadStream</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span> 
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linkID not found !&quot;</span><span class="p">)</span> 
+            <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_EVENT_STATUS</span> <span class="ow">or</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_ACC_STATUS</span><span class="p">:</span>
+                <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+                <span class="k">if</span> <span class="n">po</span><span class="p">:</span>
+                    <span class="n">po</span><span class="o">.</span><span class="n">_eventStatus</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linkID not found !&quot;</span><span class="p">)</span>                   
+            <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_EVENT_PROCEEDING</span><span class="p">:</span>
+                <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+                <span class="k">if</span> <span class="n">po</span><span class="p">:</span>
+                    <span class="n">po</span><span class="o">.</span><span class="n">_eventProceeding</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span> 
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linkID not found !&quot;</span><span class="p">)</span>   
+            <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_ACC_LN_XML_LOGM_DATA</span><span class="p">:</span>
+                <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+                <span class="k">if</span> <span class="n">po</span><span class="p">:</span>
+                    <span class="n">po</span><span class="o">.</span><span class="n">_eventUploadLogData</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span><span class="p">,</span> <span class="n">dataLen</span><span class="o">.</span><span class="n">value</span> <span class="p">)</span> 
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linkID not found !&quot;</span><span class="p">)</span> 
+            <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_ACC_MOD_DATA</span><span class="p">:</span>
+                <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+                <span class="k">if</span> <span class="n">po</span><span class="p">:</span>
+                    <span class="n">po</span><span class="o">.</span><span class="n">_eventUploadModData</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span><span class="p">,</span> <span class="n">dataLen</span><span class="o">.</span><span class="n">value</span> <span class="p">)</span> 
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linkID not found !&quot;</span><span class="p">)</span>                                                                    
+            <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_EVENT_ERROR</span><span class="p">:</span>
+                <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+                <span class="k">if</span> <span class="n">po</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span> <span class="ow">and</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">ErrCode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">po</span><span class="p">)</span><span class="si">}</span><span class="s1">: error </span><span class="si">{</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">ErrCode</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">po</span><span class="o">.</span><span class="n">_eventError</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linkID not found !&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_eventOther</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span><span class="p">:</span>
+                    <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findObjectByLinkID</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">po</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> : nMode = </span><span class="si">{</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">nMode</span><span class="si">}</span><span class="s1">, nType = </span><span class="si">{</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span><span class="si">}</span><span class="s1">, ErrCode = </span><span class="si">{</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">ErrCode</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>                
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pviTrialTimeCheck</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_startTime</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pviTrialTimeCheck</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="mi">12040</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h3 id="pvi.Connection.Connection.license" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">license</span><span class="p">:</span> <span class="nb">tuple</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>read PVI license information</p>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>tuple</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>A tuple( state, hardware, license, dongle, license-name )</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+      <p>where  <br />
+state is 'undefined' or 'trial' or 'runtime' or 'developer' or 'locked',<br />
+hardware is = 'B&amp;R IPC' or 'PC',<br />
+license is 'B&amp;R License' or '',<br />
+dongle is 'Pvi Dongle' or '',<br />
+license-name is a string  </p>
+<p>result may be <code>('undefined', '', '', '', '', '')</code> if PVI root object is not yet linked.</p>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h3 id="pvi.Connection.Connection.root" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">root</span><span class="p">:</span> <span class="n">PviObject</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+<th>Name</th>        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+<td><code>PviObject</code></td>          <td>
+                <code><a class="autorefs autorefs-internal" title="pvi.Object.PviObject" href="../object/#pvi.Object.PviObject">PviObject</a></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the base object 'Pvi'</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+  </div>
+
+</div>
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="pvi.Connection.Connection.__init__" class="doc doc-heading">
+          <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span></code>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Initializes the connection to PVI manager</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>debug</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>True = verbose messages for debugging</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>timeout</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>timeout in [s] to PVI manager instance</p>
+            </div>
+          </td>
+          <td>
+                <code>5</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>pvi\Connection.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">debug</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initializes the connection to PVI manager</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        debug : True = verbose messages for debugging</span>
+<span class="sd">        timeout : timeout in [s] to PVI manager instance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_startTime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_pviTrialTimeCheck</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">timeout</span> <span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span> <span class="o">=</span> <span class="n">debug</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_objectsArranged</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_pviObjects</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_rootObject</span> <span class="o">=</span> <span class="n">PviObject</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">T_POBJ_TYPE</span><span class="o">.</span><span class="n">POBJ_PVI</span><span class="p">,</span> <span class="s1">&#39;@Pvi&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_rootObject</span><span class="o">.</span><span class="n">_connection</span> <span class="o">=</span> <span class="bp">self</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rootObject</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviInitialize</span><span class="p">(</span> <span class="n">timeout</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># set global events</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">(</span><span class="n">POBJ_EVENT_PVI_CONNECT</span><span class="p">,</span> <span class="n">POBJ_EVENT_PVI_DISCONN</span><span class="p">,</span> <span class="n">POBJ_EVENT_PVI_ARRANGE</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviSetGlobEventMsg</span><span class="p">(</span> <span class="n">m</span><span class="p">,</span> <span class="n">PVI_HMSG_NIL</span><span class="p">,</span> <span class="n">SET_PVIFUNCTION</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="pvi.Connection.Connection.doEvents" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">doEvents</span><span class="p">()</span></code>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>event loop - must be cyclically called</p>
+<p>typical usage example:</p>
+<pre><code>while run:  
+    pviConnection.doEvents()  
+</code></pre>
+
+          <details class="quote">
+            <summary>Source code in <code>pvi\Connection.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">doEvents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;         </span>
+<span class="sd">    event loop - must be cyclically called</span>
+
+<span class="sd">    typical usage example:</span>
+
+<span class="sd">    ```</span>
+<span class="sd">    while run:  </span>
+<span class="sd">        pviConnection.doEvents()  </span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">wParam</span> <span class="o">=</span> <span class="n">WPARAM</span><span class="p">()</span>
+    <span class="n">lParam</span> <span class="o">=</span> <span class="n">LPARAM</span><span class="p">()</span>
+    <span class="n">hMsg</span> <span class="o">=</span> <span class="n">HANDLE</span><span class="p">()</span>
+    <span class="n">dataLen</span> <span class="o">=</span> <span class="n">c_uint32</span><span class="p">()</span>        
+    <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviGetNextResponse</span><span class="p">(</span> <span class="n">byref</span><span class="p">(</span><span class="n">wParam</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">lParam</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">hMsg</span><span class="p">),</span> <span class="kc">None</span> <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">wParam</span><span class="o">.</span><span class="n">value</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">responseInfo</span> <span class="o">=</span> <span class="n">T_RESPONSE_INFO</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviGetResponseInfo</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">dataLen</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">responseInfo</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">responseInfo</span><span class="p">)</span> <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">ErrCode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findObjectByLinkID</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">po</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> : nMode = </span><span class="si">{</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">nMode</span><span class="si">}</span><span class="s1">, nType = </span><span class="si">{</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span><span class="si">}</span><span class="s1">, ErrCode = </span><span class="si">{</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">ErrCode</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_EVENT_PVI_CONNECT</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_eventPviConnect</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_EVENT_PVI_DISCONN</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_eventPviDisconnect</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_EVENT_PVI_ARRANGE</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_eventPviArrange</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_ACC_TYPE</span><span class="p">:</span>
+            <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+            <span class="k">if</span> <span class="n">po</span><span class="p">:</span>
+                <span class="n">po</span><span class="o">.</span><span class="n">_eventDataType</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linkID not found !&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_EVENT_DATA</span><span class="p">:</span>
+            <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+            <span class="k">if</span> <span class="n">po</span><span class="p">:</span>
+                <span class="n">po</span><span class="o">.</span><span class="n">_eventData</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linkID not found !&quot;</span><span class="p">)</span>                    
+        <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_ACC_UPLOAD_STM</span><span class="p">:</span>
+            <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+            <span class="k">if</span> <span class="n">po</span><span class="p">:</span>
+                <span class="n">po</span><span class="o">.</span><span class="n">_eventUploadStream</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span><span class="p">,</span> <span class="n">dataLen</span><span class="o">.</span><span class="n">value</span> <span class="p">)</span> 
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linkID not found !&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_ACC_DOWNLOAD_STM</span><span class="p">:</span>
+            <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+            <span class="k">if</span> <span class="n">po</span><span class="p">:</span>
+                <span class="n">po</span><span class="o">.</span><span class="n">_eventDownloadStream</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span> 
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linkID not found !&quot;</span><span class="p">)</span> 
+        <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_EVENT_STATUS</span> <span class="ow">or</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_ACC_STATUS</span><span class="p">:</span>
+            <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+            <span class="k">if</span> <span class="n">po</span><span class="p">:</span>
+                <span class="n">po</span><span class="o">.</span><span class="n">_eventStatus</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linkID not found !&quot;</span><span class="p">)</span>                   
+        <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_EVENT_PROCEEDING</span><span class="p">:</span>
+            <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+            <span class="k">if</span> <span class="n">po</span><span class="p">:</span>
+                <span class="n">po</span><span class="o">.</span><span class="n">_eventProceeding</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span> 
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linkID not found !&quot;</span><span class="p">)</span>   
+        <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_ACC_LN_XML_LOGM_DATA</span><span class="p">:</span>
+            <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+            <span class="k">if</span> <span class="n">po</span><span class="p">:</span>
+                <span class="n">po</span><span class="o">.</span><span class="n">_eventUploadLogData</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span><span class="p">,</span> <span class="n">dataLen</span><span class="o">.</span><span class="n">value</span> <span class="p">)</span> 
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linkID not found !&quot;</span><span class="p">)</span> 
+        <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_ACC_MOD_DATA</span><span class="p">:</span>
+            <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+            <span class="k">if</span> <span class="n">po</span><span class="p">:</span>
+                <span class="n">po</span><span class="o">.</span><span class="n">_eventUploadModData</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span><span class="p">,</span> <span class="n">dataLen</span><span class="o">.</span><span class="n">value</span> <span class="p">)</span> 
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linkID not found !&quot;</span><span class="p">)</span>                                                                    
+        <span class="k">elif</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span> <span class="o">==</span> <span class="n">POBJ_EVENT_ERROR</span><span class="p">:</span>
+            <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+            <span class="k">if</span> <span class="n">po</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span> <span class="ow">and</span> <span class="n">responseInfo</span><span class="o">.</span><span class="n">ErrCode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">po</span><span class="p">)</span><span class="si">}</span><span class="s1">: error </span><span class="si">{</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">ErrCode</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">po</span><span class="o">.</span><span class="n">_eventError</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linkID not found !&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_eventOther</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug</span><span class="p">:</span>
+                <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findObjectByLinkID</span><span class="p">(</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">LinkID</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">po</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> : nMode = </span><span class="si">{</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">nMode</span><span class="si">}</span><span class="s1">, nType = </span><span class="si">{</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">nType</span><span class="si">}</span><span class="s1">, ErrCode = </span><span class="si">{</span><span class="n">responseInfo</span><span class="o">.</span><span class="n">ErrCode</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>                
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pviTrialTimeCheck</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_startTime</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pviTrialTimeCheck</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="mi">12040</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="pvi.Connection.Connection.link" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">link</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span></code>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>registers new PviObject(s)</p>
+<p>*args : PviObject of list of PviObjects</p>
+
+          <details class="quote">
+            <summary>Source code in <code>pvi\Connection.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span> <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    registers new PviObject(s)</span>
+
+<span class="sd">    *args : PviObject of list of PviObjects</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">PviObject</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pviObjects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objectsArranged</span><span class="p">:</span>
+                <span class="n">o</span><span class="o">.</span><span class="n">_createAndLink</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">list</span> <span class="p">):</span>
+            <span class="k">for</span> <span class="n">oo</span> <span class="ow">in</span> <span class="n">o</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="n">oo</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;only PviObject or list of PviObjects allowed !&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+
+  </div>
+
+  </div>
+
+</div>
+
+
+
+
+  </div>
+
+  </div>
+
+</div>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.a264c092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.726fbb30.min.js"></script>
+      
+    
+  </body>
+</html>

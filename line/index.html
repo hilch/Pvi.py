@@ -1,0 +1,1274 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../object/">
+      
+      
+        <link rel="next" href="../device/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.2">
+    
+    
+      
+        <title>Line - Pvi.py Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.d451bc0e.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.a5377069.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="orange" data-md-color-accent="indigo">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#pvi.Line" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Pvi.py Docs" class="md-header__button md-logo" aria-label="Pvi.py Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Pvi.py Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Line
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Pvi.py Docs" class="md-nav__button md-logo" aria-label="Pvi.py Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Pvi.py Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Pvi.py
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tutorials
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to-guides/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How-To
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../connection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Connection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../object/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PviObject
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Line
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Line
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pvi.Line" class="md-nav__link">
+    Line
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pvi.Line.Line" class="md-nav__link">
+    Line
+  </a>
+  
+    <nav class="md-nav" aria-label="Line">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.descriptor" class="md-nav__link">
+    descriptor
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.errorChanged" class="md-nav__link">
+    errorChanged
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.externalObjects" class="md-nav__link">
+    externalObjects
+  </a>
+  
+    <nav class="md-nav" aria-label="externalObjects">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.externalObjects--only-available-with-ansl-not-with-ina2000" class="md-nav__link">
+    only available with ANSL, not with INA2000
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.name" class="md-nav__link">
+    name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.objectName" class="md-nav__link">
+    objectName
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.status" class="md-nav__link">
+    status
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.type" class="md-nav__link">
+    type
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.kill" class="md-nav__link">
+    kill()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../device/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Device
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../station/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Station
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cpu/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Cpu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../task/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../variable/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Variable
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../module/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../error/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PVI Errors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pvi.Line" class="md-nav__link">
+    Line
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pvi.Line.Line" class="md-nav__link">
+    Line
+  </a>
+  
+    <nav class="md-nav" aria-label="Line">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.descriptor" class="md-nav__link">
+    descriptor
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.errorChanged" class="md-nav__link">
+    errorChanged
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.externalObjects" class="md-nav__link">
+    externalObjects
+  </a>
+  
+    <nav class="md-nav" aria-label="externalObjects">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.externalObjects--only-available-with-ansl-not-with-ina2000" class="md-nav__link">
+    only available with ANSL, not with INA2000
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.name" class="md-nav__link">
+    name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.objectName" class="md-nav__link">
+    objectName
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.status" class="md-nav__link">
+    status
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.type" class="md-nav__link">
+    type
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvi.Line.Line.kill" class="md-nav__link">
+    kill()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  <h1>Line</h1>
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="pvi.Line"></a>
+  <div class="doc doc-contents first">
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+
+<h2 id="pvi.Line.Line" class="doc doc-heading">
+          <code>Line</code>
+
+
+</h2>
+
+
+  <div class="doc doc-contents ">
+          <p class="doc doc-class-bases">
+            Bases: <code><a class="autorefs autorefs-internal" title="pvi.Object.PviObject" href="../object/#pvi.Object.PviObject">PviObject</a></code></p>
+
+  
+      <p>class representing a PVI Line</p>
+<p>Typical usage example:</p>
+<pre><code>pviConnection = Connection()
+line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
+device = Device( line, 'TCP', CD='/IF=TcpIp' )
+</code></pre>
+
+            <details class="quote">
+              <summary>Source code in <code>pvi\Line.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Line</span><span class="p">(</span><span class="n">PviObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;class representing a PVI Line</span>
+
+<span class="sd">        Typical usage example:</span>
+<span class="sd">        ```</span>
+<span class="sd">        pviConnection = Connection()</span>
+<span class="sd">        line = Line( pviConnection.root, &#39;LNANSL&#39;, CD=&#39;LNANSL&#39;)</span>
+<span class="sd">        device = Device( line, &#39;TCP&#39;, CD=&#39;/IF=TcpIp&#39; )</span>
+<span class="sd">        ```</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">parent</span> <span class="p">:</span> <span class="n">PviObject</span><span class="p">,</span> <span class="n">name</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">objectDescriptor</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Args: </span>
+<span class="sd">            parent : PVI connection&#39;s root object</span>
+<span class="sd">            name : name of the line in PVI hierarchy, e.g. &#39;LNANSL&#39;</span>
+<span class="sd">            objectDescriptor: </span>
+<span class="sd">                ANSL : CD=&#39;LNANSL&#39;  </span>
+<span class="sd">                INA2000 : CD=&#39;LNINA2&#39;  </span>
+<span class="sd">                SNMP : CD=&#39;LNSNMP&#39;</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">parent</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">T_POBJ_TYPE</span><span class="o">.</span><span class="n">POBJ_PVI</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="mi">12009</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>         
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span> <span class="n">parent</span><span class="p">,</span> <span class="n">T_POBJ_TYPE</span><span class="o">.</span><span class="n">POBJ_LINE</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">objectDescriptor</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Line( name=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">, linkID=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="si">}</span><span class="s2"> )&quot;</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h3 id="pvi.Line.Line.descriptor" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">descriptor</span><span class="p">:</span> <span class="nb">dict</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>object descriptor
+example:</p>
+<pre><code>temperature = Variable( task1, 'gHeating.status.actTemp' )
+...
+print( &quot;descriptor=&quot;, temperature.name)
+</code></pre>
+<p>results in:</p>
+<pre><code>descriptor= {'CD': 'gHeating.status.actTemp', 'RF': 0}
+</code></pre>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h3 id="pvi.Line.Line.errorChanged" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">errorChanged</span><span class="p">:</span> <span class="n">Callable</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+      <small class="doc doc-label doc-label-writable"><code>writable</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>callback for 'error changed'</p>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h3 id="pvi.Line.Line.externalObjects" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">externalObjects</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>PviObject.externalObjects : list of dict
+get a list of external objects retrieved by POBJ_ACC_LIST_EXTERN</p>
+<h4 id="pvi.Line.Line.externalObjects--only-available-with-ansl-not-with-ina2000">only available with ANSL, not with INA2000</h4>
+<p>example:</p>
+<pre><code>cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
+...
+print(&quot;external objects&quot;, cpu.externalObjects )
+</code></pre>
+<p>results in:</p>
+<pre><code>external objects [{'name': '$$sysconf', 'type': 'Module'}, {'name': '$arlogsys', 'type': 'Module'}
+            ...... name': 'visvc', 'type': 'Module'}]
+
+</code></pre>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h3 id="pvi.Line.Line.name" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">name</span><span class="p">:</span> <span class="nb">str</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>hierarchical PVI object name</p>
+<p>example:</p>
+<pre><code>temperature = Variable( task1, 'gHeating.status.actTemp' )
+...
+print( &quot;name=&quot;, temperature.name)
+</code></pre>
+<p>results in:</p>
+<pre><code>name= @Pvi/LNANSL/TCP/myArsim/mainlogic/gHeating.status.actTemp
+</code></pre>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h3 id="pvi.Line.Line.objectName" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">objectName</span><span class="p">:</span> <span class="nb">str</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>object name</p>
+<p>example:</p>
+<pre><code>temperature = Variable( task1, 'gHeating.status.actTemp' )
+...
+print( &quot;oname=&quot;, temperature.name)
+</code></pre>
+<p>results in:</p>
+<pre><code>oname= gHeating.status.actTemp
+</code></pre>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h3 id="pvi.Line.Line.status" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">status</span><span class="p">:</span> <span class="nb">dict</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+      <small class="doc doc-label doc-label-writable"><code>writable</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>PviObject.status
+read the object's status</p>
+<p>example:</p>
+<pre><code>cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
+task1 = Task( cpu, 'mainlogic')
+temperature = Variable( task1, 'gHeating.status.actTemp' )
+...
+print(&quot;status=&quot;, cpu.status )
+</code></pre>
+<p>results in:</p>
+<pre><code>cpu.status= {'ST': 'WarmStart', 'RunState': 'RUN'}
+task1.status {'ST': 'Running'}
+temperature.status= {'ST': 'Var', 'SC': 'g'}
+</code></pre>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h3 id="pvi.Line.Line.type" class="doc doc-heading">
+          <code class="highlight language-python"><span class="nb">type</span><span class="p">:</span> <span class="n">T_POBJ_TYPE</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>object type </p>
+<p>example:</p>
+<pre><code>temperature = Variable( task1, 'gHeating.status.actTemp' )
+...
+print( &quot;type=&quot;, temperature.type)
+</code></pre>
+<p>results in:</p>
+<pre><code>type= T_POBJ_TYPE.POBJ_PVAR
+</code></pre>
+  </div>
+
+</div>
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="pvi.Line.Line.__init__" class="doc doc-heading">
+          <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">objectDescriptor</span><span class="p">)</span></code>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>parent</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>PVI connection's root object</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>name</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>name of the line in PVI hierarchy, e.g. 'LNANSL'</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>objectDescriptor</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>ANSL : CD='LNANSL'<br />
+INA2000 : CD='LNINA2'<br />
+SNMP : CD='LNSNMP'</p>
+            </div>
+          </td>
+          <td>
+                <code>{}</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>pvi\Line.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">parent</span> <span class="p">:</span> <span class="n">PviObject</span><span class="p">,</span> <span class="n">name</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">objectDescriptor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Args: </span>
+<span class="sd">        parent : PVI connection&#39;s root object</span>
+<span class="sd">        name : name of the line in PVI hierarchy, e.g. &#39;LNANSL&#39;</span>
+<span class="sd">        objectDescriptor: </span>
+<span class="sd">            ANSL : CD=&#39;LNANSL&#39;  </span>
+<span class="sd">            INA2000 : CD=&#39;LNINA2&#39;  </span>
+<span class="sd">            SNMP : CD=&#39;LNSNMP&#39;</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">parent</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">T_POBJ_TYPE</span><span class="o">.</span><span class="n">POBJ_PVI</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="mi">12009</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>         
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span> <span class="n">parent</span><span class="p">,</span> <span class="n">T_POBJ_TYPE</span><span class="o">.</span><span class="n">POBJ_LINE</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">objectDescriptor</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="pvi.Line.Line.kill" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">kill</span><span class="p">()</span></code>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>PviObject.kill: kills this object
+this should be called when object is not beeing used anymore
+to save PVI resources</p>
+
+          <details class="quote">
+            <summary>Source code in <code>pvi\Object.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span>
+<span class="normal">346</span>
+<span class="normal">347</span>
+<span class="normal">348</span>
+<span class="normal">349</span>
+<span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span>
+<span class="normal">353</span>
+<span class="normal">354</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    PviObject.kill: kills this object</span>
+<span class="sd">    this should be called when object is not beeing used anymore</span>
+<span class="sd">    to save PVI resources</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">)</span> <span class="c1"># remove from linkIDs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">_pviObjects</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="c1"># remove from PviObjects</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviUnlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+
+  </div>
+
+  </div>
+
+</div>
+
+
+
+
+  </div>
+
+  </div>
+
+</div>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.a264c092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.726fbb30.min.js"></script>
+      
+    
+  </body>
+</html>
