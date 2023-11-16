@@ -138,14 +138,10 @@ class VariableTypeDescription():
                 desc.update({ex[0:2]: ex[3:]}) # member's object descriptor
 
         vt = PvType(desc.get('VT'))
-        vo = desc.get('VO') # variable offset
-        assert type(vo) is int
-        vn = desc.get('VN')
-        assert type(vn) is int
-        vl = desc.get('VL')        
-        assert type(vl) is int
+        vo = int(desc.get('VO')) # variable offset
+        vn = int(desc.get('VN'))
+        vl = int(desc.get('VL'))
         name = desc.get('name')
-        assert type(name) is str
         parentStruct = name.rpartition('.')[0]
 
         if parentStruct in self._innerStructOffsets: # does member belong to an inner struct ?

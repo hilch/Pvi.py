@@ -182,5 +182,7 @@ class Variable(PviObject):
             t = self._variableTypeDescription.vt.value
             if self._variableTypeDescription.vn > 1: # is variable an array ?
                 t += f'[{self._variableTypeDescription._vn}]'
+        else:
+            t = self._variableTypeDescription.vt.value
         return t
 
