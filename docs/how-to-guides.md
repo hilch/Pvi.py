@@ -1,6 +1,10 @@
 
 find the following examples on GitHub [github.com/hilch/Pvi.py](https://github.com/hilch/Pvi.py/tree/main/examples)
 
+## Basics
+### basics1.py (ANSL)
+shows reading and writing of basic data types
+
 ## Create Lists of objects
 ### list_objects1.py (ANSL)
 this example lists objects with 'global scope' (modules, task and global variables)

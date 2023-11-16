@@ -94,6 +94,14 @@ def runtimeMonitor( init : bool ):
         pviConnection.stop() # exit
 ```
 
+This function is also given a parameter which is 'True' when it is called for the first time. This allows us to perform initializations within the function. All further calls are carried out with 'False' as an argument.
+
+We change the start of the connection only slightly:
+
+```
+pviConnection.start( runtimeMonitor ) # call it once
+```
+
 Are we finished now ? Not quite yet.
 In case the CPU was not available we would not get aware of this. Thus we add another callback function to monitor the connection to CPU.
 
@@ -120,11 +128,89 @@ done !
 ### simple2.py (ANSL)
 this simple example just registers a variable for reading and another for writing. In fact we switch on the 'coffee machine' and watch its temperature ...
 
+Not much different compared to 'simple1.py'.
+We add a variable to show how to write into it.
+Because it is so beautifully illustrative, we will now switch the coffee machine on and off.
+
+As above we need an associated PVI variable object:
+```
+switch = Variable( task1, 'gMainLogic.cmd.switchOnOff' )
+```
+
+Since we no HMI (human machine interface) for the coffee client the 'switch' is operated by the actual temperature.
+For this we use a state machine running inside a callback function:
+
+```
+def checkTemperature( init : bool ):
+    global warmUp, coolDown
+    if temperature.readable and switch.writable:
+        if temperature.value < 25 and not warmUp and not coolDown:
+            switch.value = 1 # switch on machine
+            warmUp = True
+            coolDown = False
+            print('warming up...')
+        elif temperature.value > 70 and warmUp:
+            warmUp = False
+            coolDown = True
+            switch.value = False # switch off
+            print('\ncooling down...')        
+        if coolDown and not warmUp and temperature.value < 25:
+            print("\nit's cool guys !")
+            pviConnection.stop() # exit the loop
+```
+Then we start the PVI connection by calling .start() with this callback function as argument:
+
+```
+pviConnection.start( checkTemperature )
+```
+
+#### open the console (e.g. cmd)
+Starting the script by
+```
+py simple2.py
+```
+lets the script run for a few seconds and will end in a view like this:
+```
+Temperature = 20.0warming up...
+Temperature = 69.704475402832036
+cooling down...
+Temperature = 25.024797439575195
+it's cool guys !
+Temperature = 24.99532699584961
+```
+
 ### simple3.py (INA2000)
-this simple example just registers a variable for reading and another for writing. In fact we switch on the 'coffee machine' and watch its temperature ...
-This is similar to simple2.py but we use a control running AR 3.x. ANSL is not available here and we change to good old INA2000
+This is similar to simple2.py but we use a control running AR 3.x. ANSL is not available here and we change to good old INA2000.
+
+INA2000 line needs slightly different parameters for itself:
+```
+line = Line( pviConnection.root, 'LNINA', CD='LNINA2')
+```
+and for its device, too:
+```
+device = Device( line, 'TCP', CD='/IF=TcpIp /SA=113' )
+```
+all members in an INA2000 based network must follow the 'Highlander principle' [^1] e,g, all node numbers must be unique.
+
+Even the PC acting as PVI client needs an unique node number which is determined by the '/SA' parameter.
+
+Why on earth do I need a node number for TcpIp ? Well, you're right. But INA2000 has a long history starting with CAN based network.
+
+But even if you opt for a modern Ethernet-based network using IP addresses, you still have to specify this node parameter for the CPU and node number '1' is usually already occupied by the connected CPU [^2] .
+
+The further effects of this protocol then also affect the CPU itself.
+With INA2000 we can now choose between addressing by node number ('/DA') or addressing by IP address ('/DAIP'):
+```
+cpu = Cpu( device, 'myPP65', CD='/DAIP=10.49.40.222' )
+```
+
+Everything else requires no change compared to the ANSL example. Since we are working with a real CPU and not with a simulation, a lot can go wrong, which is not due to this example :-)
+
+The other examples that use INA2000 can also be very different from the examples based on ANSL. Read the documentation to understand which parameters you can use and what possibilities INA2000 offers.
 
 
-## Basics
-### basics1.py (ANSL)
-shows reading and writing of basic data types
+
+[^1]: If you do not grew up in the eighties: 'there can be only one', https://en.wikipedia.org/wiki/Highlander_(film).
+
+[^2]: https://en.wikipedia.org/wiki/Murphy%27s_law
+

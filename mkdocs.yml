@@ -8,6 +8,9 @@ theme:
 plugins:
   - mkdocstrings
 
+markdown_extensions:
+  - footnotes
+
 nav:
   - index.md
   - Tutorials : tutorials.md
