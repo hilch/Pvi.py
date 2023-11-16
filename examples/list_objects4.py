@@ -12,7 +12,6 @@
 # ANSL is not available here and we change to good old INA2000
 
 
-from time import sleep
 from pprint import pprint
 from pvi import *
 
@@ -29,10 +28,8 @@ cpu = Cpu( device, 'myPP65', CD='/DAIP=10.49.40.222' )
 # cpu = Cpu( device, 'myPP65', CD='/DA=32' )
 
 
-run = True
 
 def cpuErrorChanged( error : int):
-    global run
 
     if error == 0:
  
@@ -77,7 +74,7 @@ def cpuErrorChanged( error : int):
             f.write("\nglobalVars =\n")
             pprint(globalVariables, stream=f, indent = 4)  
         print('content.txt was created !')                      
-        run = False
+        pviConnection.stop()
     
     elif error:
         raise PviError(error)
@@ -85,10 +82,8 @@ def cpuErrorChanged( error : int):
 
 cpu.errorChanged = cpuErrorChanged
 
+pviConnection.start()
 
-while run:
-    pviConnection.doEvents() # must be cyclically called
-    sleep(0.1)
 
 
 

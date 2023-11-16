@@ -14,3 +14,7 @@ V0.04
 V0.05
 - add parser for profiler files
 - add examples: profiler1.py, profiler2.py
+
+V1.00
+- add mkdocs online help
+- add start() and stop() to Connection to make doEvents() obsolete in many cases

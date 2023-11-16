@@ -8,7 +8,6 @@
 # this example uploads some loggers from CPU
 #
 
-from time import sleep
 from pprint import pprint
 from pvi import *
 
@@ -21,7 +20,6 @@ pviConnection = Connection() # start a Pvi connection
 line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
 device = Device( line, 'TCP', CD='/IF=TcpIp' )
 cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
-run = True
 loggerModules = {'$arlogsys', '$arlogusr', '$fieldbus'}
 uploadedLoggerModules = 0
 
@@ -30,7 +28,6 @@ def callback_progress( percent):
 
 
 def callback_uploaded( module : Module, data ):
-    global run
     global uploadedLoggerModules
 
     print(f"{ module } uploaded, len={len(data)} !")
@@ -42,7 +39,7 @@ def callback_uploaded( module : Module, data ):
 
     uploadedLoggerModules = uploadedLoggerModules + 1
     if uploadedLoggerModules == len(loggerModules) :
-        run = False
+        pviConnection.stop()
 
 
 def cpuErrorChanged( error : int):
@@ -66,9 +63,8 @@ def cpuErrorChanged( error : int):
 cpu.errorChanged = cpuErrorChanged
 
 
-while run:
-    pviConnection.doEvents() # must be cyclically called
-    sleep(0.1)
+pviConnection.start()
+
 
 
 

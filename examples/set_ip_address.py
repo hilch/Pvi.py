@@ -5,7 +5,6 @@
 # and changes its IP address
 #
 
-from time import sleep
 import json
 from pvi import *
 
@@ -18,7 +17,6 @@ line = Line( pviConnection.root, 'LNSNMP', CD='LNSNMP')
 device = Device( line, 'Device', CD='/IF=snmp /RT=1000' )
 
 def deviceErrorChanged( error : int ):
-    global run
 
     if error == 0:
         macs = [ x['name'] for x in device.externalObjects if x['type'] == 'Station']
@@ -29,16 +27,13 @@ def deviceErrorChanged( error : int ):
                 ipAddress = Variable( station, 'ipAddress')
                 ipAddress.value = b'192.168.0.10' # must be a byte string
                 ipAddress.kill()
-                run = False
+                pviConnection.stop() # exit
     device.kill()
     line.kill()
-    run = False
+    pviConnection.stop() # exit
 
 device.errorChanged = deviceErrorChanged
 
-run = True
+pviConnection.start()
 
-while run:
-    pviConnection.doEvents() # must be cyclically called
-    sleep(0.1)
 

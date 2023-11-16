@@ -10,7 +10,6 @@
 # This is similar to list_objects6.py but since we use a control running < AR 4.x
 # ANSL is not available here and we change to good old INA2000
 
-from time import sleep
 from pprint import pprint
 from pvi import *
 
@@ -28,10 +27,7 @@ task = Task( cpu, 'conveyor' )
 # cpu = Cpu( device, 'myPP65', CD='/DA=32' )
 
 
-run = True
-
 def cpuErrorChanged( error : int):
-    global run
 
     if error == 0:
         variables = list()                        
@@ -50,7 +46,7 @@ def cpuErrorChanged( error : int):
         with open('content.txt', 'w') as f: 
             pprint(variables, stream=f, indent = 4)
         print('content.txt was created !')                      
-        run = False
+        pviConnection.stop()
     
     elif error:
         raise PviError(error)
@@ -58,10 +54,7 @@ def cpuErrorChanged( error : int):
 
 cpu.errorChanged = cpuErrorChanged
 
-
-while run:
-    pviConnection.doEvents() # must be cyclically called
-    sleep(0.1)
+pviConnection.start()
 
 
 

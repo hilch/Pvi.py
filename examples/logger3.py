@@ -11,7 +11,6 @@
 # ANSL is not available here and we change to good old INA2000
 
 
-from time import sleep
 from pprint import pprint
 from pvi import *
 
@@ -27,7 +26,6 @@ cpu = Cpu( device, 'myPP65', CD='/DAIP=10.49.40.222' )
 # alternative: use 'INA node number' instead of IP address. INA node numbers must be unique in network !
 # cpu = Cpu( device, 'myPP65', CD='/DA=32' )
 
-run = True
 loggerModules = {'$arlogsys', '$arlogusr', '$fieldbus'}
 uploadedLoggerModules = 0
 
@@ -36,7 +34,6 @@ def callback_progress( percent):
 
 
 def callback_uploaded( module : Module, data ):
-    global run
     global uploadedLoggerModules
 
     print(f"{ module } uploaded, len={len(data)} !")
@@ -48,11 +45,10 @@ def callback_uploaded( module : Module, data ):
 
     uploadedLoggerModules = uploadedLoggerModules + 1
     if uploadedLoggerModules == len(loggerModules) :
-        run = False
+        pviConnection.stop()
 
 
 def cpuErrorChanged( error : int):
-    global run
 
     if error == 0:
 
@@ -70,10 +66,8 @@ def cpuErrorChanged( error : int):
 
 cpu.errorChanged = cpuErrorChanged
 
+pviConnection.start()
 
-while run:
-    pviConnection.doEvents() # must be cyclically called
-    sleep(0.1)
 
 
 

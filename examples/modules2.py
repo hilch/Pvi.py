@@ -10,8 +10,6 @@
 #
 
 
-from time import sleep
-from tkinter import FALSE
 from pvi import *
 
 pviConnection = Connection() # start a Pvi connection
@@ -25,15 +23,12 @@ device = Device( line, 'TCP', CD='/IF=TcpIp' )
 cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
 module = Module( cpu, 'bigmod' )
 
-
-run = True
     
 def callback_progress(percent):
     print( f'progress: {percent} %\r', end="")   
 
 
 def callback_downloaded():
-    global run
     modules = cpu.modules
     if 'bigmod' in modules:
         print(" 'bigmod' was sucessfully downloaded !")
@@ -46,9 +41,8 @@ def callback_downloaded():
 
 
 def callback_uploaded( data ):
-    global run
     print(f"'bigmod' uploaded, len={len(data)} !")
-    run = False #exit
+    pviConnection.stop() #exit
 
 
 def cpuErrorChanged( error : int ):
@@ -63,10 +57,8 @@ def cpuErrorChanged( error : int ):
 
 cpu.errorChanged = cpuErrorChanged
 
+pviConnection.start()
 
-while run:
-    pviConnection.doEvents() # must be cyclically called
-    sleep(0.1)
 
 
 

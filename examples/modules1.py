@@ -9,8 +9,6 @@
 #
 
 
-from time import sleep
-from tkinter import FALSE
 from pvi import *
 
 pviConnection = Connection() # start a Pvi connection
@@ -23,21 +21,18 @@ line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
 device = Device( line, 'TCP', CD='/IF=TcpIp' )
 cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
 
-run = True
-    
     
 def callback_progress(percent):
     print( f'progress: {percent} %\r', end="")   
 
 
 def callback_downloaded():
-    global run
     modules = cpu.modules
     if 'bigmod' in modules:
         print(" 'bigmod' was sucessfully downloaded !")
     else:
         print("error: 'bigmod' not found !")
-    run = False # exit
+    pviConnection.stop() # exit
 
 
 def cpuErrorChanged( error : int ):
@@ -52,9 +47,8 @@ def cpuErrorChanged( error : int ):
     
 cpu.errorChanged = cpuErrorChanged
 
-while run:
-    pviConnection.doEvents() # must be cyclically called
-    sleep(0.1)
+pviConnection.start()
+
 
 
 

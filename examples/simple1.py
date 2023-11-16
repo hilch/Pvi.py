@@ -10,7 +10,6 @@
 #
 
 
-from time import sleep
 import datetime
 from pvi import *
 
@@ -30,23 +29,20 @@ temperature = Variable( task1, 'gHeating.status.actTemp' )
 temperature.valueChanged = lambda value : print(f'{temperature.name} = {value}')
 
 startTime = datetime.datetime.now()
-run = True
 
 def cpuErrorChanged( error : int ):
-    global run
 
     if error != 0:
         raise PviError(error)
 
 cpu.errorChanged = cpuErrorChanged
 
-
-while run:
-    pviConnection.doEvents() # must be cyclically called
+def runtimeMonitor( init : bool ):
     if datetime.datetime.now() - startTime > datetime.timedelta(seconds = 10):
-        run = False # exit the loop
-    else:
-        sleep(0.1)
+        print("done !")
+        pviConnection.stop() # exit
+
+pviConnection.start( runtimeMonitor )
 
 
 

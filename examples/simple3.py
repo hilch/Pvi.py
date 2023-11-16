@@ -12,7 +12,6 @@
 # ANSL is not available here and we change to good old INA2000
 
 
-from time import sleep
 from pvi import *
 
 pviConnection = Connection() # start a Pvi connection
@@ -35,13 +34,11 @@ temperature.valueChanged = lambda value : print(f'\rTemperature = {value}', end=
 # we then register a variable to switch on the machine
 switch = Variable( task1, 'gMainLogic.cmd.switchOnOff' )
 
-run = True
 warmUp = False
 coolDown = False
 
 
 def cpuErrorChanged( error : int ):
-    global run
 
     if error != 0:
         raise PviError(error)
@@ -49,9 +46,8 @@ def cpuErrorChanged( error : int ):
 cpu.errorChanged = cpuErrorChanged
 
 
-while run:
-    pviConnection.doEvents() # must be cyclically called
-
+def checkTemperature( init : bool ):
+    global warmUp, coolDown
     if temperature.readable and switch.writable:
         if temperature.value < 25 and not warmUp and not coolDown:
             switch.value = 1 # switch on machine
@@ -65,11 +61,10 @@ while run:
             print('\ncooling down...')        
         if coolDown and not warmUp and temperature.value < 25:
             print("\nit's cool guys !")
-            run = False # exit the loop
-        else:
-            sleep(0.1)
+            pviConnection.stop() # exit the loop
 
 
+pviConnection.start( checkTemperature )
 
 
 

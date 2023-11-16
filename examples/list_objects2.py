@@ -9,7 +9,6 @@
 #
 
 
-from time import sleep
 from pprint import pprint
 from pvi import *
 
@@ -24,12 +23,8 @@ device = Device( line, 'TCP', CD='/IF=TcpIp' )
 cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
 
 
-run = True
-
 def cpuErrorChanged( error : int):
-    global run
 
-     
     if error == 0:
         # read content
         allObjects = cpu.externalObjects
@@ -76,7 +71,7 @@ def cpuErrorChanged( error : int):
             pprint( variables, stream=f) 
 
         print('content.txt was created !')                      
-        run = False
+        pviConnection.stop()
     
     elif error:
         raise PviError(error)
@@ -84,12 +79,7 @@ def cpuErrorChanged( error : int):
 
 cpu.errorChanged = cpuErrorChanged
 
-
-while run:
-    pviConnection.doEvents() # must be cyclically called
-    sleep(0.1)
-
-
+pviConnection.start()
 
 
 

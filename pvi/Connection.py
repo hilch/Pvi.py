@@ -20,11 +20,13 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from typing import Union, Callable
 from ctypes import c_uint64 as WPARAM, c_int64 as LPARAM, c_void_p as HANDLE, byref, sizeof
 from .include import *
 from .Error import PviError
 from .Object import PviObject
 import datetime
+from time import sleep
 
 class Connection():
     '''
@@ -46,6 +48,7 @@ class Connection():
             debug : True = verbose messages for debugging
             timeout : timeout in [s] to PVI manager instance
         """
+        self._eventLoopIsRunning = False
         self._startTime = datetime.datetime.now()
         self._pviTrialTimeCheck = datetime.timedelta(seconds=timeout +1)
         self._debug = debug
@@ -206,6 +209,8 @@ class Connection():
         typical usage example:
 
         ```
+        pviConnection = Connection()
+            ....
         while run:  
             pviConnection.doEvents()  
         ```
@@ -298,3 +303,44 @@ class Connection():
                 raise PviError(12040)
 
 
+   # ----------------------------------------------------------------------------------
+    def start(self, callback : Union[Callable,None] = None ):
+        """         
+        start event loop
+
+        Args:
+            callback :  function that will be cyclically called in event loop or 'None'.
+                        callback is called with one boolean argument which signals the
+                        first call with 'True' all subsequent calls will be done with
+                        argument 'False'
+
+        typical usage example:
+
+        ```
+        pviConnection = Connection()
+          ....
+        pviConnection.doEvents()  
+        ```
+        """
+        self._eventLoopIsRunning = True
+        if( callback ) : callback(True)
+        while( self._eventLoopIsRunning ):
+            sleep(0.05)
+            if( callback ) : callback(False)
+            self.doEvents()
+
+    # ----------------------------------------------------------------------------------
+    def stop(self):
+        """
+        stop event loop
+        typical usage example:
+
+        ```
+        pviConnection = Connection()
+          ....
+        pviConnection.stop()  
+        ```
+        """
+        self._eventLoopIsRunning = False
+
+        

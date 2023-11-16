@@ -54,7 +54,6 @@
 #
 #
 
-from time import sleep
 from datetime import time, date, timedelta, datetime
 from pvi import *
 
@@ -90,10 +89,8 @@ variableList = (   ('myBOOL', True),
                 ('myREALArray', 100.0) # set all elements to the same value
             )
 
-run = True
 
 def taskErrorChanged( error : int ):
-    global run
 
     if error != 0:
         raise PviError(error)
@@ -107,12 +104,9 @@ def taskErrorChanged( error : int ):
         except BaseException as e:
             print( e )
         finally:
-            run = False
+            pviConnection.stop()
 
 
 task1.errorChanged = taskErrorChanged
 
-
-while run:
-    pviConnection.doEvents() # must be cyclically called
-    sleep(0.1)
+pviConnection.start()
