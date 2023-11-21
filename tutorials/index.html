@@ -73,7 +73,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#start-here" class="md-skip">
+        <a href="#prerequisites" class="md-skip">
           Skip to content
         </a>
       
@@ -224,11 +224,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#start-here" class="md-nav__link">
-    Start here
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites
   </a>
   
-    <nav class="md-nav" aria-label="Start here">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples-in-repository" class="md-nav__link">
+    Examples in repository
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples in repository">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -236,18 +243,12 @@
     simple1.py (ANSL)
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="simple1.py (ANSL)">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#simple2py-ansl" class="md-nav__link">
-    simple2.py (ANSL)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#simple3py-ina2000" class="md-nav__link">
-    simple3.py (INA2000)
+  <a href="#open-the-console-eg-cmd" class="md-nav__link">
+    open the console (e.g. cmd)
   </a>
   
 </li>
@@ -256,18 +257,30 @@
     </nav>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#basics" class="md-nav__link">
-    Basics
+        
+          <li class="md-nav__item">
+  <a href="#simple2py-ansl" class="md-nav__link">
+    simple2.py (ANSL)
   </a>
   
-    <nav class="md-nav" aria-label="Basics">
+    <nav class="md-nav" aria-label="simple2.py (ANSL)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#basics1py-ansl" class="md-nav__link">
-    basics1.py (ANSL)
+  <a href="#open-the-console-eg-cmd_1" class="md-nav__link">
+    open the console (e.g. cmd)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simple3py-ina2000" class="md-nav__link">
+    simple3.py (INA2000)
   </a>
   
 </li>
@@ -572,11 +585,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#start-here" class="md-nav__link">
-    Start here
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites
   </a>
   
-    <nav class="md-nav" aria-label="Start here">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples-in-repository" class="md-nav__link">
+    Examples in repository
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples in repository">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -584,18 +604,12 @@
     simple1.py (ANSL)
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="simple1.py (ANSL)">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#simple2py-ansl" class="md-nav__link">
-    simple2.py (ANSL)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#simple3py-ina2000" class="md-nav__link">
-    simple3.py (INA2000)
+  <a href="#open-the-console-eg-cmd" class="md-nav__link">
+    open the console (e.g. cmd)
   </a>
   
 </li>
@@ -604,18 +618,30 @@
     </nav>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#basics" class="md-nav__link">
-    Basics
+        
+          <li class="md-nav__item">
+  <a href="#simple2py-ansl" class="md-nav__link">
+    simple2.py (ANSL)
   </a>
   
-    <nav class="md-nav" aria-label="Basics">
+    <nav class="md-nav" aria-label="simple2.py (ANSL)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#basics1py-ansl" class="md-nav__link">
-    basics1.py (ANSL)
+  <a href="#open-the-console-eg-cmd_1" class="md-nav__link">
+    open the console (e.g. cmd)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simple3py-ina2000" class="md-nav__link">
+    simple3.py (INA2000)
   </a>
   
 </li>
@@ -642,18 +668,163 @@
 
   <h1>Tutorials</h1>
 
-<h2 id="start-here">Start here</h2>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Of course, you have to install Python first (&gt;= 3.8).
+Pip should come with Python so install the wrapper with it:</p>
+<pre><code>pip install pvipy
+</code></pre>
+<p>PVI only makes sense if you also have a B&amp;R PLC available.
+In the simplest case, start the 'CoffeeMachine' demo project that comes with the installation of Automation Studio and run it on an ArSim Simulation.
+Some examples require a few more variables, so it is easier to use the included 'CoffeeMachine' project from the Github repository (under '/tools/CoffeeMachine').</p>
+<p>This project was created with the not-so-new Automation Studio version 4.1.17. This version can be downloaded for free from the B&amp;R homepage and does not require a license. If you prefer a newer version, the project must be converted, which is not always easy.</p>
+<h2 id="examples-in-repository">Examples in repository</h2>
+<p>PVI uses a complex interface to define objects and their parameters but it is well documented in its online help system and also in Automation Studio help system. There is no point in repeating this here since most of its parameters still apply in this Python interface. Instead, look at the examples to use parts from this for your programs.</p>
 <p>find the following examples on GitHub <a href="https://github.com/hilch/Pvi.py/tree/main/examples">github.com/hilch/Pvi.py</a></p>
 <h3 id="simple1py-ansl">simple1.py (ANSL)</h3>
-<p>this simple example just registers a variable, reads its value and then exit after a few seconds</p>
+<p>this simple example just registers a variable, reads its value and then exit after a few seconds.</p>
+<p>Initially, only a simple import of the PVI objects is actually necessary:</p>
+<pre><code>from pvi import *
+</code></pre>
+<p>Then we first need a connection to the PVI Manager:</p>
+<pre><code>pviConnection = Connection() # start a Pvi connection
+</code></pre>
+<p>It should be noted that this does not establish any connection to the CPU, but only to the 'PVI Manager', a Windows task, which in turn manages all PVI objects and takes care of all communication.</p>
+<p>We can then set up all PVI objects by instantiating and parameterizing the corresponding Python classes.
+Line-&gt;Device-&gt;Cpu-&gt;Task-&gt;Variable.</p>
+<pre><code>line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
+</code></pre>
+<p>The 'Line' determines the protocol used. The currently most important protocol is ANSL, which is mainly used for communication with PLCs.
+An older version is called 'INA2000' and is still required if an older PLC with AR &lt; 4.x is to be used.
+The 'SNMP' line, which can be used to read and write network parameters, for example, has a completely different meaning. See the corresponding example.
+The term 'CD=xxxx' must be specified in exactly the same way and is passed on to the PVI DLL in the same way. For further options, please refer to the PVI documentation.</p>
+<pre><code>device = Device( line, 'TCP', CD='/IF=TcpIp' )
+</code></pre>
+<p>The 'Device' defines the hardware interface to be used. Only 'TcpIp' is actually possible for ANSL. This is used to establish the connection via Ethernet interface, loop-back adapter or also via Wifi.
+INA2000 is also able to communicate via serial interface or CAN interface.</p>
+<pre><code>cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
+</code></pre>
+<p>Finally, the 'Cpu' is the object that represents the connection to the correct PLC. Depending on which 'Device' is used, corresponding parameters are required for the CPU. Please refer to the PVI documentation if necessary.</p>
+<p>At this point, we could already carry out useful actions with the CPU, e.g. trigger a warm start or read out the status of the CPU or much more.</p>
+<p>However, we would like to read out a local variable of the CPU at this point. Global variables should be created hierarchically below the 'CPU' object. 
+However, local variables are always part of a task. So we have to take care of this first. The name of the task on the PLC must again be specified.</p>
+<pre><code>task1 = Task( cpu, 'mainlogic')
+</code></pre>
+<p>A 'Task' also has useful options, e.g. it can be stopped and restarted at runtime, which we do not intend to do here.</p>
+<p>Now we can finally create a 'Variable' object that allows us to access the properties of the corresponding PLC variables.</p>
+<pre><code>temperature = Variable( task1, 'gHeating.status.actTemp' )
+</code></pre>
+<p>We could now access the '.value' property of the variable object cyclically in order to read the value of the variable. However, this would not be very resource-efficient. PVI is able to work in an event-driven manner. We therefore let it inform us of a value change and pass a callback function that also informs us of the value:</p>
+<pre><code>temperature.valueChanged = lambda value : print(f'{temperature.name} = {value}')
+</code></pre>
+<p>Now we need to breathe some life into the PVI functions in the background. 
+A</p>
+<pre><code>pviConnection.start() # call it once
+</code></pre>
+<p>would be absolutely sufficient for this job. As in a classic Windows program, an infinite loop is created internally that cyclically calls the 'doEvents()' function of the 'Connection'.
+So</p>
+<pre><code>while True:
+    pviConnection.doEvents() # must be cyclically called
+</code></pre>
+<p>would do the same (and could sometimes be the simpler solution).</p>
+<p>Since life is not endless, our program should not run indefinitely and end cleanly.
+For this we create a monitoring function that calls the '.stop()' member of the Connection after a certain time. This ends the loop and ultimately the entire script.</p>
+<pre><code>def runtimeMonitor( init : bool ):
+    if datetime.datetime.now() - startTime &gt; datetime.timedelta(seconds = 10):
+        print(&quot;done !&quot;)
+        pviConnection.stop() # exit
+</code></pre>
+<p>This function is also given a parameter which is 'True' when it is called for the first time. This allows us to perform initializations within the function. All further calls are carried out with 'False' as an argument.</p>
+<p>We change the start of the connection only slightly:</p>
+<pre><code>pviConnection.start( runtimeMonitor ) # call it once
+</code></pre>
+<p>Are we finished now ? Not quite yet.
+In case the CPU was not available we would not get aware of this. Thus we add another callback function to monitor the connection to CPU.</p>
+<pre><code>def cpuErrorChanged( error : int ):
+
+    if error != 0:
+        raise PviError(error)
+
+cpu.errorChanged = cpuErrorChanged
+</code></pre>
+<h4 id="open-the-console-eg-cmd">open the console (e.g. cmd)</h4>
+<p>Starting the script by</p>
+<pre><code>py simple1.py
+</code></pre>
+<p>should end in </p>
+<pre><code>@Pvi/LNANSL/TCP/myArsim/mainlogic/gHeating.status.actTemp = 20.0
+done !
+</code></pre>
 <h3 id="simple2py-ansl">simple2.py (ANSL)</h3>
 <p>this simple example just registers a variable for reading and another for writing. In fact we switch on the 'coffee machine' and watch its temperature ...</p>
+<p>Not much different compared to 'simple1.py'.
+We add a variable to show how to write into it.
+Because it is so beautifully illustrative, we will now switch the coffee machine on and off.</p>
+<p>As above we need an associated PVI variable object:</p>
+<pre><code>switch = Variable( task1, 'gMainLogic.cmd.switchOnOff' )
+</code></pre>
+<p>Since we no HMI (human machine interface) for the coffee client the 'switch' is operated by the actual temperature.
+For this we use a state machine running inside a callback function:</p>
+<pre><code>def checkTemperature( init : bool ):
+    global warmUp, coolDown
+    if temperature.readable and switch.writable:
+        if temperature.value &lt; 25 and not warmUp and not coolDown:
+            switch.value = 1 # switch on machine
+            warmUp = True
+            coolDown = False
+            print('warming up...')
+        elif temperature.value &gt; 70 and warmUp:
+            warmUp = False
+            coolDown = True
+            switch.value = False # switch off
+            print('\ncooling down...')        
+        if coolDown and not warmUp and temperature.value &lt; 25:
+            print(&quot;\nit's cool guys !&quot;)
+            pviConnection.stop() # exit the loop
+</code></pre>
+<p>Then we start the PVI connection by calling .start() with this callback function as argument:</p>
+<pre><code>pviConnection.start( checkTemperature )
+</code></pre>
+<h4 id="open-the-console-eg-cmd_1">open the console (e.g. cmd)</h4>
+<p>Starting the script by</p>
+<pre><code>py simple2.py
+</code></pre>
+<p>lets the script run for a few seconds and will end in a view like this:</p>
+<pre><code>Temperature = 20.0warming up...
+Temperature = 69.704475402832036
+cooling down...
+Temperature = 25.024797439575195
+it's cool guys !
+Temperature = 24.99532699584961
+</code></pre>
 <h3 id="simple3py-ina2000">simple3.py (INA2000)</h3>
-<p>this simple example just registers a variable for reading and another for writing. In fact we switch on the 'coffee machine' and watch its temperature ...
-This is similar to simple2.py but we use a control running AR 3.x. ANSL is not available here and we change to good old INA2000</p>
-<h2 id="basics">Basics</h2>
-<h3 id="basics1py-ansl">basics1.py (ANSL)</h3>
-<p>shows reading and writing of basic data types</p>
+<p>This is similar to simple2.py but we use a control running AR 3.x. ANSL is not available here and we change to good old INA2000.</p>
+<p>INA2000 line needs slightly different parameters for itself:</p>
+<pre><code>line = Line( pviConnection.root, 'LNINA', CD='LNINA2')
+</code></pre>
+<p>and for its device, too:</p>
+<pre><code>device = Device( line, 'TCP', CD='/IF=TcpIp /SA=113' )
+</code></pre>
+<p>all members in an INA2000 based network must follow the 'Highlander principle' <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> e,g, all node numbers must be unique.</p>
+<p>Even the PC acting as PVI client needs an unique node number which is determined by the '/SA' parameter.</p>
+<p>Why on earth do I need a node number for TcpIp ? Well, you're right. But INA2000 has a long history starting with CAN based network.</p>
+<p>But even if you opt for a modern Ethernet-based network using IP addresses, you still have to specify this node parameter for the CPU and node number '1' is usually already occupied by the connected CPU <sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup> .</p>
+<p>The further effects of this protocol then also affect the CPU itself.
+With INA2000 we can now choose between addressing by node number ('/DA') or addressing by IP address ('/DAIP'):</p>
+<pre><code>cpu = Cpu( device, 'myPP65', CD='/DAIP=10.49.40.222' )
+</code></pre>
+<p>Everything else requires no change compared to the ANSL example. Since we are working with a real CPU and not with a simulation, a lot can go wrong, which is not due to this example :-)</p>
+<p>The other examples that use INA2000 can also be very different from the examples based on ANSL. Read the documentation to understand which parameters you can use and what possibilities INA2000 offers.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>If you do not grew up in the eighties: 'there can be only one', https://en.wikipedia.org/wiki/Highlander_(film).&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>https://en.wikipedia.org/wiki/Murphy%27s_law&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
 
 
 
