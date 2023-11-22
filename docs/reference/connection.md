@@ -1,2 +1,3 @@
+# Class definition
 
 ::: pvi.Connection

@@ -1,4 +1,6 @@
-::: pvi.Variable
+# Class definition
+
+::: pvi.Cpu
     options:
         inherited_members:
             - name
@@ -9,3 +11,6 @@
             - externalObjects
             - status
             - kill
+
+        
+

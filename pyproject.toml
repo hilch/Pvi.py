@@ -24,5 +24,5 @@ only-include = ["pvi"]
 path = "pvi/__about__.py"
 
 [project.urls]
-"Homepage" = "https://github.com/hilch/Pvi.py"
+"Homepage" = "https://hilch.github.io/Pvi.py/"
 "Bug Tracker" = "https://github.com/hilch/Pvi.py/issues"

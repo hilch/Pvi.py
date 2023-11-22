@@ -1,4 +1,6 @@
-::: pvi.Cpu
+# Class definition
+
+::: pvi.Station
     options:
         inherited_members:
             - name
@@ -6,9 +8,5 @@
             - descriptor
             - type
             - errorChanged
-            - externalObjects
             - status
             - kill
-
-        
-

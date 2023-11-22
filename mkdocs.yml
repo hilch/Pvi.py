@@ -13,18 +13,42 @@ markdown_extensions:
 
 nav:
   - index.md
-  - Tutorials : tutorials.md
-  - How-To : how-to-guides.md
+  - Tutorials : 
+      - General: tutorial/general.md
+      - First Steps With ANSL: tutorial/simple1.md
+      - Some More Functionality: tutorial/simple2.md
+      - Using INA2000.py: tutorial/simple3.md
+  - PVI Objects: 
+      - General: objects/general.md
+      - Connection: objects/connection.md
+      - Line: objects/line.md
+      - Device: objects/device.md
+      - Station: objects/station.md
+      - Cpu: objects/cpu.md
+      - Task: objects/task.md
+      - Variable: objects/variable.md
+      - Module: objects/module.md
+  - How-To : 
+      - Basics: howtos/basics.md
+      - Create List of Sotware Objects: howtos/object_lists.md
+      - Handling Modules: howtos/modules.md
+      - Linknodes (IO): howtos/linknodes.md
+      - Using Pvi.py with a GUI: howtos/gui.md
+      - SNMP: howtos/snmp.md
+      - Runtime Logger: howtos/logger.md
+      - Profiler: howtos/profiler.md
   - Reference:
-       - Connection : connection.md
-       - PviObject : object.md
-       - Line: line.md
-       - Device : device.md
-       - Station : station.md
-       - Cpu : cpu.md
-       - Task : task.md
-       - Variable : variable.md
-       - Module : module.md
-       - PVI Errors : error.md
+      - Connection : reference/connection.md
+      - PviObject : reference/object.md
+      - Line: reference/line.md
+      - Device : reference/device.md
+      - Station : reference/station.md
+      - Cpu : reference/cpu.md
+      - Task : reference/task.md
+      - Variable : reference/variable.md
+      - Module : reference/module.md
+      - PVI Errors : reference/error.md
+  - Version history: whatsnew.md
+  
 
   

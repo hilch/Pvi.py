@@ -1,4 +1,7 @@
-::: pvi.Device
+# Class definition
+
+
+::: pvi.Task
     options:
         inherited_members:
             - name
@@ -6,5 +9,6 @@
             - descriptor
             - type
             - errorChanged
+            - externalObjects
             - status
             - kill
