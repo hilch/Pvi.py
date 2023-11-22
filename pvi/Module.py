@@ -51,7 +51,8 @@ class Module(PviObject):
         '''
         if parent.type != T_POBJ_TYPE.POBJ_CPU:
             raise PviError(12009, self)
-        objectDescriptor.update({'CD':name})                    
+        if 'CD' not in objectDescriptor:
+            objectDescriptor.update({'CD':name})                    
         super().__init__( parent, T_POBJ_TYPE.POBJ_MODULE, name, **objectDescriptor)
         self._uploaded = None
         self._progress = None

@@ -57,7 +57,8 @@ class Variable(PviObject):
         self._value = None 
         self._valueChanged = None 
         self._variableTypeDescription = VariableTypeDescription()
-        objectDescriptor.update({'CD':name})
+        if 'CD' not in objectDescriptor:
+            objectDescriptor.update({'CD':name})
         if 'RF' not in objectDescriptor:
             objectDescriptor.update({'RF':0}) # do not cyclic refrehs variables by default       
         super().__init__( parent, T_POBJ_TYPE.POBJ_PVAR, name, **objectDescriptor)

@@ -50,7 +50,8 @@ class Task(PviObject):
         '''
         if parent.type != T_POBJ_TYPE.POBJ_CPU:
             raise PviError(12009, self)
-        objectDescriptor.update({'CD':name})
+        if 'CD' not in objectDescriptor:
+            objectDescriptor.update({'CD':name})
         super().__init__( parent, T_POBJ_TYPE.POBJ_TASK, name, **objectDescriptor)
 
     def start(self)->None:
