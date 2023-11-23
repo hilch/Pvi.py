@@ -21,7 +21,7 @@ pviConnection = Connection() # start a Pvi connection
 
 It should be noted that this does not establish any connection to the CPU, but only to the 'PVI Manager', a Windows task, which in turn manages all PVI objects and takes care of all communication.
 
-## Select a Line
+## Define the first PVI object (Line)
 
 We can then set up all PVI objects by instantiating and parameterizing the corresponding Python classes.
 Line->Device->Cpu->Task->Variable.
@@ -32,7 +32,19 @@ line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
 The 'Line' determines the protocol used. The currently most important protocol is ANSL, which is mainly used for communication with PLCs.
 An older version is called 'INA2000' and is still required if an older PLC with AR < 4.x is to be used.
 The 'SNMP' line, which can be used to read and write network parameters, for example, has a completely different meaning. See the corresponding example.
+
 The term 'CD=xxxx' must be specified in exactly the same way and is passed on to the PVI DLL in the same way. For further options, please refer to the PVI documentation.
+
+In fact, we have already defined our first PVI object. All PVI objects are always defined according to the same scheme. 
+
+First of all, the object requires a 'parent'. This is always the first parameter of the PVI object's call constructor. In case of a Line we will have to use the already predefined 'root' objekt ('Pvi').
+
+Secondly, we need a unique name for this object in the hierarchy, which we can freely define. (Well, we are not quite so free in the naming, because only certain characters of the ASCII code are allowed).
+In this case, we have named it 'LNANSL'.
+
+This is followed by one or more parameters with which the object can be identified more precisely. In most cases, only the CD parameter is required, although this can also have complex content.
+In this case it is simple, we must select the name 'LNANSL' predefined by PVI, which selects the ANSL protocol.
+
 
 ## Choose a network Device
 
@@ -83,7 +95,7 @@ So
 while True:
     pviConnection.doEvents() # must be cyclically called
 ```
-would do the same (and could sometimes be the simpler solution).
+would do the same (and could sometimes be the simpler solution). But the loop started with 'start()' already contains a break condition that can be set by 'stop()'.
 
 Since life is not endless, our program should not run indefinitely and end cleanly.
 For this we create a monitoring function that calls the '.stop()' member of the Connection after a certain time. This ends the loop and ultimately the entire script.
@@ -124,3 +136,16 @@ should end in
 @Pvi/LNANSL/TCP/myArsim/mainlogic/gHeating.status.actTemp = 20.0
 done !
 ```
+
+To check which objects our script has registered with the PVI Manager and whether the parameters used were correct, we can use the [PVI snapshot](../diagnosis/snapshot/snapshot.md). And this is definitely a good way to train your understanding of how PVI works in principle.
+
+The entire script should now be automatically terminated after 10 seconds. This is a little too short to examine it more closely. 
+Change the timeout from 10 s to e.g. 120 s (= 2 min) and start it again.
+
+```
+if datetime.datetime.now() - startTime > datetime.timedelta(seconds = 120):
+```
+
+A successful snapshot should show this:
+
+![snapshot](snapshot.png)

@@ -18,6 +18,15 @@ In that case PVI-Manager must be stopped and restarted again.
 This can be very annoying if Automation Studio is being used in the background at the same time, because it then has to be restarted as well.
 Contact your local B&R office to buy a valid license if trial license is not sufficient for you.
 
+Pvi.py is tested with PVI 4.1 - 64 Bit version (PviCom64.dll). Older version might work but 32 Bit versions won't.
+Feel free to fork the project if you really need them.
+
+And: PVI is a Windows program, so Pvi.py is also restricted to the Windows operating system.
+
+# Python
+
+Pvi.py is tested with 3.8 so it could not run on Windows XP or earlier.
+
 # Installation
 ```
 pip install pvipy

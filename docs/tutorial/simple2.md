@@ -12,7 +12,7 @@ As above we need an associated PVI variable object:
 switch = Variable( task1, 'gMainLogic.cmd.switchOnOff' )
 ```
 
-Since we no HMI (human machine interface) for the coffee client the 'switch' is operated by the actual temperature.
+Since we've no HMI (human machine interface) for the coffee client the 'switch' is operated by script watching the actual temperature.
 For this we use a state machine running inside a callback function:
 
 ```

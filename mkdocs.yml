@@ -37,6 +37,8 @@ nav:
       - SNMP: howtos/snmp.md
       - Runtime Logger: howtos/logger.md
       - Profiler: howtos/profiler.md
+  - Diagnosis :
+      - PVI Snapshots: diagnosis/snapshot/snapshot.md
   - Reference:
       - Connection : reference/connection.md
       - PviObject : reference/object.md
