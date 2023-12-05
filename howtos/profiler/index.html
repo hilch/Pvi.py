@@ -73,7 +73,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#profiler1py" class="md-skip">
+        <a href="#profiler" class="md-skip">
           Skip to content
         </a>
       
@@ -515,6 +515,26 @@
 
               
             
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../objects/errors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Errors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -712,6 +732,8 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
@@ -740,6 +762,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -748,16 +772,43 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#profiler1py" class="md-nav__link">
-    profiler1.py
+  <a href="#recording-profiler-data" class="md-nav__link">
+    Recording profiler data
   </a>
   
 </li>
       
         <li class="md-nav__item">
+  <a href="#reading-profiler-data" class="md-nav__link">
+    Reading profiler data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#profiler1py" class="md-nav__link">
+    profiler1.py
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#profiler2py" class="md-nav__link">
     profiler2.py
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1119,6 +1170,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1127,16 +1180,43 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#profiler1py" class="md-nav__link">
-    profiler1.py
+  <a href="#recording-profiler-data" class="md-nav__link">
+    Recording profiler data
   </a>
   
 </li>
       
         <li class="md-nav__item">
+  <a href="#reading-profiler-data" class="md-nav__link">
+    Reading profiler data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#profiler1py" class="md-nav__link">
+    profiler1.py
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#profiler2py" class="md-nav__link">
     profiler2.py
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1155,11 +1235,16 @@
                   
 
 
-  <h1>Profiler</h1>
-
-<p>find the following examples on GitHub <a href="https://github.com/hilch/Pvi.py/tree/main/examples">github.com/hilch/Pvi.py</a></p>
+<h1 id="profiler"><a href="https://help.br-automation.com/#/en/4/diagnostics_support%2Fdiagnosis%2Fprofile%2Fdiagnosis_profile.html">Profiler</a></h1>
+<p>The Profiler can be used to measure and display important system data such as task runtimes, system and stack loads, etc. This can be necessary to determine how much idle time remains in a task class or which task generates a sporadic increased demand for time.</p>
+<p>The profiler can also record and analyze events determined by the user (user events) such as interrupt service routine and library function time demands, as well as time differences between events.</p>
+<h2 id="recording-profiler-data"><a href="https://help.br-automation.com/#/en/4/diagnostics_support%2Fdiagnosis%2Fprofile%2Frecord%2Fdiagnosis_profile_record.html">Recording profiler data</a></h2>
+<p>To record profiler data, the configuration data has to be installed first before the profiler can be started. After the profiler stops and measurement ends, profiler-specific data should be erased on the target system so that memory is not used unnecessarily.</p>
+<h2 id="reading-profiler-data">Reading profiler data</h2>
 <p>In fact there is no real support in PviCom.dll for extracting the contents in a profiler module but this topic fits very well into the PVI category.
 Handling profiler files is still beta since the file format is not public, the known structure was found out by reverse engineering.</p>
+<h2 id="examples">Examples</h2>
+<p>find the following examples on GitHub <a href="https://github.com/hilch/Pvi.py/tree/main/examples">github.com/hilch/Pvi.py</a></p>
 <h3 id="profiler1py"><a href="https://github.com/hilch/Pvi.py/tree/main/examples/profiler1.py">profiler1.py</a></h3>
 <p>extract all profiler data *.pd file and save it to csv</p>
 <h3 id="profiler2py"><a href="https://github.com/hilch/Pvi.py/tree/main/examples/profiler2.py">profiler2.py</a></h3>

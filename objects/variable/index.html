@@ -578,6 +578,26 @@
 
               
             
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../errors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Errors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1186,17 +1206,17 @@ IF CD is omitted the PVI object name is used instead.</p>
 If RF is omitted RF=0 is used which means the variable will be read only once.</p>
 <p>The parameter AF can be used to specify the access type.
 If AT os omitted AT=rw is used which allows reading and writing.</p>
-<h2 id="ansl">ANSL</h2>
+<h2 id="ansl"><a href="https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnansl%2Fpvilnansl.htm">ANSL</a></h2>
 <p>Example:</p>
 <pre><code>temperature = Variable( task1, 'gHeating.status.actTemp', RF=1000 )
 </code></pre>
 <p>Get read and write access to PLC variable 'gHeating.status.actTemp' and defines a refresh rate of 1000 ms.</p>
-<h2 id="ina2000">INA2000</h2>
+<h2 id="ina2000"><a href="https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnina2%2Fpvilnina2pvar.htm">INA2000</a></h2>
 <p>Example:</p>
 <pre><code>temperature = Variable( task1, 'gHeating.status.actTemp', RF=1000  )
 </code></pre>
 <p>Get read and write access to PLC variable 'gHeating.status.actTemp' and defines a refresh rate of 1000 ms.</p>
-<h2 id="snmp">SNMP</h2>
+<h2 id="snmp"><a href="https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnsnmp%2Fpvilnsnmppvar.htm">SNMP</a></h2>
 <p>An SNMP variable object represents an SNMP variable or a PLC or service object in the SNMP library. </p>
 <p>The SNMP variable or the service object is determined by the connection name of the variable object. 
 Case sensitive. All names are predefined in the SNMP line.</p>

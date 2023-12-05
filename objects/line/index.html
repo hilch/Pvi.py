@@ -578,6 +578,26 @@
 
               
             
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../errors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Errors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1176,11 +1196,12 @@
 
 
 <h1 id="overview">Overview</h1>
-<p>A 'Line' is a protocol driver.</p>
-<p>The basic task of a 'Line' is to connect PVI objects (service objects) with objects outside of PVI. </p>
+<p>A 'PVI Line' is a protocol driver.</p>
+<p>The basic task of a 'PVI Line' is to connect PVI objects (service objects) with objects outside of PVI. </p>
 <p>The line is also responsible for communicating with B&amp;R controllers (PLCs) and determines the communication protocol to be used to do so.</p>
-<p>The 'Line' is the parent of a 'Device'.</p>
-<p>PVI contains the following lines (line servers)</p>
+<p>The represention of a PVI Line is a 'Line' Object</p>
+<p>The 'Line' is the parent of a <a href="../device/">'Device'</a>.</p>
+<p><a href="https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Fpvilineserver.htm">PVI contains the following lines (line servers)</a></p>
 <table>
 <thead>
 <tr>
@@ -1238,19 +1259,19 @@
 </tbody>
 </table>
 <p>Currently Pvi.py supports LNANSL, LNINA2 and LNSNMP only.</p>
-<h2 id="ansl">ANSL</h2>
+<h2 id="ansl"><a href="https://help.br-automation.com/#/en/4/automationnet/pvibase/lines/lnansl/pvilnansl.htm">ANSL</a></h2>
 <p>Example: </p>
 <pre><code>from pvi import *
 pviConnection = Connection() # start a Pvi connection
 line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
 </code></pre>
-<h2 id="ina2000">INA2000</h2>
+<h2 id="ina2000"><a href="https://help.br-automation.com/#/en/4/automationnet/pvibase/lines/lnina2/pvilnina2.htm">INA2000</a></h2>
 <p>Example:</p>
 <pre><code>from pvi import *
 pviConnection = Connection() # start a Pvi connection
 line = Line( pviConnection.root, 'LNINA', CD='LNINA2')
 </code></pre>
-<h2 id="snmp">SNMP</h2>
+<h2 id="snmp"><a href="https://help.br-automation.com/#/en/4/automationnet/pvibase/lines/lnsnmp/pvilnsnmp.htm">SNMP</a></h2>
 <p>Example:</p>
 <pre><code>from pvi import *
 pviConnection = Connection() # start a Pvi connection

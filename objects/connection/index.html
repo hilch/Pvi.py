@@ -527,6 +527,26 @@
 
               
             
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../errors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Errors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1096,10 +1116,10 @@
 
 
 <h1 id="overview">Overview</h1>
-<p>A 'Connection' represents the connection to the 'PVI manager' (PviMan.exe).</p>
+<p>A 'Connection' represents the connection to the <a href="https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Fcore%2Fpvimanager.htm">'PVI manager'</a> (PviMan.exe).</p>
 <p>It is responsible for managing all types of process data -- from simple process variables to lists and program/data objects. PVI Manager organizes process data with regard to both timing and direction. That means PVI Manager uses the specifications from the application to determine which data is transferred via which device and medium from or to a certain station.</p>
 <p>The PVI Manager usually runs on the local machine, either as a normal Windows task or as a Windows service.</p>
-<p>The 'Connection' is the parent object of a 'Line'.
+<p>The 'Connection' is the parent object of a <a href="../line/">'Line'</a>.
 (more precisely: the PVI Manager basis object 'Pvi' is actually the root object, but it is accessible via the 'Connection' )</p>
 <p>Example:</p>
 <pre><code>from pvi import *

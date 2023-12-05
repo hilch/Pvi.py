@@ -515,6 +515,26 @@
 
               
             
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../objects/errors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Errors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1679,7 +1699,10 @@
 <span class="normal">351</span>
 <span class="normal">352</span>
 <span class="normal">353</span>
-<span class="normal">354</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PviObject</span><span class="p">():</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PviObject</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;super class representing a PVI object </span>
 
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -1817,7 +1840,10 @@
     <span class="nd">@errorChanged</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">errorChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cb</span> <span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        set callback for &#39;error changed&#39;</span>
+<span class="sd">        set callback for &#39;error changed&#39;.</span>
+
+<span class="sd">        It is advisable to always check the error status &#39;0&#39; before accessing an object.</span>
+
 <span class="sd">            Args:</span>
 <span class="sd">                cb: callback( PviObject, int ) or callback( int )</span>
 
@@ -2387,10 +2413,7 @@ to save PVI resources</p>
 
           <details class="quote">
             <summary>Source code in <code>pvi\Object.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">342</span>
-<span class="normal">343</span>
-<span class="normal">344</span>
-<span class="normal">345</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">345</span>
 <span class="normal">346</span>
 <span class="normal">347</span>
 <span class="normal">348</span>
@@ -2399,7 +2422,10 @@ to save PVI resources</p>
 <span class="normal">351</span>
 <span class="normal">352</span>
 <span class="normal">353</span>
-<span class="normal">354</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    PviObject.kill: kills this object</span>
 <span class="sd">    this should be called when object is not beeing used anymore</span>

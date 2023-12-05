@@ -605,6 +605,26 @@
 
               
             
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../errors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Errors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1231,9 +1251,9 @@
 
 <h1 id="overview">Overview</h1>
 <p>A 'Cpu' represents a PLC in a network.</p>
-<p>The 'Cpu' is the parent of a 'Task' or a (global) 'Variable' or a 'Module'.</p>
+<p>The 'Cpu' is the parent of a <a href="../task/">'Task'</a> or a (global) <a href="../variable/">'Variable'</a> or a <a href="../module/">'Module'</a>.</p>
 <p>Furthermore a 'Cpu' can be restarted (cold/warm) or be used to create a module on the PLC.</p>
-<h2 id="ansl">ANSL</h2>
+<h2 id="ansl"><a href="https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnansl%2Fpvilnanslcpu.htm">ANSL</a></h2>
 <p>The ANSL CPU object is used to define the PLC within a network and to set the parameters of the ANSL communication connection.</p>
 <p>Example: </p>
 <pre><code>from pvi import *
@@ -1244,9 +1264,9 @@ device = Device( line, 'TCP', CD='/IF=TcpIp' )
 cpu = Cpu( device, 'myCpu', CD='/IP=10.43.50.244 /COMT=3000' )
 </code></pre>
 <p>Connect to IP address 10.43.50.244 with a communication timeout of 3000 ms.</p>
-<h2 id="ina2000">INA2000</h2>
+<h2 id="ina2000"><a href="https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnina2%2Fpvilnina2cpu.htm">INA2000</a></h2>
 <p>The INA2000 CPU object is used to identify the PLC in a network or using (INA-) Routing and to set the connection parameters for communication.</p>
-<h3 id="serial-connected-plc">Serial connected PLC</h3>
+<h3 id="serial-connected-plc"><a href="https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnina2%2Fpvilnina2cpuserial.htm">Serial connected PLC</a></h3>
 <p>Example: </p>
 <pre><code>from pvi import *
 
@@ -1257,7 +1277,7 @@ cpu = Cpu( device, 'myCpu', CD='/RT=400' )
 </code></pre>
 <p>Use COM1 to connect with 57600 Baud and Even Parity.
 Connect with a response timeout of 400 ms.</p>
-<h3 id="ethernet-udp-communication">Ethernet UDP communication</h3>
+<h3 id="ethernet-udp-communication"><a href="https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnina2%2Fpvilnina2cpuethernet.htm">Ethernet UDP communication</a></h3>
 <p>Example 1: </p>
 <pre><code>from pvi import *
 
@@ -1277,7 +1297,7 @@ cpu = Cpu( device, 'myPP65', CD='/DAIP=10.43.50.244 /RT=200' )
 </code></pre>
 <p>Connect to IP address 10.43.50.244 ignoring INA node numbers with a response timeout of 200 ms.
 Even INA node addressing is not used we need to define a unique 'source address' /SA for the device.</p>
-<h3 id="can-station">CAN station</h3>
+<h3 id="can-station"><a href="https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnina2%2Fpvilnina2cpucan.htm">CAN station</a></h3>
 <pre><code>from pvi import *
 
 pviConnection = Connection() # start a Pvi connection

@@ -73,7 +73,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#logger1py-ansl" class="md-skip">
+        <a href="#logger" class="md-skip">
           Skip to content
         </a>
       
@@ -515,6 +515,26 @@
 
               
             
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../objects/errors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Errors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -692,6 +712,8 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
@@ -720,6 +742,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -728,23 +752,50 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#writing-loggers" class="md-nav__link">
+    Writing loggers
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reading-from-loggers" class="md-nav__link">
+    Reading from loggers
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#logger1py-ansl" class="md-nav__link">
     logger1.py (ANSL)
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#logger2py" class="md-nav__link">
     logger2.py
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#logger3py-ina2000" class="md-nav__link">
     logger3.py (INA2000)
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1126,6 +1177,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1134,23 +1187,50 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#writing-loggers" class="md-nav__link">
+    Writing loggers
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reading-from-loggers" class="md-nav__link">
+    Reading from loggers
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#logger1py-ansl" class="md-nav__link">
     logger1.py (ANSL)
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#logger2py" class="md-nav__link">
     logger2.py
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#logger3py-ina2000" class="md-nav__link">
     logger3.py (INA2000)
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1169,17 +1249,21 @@
                   
 
 
-  <h1>Runtime Logger</h1>
-
+<h1 id="logger"><a href="https://help.br-automation.com/#/en/4/diagnostics_support%2Fdiagnosis%2Flogger%2Fdiagnosis_logger.html">Logger</a></h1>
+<p>The Logger window in Automation Studio displays information about events that occur on a controller within the framework of an application.</p>
+<h2 id="writing-loggers">Writing loggers</h2>
+<p>These events are severe errors (e.g. cycle time violation), warnings and system messages (e.g. warm/cold restart) logged by Automation Runtime. In addition, the <a href="https://help.br-automation.com/#/en/4/libraries/areventlog/areventlog.html">ArEventLog library</a> can be used to record information about processes in an application that can then be analyzed in the Logger.</p>
+<h2 id="reading-from-loggers">Reading from loggers</h2>
+<p>There is some support for extracting logger data from a file with <a href="https://help.br-automation.com/#/en/4/automationnet%2Fpvitransfer%2Foperation%2Flogbookint%2Fdll%2Fpvitransfer_logbookint_dll_functions.html">PviTransUtil.dll</a> which comes with PviTransfer.exe e.g. <a href="https://help.br-automation.com/#/en/4/automationnet%2Fpvitransfer%2Fpvitransfer.html">Runtime Utiliy Center</a></p>
+<p>If it is not available, Pvi.py could be an alternative.
+Handling logger files is still beta since the file format is not public.
+The known structure was found out by reverse engineering.</p>
+<h2 id="examples">Examples</h2>
 <p>find the following examples on GitHub <a href="https://github.com/hilch/Pvi.py/tree/main/examples">github.com/hilch/Pvi.py</a></p>
 <h3 id="logger1py-ansl"><a href="https://github.com/hilch/Pvi.py/tree/main/examples/logger1.py">logger1.py</a> (ANSL)</h3>
 <p>this example uploads some loggers from CPU</p>
 <h3 id="logger2py"><a href="https://github.com/hilch/Pvi.py/tree/main/examples/logger2.py">logger2.py</a></h3>
 <p>extract all logger from a systemdump container and save them as csv.</p>
-<p>There is some support for extracting logger data from a file with PviTransUtil.dll which comes with PviTransfer.exe.
-If it is not available, Pvi.py could be an alternative.
-Handling logger files is still beta since the file format is not public.
-The known structure was found out by reverse engineering.</p>
 <h3 id="logger3py-ina2000"><a href="https://github.com/hilch/Pvi.py/tree/main/examples/logger3.py">logger3.py</a> (INA2000)</h3>
 <p>this example uploads some loggers from CPU</p>
 <p>This is similar to logger1.py but since we use a control running &lt; AR 4.x ANSL is not available here and we change to good old INA2000</p>
