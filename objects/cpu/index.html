@@ -1253,6 +1253,23 @@
 <p>A 'Cpu' represents a PLC in a network.</p>
 <p>The 'Cpu' is the parent of a <a href="../task/">'Task'</a> or a (global) <a href="../variable/">'Variable'</a> or a <a href="../module/">'Module'</a>.</p>
 <p>Furthermore a 'Cpu' can be restarted (cold/warm) or be used to create a module on the PLC.</p>
+<p>It is advisable to always use callback 'errorChanged' and check for status '0' before accessing an Object that is located on an Cpu e.g.</p>
+<pre><code>cpu = Cpu( device, 'myCpu', CD='/IP=10.43.50.244 /COMT=3000' )
+    ...
+
+def cpuErrorChanged( error : int):
+
+    if error == 0:
+        # do something useful
+        ....
+    else:
+        # not yet connected or in error state
+        ...
+
+cpu.errorChanged = cpuErrorChanged
+
+pviConnection.start()
+</code></pre>
 <h2 id="ansl"><a href="https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnansl%2Fpvilnanslcpu.htm">ANSL</a></h2>
 <p>The ANSL CPU object is used to define the PLC within a network and to set the parameters of the ANSL communication connection.</p>
 <p>Example: </p>

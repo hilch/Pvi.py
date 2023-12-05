@@ -1702,7 +1702,24 @@
 <span class="normal">354</span>
 <span class="normal">355</span>
 <span class="normal">356</span>
-<span class="normal">357</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PviObject</span><span class="p">():</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PviObject</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;super class representing a PVI object </span>
 
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -1830,6 +1847,23 @@
     <span class="k">def</span> <span class="nf">errorChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        callback for &#39;error changed&#39;</span>
+
+<span class="sd">        It is advisable to always check the error status &#39;0&#39; before accessing an object.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                cb: callback( PviObject, int ) or callback( int )</span>
+
+<span class="sd">        typical example:</span>
+
+<span class="sd">        ```</span>
+<span class="sd">        cpu = Cpu( device, &#39;myArsim&#39;, CD=&#39;/IP=127.0.0.1&#39; )</span>
+<span class="sd">        ...</span>
+<span class="sd">        def cpuErrorChanged( error : int ):</span>
+<span class="sd">            if error != 0:</span>
+<span class="sd">                raise PviError(error)</span>
+
+<span class="sd">        cpu.errorChanged = cpuErrorChanged</span>
+<span class="sd">        ```        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errorChanged</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errorChanged</span>
@@ -2089,6 +2123,19 @@ print( &quot;descriptor=&quot;, temperature.name)
   <div class="doc doc-contents ">
   
       <p>callback for 'error changed'</p>
+<p>It is advisable to always check the error status '0' before accessing an object.</p>
+<pre><code>Args:
+    cb: callback( PviObject, int ) or callback( int )
+</code></pre>
+<p>typical example:</p>
+<pre><code>cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
+...
+def cpuErrorChanged( error : int ):
+    if error != 0:
+        raise PviError(error)
+
+cpu.errorChanged = cpuErrorChanged
+</code></pre>
   </div>
 
 </div>
@@ -2413,19 +2460,19 @@ to save PVI resources</p>
 
           <details class="quote">
             <summary>Source code in <code>pvi\Object.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">345</span>
-<span class="normal">346</span>
-<span class="normal">347</span>
-<span class="normal">348</span>
-<span class="normal">349</span>
-<span class="normal">350</span>
-<span class="normal">351</span>
-<span class="normal">352</span>
-<span class="normal">353</span>
-<span class="normal">354</span>
-<span class="normal">355</span>
-<span class="normal">356</span>
-<span class="normal">357</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    PviObject.kill: kills this object</span>
 <span class="sd">    this should be called when object is not beeing used anymore</span>
