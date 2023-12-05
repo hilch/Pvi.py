@@ -158,6 +158,23 @@ class PviObject():
     def errorChanged(self) -> Callable:
         """
         callback for 'error changed'
+
+        It is advisable to always check the error status '0' before accessing an object.
+
+            Args:
+                cb: callback( PviObject, int ) or callback( int )
+
+        typical example:
+
+        ```
+        cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
+        ...
+        def cpuErrorChanged( error : int ):
+            if error != 0:
+                raise PviError(error)
+  
+        cpu.errorChanged = cpuErrorChanged
+        ```        
         """
         if self._errorChanged:
             return self._errorChanged
