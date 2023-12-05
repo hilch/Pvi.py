@@ -1,15 +1,15 @@
 # Overview
 
-A 'Task' represents a PLC task.
+A 'Task' represents a [PLC task](https://help.br-automation.com/#/en/4/automationruntime%2Ftaskclasses%2Ftasks%2Ftasks.html).
 
-The 'Task' is the parent of a 'Variable'.
+The 'Task' is the parent of a ['Variable'](variable.md).
 
 Furthermore a 'Task' can be stopped, started or resumed.
 
 The parameter CD is used to specify the name of the task on the PLC.
 IF CD is omitted the PVI object name is used instead.
 
-## ANSL
+## [ANSL](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnansl%2Fpvilnansltask.htm)
 
 Example:
 
@@ -25,7 +25,7 @@ task1 = Task( cpu, 'mainlogic')
 ```
 
 
-## INA2000
+## [INA2000](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnina2%2Fpvilnina2task.htm)
 
 Example:
 

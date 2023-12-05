@@ -2,11 +2,11 @@
 
 A 'Cpu' represents a PLC in a network.
 
-The 'Cpu' is the parent of a 'Task' or a (global) 'Variable' or a 'Module'.
+The 'Cpu' is the parent of a ['Task'](task.md) or a (global) ['Variable'](variable.md) or a ['Module'](module.md).
 
 Furthermore a 'Cpu' can be restarted (cold/warm) or be used to create a module on the PLC.
 
-## ANSL
+## [ANSL](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnansl%2Fpvilnanslcpu.htm)
 
 The ANSL CPU object is used to define the PLC within a network and to set the parameters of the ANSL communication connection.
 
@@ -22,11 +22,11 @@ cpu = Cpu( device, 'myCpu', CD='/IP=10.43.50.244 /COMT=3000' )
 Connect to IP address 10.43.50.244 with a communication timeout of 3000 ms.
 
 
-## INA2000
+## [INA2000](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnina2%2Fpvilnina2cpu.htm)
 
 The INA2000 CPU object is used to identify the PLC in a network or using (INA-) Routing and to set the connection parameters for communication.
 
-### Serial connected PLC
+### [Serial connected PLC](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnina2%2Fpvilnina2cpuserial.htm)
 
 Example: 
 ```
@@ -41,7 +41,7 @@ Use COM1 to connect with 57600 Baud and Even Parity.
 Connect with a response timeout of 400 ms.
 
 
-### Ethernet UDP communication
+### [Ethernet UDP communication](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnina2%2Fpvilnina2cpuethernet.htm)
 
 Example 1: 
 ```
@@ -67,7 +67,7 @@ cpu = Cpu( device, 'myPP65', CD='/DAIP=10.43.50.244 /RT=200' )
 Connect to IP address 10.43.50.244 ignoring INA node numbers with a response timeout of 200 ms.
 Even INA node addressing is not used we need to define a unique 'source address' /SA for the device.
 
-### CAN station
+### [CAN station](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnina2%2Fpvilnina2cpucan.htm)
 
 ```
 from pvi import *

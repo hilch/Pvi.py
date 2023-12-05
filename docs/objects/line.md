@@ -1,14 +1,16 @@
 # Overview
 
-A 'Line' is a protocol driver.
+A 'PVI Line' is a protocol driver.
 
-The basic task of a 'Line' is to connect PVI objects (service objects) with objects outside of PVI. 
+The basic task of a 'PVI Line' is to connect PVI objects (service objects) with objects outside of PVI. 
 
 The line is also responsible for communicating with B&R controllers (PLCs) and determines the communication protocol to be used to do so.
 
-The 'Line' is the parent of a 'Device'.
+The represention of a PVI Line is a 'Line' Object
 
-PVI contains the following lines (line servers)
+The 'Line' is the parent of a ['Device'](device.md).
+
+[PVI contains the following lines (line servers)](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Fpvilineserver.htm)
 
 Line name        | Name             | usage
 -----------------|------------------|------------------
@@ -24,7 +26,7 @@ LNMODBUS         | MODBUS line      | Communication with MODBUS TCP controller.
 
 Currently Pvi.py supports LNANSL, LNINA2 and LNSNMP only.
 
-## ANSL
+## [ANSL](https://help.br-automation.com/#/en/4/automationnet/pvibase/lines/lnansl/pvilnansl.htm)
 
 Example: 
 
@@ -34,7 +36,7 @@ pviConnection = Connection() # start a Pvi connection
 line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
 ```
 
-## INA2000
+## [INA2000](https://help.br-automation.com/#/en/4/automationnet/pvibase/lines/lnina2/pvilnina2.htm)
 
 Example:
 
@@ -45,7 +47,7 @@ line = Line( pviConnection.root, 'LNINA', CD='LNINA2')
 ```
 
 
-## SNMP
+## [SNMP](https://help.br-automation.com/#/en/4/automationnet/pvibase/lines/lnsnmp/pvilnsnmp.htm)
 
 Example:
 

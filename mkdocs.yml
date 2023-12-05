@@ -28,6 +28,7 @@ nav:
       - Task: objects/task.md
       - Variable: objects/variable.md
       - Module: objects/module.md
+      - Errors: objects/errors.md
   - How-To : 
       - Basics: howtos/basics.md
       - Create List of Sotware Objects: howtos/object_lists.md

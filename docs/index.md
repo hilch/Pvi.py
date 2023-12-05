@@ -1,12 +1,12 @@
 # Pvi.py
 
-Python wrapper for [B&amp;R PVI (process visualization interface)](https://www.br-automation.com/en/products/software/automation-software/automation-netpvi/).
+Python wrapper for [B&amp;R PVI (process visualization interface)](https://help.br-automation.com/#/en/4/automationnet%2Fpvi%2Fpvi.htm).
 
-In times of more modern protocols like OPC-UA, this may seem a bit old-fashioned. 
+In times of more modern protocols like [OPC-UA](https://help.br-automation.com/#/en/4/communication%2Fopcua%2Fopcua.html), this may seem a bit old-fashioned. 
 But PVI has some hidden strengths and is also very versatile. 
 Have a look into the documentation of the 'Lines' (ANSL, INA2000, NET2000, MTC, ADI, DCAN, SNMP, MODBUS, MININET) and what they are used for.
 In most cases it is used just to communicate with B&R PLCs with 'ANSL' and 'SNMP'.
-Unfortunately its native C-language interface is very complex and also PVI Services (C#) can be a high barrier to entry.
+Unfortunately its [native C-language interface](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Fcore%2Fpvicominterface.htm) is very complex and also [PVI Services (.NET)](https://help.br-automation.com/#/en/4/automationnet%2Fpviservices%2Frefmanual%2Ffiles%2Fpviservices_intro.html) can be a high barrier to entry.
 It's a lot more fun with Python !
 
 # PVI installation and license

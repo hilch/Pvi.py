@@ -16,7 +16,7 @@ If RF is omitted RF=0 is used which means the variable will be read only once.
 The parameter AF can be used to specify the access type.
 If AT os omitted AT=rw is used which allows reading and writing.
 
-## ANSL
+## [ANSL](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnansl%2Fpvilnansl.htm)
 
 Example:
 
@@ -27,7 +27,7 @@ temperature = Variable( task1, 'gHeating.status.actTemp', RF=1000 )
 Get read and write access to PLC variable 'gHeating.status.actTemp' and defines a refresh rate of 1000 ms.
 
 
-## INA2000
+## [INA2000](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnina2%2Fpvilnina2pvar.htm)
 
 Example:
 
@@ -37,7 +37,7 @@ temperature = Variable( task1, 'gHeating.status.actTemp', RF=1000  )
 
 Get read and write access to PLC variable 'gHeating.status.actTemp' and defines a refresh rate of 1000 ms.
 
-## SNMP
+## [SNMP](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnsnmp%2Fpvilnsnmppvar.htm)
 
 An SNMP variable object represents an SNMP variable or a PLC or service object in the SNMP library. 
 

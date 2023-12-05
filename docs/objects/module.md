@@ -6,7 +6,7 @@ The parameter CD is used to specify the name of the module on the PLC.
 IF CD is omitted the PVI object name is used instead.
 
 
-## ANSL
+## [ANSL](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnansl%2Fpvilnanslmodule.htm)
 
 Example:
 
@@ -14,13 +14,18 @@ Example:
 module = Module( cpu, 'bigmod' )
 ```
 
-## INA2000
+Some module types can be translated during upload / download. See ['Translating BR modules'](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnansl%2Fpvilnanslmodtranslation.htm) for more info.
+
+## [INA2000](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnina2%2Fpvilnina2module.htm)
 
 Example:
 
 ```
 module = Module( cpu, 'bigmod' )
 ```
+
+Some module types can be translated during upload / download. See ['Translating BR modules'](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnina2%2Fpvilnina2modtranslation.htm) for more info.
+
 
 ## SNMP
 

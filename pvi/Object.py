@@ -168,7 +168,10 @@ class PviObject():
     @errorChanged.setter
     def errorChanged(self, cb : Callable):
         """
-        set callback for 'error changed'
+        set callback for 'error changed'.
+
+        It is advisable to always check the error status '0' before accessing an object.
+
             Args:
                 cb: callback( PviObject, int ) or callback( int )
 

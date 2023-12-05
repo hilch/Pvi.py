@@ -1,3 +1,12 @@
+# [SNMP](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnsnmp%2Fpvilnsnmp.htm)
+
+The SNMP line maps SNMP (Simple Network Management Protocol) variables from an SG4 PLC to PVI variable objects.
+
+The SNMP line is intended mainly for commissioning a new PLC via the Ethernet interface. SNMP variables can be used to make or call up settings such as host name, IP address, node number, etc..
+
+
+## Examples
+
 find the following examples on GitHub [github.com/hilch/Pvi.py](https://github.com/hilch/Pvi.py/tree/main/examples)
 
 (if you are looking for a 'real' program consider to use [brsnmp](https://github.com/hilch/brsnmp) )

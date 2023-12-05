@@ -10,7 +10,7 @@ Can be specified as an additional logical level, but is not really required.
 
 Can be specified as an additional logical level, but is not really required.
 
-## SNMP
+## [SNMP](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnsnmp%2Fpvilnsnmpstation.htm)
 
 Represents the MAC address and specifies a particular PLC.
 

@@ -1,4 +1,4 @@
-# PVI- Snapshot
+# [PVI- Snapshot](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Fcore%2Fpvidiagnosticssnapshot.htm)
 
 The name says it all: With PVI Snapshot it is possible to take a snapshot of all objects registered in the PVI Manager for diagnostic purposes.
 
@@ -10,7 +10,7 @@ It is then possible to examine all names, properties and statuses of the objects
 
 ![snapshot1](snapshot1.png)
 
-### Open PVI Monitor
+### Open [PVI Monitor](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Fcore%2Fpvimonitor.htm)
 
 Right click to open PVI- Monitor
 
@@ -24,7 +24,7 @@ There are 6 objects ( PVI root, line, device, cpu, task, variable) and fortunate
 We've no valid PVI licence (=Trial) and therefore PVI will stop working in about a quarter of an hour.
 There is currently just one client using Pvi Manager.
 
-### PVI Snapshot Viewer
+### [PVI Snapshot Viewer](https://help.br-automation.com/#/en/4/automationnet/pvibase/core/pvimonitordiagnosticssnapshotviewer.htm)
 
 But if we want to see more we have to open the PVI Snapshot Viewer:
 
