@@ -35,23 +35,33 @@ class Connection():
     Typical usage example:
 
     ```
-        pviConnection = Connection() # start a Pvi connection
+        pviConnection = Connection() # start a Pvi connection (to local PVI manager)
 
-        line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')    
+        # in case of a PVI remote connection:
+        # pviConnection = Connection( timeout=15, IP='172.20.43.59', PN=20000 ) # start a remote Pvi connection
+
+        line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')  
+
+          
     ```
     '''
     # ----------------------------------------------------------------------------------
-    def __init__(self, **kwargs ):
+    def __init__(self, **kwargs : Union[str,int] ):
         """Initializes the connection to PVI manager
 
         Args:
-            debug : True = verbose messages for debugging
-            timeout : timeout in [s] to PVI manager instance
-            IP : ip address or host name for remote connection
-            PN : port number for remote connection
-            COMT : communication timeout
+            kwargs:
+                debug : True = verbose messages for debugging
+
+                timeout : timeout in [s] to PVI manager instance
+
+                IP : ip address or host name for remote connection
+
+                PN : port number for remote connection
+                
+                COMT : communication timeout
         """
-        timeout = kwargs.get('timeout', 5 )
+        timeout = int(kwargs.get('timeout', 5 ))
         self._eventLoopIsRunning = False
         self._startTime = datetime.datetime.now()
         self._pviTrialTimeCheck = datetime.timedelta(seconds=timeout +1)
@@ -65,7 +75,7 @@ class Connection():
 
         initParameter = ""
         if 'IP' in kwargs:
-            initParameter = initParameter + 'IP=' + kwargs['IP'] + ' '
+            initParameter = initParameter + 'IP=' + str(kwargs['IP']) + ' '
         if 'PN' in kwargs:
             initParameter = initParameter + 'PN=' + str(kwargs['PN']) + ' '
         if 'COMT' in kwargs:
