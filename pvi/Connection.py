@@ -41,24 +41,38 @@ class Connection():
     ```
     '''
     # ----------------------------------------------------------------------------------
-    def __init__(self, debug : bool = False, timeout: float = 5 ):
+    def __init__(self, **kwargs ):
         """Initializes the connection to PVI manager
 
         Args:
             debug : True = verbose messages for debugging
             timeout : timeout in [s] to PVI manager instance
+            IP : ip address or host name for remote connection
+            PN : port number for remote connection
+            COMT : communication timeout
         """
+        timeout = kwargs.get('timeout', 5 )
         self._eventLoopIsRunning = False
         self._startTime = datetime.datetime.now()
         self._pviTrialTimeCheck = datetime.timedelta(seconds=timeout +1)
-        self._debug = debug
+        self._debug = kwargs.get('debug', False)
         self._objectsArranged = False
         self._pviObjects = []
         self._rootObject = PviObject(None, T_POBJ_TYPE.POBJ_PVI, '@Pvi')
         self._rootObject._connection = self
         self.link(self._rootObject)
         self._linkIDs = {}
-        self._result = PviInitialize( timeout, 0, "", None )
+
+        initParameter = ""
+        if 'IP' in kwargs:
+            initParameter = initParameter + 'IP=' + kwargs['IP'] + ' '
+        if 'PN' in kwargs:
+            initParameter = initParameter + 'PN=' + str(kwargs['PN']) + ' '
+        if 'COMT' in kwargs:
+            initParameter = initParameter + 'COMT=' + str(kwargs['COMT']) + ' '
+            
+
+        self._result = PviInitialize( timeout, 0, initParameter, None )
         if self._result == 0:
             # set global events
             for m in (POBJ_EVENT_PVI_CONNECT, POBJ_EVENT_PVI_DISCONN, POBJ_EVENT_PVI_ARRANGE):
