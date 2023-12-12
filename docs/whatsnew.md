@@ -1,6 +1,7 @@
 # Version history
 
 *V1.1.0*
+
 - add parameters to Connection constructor to enable a PVI remote connection
 
 *V1.0.0*
