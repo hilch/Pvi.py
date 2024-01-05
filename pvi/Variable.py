@@ -21,6 +21,7 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from typing import Type
+from inspect import signature
 import re
 from ctypes import create_string_buffer, sizeof, byref
 from typing import Any
@@ -56,7 +57,8 @@ class Variable(PviObject):
         if parent.type != T_POBJ_TYPE.POBJ_CPU and  parent.type != T_POBJ_TYPE.POBJ_TASK and  parent.type != T_POBJ_TYPE.POBJ_STATION:
             raise PviError(12009, self )        
         self._value = None 
-        self._valueChanged = None 
+        self._valueChanged = lambda _ : _
+        self._valueChangedArgCount = 0      
         self._variableTypeDescription = VariableTypeDescription()
         if 'CD' not in objectDescriptor: # CD not given
             objectDescriptor.update({'CD':name})
@@ -126,8 +128,10 @@ class Variable(PviObject):
  
     def _eventData( self, wParam, responseInfo ):
         self.__readRawData( wParam, responseInfo )
-        if callable(self._valueChanged):
+        if self._valueChangedArgCount == 1:
             self._valueChanged(self._value)
+        elif self._valueChangedArgCount == 2:
+            self._valueChanged(self._value, self) # type: ignore
 
 
     def _eventDataType( self, wParam, responseInfo ):
@@ -166,17 +170,21 @@ class Variable(PviObject):
     @property
     def valueChanged(self):
         '''
-        read callback for 'value changed'
+        callback for 'value changed'
+
+        accepts:
+        fn( value)
+        or
+        fn( value, vo ) where 'vo' is the Variable object itself
+
         '''
         return self._valueChanged
 
     @valueChanged.setter
     def valueChanged(self, cb):
-        '''
-        set callback for 'value changed'
-        '''
         if callable(cb):
             self._valueChanged = cb
+            self._valueChangedArgCount = len(signature(cb).parameters)
         else:
             raise ValueError
 
