@@ -52,7 +52,16 @@ class Module(PviObject):
         if parent.type != T_POBJ_TYPE.POBJ_CPU:
             raise PviError(12009, self)
         if 'CD' not in objectDescriptor:
-            objectDescriptor.update({'CD':name})                    
+            objectDescriptor.update({'CD':name}) 
+        else:
+            cd = str(objectDescriptor['CD']).lstrip()
+            m = re.match(r"(\/RO\s*=\s*)?(\w[\w\.]*)", cd)
+            if m: # name is entered in CD
+                ro = m[2]
+                assert ro == name, "name does not match variable's name in CD"
+                name = ro
+            else:
+                objectDescriptor.update({'CD':'/RO=' + name + ' ' + cd})                               
         super().__init__( parent, T_POBJ_TYPE.POBJ_MODULE, name, **objectDescriptor)
         self._uploaded = None
         self._progress = None

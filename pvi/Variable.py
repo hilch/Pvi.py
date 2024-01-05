@@ -21,6 +21,7 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from typing import Type
+import re
 from ctypes import create_string_buffer, sizeof, byref
 from typing import Any
 from .include import *
@@ -57,8 +58,17 @@ class Variable(PviObject):
         self._value = None 
         self._valueChanged = None 
         self._variableTypeDescription = VariableTypeDescription()
-        if 'CD' not in objectDescriptor:
+        if 'CD' not in objectDescriptor: # CD not given
             objectDescriptor.update({'CD':name})
+        else:
+            cd = str(objectDescriptor['CD']).lstrip()
+            m = re.match(r"(\/RO\s*=\s*)?(\w[\w\.]*)", cd)
+            if m: # name is entered in CD
+                ro = m[2]
+                assert ro == name, "name does not match variable's name in CD"
+                name = ro
+            else:
+                objectDescriptor.update({'CD':'/RO=' + name + ' ' + cd})
         if 'RF' not in objectDescriptor:
             objectDescriptor.update({'RF':0}) # do not cyclic refrehs variables by default       
         super().__init__( parent, T_POBJ_TYPE.POBJ_PVAR, name, **objectDescriptor)

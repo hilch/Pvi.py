@@ -1,5 +1,9 @@
 # Version history
 
+*V1.1.1*
+- fix: Variable/Task/Module c'tor: check if 'name' is equal to name in 'CD'
+- fix: Variable/Task/Module c'tor: content of 'CD' was overwritten with 'name'
+
 *V1.1.0*
 
 - add parameters to Connection constructor to enable a PVI remote connection
