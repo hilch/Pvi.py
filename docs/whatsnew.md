@@ -1,6 +1,7 @@
 # Version history
 
-*V1.1.1*
+*V1.2.0*
+- add Object.evmask to change link descriptor event mask
 - fix: Variable/Task/Module c'tor: check if 'name' is equal to name in 'CD'
 - fix: Variable/Task/Module c'tor: content of 'CD' was overwritten with 'name'
 

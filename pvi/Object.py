@@ -47,6 +47,17 @@ class PviObject():
         parentName = re.findall('(\\S+)',str(parent.name))[0]+'/' if parent else ''
         self._name = f'{parentName}{name}'
         self._linkID = 0
+        self._linkDescriptor = '' # empty string set defaults
+        if objType == T_POBJ_TYPE.POBJ_CPU or objType == T_POBJ_TYPE.POBJ_MODULE:
+            self._linkDescriptor = str(objectDescriptor.get('EV', 'EV=ep')) # need this for downloading proceeding info
+        else:
+            ld = str(objectDescriptor.get('EV', '-'))
+            if ld != '-': # EV is given
+                self._linkDescriptor = 'EV=' + ld
+        try:
+            del objectDescriptor['EV']  # EV must not occur in object descriptor 
+        except KeyError:
+            pass     
         self._objectDescriptor = objectDescriptor
         self._type = objType
         self._result = int(0)      
@@ -132,6 +143,38 @@ class PviObject():
         '''         
         return self._objectDescriptor
 
+
+    @property
+    def evmask(self) -> str:
+        '''
+        event mask in link descriptor
+
+        "e": Change in error state
+        "d": Data changes
+        "f": Change to the data format 
+        "c": Change to the connection description
+        "p": Progress information about active requests 
+        "s": Status changes
+        "u": Change in the user tag string        
+        '''
+        s = create_string_buffer(b'\000' * 10)   
+        self._result = PviRead( self._linkID, POBJ_ACC_EVMASK , None, 0, byref(s), sizeof(s) )
+        if self._result == 0:
+            s = str(s, 'ascii')
+            self._linkDescriptor = 'Ev=' + s
+            return(s)
+        else:
+            raise PviError(self._result, self)         
+
+    @evmask.setter
+    def evmask(self, mask : str ):
+        s = create_string_buffer(mask.encode())
+
+        self._result = PviWrite( self._linkID, POBJ_ACC_EVMASK, byref(s), sizeof(s), None, 0 ) 
+        if self._result == 0:
+            self._linkDescriptor = str(s)
+        else:
+            raise PviError(self._result, self)      
 
     @property
     def type(self) -> T_POBJ_TYPE:
@@ -259,11 +302,8 @@ class PviObject():
             descriptor_items += [f'{key}={quote}{value}{quote}']
         descr = ' '.join(descriptor_items) 
         linkID = DWORD(0)
-        linkDescriptor = None
-        if self._type == T_POBJ_TYPE.POBJ_CPU or self._type == T_POBJ_TYPE.POBJ_MODULE:
-            linkDescriptor = b'EV=ep' # need this for downloading proceeding info
         self._result = PviCreate( byref(linkID), bytes(self._name, 'ascii'),
-            self._type, bytes(descr, 'ascii'), PVI_HMSG_NIL, SET_PVIFUNCTION, 0, linkDescriptor)
+            self._type, bytes(descr, 'ascii'), PVI_HMSG_NIL, SET_PVIFUNCTION, 0, self._linkDescriptor.encode())
         if self._result == 0: # object creation successful
             self._linkID = linkID.value
             # if self._type == T_POBJ_TYPE.POBJ_PVAR: # read variable's data type
