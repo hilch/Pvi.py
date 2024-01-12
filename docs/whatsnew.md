@@ -3,7 +3,8 @@
 *V1.2.0*
 - add Object.evmask to change link descriptor event mask
 - Variable.valueChanged now accepts a callback with signature ( value, Object )
-- fix: Variable/Task/Module c'tor: check if 'name' is equal to name in 'CD'
+- new Object: new Member userName.
+- Variable/Task/Module: use name as userName if 'CD' is used for defining plc object
 - fix: Variable/Task/Module c'tor: content of 'CD' was overwritten with 'name'
 
 *V1.1.0*

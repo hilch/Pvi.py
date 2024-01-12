@@ -45,7 +45,17 @@ class PviObject():
             objectDescriptor: e.g. AT=rwe, CD="/RO=View::TempValue" see PVI documentation
         '''
         parentName = re.findall('(\\S+)',str(parent.name))[0]+'/' if parent else ''
-        self._name = f'{parentName}{name}'
+        self._name = f'{parentName}{name}'        
+        self._userName = name
+        if 'CD' in objectDescriptor and (objType == T_POBJ_TYPE.POBJ_MODULE or objType == T_POBJ_TYPE.POBJ_TASK or objType == T_POBJ_TYPE.POBJ_PVAR):
+            cd = str(objectDescriptor['CD']).lstrip()
+            m = re.match(r"(\/RO\s*=\s*)?(\w[\w\.]*)", cd)
+            if m: # PLC object name is entered in CD
+                ro = m[2]
+                if ro != name:
+                    self._name = f'{parentName}{ro}'                    
+            else: # pLC object name is not given so derive it from user assigned name
+                self._name = f'{parentName}{self._userName}'
         self._linkID = 0
         self._linkDescriptor = '' # empty string set defaults
         if objType == T_POBJ_TYPE.POBJ_CPU or objType == T_POBJ_TYPE.POBJ_MODULE:
@@ -59,6 +69,7 @@ class PviObject():
         except KeyError:
             pass     
         self._objectDescriptor = objectDescriptor
+
         self._type = objType
         self._result = int(0)      
         self._pviError = int(0)
@@ -89,17 +100,20 @@ class PviObject():
 
         example:
         ```
-        temperature = Variable( task1, 'gHeating.status.actTemp' )
-        ...
-        print( "name=", temperature.name)
-        ```
-        results in:
-
-        ```
         name= @Pvi/LNANSL/TCP/myArsim/mainlogic/gHeating.status.actTemp
         ```
         '''
         return self._name
+
+
+    @property
+    def userName(self) -> str:
+        '''
+        user defined object name
+        defaults to .objectName
+        '''
+        return self._userName
+
 
     @property
     def objectName(self) -> str:
