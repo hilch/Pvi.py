@@ -20,7 +20,6 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import re
 from typing import List
 from ctypes import create_string_buffer, byref, sizeof
 from .include import *
@@ -53,15 +52,6 @@ class Task(PviObject):
             raise PviError(12009, self)
         if 'CD' not in objectDescriptor:
             objectDescriptor.update({'CD':name})
-        else:
-            cd = str(objectDescriptor['CD']).lstrip()
-            m = re.match(r"(\/RO\s*=\s*)?(\w[\w\.]*)", cd)
-            if m: # name is entered in CD
-                ro = m[2]
-                assert ro == name, "name does not match variable's name in CD"
-                name = ro
-            else:
-                objectDescriptor.update({'CD':'/RO=' + name + ' ' + cd})            
         super().__init__( parent, T_POBJ_TYPE.POBJ_TASK, name, **objectDescriptor)
 
     def start(self)->None:
