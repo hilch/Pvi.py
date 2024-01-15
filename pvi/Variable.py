@@ -122,7 +122,7 @@ class Variable(PviObject):
         if self._valueChangedArgCount == 1:
             self._valueChanged(self._value)
         elif self._valueChangedArgCount == 2:
-            self._valueChanged(self._value, self) # type: ignore
+            self._valueChanged(self, self._value) # type: ignore
 
 
     def _eventDataType( self, wParam, responseInfo ):
