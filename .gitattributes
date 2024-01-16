@@ -31,4 +31,4 @@ examples/*.py linguist-language=Python
 # (among others).
 
 # Others
-tools/*.* linguist-vendors
+tools/** linguist-vendors
