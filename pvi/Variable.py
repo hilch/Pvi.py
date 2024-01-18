@@ -195,9 +195,10 @@ class Variable(PviObject):
         return t
 
     @property
-    def access(self) -> dict:
+    def attributes(self) -> dict:
         '''
-        access
+        object attributes
+
         Typical usage example:
         ```
         temperature = Variable( task1, name='gHeating.status.actTemp', AT = 'r' )        
@@ -214,10 +215,10 @@ class Variable(PviObject):
         else:
             raise PviError(self._result, self)  
 
-    @access.setter
-    def access(self, a : str ):
+    @attributes.setter
+    def attributes(self, a : str ):
         '''
-        access
+        object attributes
         '''
         s = create_string_buffer(a.encode('ascii'))
         self._result = PviWrite( self._linkID, POBJ_ACC_TYPE, byref(s), sizeof(s), None, 0 ) 
