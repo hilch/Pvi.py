@@ -23,18 +23,20 @@
 from __future__ import annotations
 from typing import Dict, Any
 from ctypes import create_string_buffer, byref, sizeof
-from ctypes import c_uint32, c_int32, c_uint64, c_int64, c_void_p, c_char_p
 from typing import Callable, Union
 import re
+import ast
 import inspect
 from .include import *
 from .Error import PviError
+from .Helpers import dictFromParameterPairString
+
+
 
 class PviObject():
     '''super class representing a PVI object 
 
     '''
-    __patternParameterPairs = re.compile(r"\s*([A-Z]{2}=\w*)\s*")
 
     def __init__(self, parent : Union[PviObject,None], objType : T_POBJ_TYPE, name : str, **objectDescriptor : Dict[str, Any]):
         '''
@@ -43,6 +45,7 @@ class PviObject():
             objType:   Pvi Object Type
             name: name of object in PVI hierarchy
             objectDescriptor: e.g. AT=rwe, CD="/RO=View::TempValue" see PVI documentation
+            LinkDescriptor: eg. "EV=eds" or {"EV":"eds"}
         '''
         parentName = re.findall('(\\S+)',str(parent.name))[0]+'/' if parent else ''
         self._name = f'{parentName}{name}'        
@@ -57,17 +60,21 @@ class PviObject():
             else: # pLC object name is not given so derive it from user assigned name
                 self._name = f'{parentName}{self._userName}'
         self._linkID = 0
-        self._linkDescriptor = '' # empty string set defaults
+        self._linkDescriptor = {'EV':'ed'}
         if objType == T_POBJ_TYPE.POBJ_CPU or objType == T_POBJ_TYPE.POBJ_MODULE:
-            self._linkDescriptor = str(objectDescriptor.get('EV', 'EV=ep')) # need this for downloading proceeding info
-        else:
-            ld = str(objectDescriptor.get('EV', '-'))
-            if ld != '-': # EV is given
-                self._linkDescriptor = 'EV=' + ld
-        try:
-            del objectDescriptor['EV']  # EV must not occur in object descriptor 
-        except KeyError:
-            pass     
+            self._linkDescriptor.update({ 'EV' : 'ep' }) # need this for downloading proceeding info
+
+        # pick the link descriptor if given
+        if 'LinkDescriptor' in objectDescriptor:
+            cn = str(objectDescriptor['LinkDescriptor'])
+            try: # try if link descriptor is given as dict
+                ld = ast.literal_eval(cn)
+                for key, value in ld.items:
+                    self._linkDescriptor.update({str.upper(key) : value})              
+            except SyntaxError: # otherwise it is given as str            
+                self._linkDescriptor.update( dictFromParameterPairString(cn))
+            del objectDescriptor['LinkDescriptor']  # 'LinkDescriptor' must not occur in object descriptor 
+
         self._objectDescriptor = objectDescriptor
 
         self._type = objType
@@ -175,7 +182,7 @@ class PviObject():
         self._result = PviRead( self._linkID, POBJ_ACC_EVMASK , None, 0, byref(s), sizeof(s) )
         if self._result == 0:
             s = str(s, 'ascii')
-            self._linkDescriptor = 'Ev=' + s
+            self._linkDescriptor.update( {'EV': str(s)})
             return(s)
         else:
             raise PviError(self._result, self)         
@@ -186,7 +193,7 @@ class PviObject():
 
         self._result = PviWrite( self._linkID, POBJ_ACC_EVMASK, byref(s), sizeof(s), None, 0 ) 
         if self._result == 0:
-            self._linkDescriptor = str(s)
+            self._linkDescriptor.update( {'EV': str(s)})
         else:
             raise PviError(self._result, self)      
 
@@ -316,8 +323,11 @@ class PviObject():
             descriptor_items += [f'{key}={quote}{value}{quote}']
         descr = ' '.join(descriptor_items) 
         linkID = DWORD(0)
+        ld = ''
+        for key, value in self._linkDescriptor.items():
+            ld += f'{key}={value} '
         self._result = PviCreate( byref(linkID), bytes(self._name, 'ascii'),
-            self._type, bytes(descr, 'ascii'), PVI_HMSG_NIL, SET_PVIFUNCTION, 0, self._linkDescriptor.encode())
+            self._type, bytes(descr, 'ascii'), PVI_HMSG_NIL, SET_PVIFUNCTION, 0, ld.encode())
         if self._result == 0: # object creation successful
             self._linkID = linkID.value
             # if self._type == T_POBJ_TYPE.POBJ_PVAR: # read variable's data type

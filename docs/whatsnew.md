@@ -1,6 +1,7 @@
 # Version history
 
 *V1.2.0*
+- Object: the objectDescriptor can now contain a field 'LinkDescriptor'
 - add Object.evmask to change link descriptor event mask
 - Variable.valueChanged now accepts a callback with signature ( value, Object )
 - new Object: new Member userName.
