@@ -228,6 +228,34 @@ class PviObject():
 
 
     @property
+    def userTag(self) -> str:
+        '''
+        user tag
+
+        Typical usage example:
+        ```
+        temperature = Variable( task1, name='gHeating.status.actTemp', UT="actual water temperature" )        
+        ```
+        '''
+        s = create_string_buffer(b'\000' * 4096)   
+        self._result = PviRead( self._linkID, POBJ_ACC_USERTAG , None, 0, byref(s), sizeof(s) )
+        if self._result == 0:
+            return str(s, 'ascii').rstrip('\x00')
+        else:
+            raise PviError(self._result, self)  
+
+    @userTag.setter
+    def userTag(self, tag : str ):
+        '''
+        user tag
+        '''
+        s = create_string_buffer(tag.encode('ascii'))
+        self._result = PviWrite( self._linkID, POBJ_ACC_USERTAG, byref(s), sizeof(s), None, 0 ) 
+        if self._result:
+            raise PviError(self._result, self)  
+
+
+    @property
     def type(self) -> T_POBJ_TYPE:
         '''
         object type 
