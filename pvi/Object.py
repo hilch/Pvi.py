@@ -197,6 +197,36 @@ class PviObject():
         else:
             raise PviError(self._result, self)      
 
+
+    @property
+    def hysteresis(self) -> float:
+        '''
+        event hysteresis
+
+        Typical usage example:
+        ```
+        temperature = Variable( task1, name='gHeating.status.actTemp', HY = 5.0, LinkDescriptor="LT=prc" )        
+        ```
+        '''
+        s = create_string_buffer(b'\000' * 10)   
+        self._result = PviRead( self._linkID, POBJ_ACC_HYSTERESE , None, 0, byref(s), sizeof(s) )
+        if self._result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+            return float(s)
+        else:
+            raise PviError(self._result, self)  
+
+    @hysteresis.setter
+    def hysteresis(self, h : float ):
+        '''
+        event hysteresis
+        '''
+        s = create_string_buffer(str(h).encode('ascii'))
+        self._result = PviWrite( self._linkID, POBJ_ACC_HYSTERESE, byref(s), sizeof(s), None, 0 ) 
+        if self._result:
+            raise PviError(self._result, self)  
+
+
     @property
     def type(self) -> T_POBJ_TYPE:
         '''
@@ -403,7 +433,7 @@ class PviObject():
         st = dict()        
         if self._result == 0:
             s = str(s, 'ascii').rstrip('\x00')
-            st.update( dictFromParameterPairString(cn))
+            st.update( dictFromParameterPairString(s))
         else:
             raise PviError(self._result, self)  
         return st    
