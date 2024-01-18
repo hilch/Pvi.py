@@ -5,6 +5,7 @@
 - add Object.evmask to change link descriptor event mask
 - add Object.hysteresis to read/write event hysteresis
 - add Object.userTag to read/write usertag string
+- add Object.refresh to read/write cyclic refresh time
 - Variable.valueChanged now accepts a callback with signature ( value, Object )
 - new Object: new Member userName.
 - Variable/Task/Module: use name as userName if 'CD' is used for defining plc object
