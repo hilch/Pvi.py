@@ -239,6 +239,7 @@ class Variable(PviObject):
         t = c_int32(0)
         self._result = PviRead( self._linkID, POBJ_ACC_REFRESH , None, 0, byref(t), sizeof(t) )
         if self._result == 0:
+            self._objectDescriptor.update({'RF' : t.value }) # type: ignore
             return t.value
         else:
             raise PviError(self._result, self)  
@@ -251,7 +252,8 @@ class Variable(PviObject):
         t = c_int32(time)
         self._result = PviWrite( self._linkID, POBJ_ACC_REFRESH, byref(t), sizeof(t), None, 0 ) 
         if self._result:
-            raise PviError(self._result, self)  
+            raise PviError(self._result, self) 
+        self._objectDescriptor.update({'RF' : time }) # type: ignore 
 
 
     @property
@@ -268,6 +270,7 @@ class Variable(PviObject):
         self._result = PviRead( self._linkID, POBJ_ACC_HYSTERESE , None, 0, byref(s), sizeof(s) )
         if self._result == 0:
             s = str(s, 'ascii').rstrip('\x00')
+            self._objectDescriptor.update({'HY' : s }) # type: ignore            
             return float(s)
         else:
             raise PviError(self._result, self)  
@@ -281,3 +284,4 @@ class Variable(PviObject):
         self._result = PviWrite( self._linkID, POBJ_ACC_HYSTERESE, byref(s), sizeof(s), None, 0 ) 
         if self._result:
             raise PviError(self._result, self)  
+        self._objectDescriptor.update({'HY' : h }) # type: ignore                    

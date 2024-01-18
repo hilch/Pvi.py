@@ -211,7 +211,9 @@ class PviObject():
         s = create_string_buffer(b'\000' * 4096)   
         self._result = PviRead( self._linkID, POBJ_ACC_USERTAG , None, 0, byref(s), sizeof(s) )
         if self._result == 0:
-            return str(s, 'ascii').rstrip('\x00')
+            s = str(s, 'ascii').rstrip('\x00')
+            self._objectDescriptor.update({ 'UT': s}) # type: ignore
+            return s            
         else:
             raise PviError(self._result, self)  
 
@@ -224,7 +226,7 @@ class PviObject():
         self._result = PviWrite( self._linkID, POBJ_ACC_USERTAG, byref(s), sizeof(s), None, 0 ) 
         if self._result:
             raise PviError(self._result, self)  
-
+        self._objectDescriptor.update({ 'UT': tag}) # type: ignore
 
     @property
     def type(self) -> T_POBJ_TYPE:
