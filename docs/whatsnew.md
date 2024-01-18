@@ -3,11 +3,11 @@
 *V1.2.0*
 - Object: the objectDescriptor can now contain a field 'LinkDescriptor'
 - add Object.evmask to change link descriptor event mask
-- add Object.hysteresis to read/write event hysteresis
 - add Object.userTag to read/write usertag string
-- add Object.refresh to read/write cyclic refresh time
+- add Object.userName which returns the user given object name
+- add Variable.hysteresis to read/write event hysteresis
+- add Variable.refresh to read/write cyclic refresh time
 - Variable.valueChanged now accepts a callback with signature ( value, Object )
-- new Object: new Member userName.
 - Variable/Task/Module: use name as userName if 'CD' is used for defining plc object
 - fix: Variable/Task/Module c'tor: content of 'CD' was overwritten with 'name'
 

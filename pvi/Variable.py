@@ -21,7 +21,7 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from inspect import signature
-from ctypes import create_string_buffer, sizeof, byref
+from ctypes import create_string_buffer, sizeof, byref, c_int32
 from typing import Any
 from .include import *
 from .Error import PviError
@@ -194,3 +194,58 @@ class Variable(PviObject):
             t = self._variableTypeDescription.vt.value
         return t
 
+    @property
+    def refresh(self) -> int:
+        '''
+        refresh time [ms]
+
+        Typical usage example:
+        ```
+        temperature = Variable( task1, name='gHeating.status.actTemp', RF = 2000 )      
+        ```
+        '''
+        t = c_int32(0)
+        self._result = PviRead( self._linkID, POBJ_ACC_REFRESH , None, 0, byref(t), sizeof(t) )
+        if self._result == 0:
+            return t.value
+        else:
+            raise PviError(self._result, self)  
+
+    @refresh.setter
+    def refresh(self, time : int ):
+        '''
+        refresh time [ms]
+        '''
+        t = c_int32(time)
+        self._result = PviWrite( self._linkID, POBJ_ACC_REFRESH, byref(t), sizeof(t), None, 0 ) 
+        if self._result:
+            raise PviError(self._result, self)  
+
+
+    @property
+    def hysteresis(self) -> float:
+        '''
+        event hysteresis
+
+        Typical usage example:
+        ```
+        temperature = Variable( task1, name='gHeating.status.actTemp', HY = 5.0, LinkDescriptor="LT=prc" )        
+        ```
+        '''
+        s = create_string_buffer(b'\000' * 10)   
+        self._result = PviRead( self._linkID, POBJ_ACC_HYSTERESE , None, 0, byref(s), sizeof(s) )
+        if self._result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+            return float(s)
+        else:
+            raise PviError(self._result, self)  
+
+    @hysteresis.setter
+    def hysteresis(self, h : float ):
+        '''
+        event hysteresis
+        '''
+        s = create_string_buffer(str(h).encode('ascii'))
+        self._result = PviWrite( self._linkID, POBJ_ACC_HYSTERESE, byref(s), sizeof(s), None, 0 ) 
+        if self._result:
+            raise PviError(self._result, self)  
