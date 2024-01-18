@@ -7,6 +7,7 @@
 - add Object.userName which returns the user given object name
 - add Variable.hysteresis to read/write event hysteresis
 - add Variable.refresh to read/write cyclic refresh time
+- add Variable.access to read/write access information
 - Variable.valueChanged now accepts a callback with signature ( value, Object )
 - Variable/Task/Module: use name as userName if 'CD' is used for defining plc object
 - fix: Variable/Task/Module c'tor: content of 'CD' was overwritten with 'name'

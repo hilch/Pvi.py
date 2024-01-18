@@ -27,7 +27,7 @@ from .include import *
 from .Error import PviError
 from .Object import PviObject
 from .VariableTypeDescription import VariableTypeDescription
-
+from .Helpers import dictFromParameterPairString
 
 
 class Variable(PviObject):
@@ -193,6 +193,38 @@ class Variable(PviObject):
         else:
             t = self._variableTypeDescription.vt.value
         return t
+
+    @property
+    def access(self) -> dict:
+        '''
+        access
+        Typical usage example:
+        ```
+        temperature = Variable( task1, name='gHeating.status.actTemp', AT = 'r' )        
+        ```
+ 
+        '''
+        s = create_string_buffer(b'\000' * 256)   
+        self._result = PviRead( self._linkID, POBJ_ACC_TYPE , None, 0, byref(s), sizeof(s) )
+        if self._result == 0:
+            ret = dict()
+            ret.update( dictFromParameterPairString(str(s, 'ascii').rstrip('\x00')))
+            self._objectDescriptor.update(ret)
+            return ret
+        else:
+            raise PviError(self._result, self)  
+
+    @access.setter
+    def access(self, a : str ):
+        '''
+        access
+        '''
+        s = create_string_buffer(a.encode('ascii'))
+        self._result = PviWrite( self._linkID, POBJ_ACC_TYPE, byref(s), sizeof(s), None, 0 ) 
+        if self._result:
+            raise PviError(self._result, self)  
+
+
 
     @property
     def refresh(self) -> int:
