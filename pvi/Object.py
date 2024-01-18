@@ -403,11 +403,7 @@ class PviObject():
         st = dict()        
         if self._result == 0:
             s = str(s, 'ascii').rstrip('\x00')
-            matches = PviObject.__patternParameterPairs.findall(s)
-            if matches:
-                for m in matches: 
-                    token = m.split("=")
-                    st.update( {token[0]:token[1]})
+            st.update( dictFromParameterPairString(cn))
         else:
             raise PviError(self._result, self)  
         return st    
