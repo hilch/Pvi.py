@@ -27,6 +27,7 @@ from .Error import PviError
 from .Object import PviObject
 import datetime
 from time import sleep
+from .Helpers import debuglog
 
 class Connection():
     '''
@@ -51,8 +52,6 @@ class Connection():
 
         Args:
             kwargs:
-                debug : True = verbose messages for debugging
-
                 timeout : timeout in [s] to PVI manager instance
 
                 IP : ip address or host name for remote connection
@@ -65,7 +64,6 @@ class Connection():
         self._eventLoopIsRunning = False
         self._startTime = datetime.datetime.now()
         self._pviTrialTimeCheck = datetime.timedelta(seconds=timeout +1)
-        self._debug = kwargs.get('debug', False)
         self._objectsArranged = False
         self._pviObjects = []
         self._rootObject = PviObject(None, T_POBJ_TYPE.POBJ_PVI, '@Pvi')
@@ -80,9 +78,10 @@ class Connection():
             initParameter = initParameter + 'PN=' + str(kwargs['PN']) + ' '
         if 'COMT' in kwargs:
             initParameter = initParameter + 'COMT=' + str(kwargs['COMT']) + ' '
-            
-
+           
         self._result = PviInitialize( timeout, 0, initParameter, None )
+        debuglog(f'PviInitialize( {timeout}, 0, "{initParameter}", NULL)')
+
         if self._result == 0:
             # set global events
             for m in (POBJ_EVENT_PVI_CONNECT, POBJ_EVENT_PVI_DISCONN, POBJ_EVENT_PVI_ARRANGE):
@@ -98,8 +97,6 @@ class Connection():
 
     # ----------------------------------------------------------------------------------
     def __del__(self):
-        if self._debug:
-            print("PviDeinitialize")
         PviDeinitialize()
 
     # ----------------------------------------------------------------------------------
@@ -184,8 +181,7 @@ class Connection():
         """
         handle PVI connect event
         """
-        if self._debug:
-            print("POBJ_EVENT_PVI_CONNECT")
+        debuglog("POBJ_EVENT_PVI_CONNECT")
         self._result = PviReadResponse( wParam, None, 0 )     
 
     # ----------------------------------------------------------------------------------
@@ -206,17 +202,12 @@ class Connection():
         self._pviTrialTimeCheck = None
 
         self._result = PviReadResponse( wParam, None, 0 )                
-        if self._debug:
-            print("POBJ_EVENT_PVI_ARRANGE")
+        debuglog("POBJ_EVENT_PVI_ARRANGE")
 
         # create and link objects
         for po in self._pviObjects:
             po._createAndLink(self)
         self._objectsArranged = True
-
-        if self._debug:
-            license = self.license            
-            print(f'PVI license: {license[0]} - running on {license[1]}' ) 
 
     # ----------------------------------------------------------------------------------
     def _eventOther( self, wParam, responseInfo ):
@@ -249,10 +240,9 @@ class Connection():
             responseInfo = T_RESPONSE_INFO()
             self._result = PviGetResponseInfo( wParam, None, byref(dataLen), byref(responseInfo), sizeof(responseInfo) )
 
-            if self._debug:
-                if responseInfo.ErrCode != 0:
-                    po = self.findObjectByLinkID(responseInfo.LinkID)
-                    print(f'{po.name} : nMode = {responseInfo.nMode}, nType = {responseInfo.nType}, ErrCode = {responseInfo.ErrCode}')
+            # if responseInfo.ErrCode != 0:
+            #     po = self.findObjectByLinkID(responseInfo.LinkID)
+            #     print(f'{po.name} : nMode = {responseInfo.nMode}, nType = {responseInfo.nType}, ErrCode = {responseInfo.ErrCode}')
 
             if responseInfo.nType == POBJ_EVENT_PVI_CONNECT:
                 self._eventPviConnect( wParam, responseInfo )
@@ -311,16 +301,14 @@ class Connection():
             elif responseInfo.nType == POBJ_EVENT_ERROR:
                 po = self._linkIDs.get(responseInfo.LinkID, None )
                 if po:
-                    if self._debug and responseInfo.ErrCode != 0:
-                        print( f'{repr(po)}: error {responseInfo.ErrCode}')
+                    debuglog( f'{repr(po)}: error {responseInfo.ErrCode}')
                     po._eventError( wParam, responseInfo )
                 else:
                     raise ValueError("linkID not found !")
             else:
                 self._eventOther( wParam, responseInfo )
-                if self._debug:
-                    po = self.findObjectByLinkID(responseInfo.LinkID)
-                    print(f'{po.name} : nMode = {responseInfo.nMode}, nType = {responseInfo.nType}, ErrCode = {responseInfo.ErrCode}')                
+                # po = self.findObjectByLinkID(responseInfo.LinkID)
+                # print(f'{po.name} : nMode = {responseInfo.nMode}, nType = {responseInfo.nType}, ErrCode = {responseInfo.ErrCode}')                
         
         if self._pviTrialTimeCheck:
             if datetime.datetime.now() - self._startTime > self._pviTrialTimeCheck:

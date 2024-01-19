@@ -21,8 +21,11 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import re
+import logging
+import inspect
 
 __patternParameterPairs = re.compile(r"\s*([A-Za-z]{2}=\w*)\s*")
+__logger = logging.getLogger("pvipy")
 
 def dictFromParameterPairString( s : str ) -> dict:
     '''
@@ -41,3 +44,11 @@ def dictFromParameterPairString( s : str ) -> dict:
             token = m.split("=")
             result.update( {str.upper(token[0]):token[1]})      
     return result
+
+
+def debuglog(message):
+    stack = inspect.stack()
+    the_class = stack[1][0].f_locals["self"].__class__.__name__
+    the_method = stack[1][0].f_code.co_name
+    __logger.debug( f' {the_class}.{the_method} -> {message}')
+

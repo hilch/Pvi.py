@@ -27,9 +27,10 @@ from typing import Callable, Union
 import re
 import ast
 import inspect
+import logging
 from .include import *
 from .Error import PviError
-from .Helpers import dictFromParameterPairString
+from .Helpers import dictFromParameterPairString, debuglog
 
 
 
@@ -47,6 +48,7 @@ class PviObject():
             objectDescriptor: e.g. AT=rwe, CD="/RO=View::TempValue" see PVI documentation
             LinkDescriptor: eg. "EV=eds" or {"EV":"eds"}
         '''
+        self._logger = logging.getLogger("pvipy")
         parentName = re.findall('(\\S+)',str(parent.name))[0]+'/' if parent else ''
         self._name = f'{parentName}{name}'        
         self._userName = name
@@ -81,12 +83,11 @@ class PviObject():
         self._result = int(0)      
         self._pviError = int(0)
         self._errorChanged = None
-        self._debug = False
         self._parent = parent
+        debuglog(f'{self._objectDescriptor} - {self._linkDescriptor}')
         if parent: # all objects but '@Pvi' have a parent
             self._connection = parent._connection # type: ignore
             self._connection.link(self) 
-            self._debug = self._connection._debug
             
     def __hash__(self):
         return hash( (self._name, self._type) )
@@ -359,13 +360,13 @@ class PviObject():
             ld += f'{key}={value} '
         self._result = PviCreate( byref(linkID), bytes(self._name, 'ascii'),
             self._type, bytes(descr, 'ascii'), PVI_HMSG_NIL, SET_PVIFUNCTION, 0, ld.encode())
+        debuglog(f'PviCreate({self.name}, { T_POBJ_TYPE(self._type)  }, {self._objectDescriptor}) = {self._result}, linkID={linkID.value}')          
         if self._result == 0: # object creation successful
             self._linkID = linkID.value
             # if self._type == T_POBJ_TYPE.POBJ_PVAR: # read variable's data type
             #     PviReadRequest( self._linkID, POBJ_ACC_TYPE, PVI_HMSG_NIL, SET_PVIFUNCTION, 0 )
-            connection._linkIDs[self._linkID] = self # store object for backward reference  
+            connection._linkIDs[self._linkID] = self # store object for backward reference
         else:
-            print( f"PviCreate {self.name} = {self._result}")
             raise PviError(self._result, self)
         return self._result                
 

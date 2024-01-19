@@ -22,7 +22,8 @@
 
 
 from typing import Any
-
+import logging
+from .Helpers import debuglog
 
 class PviError(Exception):
     '''exception class representing a PVI error
@@ -1708,7 +1709,7 @@ class PviError(Exception):
         '''
         message = self._messages.get(error, "") 
         message += "\n( " + repr(source) + " )" if source else ""
-           
+        debuglog(message)  
         super().__init__( f"\n\nPvi-Error {error} : {message}" )
 
 if __name__ == '__main__':
