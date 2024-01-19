@@ -17,6 +17,7 @@ nav:
       - General: tutorial/general.md
       - First Steps With ANSL: tutorial/simple1.md
       - Some More Functionality: tutorial/simple2.md
+      - In Python's World: tutorial/simple4.md
       - Using INA2000.py: tutorial/simple3.md
   - PVI Objects: 
       - General: objects/general.md
