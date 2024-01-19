@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../simple1/">
+        <link rel="prev" href="../simple2/">
       
       
-        <link rel="next" href="../simple4/">
+        <link rel="next" href="../simple3/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>Some More Functionality - Pvi.py Docs</title>
+        <title>In Python's World - Pvi.py Docs</title>
       
     
     
@@ -109,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Some More Functionality
+              In Python's World
             
           </span>
         </div>
@@ -258,6 +258,26 @@
                 
   
   
+  
+    <li class="md-nav__item">
+      <a href="../simple2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Some More Functionality
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -271,7 +291,7 @@
           
   
   <span class="md-ellipsis">
-    Some More Functionality
+    In Python's World
   </span>
   
 
@@ -282,7 +302,7 @@
         
   
   <span class="md-ellipsis">
-    Some More Functionality
+    In Python's World
   </span>
   
 
@@ -319,26 +339,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../simple4/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    In Python's World
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -1195,52 +1195,87 @@
                   
 
 
-  <h1>Some More Functionality</h1>
+  <h1>In Python's World</h1>
 
+<p>once you have the process data in the Python world, you can use other ingenious libraries to get even more functionality out of it. </p>
+<p>In this case, we will plot the temperature curve with <a href="https://matplotlib.org/">matplotlib</a>.</p>
+<p>In order to use matplotlib, you must first install it. This can be done as usual via pip</p>
+<pre><code>pip install matplotlib
+</code></pre>
+<p>There are some <a href="https://matplotlib.org/stable/users/explain/quick_start.html#quick-start">great tutorials</a> on their web page how to start.</p>
 <h2 id="extend-the-script">Extend the script</h2>
-<p>Download <a href="https://github.com/hilch/Pvi.py/tree/main/examples/simple2.py">simple2.py</a> (ANSL)
-This simple example just registers a variable for reading and another for writing. In fact we switch on the 'coffee machine' and watch its temperature ...</p>
-<p>Not much different compared to 'simple1.py'.
-We add a variable to show how to write into it.
-Because it is so beautifully illustrative, we will now switch the coffee machine on and off.</p>
-<p>As above we need an associated PVI variable object:</p>
-<pre><code>switch = Variable( task1, 'gMainLogic.cmd.switchOnOff' )
+<p>Download <a href="https://github.com/hilch/Pvi.py/tree/main/examples/simple4.py">simple4.py</a> (ANSL)</p>
+<p>First we import the plot routines from matplotlib with 'plt' as alias.
+We also need some time functions and will get them from builtin datetime library.</p>
+<pre><code>import matplotlib.pyplot as plt
+import datetime
 </code></pre>
-<p>Since we've no HMI (human machine interface) for the coffee client the 'switch' is operated by script watching the actual temperature.
-For this we use a state machine running inside a callback function:</p>
-<pre><code>def checkTemperature( init : bool ):
-    global warmUp, coolDown
-    if temperature.readable and switch.writable:
-        if temperature.value &lt; 25 and not warmUp and not coolDown:
-            switch.value = 1 # switch on machine
-            warmUp = True
-            coolDown = False
-            print('warming up...')
-        elif temperature.value &gt; 70 and warmUp:
-            warmUp = False
-            coolDown = True
-            switch.value = False # switch off
-            print('\ncooling down...')        
-        if coolDown and not warmUp and temperature.value &lt; 25:
-            print(&quot;\nit's cool guys !&quot;)
-            pviConnection.stop() # exit the loop
+<p>Then let's start some list for holding the data to be traced</p>
+<pre><code>trace = {
+    'time' : [0.0],
+    'temp' : [0.0],
+    'switch' : [0]
+}
 </code></pre>
-<p>Then we start the PVI connection by calling .start() with this callback function as argument:</p>
-<pre><code>pviConnection.start( checkTemperature )
+<p>We now now save the starting time of the script since we would like to start with 0 seconds in the plot.</p>
+<pre><code>startTime = datetime.datetime.now()
 </code></pre>
+<p>Then we collect the error events for our two most important objects in just one callback function (in the hope that it will never be called).</p>
+<pre><code>def errorChanged( error : int ):
+
+    if error != 0:
+        raise PviError(error )
+
+cpu.errorChanged = errorChanged
+temperature.errorChanged = errorChanged
+</code></pre>
+<p>Now we need a function that appends all new process values to our lists. 
+The timestamp is always converted to the start time of the script.</p>
+<pre><code>def temperatureChanged( value : float ):
+    t = datetime.datetime.now() - startTime
+
+    print(f'\rTemperature = {round(value,1)}', end=&quot;&quot;)
+    trace['time'].append( t.seconds + t.microseconds / 1e6 )
+    trace['temp'].append( value )
+    trace['switch'].append( switch.value )
+</code></pre>
+<p>This new callback function must now be reconnected to the temperature variable. 
+We have of course removed the previous simple lambda expression at the beginning of the script.</p>
+<pre><code>temperature.valueChanged = temperatureChanged
+</code></pre>
+<p>When the coffee machine has cooled down again, we display the temperature curve in a separate window.</p>
+<p>To do this, we define two subplots, label the axes and transfer the X/Y values for each of these axes.</p>
+<pre><code>    plt.subplot(2,1,1)
+    plt.plot( trace['time'], trace['switch'] )
+    plt.xlabel(&quot;time [s]&quot;)
+    plt.ylabel(&quot;switch&quot;)
+
+    plt.subplot(2,1,2)
+    plt.plot( trace['time'], trace['temp'] )
+    plt.xlabel(&quot;time [s]&quot;)
+    plt.ylabel(&quot;water temperature [°C]&quot;)
+    plt.show()
+</code></pre>
+<p>That's it.</p>
 <h2 id="test">Test</h2>
 <p>Open the console (e.g. cmd)
 Starting the script by</p>
-<pre><code>py simple2.py
+<pre><code>py simple4.py
 </code></pre>
 <p>lets the script run for a few seconds and will end in a view like this:</p>
-<pre><code>Temperature = 20.0warming up...
-Temperature = 69.704475402832036
+<pre><code>Temperature = 20.0
+warming up...
+
+Temperature = 69.5
 cooling down...
-Temperature = 25.024797439575195
+
+Temperature = 25.0
 it's cool guys !
-Temperature = 24.99532699584961
 </code></pre>
+<p>After the run a new window pops up and shows the traces:</p>
+<p><img alt="matplotlib" src="../matplotlib.png" /></p>
+<p>Small restriction: You should also bear in mind that PVI does not provide real-time data.</p>
+<p>If this is really needed, then the values must be recorded on the PLC.</p>
 
 
 
