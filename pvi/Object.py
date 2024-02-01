@@ -407,6 +407,23 @@ class PviObject():
 
 
     @property       
+    def version(self) ->str:
+        """
+        PviObject.version
+        read the object's version
+
+        """    
+        s = create_string_buffer(b'\000' * 1024)             
+        self._result = PviRead( self._linkID, POBJ_ACC_VERSION, None, 0, byref(s), sizeof(s) )     
+        if self._result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+        else:
+            raise PviError(self._result, self)  
+        return s    
+
+
+
+    @property       
     def status(self) -> dict:
         """
         PviObject.status
