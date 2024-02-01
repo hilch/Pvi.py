@@ -330,8 +330,13 @@ class Connection():
 
         ```
         pviConnection = Connection()
-          ....
-        pviConnection.doEvents()  
+
+        def runtimeMonitor( init : bool ):
+            if datetime.datetime.now() - startTime > datetime.timedelta(seconds = 10):
+                print("done !")
+                pviConnection.stop() # exit
+
+        pviConnection.start( runtimeMonitor )
         ```
         """
         self._eventLoopIsRunning = True
