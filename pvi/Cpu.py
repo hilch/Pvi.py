@@ -105,20 +105,28 @@ class Cpu(PviObject):
         '''
         executes a warm restart
         '''
-        s = create_string_buffer(b"ST=WarmStart")
-        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
-        if self._result != 0:
-            raise PviError(self._result, self)
+        self.status = "WarmStart"
 
 
     def coldStart(self) -> None:
         '''
         executes a cold restart
         '''        
-        s = create_string_buffer(b"ST=ColdStart")
-        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
-        if self._result != 0:
-            raise PviError(self._result, self)
+        self.status = "ColdStart"
+
+
+    def stopTarget(self) -> None:
+        '''
+        executes a SERV stop
+        '''        
+        self.status = "Reset"
+
+
+    def diagnostics(self) -> None:
+        '''
+        executes a DIAG stop
+        '''        
+        self.status = "Diagnose"
 
 
     def downloadModule(self, data : bytes, **kwargs )->None:
@@ -279,6 +287,17 @@ class Cpu(PviObject):
         runState = { "WarmStart" : "RUN", "ColdStart" : "RUN", "Diagnose" : "DIAG", "Error" : "SERV", "Reset" : "SERV"}.get(st.get("ST", "<unknown>"))
         st.update({"RunState" : runState})
         return st
+
+
+    @status.setter
+    def status(self, status : str ):
+        '''
+        sets the CPU status
+        '''        
+        s = create_string_buffer(b"ST=" + status.encode())
+        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
+        if self._result != 0:
+            raise PviError(self._result, self)
 
 
     @property       
