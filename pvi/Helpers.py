@@ -24,7 +24,7 @@ import re
 import logging
 import inspect
 
-__patternParameterPairs = re.compile(r"\s*([A-Za-z]{2}=\w*)\s*")
+__patternParameterPairs = re.compile(r"\s*([A-Za-z]{2}=\S*)\s*")
 __logger = logging.getLogger("pvipy")
 
 def dictFromParameterPairString( s : str ) -> dict:

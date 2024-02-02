@@ -27,7 +27,7 @@ from ctypes import create_string_buffer, byref, sizeof
 from .include import *
 from .Object import PviObject
 from .Error import PviError
-
+from .Helpers import dictFromParameterPairString
 
 # ----------------------------------------------------------------------------------
 class Cpu(PviObject):
@@ -279,7 +279,29 @@ class Cpu(PviObject):
         runState = { "WarmStart" : "RUN", "ColdStart" : "RUN", "Diagnose" : "DIAG", "Error" : "SERV", "Reset" : "SERV"}.get(st.get("ST", "<unknown>"))
         st.update({"RunState" : runState})
         return st
-        
+
+
+    @property       
+    def cpuInfo(self) -> dict:
+        """
+        Returns:
+            dict with memory information
+
+        example:
+        ```
+        ```
+
+        """    
+        s = create_string_buffer(b'\000' * 1024)             
+        self._result = PviRead( self._linkID, POBJ_ACC_CPU_INFO  , None, 0, byref(s), sizeof(s) )     
+        if self._result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+            ret = dict()
+            ret.update( dictFromParameterPairString(s)  )
+            return ret          
+        else:
+            raise PviError(self._result, self)     
+
 
     @property
     def time(self) -> datetime.datetime:
