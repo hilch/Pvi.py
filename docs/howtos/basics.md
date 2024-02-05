@@ -18,3 +18,6 @@ this example shows how to use .stopTarget(), .warmStart and diagnostics()
 ### [task1.py](https://github.com/hilch/Pvi.py/tree/main/examples/task1.py) (ANSL)
 this example just reads out some info from a task
 and shows how to use .start() .stop() .cycle() and .resume()
+
+### [variable1.py](https://github.com/hilch/Pvi.py/tree/main/examples/variable1.py) (ANSL)
+this simple example just sets and reads back some variable info
