@@ -271,8 +271,11 @@ class Variable(PviObject):
         self._result = PviRead( self._linkID, POBJ_ACC_HYSTERESE , None, 0, byref(s), sizeof(s) )
         if self._result == 0:
             s = str(s, 'ascii').rstrip('\x00')
-            self._objectDescriptor.update({'HY' : s }) # type: ignore            
-            return float(s)
+            self._objectDescriptor.update({'HY' : s }) # type: ignore  
+            try:          
+                return float(s)
+            except ValueError:
+                return 0.0
         else:
             raise PviError(self._result, self)  
 
