@@ -54,32 +54,77 @@ class Task(PviObject):
             objectDescriptor.update({'CD':name})
         super().__init__( parent, T_POBJ_TYPE.POBJ_TASK, name, **objectDescriptor)
 
+
+    @property
+    def status(self) -> dict:
+        '''
+        read the task status        
+        '''
+        return super().status
+
+
+    @status.setter
+    def status(self, status : str ):
+        '''
+        sets the task status
+        
+        Args:
+            status: 'Start', 'Stop', 'Resume', 'Cycle(<x<)'
+        '''        
+        s = create_string_buffer(b"ST=" + status.encode())
+        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
+        if self._result != 0:
+            raise PviError(self._result, self)
+
+
     def start(self)->None:
         '''
         start a task
+
+        Returns:
+            True if status was changed
         '''
-        s = create_string_buffer(b"ST=Start")
-        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
-        if self._result != 0:
-            raise PviError(self._result, self)  
+        try:
+            self.status = "Start"
+        except PviError as e:
+            if e.number != 11166:
+                raise e
+
+
+    def cycle(self, numberOfCycles = 1)->None:
+        '''
+        defines cycles for resume
+
+        Args:
+            numberOfCycles: number of single steps
+        '''
+        self.status = f"Cycle({numberOfCycles})"
+
 
     def resume(self)->None:
         '''
         resume a stopped task
+
+        Args:
+            numberOfCycles: number of single steps
         '''
-        s = create_string_buffer(b"ST=Resume")
-        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
-        if self._result != 0:
-            raise PviError(self._result, self)                         
+        try:
+            self.status = "Resume"
+        except PviError as e:
+            if e.number != 11166:
+                raise e
+
 
     def stop(self)->None:
         '''
         stop task
         '''
-        s = create_string_buffer(b"ST=Stop")
-        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
-        if self._result != 0:
-            raise PviError(self._result, self)                  
+        try:
+            self.status = "Stop" 
+        except PviError as e:
+            if e.number != 11166:
+                raise e
+
 
     @property
     def variables(self)-> List[str]:

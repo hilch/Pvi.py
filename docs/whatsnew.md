@@ -7,6 +7,7 @@
 - add Object.userName which returns the user given object name
 - add Object.version
 - add Cpu.stopTarget() and Cpu.diagnostics()
+- add Task.cycle() for single step execution
 - add Variable.hysteresis to read/write event hysteresis
 - add Variable.refresh to read/write cyclic refresh time
 - add Variable.attributes to read/write object attributes
