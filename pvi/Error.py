@@ -27,15 +27,15 @@ from .Helpers import debuglog
 
 class PviError(Exception):
     '''exception class representing a PVI error
-	
+    
     Is internally used but can also be used by application.
-	
+    
     Typical usage example:
-	
+    
     ```
     raise PviError(12009)
     ```   
-	
+    
     '''
     _messages = {   
       4000: 'Error from coding function (_CPinfo)',
@@ -1138,7 +1138,7 @@ class PviError(Exception):
       13077: 'Device in the system does not work (31, ERROR_GEN_FAILURE)',
       13078: 'Invalid flags (1004, ERROR_INVALID_FLAGS)',
       13079: 'Incorrect syntax for file name, directory name or drive name'
-	  		'\n(123, ERROR_INVALID_NAME)',
+              '\n(123, ERROR_INVALID_NAME)',
       13080: 'Invalid function (1, ERROR_INVALID_FUNCTION)',
       13081: 'Access code invalid (12, ERROR_INVALID_ACCESS)',
       13082: 'Invalid handle (6, ERROR_INVALID_HANDLE)',
@@ -1363,17 +1363,17 @@ class PviError(Exception):
             '\nFunction AscToBr() should be used to create BR modules.'
             '\nFunction BrToAsc() should be used to create ASCII modules.',
       14320: 'Internal error:data from the section could not be written'
-	  		'\nThe data from the section could not be written to the BR module.',
+              '\nThe data from the section could not be written to the BR module.',
       14321: 'Internal error:file management error'
-	  		'\nVM file management error the data could not be written.',
+              '\nVM file management error the data could not be written.',
       14322: 'Internal error:more sections could be created'
-	  		'\nNo more sections could be created in the BR module.',
+              '\nNo more sections could be created in the BR module.',
       14323: 'Internal error:BR module could not be completed'
-	  		'\nThe BR module could not be completed in memory.',
+              '\nThe BR module could not be completed in memory.',
       14324: 'Internal error:memory could not be requested'
-	  		'\nVM file management error, memory could not be requested.',
+              '\nVM file management error, memory could not be requested.',
       14325: 'Internal error:Data could not be transferred'
-	  		'\nData could not be transferred from the VM memory to the BR module.',
+              '\nData could not be transferred from the VM memory to the BR module.',
       14326: 'No memory could be requested and reserved.'
              '\nThere is no more free memory in the system (exit and restart Windows,'
              '\ndelete files, check page file, exit programs, etc.).',
@@ -1608,7 +1608,7 @@ class PviError(Exception):
               '\nThe ReadTag and WriteTag functions do not support the initialized VARIANT type.',
       27305: 'Reading and writing multi-dimensional arrays is not supported.'
               '\nReadTag and WriteTag functions do not support multidimensional'
-			  '\narrays of type VARIANT.',
+              '\narrays of type VARIANT.',
       27306: 'Writing and reading arrays with more than 65535 elements is not supported.'
               '\nReadTag and WriteTag functions do not support arrays with'
               '\nmore than 65535 elements in type VARIANT.',
@@ -1702,22 +1702,23 @@ class PviError(Exception):
         '''
         Pvi Error
         raised when a PVI built-in function returns nonzero
-	
-	    Args:
+    
+        Args:
             error : PVI error number
-			source : the source of the error for diagnosis
+            source : the source of the error for diagnosis
         '''
+        self.number = error
         message = self._messages.get(error, "") 
         message += "\n( " + repr(source) + " )" if source else ""
         debuglog(message)  
         super().__init__( f"\n\nPvi-Error {error} : {message}" )
 
 if __name__ == '__main__':
-	# report too long hint textes
-	for key, val in PviError._messages.items():
-		lengths = [len(t) for t in val.split('\n')]
-		maxlength = max(lengths)
-		if maxlength > 80:
-			print(f'PviError._messages[{key}]: text too long ! (Rows:{lengths}')
+    # report too long hint textes
+    for key, val in PviError._messages.items():
+        lengths = [len(t) for t in val.split('\n')]
+        maxlength = max(lengths)
+        if maxlength > 80:
+            print(f'PviError._messages[{key}]: text too long ! (Rows:{lengths}')
 
 

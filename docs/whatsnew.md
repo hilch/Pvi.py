@@ -12,6 +12,7 @@
 - add Variable.attributes to read/write object attributes
 - Variable.valueChanged now accepts a callback with signature ( value, Object )
 - Variable/Task/Module: use name as userName if 'CD' is used for defining plc object
+- add PviError.number
 - fix: Variable/Task/Module c'tor: content of 'CD' was overwritten with 'name'
 - add basic logging
 
