@@ -20,18 +20,17 @@ If AT os omitted AT=rw is used which allows reading and writing.
 
 Example:
 
-```
+```python
 temperature = Variable( task1, 'gHeating.status.actTemp', RF=1000 )
 ```
 
 Get read and write access to PLC variable 'gHeating.status.actTemp' and defines a refresh rate of 1000 ms.
 
-
 ## [INA2000](https://help.br-automation.com/#/en/4/automationnet%2Fpvibase%2Flines%2Flnina2%2Fpvilnina2pvar.htm)
 
 Example:
 
-```
+```python
 temperature = Variable( task1, 'gHeating.status.actTemp', RF=1000  )
 ```
 
@@ -47,11 +46,11 @@ Case sensitive. All names are predefined in the SNMP line.
 see GUID ed28a386-f8af-475e-a114-9e6ba72d00ac for more details.
 
 Example:
-```
+
+```python
 snmpVariable1 = Variable( station, 'ipAddress')
 ```
 
 snmpVariable1 points to the predefined SNMP variable 'ipAddress' which contains the current IP address.
-
 
 Reference: [Variable object](../reference/variable.md)

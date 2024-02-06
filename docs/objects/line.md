@@ -28,9 +28,9 @@ Currently Pvi.py supports LNANSL, LNINA2 and LNSNMP only.
 
 ## [ANSL](https://help.br-automation.com/#/en/4/automationnet/pvibase/lines/lnansl/pvilnansl.htm)
 
-Example: 
+Example:
 
-```
+```python
 from pvi import *
 pviConnection = Connection() # start a Pvi connection
 line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
@@ -40,18 +40,17 @@ line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
 
 Example:
 
-```
+```python
 from pvi import *
 pviConnection = Connection() # start a Pvi connection
 line = Line( pviConnection.root, 'LNINA', CD='LNINA2')
 ```
 
-
 ## [SNMP](https://help.br-automation.com/#/en/4/automationnet/pvibase/lines/lnsnmp/pvilnsnmp.htm)
 
 Example:
 
-```
+```python
 from pvi import *
 pviConnection = Connection() # start a Pvi connection
 line = Line( pviConnection.root, 'LNSNMP', CD='LNSNMP')

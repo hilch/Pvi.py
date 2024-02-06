@@ -11,13 +11,10 @@ The 'Connection' is the parent object of a ['Line'](line.md).
 
 Example:
 
-```
+```python
 from pvi import *
 
 pviConnection = Connection() # start a Pvi connection
 ```
 
-
 Reference: [Connection object](../reference/connection.md)
-
-

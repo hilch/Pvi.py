@@ -37,4 +37,3 @@ At this point, we can either view a previously created snapshot or create a new 
 Now we are able to browse through the entire hierarchical tree of PVI objects and look at each object in detail:
 
 ![snapshot6](snapshot6.png)
-

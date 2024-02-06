@@ -1,1 +1,3 @@
+# Class definition
+
 ::: pvi.Object

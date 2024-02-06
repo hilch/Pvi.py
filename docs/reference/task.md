@@ -1,6 +1,5 @@
 # Class definition
 
-
 ::: pvi.Task
     options:
         inherited_members:
