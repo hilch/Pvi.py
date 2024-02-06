@@ -47,7 +47,7 @@ class Connection():
     ```
     '''
     # ----------------------------------------------------------------------------------
-    def __init__(self, **kwargs : Union[str,int] ):
+    def __init__(self, **kwargs : Union[str,int, float] ):
         """Initializes the connection to PVI manager
 
         Args:

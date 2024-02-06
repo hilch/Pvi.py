@@ -22,7 +22,7 @@
 
 from inspect import signature
 from ctypes import create_string_buffer, sizeof, byref, c_int32
-from typing import Any
+from typing import Union, Any
 from .include import *
 from .Error import PviError
 from .Object import PviObject
@@ -39,7 +39,7 @@ class Variable(PviObject):
     temperature = Variable( task1, 'gHeating.status.actTemp' )  
     ```        
     '''
-    def __init__( self, parent : PviObject, name : str, **objectDescriptor  ):
+    def __init__( self, parent : PviObject, name : str, **objectDescriptor: Union[str,int, float] ):
         '''
         Args:
             parent : the task object (or the CPU object in case of a global variable)
@@ -74,7 +74,7 @@ class Variable(PviObject):
         signals if this variable can be written
         '''
         if self._variableTypeDescription.vt != PvType.UNKNOWN:
-            access = self._objectDescriptor.get('AT', '')  
+            access = str(self._objectDescriptor.get('AT', ''))
             return 'w' in access # data type already read and write access ?
         else:
             return False
@@ -85,7 +85,7 @@ class Variable(PviObject):
         signals if this variable can be read
         '''
         if self._variableTypeDescription.vt != PvType.UNKNOWN:
-            access = self._objectDescriptor.get('AT', '')
+            access = str(self._objectDescriptor.get('AT', ''))
             return 'r' in access # data type already read and read access ?
         else:
             return False
@@ -131,7 +131,7 @@ class Variable(PviObject):
 
             
     @property
-    def value(self) -> Any:
+    def value(self) ->Any:
         '''
         read value
         '''

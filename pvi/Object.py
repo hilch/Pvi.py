@@ -21,7 +21,7 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from __future__ import annotations
-from typing import Dict, Any
+from typing import Union
 from ctypes import create_string_buffer, byref, sizeof
 from typing import Callable, Union
 import re
@@ -39,14 +39,14 @@ class PviObject():
 
     '''
 
-    def __init__(self, parent : Union[PviObject,None], objType : T_POBJ_TYPE, name : str, **objectDescriptor : Dict[str, Any]):
+    def __init__(self, parent : Union[PviObject,None], objType : T_POBJ_TYPE, name : str, **objectDescriptor : Union[str,int, float]):
         '''
         Args: 
             parent: the parent Pvi Object
             objType:   Pvi Object Type
             name: name of object in PVI hierarchy
-            objectDescriptor: e.g. AT=rwe, CD="/RO=View::TempValue" see PVI documentation
-            LinkDescriptor: eg. "EV=eds" or {"EV":"eds"}
+            objectDescriptor: e.g. AT=rwe, CD="/RO=View::TempValue" see PVI documentation 
+                                or link descriptor e.g. LinkDescriptor="EV=eds" or Linkdescriptor={"EV":"eds"}
         '''
         self._logger = logging.getLogger("pvipy")
         parentName = re.findall('(\\S+)',str(parent.name))[0]+'/' if parent else ''

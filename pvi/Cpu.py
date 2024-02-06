@@ -22,7 +22,7 @@
 
 import datetime
 import inspect
-from typing import List
+from typing import List, Union
 from ctypes import create_string_buffer, byref, sizeof
 from .include import *
 from .Object import PviObject
@@ -43,7 +43,7 @@ class Cpu(PviObject):
     task1 = Task( cpu, 'mainlogic')
     ```        
     '''
-    def __init__( self, parent : PviObject, name : str, **objectDescriptor):
+    def __init__( self, parent : PviObject, name : str, **objectDescriptor : Union[str,int, float]):
         '''
         Args:
             parent : the device (or station) object  

@@ -20,7 +20,7 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Dict, Any
+from typing import Union, Callable
 import xml.etree.ElementTree as ET
 import re
 import datetime
@@ -42,7 +42,7 @@ class Module(PviObject):
     module = Module( cpu, 'bigmod' )
     ```
     '''
-    def __init__( self, parent : PviObject, name : str, **objectDescriptor):
+    def __init__( self, parent : PviObject, name : str, **objectDescriptor: Union[str,int, float]):
         '''
         Args:
             parent : CPU object
@@ -183,7 +183,7 @@ class Module(PviObject):
             raise PviError(self._result, self)               
 
 
-    def upload(self, **kwargs):
+    def upload(self, **kwargs : Union[str, Callable]):
         '''
         uploadLoggerData 
         loads logger data if module is a logger module else load binary data

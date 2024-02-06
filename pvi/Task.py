@@ -20,7 +20,7 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import List
+from typing import List, Union
 from ctypes import create_string_buffer, byref, sizeof
 from .include import *
 from .Object import PviObject
@@ -39,7 +39,7 @@ class Task(PviObject):
     temperature = Variable( task1, 'gHeating.status.actTemp' )
     ```       
     '''
-    def __init__( self, parent : PviObject, name : str, **objectDescriptor):
+    def __init__( self, parent : PviObject, name : str, **objectDescriptor: Union[str,int, float]):
         '''
         Args:
             parent: CPU object  
@@ -91,7 +91,7 @@ class Task(PviObject):
                 raise e
 
 
-    def cycle(self, numberOfCycles = 1)->None:
+    def cycle(self, numberOfCycles : int = 1)->None:
         '''
         defines cycles for resume
 
@@ -104,9 +104,6 @@ class Task(PviObject):
     def resume(self)->None:
         '''
         resume a stopped task
-
-        Args:
-            numberOfCycles: number of single steps
         '''
         try:
             self.status = "Resume"

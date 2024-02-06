@@ -22,7 +22,6 @@
 
 
 from typing import Any
-import logging
 from .Helpers import debuglog
 
 class PviError(Exception):

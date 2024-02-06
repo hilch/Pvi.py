@@ -20,7 +20,7 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Type
+from typing import Union
 from .include import *
 from .Object import PviObject
 from .Error import PviError
@@ -36,7 +36,7 @@ class Device(PviObject):
         cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
         ```    
     '''
-    def __init__( self, parent : PviObject, name : str, **objectDescriptor):
+    def __init__( self, parent : PviObject, name : str, **objectDescriptor: Union[str,int, float]):
         '''
         Args:
             parent : line object  
