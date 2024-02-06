@@ -21,7 +21,7 @@ class ApplicationWindow(tk.Tk):
 
         self.geometry('320x200')
         self.title('coffee machine') 
-        self.pviLicense = 'unchecked';
+        self.pviLicense = 'unchecked'
 
         # setup widgets
         #self.columnconfigure( index = 0, weight= 1)
