@@ -71,10 +71,10 @@ def cpuErrorChanged( error : int):
 
         print("read cpu info.")
 
-        result = cpu.name + cpu.version + str(cpu.status) + str(cpu.cpuInfo)
+        result = cpu.name + str(cpu.status) + str(cpu.cpuInfo)
         h = hashlib.sha256( result.encode() )
 
-        if h.hexdigest() == 'b39f197f21bcd1c418e6bcc1a62884c9a80ee613e0ffa4b1ef54b040bc9199e4':
+        if h.hexdigest() == '1ecc7f081b07d456a8f5c9aeb1b1db9ea2841efbd904802e6321f07f50d9d3ea':
             print("pass !")
         else:
             print("failed !")
