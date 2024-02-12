@@ -22,12 +22,12 @@
 
 import datetime
 import inspect
-from typing import List
+from typing import List, Union
 from ctypes import create_string_buffer, byref, sizeof
 from .include import *
 from .Object import PviObject
 from .Error import PviError
-
+from .Helpers import dictFromParameterPairString
 
 # ----------------------------------------------------------------------------------
 class Cpu(PviObject):
@@ -43,7 +43,7 @@ class Cpu(PviObject):
     task1 = Task( cpu, 'mainlogic')
     ```        
     '''
-    def __init__( self, parent : PviObject, name : str, **objectDescriptor):
+    def __init__( self, parent : PviObject, name : str, **objectDescriptor : Union[str,int, float]):
         '''
         Args:
             parent : the device (or station) object  
@@ -105,20 +105,28 @@ class Cpu(PviObject):
         '''
         executes a warm restart
         '''
-        s = create_string_buffer(b"ST=WarmStart")
-        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
-        if self._result != 0:
-            raise PviError(self._result, self)
+        self.status = "WarmStart"
 
 
     def coldStart(self) -> None:
         '''
         executes a cold restart
         '''        
-        s = create_string_buffer(b"ST=ColdStart")
-        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
-        if self._result != 0:
-            raise PviError(self._result, self)
+        self.status = "ColdStart"
+
+
+    def stopTarget(self) -> None:
+        '''
+        executes a SERV stop
+        '''        
+        self.status = "Reset"
+
+
+    def diagnostics(self) -> None:
+        '''
+        executes a DIAG stop
+        '''        
+        self.status = "Diagnose"
 
 
     def downloadModule(self, data : bytes, **kwargs )->None:
@@ -279,7 +287,40 @@ class Cpu(PviObject):
         runState = { "WarmStart" : "RUN", "ColdStart" : "RUN", "Diagnose" : "DIAG", "Error" : "SERV", "Reset" : "SERV"}.get(st.get("ST", "<unknown>"))
         st.update({"RunState" : runState})
         return st
-        
+
+
+    @status.setter
+    def status(self, status : str ):
+        '''
+        sets the CPU status
+        '''        
+        s = create_string_buffer(b"ST=" + status.encode())
+        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
+        if self._result != 0:
+            raise PviError(self._result, self)
+
+
+    @property       
+    def cpuInfo(self) -> dict:
+        """
+        Returns:
+            dict with memory information
+
+        example:
+        ```
+        ```
+
+        """    
+        s = create_string_buffer(b'\000' * 1024)             
+        self._result = PviRead( self._linkID, POBJ_ACC_CPU_INFO  , None, 0, byref(s), sizeof(s) )     
+        if self._result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+            ret = dict()
+            ret.update( dictFromParameterPairString(s)  )
+            return ret          
+        else:
+            raise PviError(self._result, self)     
+
 
     @property
     def time(self) -> datetime.datetime:

@@ -21,43 +21,73 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from __future__ import annotations
-from typing import Dict, Any
+from typing import Union
 from ctypes import create_string_buffer, byref, sizeof
-from ctypes import c_uint32, c_int32, c_uint64, c_int64, c_void_p, c_char_p
 from typing import Callable, Union
 import re
+import ast
 import inspect
+import logging
 from .include import *
 from .Error import PviError
+from .Helpers import dictFromParameterPairString, debuglog
+
+
 
 class PviObject():
     '''super class representing a PVI object 
 
     '''
-    __patternParameterPairs = re.compile(r"\s*([A-Z]{2}=\w*)\s*")
 
-    def __init__(self, parent : Union[PviObject,None], objType : T_POBJ_TYPE, name : str, **objectDescriptor : Dict[str, Any]):
+    def __init__(self, parent : Union[PviObject,None], objType : T_POBJ_TYPE, name : str, **objectDescriptor : Union[str,int, float]):
         '''
         Args: 
             parent: the parent Pvi Object
             objType:   Pvi Object Type
             name: name of object in PVI hierarchy
-            objectDescriptor: e.g. AT=rwe, CD="/RO=View::TempValue" see PVI documentation
+            objectDescriptor: e.g. AT=rwe, CD="/RO=View::TempValue" see PVI documentation 
+                                or link descriptor e.g. LinkDescriptor="EV=eds" or Linkdescriptor={"EV":"eds"}
         '''
+        self._logger = logging.getLogger("pvipy")
         parentName = re.findall('(\\S+)',str(parent.name))[0]+'/' if parent else ''
-        self._name = f'{parentName}{name}'
+        self._name = f'{parentName}{name}'        
+        self._userName = name
+        if 'CD' in objectDescriptor and (objType == T_POBJ_TYPE.POBJ_MODULE or objType == T_POBJ_TYPE.POBJ_TASK or objType == T_POBJ_TYPE.POBJ_PVAR):
+            cd = str(objectDescriptor['CD']).lstrip()
+            m = re.match(r"(\/RO\s*=\s*)?(\w[\w\.]*)", cd)
+            if m: # PLC object name is entered in CD
+                ro = m[2]
+                if ro != name:
+                    self._name = f'{parentName}{ro}'                    
+            else: # pLC object name is not given so derive it from user assigned name
+                self._name = f'{parentName}{self._userName}'
         self._linkID = 0
+        self._linkDescriptor = {'EV':'ed'}
+        if objType == T_POBJ_TYPE.POBJ_CPU or objType == T_POBJ_TYPE.POBJ_MODULE:
+            self._linkDescriptor.update({ 'EV' : 'ep' }) # need this for downloading proceeding info
+
+        # pick the link descriptor if given
+        if 'LinkDescriptor' in objectDescriptor:
+            cn = str(objectDescriptor['LinkDescriptor'])
+            try: # try if link descriptor is given as dict
+                ld = ast.literal_eval(cn)
+                for key, value in ld.items:
+                    self._linkDescriptor.update({str.upper(key) : value})              
+            except SyntaxError: # otherwise it is given as str            
+                self._linkDescriptor.update( dictFromParameterPairString(cn))
+            del objectDescriptor['LinkDescriptor']  # 'LinkDescriptor' must not occur in object descriptor 
+
         self._objectDescriptor = objectDescriptor
+
         self._type = objType
         self._result = int(0)      
         self._pviError = int(0)
         self._errorChanged = None
-        self._debug = False
         self._parent = parent
+        debuglog(f'{self._objectDescriptor} - {self._linkDescriptor}')
         if parent: # all objects but '@Pvi' have a parent
             self._connection = parent._connection # type: ignore
             self._connection.link(self) 
-            self._debug = self._connection._debug
             
     def __hash__(self):
         return hash( (self._name, self._type) )
@@ -78,17 +108,20 @@ class PviObject():
 
         example:
         ```
-        temperature = Variable( task1, 'gHeating.status.actTemp' )
-        ...
-        print( "name=", temperature.name)
-        ```
-        results in:
-
-        ```
         name= @Pvi/LNANSL/TCP/myArsim/mainlogic/gHeating.status.actTemp
         ```
         '''
         return self._name
+
+
+    @property
+    def userName(self) -> str:
+        '''
+        user defined object name
+        defaults to .objectName
+        '''
+        return self._userName
+
 
     @property
     def objectName(self) -> str:
@@ -132,6 +165,69 @@ class PviObject():
         '''         
         return self._objectDescriptor
 
+
+    @property
+    def evmask(self) -> str:
+        '''
+        event mask in link descriptor
+
+        "e": Change in error state
+        "d": Data changes
+        "f": Change to the data format 
+        "c": Change to the connection description
+        "p": Progress information about active requests 
+        "s": Status changes
+        "u": Change in the user tag string        
+        '''
+        s = create_string_buffer(b'\000' * 10)   
+        self._result = PviRead( self._linkID, POBJ_ACC_EVMASK , None, 0, byref(s), sizeof(s) )
+        if self._result == 0:
+            s = str(s, 'ascii')
+            self._linkDescriptor.update( {'EV': str(s)})
+            return(s)
+        else:
+            raise PviError(self._result, self)         
+
+    @evmask.setter
+    def evmask(self, mask : str ):
+        s = create_string_buffer(mask.encode())
+
+        self._result = PviWrite( self._linkID, POBJ_ACC_EVMASK, byref(s), sizeof(s), None, 0 ) 
+        if self._result == 0:
+            self._linkDescriptor.update( {'EV': str(s)})
+        else:
+            raise PviError(self._result, self)      
+
+
+    @property
+    def userTag(self) -> str:
+        '''
+        user tag
+
+        Typical usage example:
+        ```
+        temperature = Variable( task1, name='gHeating.status.actTemp', UT="actual water temperature" )        
+        ```
+        '''
+        s = create_string_buffer(b'\000' * 4096)   
+        self._result = PviRead( self._linkID, POBJ_ACC_USERTAG , None, 0, byref(s), sizeof(s) )
+        if self._result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+            self._objectDescriptor.update({ 'UT': s}) # type: ignore
+            return s            
+        else:
+            raise PviError(self._result, self)  
+
+    @userTag.setter
+    def userTag(self, tag : str ):
+        '''
+        user tag
+        '''
+        s = create_string_buffer(tag.encode('ascii'))
+        self._result = PviWrite( self._linkID, POBJ_ACC_USERTAG, byref(s), sizeof(s), None, 0 ) 
+        if self._result:
+            raise PviError(self._result, self)  
+        self._objectDescriptor.update({ 'UT': tag}) # type: ignore
 
     @property
     def type(self) -> T_POBJ_TYPE:
@@ -259,18 +355,18 @@ class PviObject():
             descriptor_items += [f'{key}={quote}{value}{quote}']
         descr = ' '.join(descriptor_items) 
         linkID = DWORD(0)
-        linkDescriptor = None
-        if self._type == T_POBJ_TYPE.POBJ_CPU or self._type == T_POBJ_TYPE.POBJ_MODULE:
-            linkDescriptor = b'EV=ep' # need this for downloading proceeding info
+        ld = ''
+        for key, value in self._linkDescriptor.items():
+            ld += f'{key}={value} '
         self._result = PviCreate( byref(linkID), bytes(self._name, 'ascii'),
-            self._type, bytes(descr, 'ascii'), PVI_HMSG_NIL, SET_PVIFUNCTION, 0, linkDescriptor)
+            self._type, bytes(descr, 'ascii'), PVI_HMSG_NIL, SET_PVIFUNCTION, 0, ld.encode())
+        debuglog(f'PviCreate({self.name}, { T_POBJ_TYPE(self._type)  }, {self._objectDescriptor}) = {self._result}, linkID={linkID.value}')          
         if self._result == 0: # object creation successful
             self._linkID = linkID.value
             # if self._type == T_POBJ_TYPE.POBJ_PVAR: # read variable's data type
             #     PviReadRequest( self._linkID, POBJ_ACC_TYPE, PVI_HMSG_NIL, SET_PVIFUNCTION, 0 )
-            connection._linkIDs[self._linkID] = self # store object for backward reference  
+            connection._linkIDs[self._linkID] = self # store object for backward reference
         else:
-            print( f"PviCreate {self.name} = {self._result}")
             raise PviError(self._result, self)
         return self._result                
 
@@ -311,6 +407,23 @@ class PviObject():
 
 
     @property       
+    def version(self) ->str:
+        """
+        PviObject.version
+        read the object's version
+
+        """    
+        s = create_string_buffer(b'\000' * 1024)             
+        self._result = PviRead( self._linkID, POBJ_ACC_VERSION, None, 0, byref(s), sizeof(s) )     
+        if self._result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+        else:
+            raise PviError(self._result, self)  
+        return s    
+
+
+
+    @property       
     def status(self) -> dict:
         """
         PviObject.status
@@ -339,11 +452,7 @@ class PviObject():
         st = dict()        
         if self._result == 0:
             s = str(s, 'ascii').rstrip('\x00')
-            matches = PviObject.__patternParameterPairs.findall(s)
-            if matches:
-                for m in matches: 
-                    token = m.split("=")
-                    st.update( {token[0]:token[1]})
+            st.update( dictFromParameterPairString(s))
         else:
             raise PviError(self._result, self)  
         return st    

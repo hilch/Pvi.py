@@ -20,36 +20,35 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Union
-from .include import *
-from .Object import PviObject
-from .Error import PviError
+import re
+import logging
+import inspect
 
-# ----------------------------------------------------------------------------------
-class Line(PviObject):
-    '''class representing a PVI Line
+__patternParameterPairs = re.compile(r"\s*([A-Za-z]{2}=\S*)\s*")
+__logger = logging.getLogger("pvipy")
 
-        Typical usage example:
-        ```
-        pviConnection = Connection()
-        line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
-        device = Device( line, 'TCP', CD='/IF=TcpIp' )
-        ```
+def dictFromParameterPairString( s : str ) -> dict:
     '''
-    def __init__( self, parent : PviObject, name : str, **objectDescriptor: Union[str,int, float]):
-        '''
-        Args: 
-            parent : PVI connection's root object
-            name : name of the line in PVI hierarchy, e.g. 'LNANSL'
-            objectDescriptor: 
-                ANSL : CD='LNANSL'  
-                INA2000 : CD='LNINA2'  
-                SNMP : CD='LNSNMP'
+    converts a string with object descriptor parameters to a dict
 
-        '''
-        if parent.type != T_POBJ_TYPE.POBJ_PVI:
-            raise PviError(12009, self)         
-        super().__init__( parent, T_POBJ_TYPE.POBJ_LINE, name, **objectDescriptor)
+    Args:
+        s: string with pairs of parameters, e.g. 'CN=variable EV=eds'
 
-    def __repr__(self):
-        return f"Line( name={self._name}, linkID={self._linkID} )"
+    Returns:
+        dict
+    '''
+    result = dict()
+    matches = __patternParameterPairs.findall(s)
+    if matches:
+        for m in matches: 
+            token = m.split("=")
+            result.update( {str.upper(token[0]):token[1]})      
+    return result
+
+
+def debuglog(message):
+    stack = inspect.stack()
+    the_class = stack[1][0].f_locals["self"].__class__.__name__
+    the_method = stack[1][0].f_code.co_name
+    __logger.debug( f' {the_class}.{the_method} -> {message}')
+

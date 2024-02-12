@@ -7,12 +7,12 @@ theme:
 
 plugins:
   - mkdocstrings
-
+      
 markdown_extensions:
   - footnotes
 
 nav:
-  - index.md
+  - Home: "index.md"
   - Tutorials : 
       - General: tutorial/general.md
       - First Steps With ANSL: tutorial/simple1.md
@@ -32,10 +32,12 @@ nav:
       - Errors: objects/errors.md
   - How-To : 
       - Basics: howtos/basics.md
+      - What to do with CPUs: howtos/cpus.md
+      - What to do with Tasks: howtos/tasks.md
       - Create List of Sotware Objects: howtos/object_lists.md
       - Handling Modules: howtos/modules.md
       - Linknodes (IO): howtos/linknodes.md
-      - Using Pvi.py with a GUI: howtos/gui.md
+      - Using a GUI: howtos/gui.md
       - SNMP: howtos/snmp.md
       - Runtime Logger: howtos/logger.md
       - Profiler: howtos/profiler.md

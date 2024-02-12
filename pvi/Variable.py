@@ -20,14 +20,14 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Type
-from ctypes import create_string_buffer, sizeof, byref
-from typing import Any
+from inspect import signature
+from ctypes import create_string_buffer, sizeof, byref, c_int32
+from typing import Union, Any
 from .include import *
 from .Error import PviError
 from .Object import PviObject
 from .VariableTypeDescription import VariableTypeDescription
-
+from .Helpers import dictFromParameterPairString
 
 
 class Variable(PviObject):
@@ -39,7 +39,7 @@ class Variable(PviObject):
     temperature = Variable( task1, 'gHeating.status.actTemp' )  
     ```        
     '''
-    def __init__( self, parent : PviObject, name : str, **objectDescriptor  ):
+    def __init__( self, parent : PviObject, name : str, **objectDescriptor: Union[str,int, float] ):
         '''
         Args:
             parent : the task object (or the CPU object in case of a global variable)
@@ -55,7 +55,8 @@ class Variable(PviObject):
         if parent.type != T_POBJ_TYPE.POBJ_CPU and  parent.type != T_POBJ_TYPE.POBJ_TASK and  parent.type != T_POBJ_TYPE.POBJ_STATION:
             raise PviError(12009, self )        
         self._value = None 
-        self._valueChanged = None 
+        self._valueChanged = lambda _ : _
+        self._valueChangedArgCount = 0      
         self._variableTypeDescription = VariableTypeDescription()
         if 'CD' not in objectDescriptor:
             objectDescriptor.update({'CD':name})
@@ -73,7 +74,7 @@ class Variable(PviObject):
         signals if this variable can be written
         '''
         if self._variableTypeDescription.vt != PvType.UNKNOWN:
-            access = self._objectDescriptor.get('AT', '')  
+            access = str(self._objectDescriptor.get('AT', ''))
             return 'w' in access # data type already read and write access ?
         else:
             return False
@@ -84,7 +85,7 @@ class Variable(PviObject):
         signals if this variable can be read
         '''
         if self._variableTypeDescription.vt != PvType.UNKNOWN:
-            access = self._objectDescriptor.get('AT', '')
+            access = str(self._objectDescriptor.get('AT', ''))
             return 'r' in access # data type already read and read access ?
         else:
             return False
@@ -116,8 +117,10 @@ class Variable(PviObject):
  
     def _eventData( self, wParam, responseInfo ):
         self.__readRawData( wParam, responseInfo )
-        if callable(self._valueChanged):
+        if self._valueChangedArgCount == 1:
             self._valueChanged(self._value)
+        elif self._valueChangedArgCount == 2:
+            self._valueChanged(self, self._value) # type: ignore
 
 
     def _eventDataType( self, wParam, responseInfo ):
@@ -128,7 +131,7 @@ class Variable(PviObject):
 
             
     @property
-    def value(self) -> Any:
+    def value(self) ->Any:
         '''
         read value
         '''
@@ -156,17 +159,21 @@ class Variable(PviObject):
     @property
     def valueChanged(self):
         '''
-        read callback for 'value changed'
+        callback for 'value changed'
+
+        accepts:
+        fn( value)
+        or
+        fn( value, vo ) where 'vo' is the Variable object itself
+
         '''
         return self._valueChanged
 
     @valueChanged.setter
     def valueChanged(self, cb):
-        '''
-        set callback for 'value changed'
-        '''
         if callable(cb):
             self._valueChanged = cb
+            self._valueChangedArgCount = len(signature(cb).parameters)
         else:
             raise ValueError
 
@@ -187,3 +194,98 @@ class Variable(PviObject):
             t = self._variableTypeDescription.vt.value
         return t
 
+    @property
+    def attributes(self) -> dict:
+        '''
+        object attributes
+
+        Typical usage example:
+        ```
+        temperature = Variable( task1, name='gHeating.status.actTemp', AT = 'r' )        
+        ```
+ 
+        '''
+        s = create_string_buffer(b'\000' * 256)   
+        self._result = PviRead( self._linkID, POBJ_ACC_TYPE , None, 0, byref(s), sizeof(s) )
+        if self._result == 0:
+            ret = dict()
+            ret.update( dictFromParameterPairString(str(s, 'ascii').rstrip('\x00')))
+            self._objectDescriptor.update(ret)
+            return ret
+        else:
+            raise PviError(self._result, self)  
+
+    @attributes.setter
+    def attributes(self, a : str ):
+        '''
+        object attributes
+        '''
+        s = create_string_buffer(a.encode('ascii'))
+        self._result = PviWrite( self._linkID, POBJ_ACC_TYPE, byref(s), sizeof(s), None, 0 ) 
+        if self._result:
+            raise PviError(self._result, self)  
+
+
+
+    @property
+    def refresh(self) -> int:
+        '''
+        refresh time [ms]
+
+        Typical usage example:
+        ```
+        temperature = Variable( task1, name='gHeating.status.actTemp', RF = 2000 )      
+        ```
+        '''
+        t = c_int32(0)
+        self._result = PviRead( self._linkID, POBJ_ACC_REFRESH , None, 0, byref(t), sizeof(t) )
+        if self._result == 0:
+            self._objectDescriptor.update({'RF' : t.value }) # type: ignore
+            return t.value
+        else:
+            raise PviError(self._result, self)  
+
+    @refresh.setter
+    def refresh(self, time : int ):
+        '''
+        refresh time [ms]
+        '''
+        t = c_int32(time)
+        self._result = PviWrite( self._linkID, POBJ_ACC_REFRESH, byref(t), sizeof(t), None, 0 ) 
+        if self._result:
+            raise PviError(self._result, self) 
+        self._objectDescriptor.update({'RF' : time }) # type: ignore 
+
+
+    @property
+    def hysteresis(self) -> float:
+        '''
+        event hysteresis
+
+        Typical usage example:
+        ```
+        temperature = Variable( task1, name='gHeating.status.actTemp', HY = 5.0, LinkDescriptor="LT=prc" )        
+        ```
+        '''
+        s = create_string_buffer(b'\000' * 10)   
+        self._result = PviRead( self._linkID, POBJ_ACC_HYSTERESE , None, 0, byref(s), sizeof(s) )
+        if self._result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+            self._objectDescriptor.update({'HY' : s }) # type: ignore  
+            try:          
+                return float(s)
+            except ValueError:
+                return 0.0
+        else:
+            raise PviError(self._result, self)  
+
+    @hysteresis.setter
+    def hysteresis(self, h : float ):
+        '''
+        event hysteresis
+        '''
+        s = create_string_buffer(str(h).encode('ascii'))
+        self._result = PviWrite( self._linkID, POBJ_ACC_HYSTERESE, byref(s), sizeof(s), None, 0 ) 
+        if self._result:
+            raise PviError(self._result, self)  
+        self._objectDescriptor.update({'HY' : h }) # type: ignore                    
