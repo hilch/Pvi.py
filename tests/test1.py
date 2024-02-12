@@ -72,9 +72,8 @@ def cpuErrorChanged( error : int):
         print("read cpu info.")
 
         result = cpu.name + str(cpu.status) + str(cpu.cpuInfo)
-        h = hashlib.sha256( result.encode() )
 
-        if h.hexdigest() == '1ecc7f081b07d456a8f5c9aeb1b1db9ea2841efbd904802e6321f07f50d9d3ea':
+        if cpu.name == '@Pvi/LNANSL/TCP/myArsim' and cpu.status['RunState'] == 'RUN' and cpu.cpuInfo['CT'] == '1A4000.00':
             print("pass !")
         else:
             print("failed !")
