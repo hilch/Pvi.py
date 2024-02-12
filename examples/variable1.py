@@ -1,4 +1,4 @@
-# task1.py
+# variable1.py
 # An example that shows the application possibilities of https://github.com/hilch/Pvi.py
 #
 # PLC counterpart is B&R's 'coffee machine' running on ArSim 
