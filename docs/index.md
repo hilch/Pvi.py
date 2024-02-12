@@ -1,6 +1,7 @@
 # Pvi.py
 
 Python wrapper for [B&amp;R PVI (process visualization interface)](https://help.br-automation.com/#/en/4/automationnet%2Fpvi%2Fpvi.htm).
+This documentation applies to version 1.2.x.
 
 In times of more modern protocols like [OPC-UA](https://help.br-automation.com/#/en/4/communication%2Fopcua%2Fopcua.html), this may seem a bit old-fashioned. 
 But PVI has some hidden strengths and is also very versatile. 
