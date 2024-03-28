@@ -21,7 +21,7 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import List, NamedTuple
+from typing import List, NamedTuple, Tuple
 import datetime
 from ctypes import sizeof, create_string_buffer
 from ctypes import c_bool, c_uint8, c_int8, c_uint16, c_int16, c_uint32, c_int32, c_uint64, c_int64, c_float, c_double
@@ -34,10 +34,11 @@ from .Object import PviObject
 from .include import *
 
 
-patternDataTypeInformation = re.compile(r"([A-Z]{2}=\w+)|(\{[^}]+\})")
-patternStructureElementDefinition = re.compile(r"(\x2E[a-zA-z0-9_.]+)|([A-Z]{2}=\w+)")
+patternDataTypeInformation = re.compile(r"([A-Z]{2}=[\w\x2C]+)|(\{[^}]+\})") # pattern for variable definition
+patternStructureElementDefinition = re.compile(r"(\x2E[\w\x2E]+)|([A-Z]{2}=[\w\x2C]+)") # patern for structure member definition
+patternVSa = re.compile(r"a,(\d+),(\d+)") # pattern for parameter VS=a
 
-StructMember = NamedTuple( 'StructMember', [('name', str), ('vt', PvType), ('vn', int), ('vo', int), ('vl', int)])
+StructMember = NamedTuple( 'StructMember', [('name', str), ('vt', PvType), ('sn', str), ('vn', int), ('vo', int), ('vl', int), ('vs', str)])
 '''
 helper class for structure member 
 '''
@@ -51,6 +52,11 @@ class VariableTypeDescription():
         self._vn = -1
         self._vl = -1
         self._vt = PvType.UNKNOWN
+        self._sn = ''
+        self._sc = ''
+        self._vs = ''
+        self._lowerIndex = -1
+        self._higherIndex = -1
         self._parentObject = None
         self._members : List[StructMember] = list()
         self._innerStructures : List[StructMember] = list()
@@ -66,25 +72,35 @@ class VariableTypeDescription():
         self._parentObject = object
 
         s = create_string_buffer(b'\000' * 64*1024) 
-        object._result = PviRead( self._parentObject._linkID, POBJ_ACC_TYPE_INTERN, None, 0, s, sizeof(s) )
+        object._result = PviRead( self._parentObject._linkID, POBJ_ACC_TYPE_EXTERN, None, 0, s, sizeof(s) )
         if self._parentObject._result == 0:
             s = str(s, 'ascii').rstrip('\x00')
         else:
             raise PviError(self._parentObject._result, self._parentObject)
 
+
         self._parentObject._objectDescriptor.update({'VN' : '1', 'VL' : '1' })
 
         self._updateObjectDescriptor(s) # udpate object descriptor
-        vt = PvType( self._parentObject._objectDescriptor.get('VT')) 
-        self._vt = vt
+        del s
+        self._vt = PvType( self._parentObject._objectDescriptor.get('VT')) 
 
-        vn = int( self._parentObject.descriptor.get('VN', 0) )
-        assert vn > 0
-        self._vn = vn
+        self._vn = int( self._parentObject.descriptor.get('VN', 0) )
+        assert self._vn > 0
 
-        vl = int( self._parentObject.descriptor.get('VL', 0) )
-        assert vl > 0
-        self._vl = vl
+        self._vl = int( self._parentObject.descriptor.get('VL', 0) )
+        assert self._vl > 0
+
+        self._sn = str( self._parentObject.descriptor.get('SN', '') )
+        self._sc = str( self._parentObject.descriptor.get('SC', '') )
+        self._vs = str( self._parentObject.descriptor.get('VS', '') )  
+        
+        if self._vn > 1 or self._vs.startswith('a'): # is variable an array ?
+            self._lowerIndex = 0
+            m = patternVSa.findall(self._vs)
+            if m:
+                self._lowerIndex = int(m[0][0])
+            self._higherIndex = self._lowerIndex + self._vn -1
          
     @property
     def vn(self) -> int:
@@ -99,6 +115,14 @@ class VariableTypeDescription():
         variable byte length : int
         '''
         return self._vl
+    
+    @property
+    def indices(self) -> Tuple[int,int]:
+        '''
+        array indices (int, int)
+        '''
+        return self._lowerIndex, self._higherIndex
+
 
     @property
     def vt(self) -> PvType:
@@ -106,6 +130,13 @@ class VariableTypeDescription():
         PVI Variable Type : PvType
         '''        
         return self._vt
+    
+    @property
+    def sn(self) -> str:
+        '''
+        structure name : str
+        '''        
+        return self._sn if self._vt == PvType.STRUCT else ''
 
     def _updateObjectDescriptor(self, s):
         '''
@@ -118,28 +149,35 @@ class VariableTypeDescription():
             else:
                 assert isinstance(self._parentObject, PviObject)
                 self._parentObject._objectDescriptor.update({ex[0:2]: ex[3:]})
-        
+        del ex
+
         # sort inner structures with highest nesting depth first
         self._innerStructures.sort( key = lambda s : s.name.count('.'), reverse=True)
         # correct names and offsets of structure members
         for structure in self._innerStructures:
             newMembers : List[StructMember] = list()
             oldMembers = self._members.copy()
-            for m in self._members:
-                if m.name.startswith( structure.name ):
-                    if structure.vn > 1: # struct is an array
-                        elementName = m.name[len(structure.name):]
-                        oldMembers.remove(m)
+            for mb in self._members:
+                if mb.name.startswith( structure.name ):
+                    if structure.vn > 1 or structure.vs.startswith('a'): # struct is an array
+                        lowerIndex = 0
+                        if len(structure.vs) != 0:
+                            m = patternVSa.findall(structure.vs)
+                            if m:
+                                lowerIndex = int(m[0][0])
+                        elementName = mb.name[len(structure.name):]
+                        oldMembers.remove(mb)
                         for index in range(0, structure.vn ):
                             # correct name + offset
-                            newMembers.append( StructMember( f"{structure.name}[{index}]{elementName}", m.vt, m.vn, m.vo + structure.vo + structure.vl*index, m.vl))
+                            newMembers.append( StructMember( f"{structure.name}[{index+lowerIndex}]{elementName}", mb.vt, mb.sn, mb.vn, mb.vo + structure.vo + structure.vl*index, mb.vl, mb.vs))
+                        del index, elementName
                     else: # structure is not an array
-                        oldMembers.remove(m)
+                        oldMembers.remove(mb)
                         # correct offset only
-                        newMembers.append( StructMember( m.name, m.vt, m.vn, m.vo + structure.vo, m.vl ) )
+                        newMembers.append( StructMember( mb.name, mb.vt, mb.sn, mb.vn, mb.vo + structure.vo, mb.vl, mb.vs ) )
             self._members = oldMembers                            
             self._members.extend(newMembers)
-            del oldMembers, newMembers
+            del oldMembers, newMembers, mb
         # sort structure members according variable offsets
         self._members.sort(key = lambda m: m.vo)
         pass
@@ -159,14 +197,16 @@ class VariableTypeDescription():
                 desc.update({ex[0:2]: ex[3:]}) # member's object descriptor
 
         vt = PvType(desc.get('VT'))
+        sn = str(desc.get('SN', ''))        
         vo = int(desc.get('VO',0)) # variable offset
         vn = int(desc.get('VN',0))
         vl = int(desc.get('VL',0))
+        vs = str(desc.get('VS',''))
         name = desc.get('name','')
         if vt == PvType.STRUCT:
-            self._innerStructures.append(  StructMember( name, vt, vn, vo, vl ) )
+            self._innerStructures.append(  StructMember( name, vt, sn, vn, vo, vl, vs ) )
         elif vt != PvType.UNKNOWN:
-            self._members.append(  StructMember( name, vt, vn, vo, vl ) )
+            self._members.append(  StructMember( name, vt, sn, vn, vo, vl, vs ) )
 
         
 
@@ -239,16 +279,16 @@ class VariableTypeDescription():
 
         buffer : raw buffer data from POBJ_ACC_DATA
         '''
-        assert type(self.vl) is int
-        arrayBuffers = ( buffer[_:_+self.vl] for _ in range(0,len(buffer), self.vl)) # split buffer into array elements
+        assert type(self._vl) is int
+        arrayBuffers = ( buffer[_:_+self._vl] for _ in range(0,len(buffer), self._vl)) # split buffer into array elements
         result = list()
 
         for elementBuffer in arrayBuffers:
-            if self.vt == PvType.STRUCT:
+            if self._vt == PvType.STRUCT:
                 structResult = OrderedDict()
                 assert isinstance( self._members, list)
                 for m in self._members:
-                    if m.vn == 1: # struct member is asingle value
+                    if m.vn == 1: # struct member is a single value
                         buf = elementBuffer[m.vo : m.vo+m.vl]
                         value = self._unpackRawData( buf, m.vt, m.vl )
                     else: # struct member is an array
@@ -257,7 +297,7 @@ class VariableTypeDescription():
                     structResult.update( { m.name : value } )
                 result.append( structResult )
             else:
-                result.append( self._unpackRawData( elementBuffer, self.vt, self.vl ) )
+                result.append( self._unpackRawData( elementBuffer, self._vt, self._vl ) )
 
         if len(result) == 1: # single value
             return result[0]
@@ -276,48 +316,48 @@ class VariableTypeDescription():
             value = [value for _ in range(0, self._vn)] # create a list with identical values
 
         try:
-            if self.vt == PvType.BOOLEAN:
+            if self._vt == PvType.BOOLEAN:
                 if self._vn == 1: # single value
                     buffer = c_bool(value != 0)
                 else: # array of BOOLEAN
                     buffer = (c_bool*self._vn)(*value)
 
-            elif self.vt == PvType.U8:           
+            elif self._vt == PvType.U8:           
                 if self._vn == 1: # single value
                     assert type(value) is int
                     buffer = c_uint8(value)
                 else: # array of U8
                     buffer = (c_uint8*self._vn)(*value)
 
-            elif self.vt == PvType.I8:              
+            elif self._vt == PvType.I8:              
                 if self._vn == 1: # single value
                     assert type(value) is int                    
                     buffer = c_int8(value)
                 else: # array of I8
                     buffer = (c_int8*self._vn)(*value)
 
-            elif self.vt == PvType.U16:             
+            elif self._vt == PvType.U16:             
                 if self._vn == 1: # single value
                     assert type(value) is int                    
                     buffer = c_uint16(value)
                 else: # array of U16
                     buffer = (c_uint16*self._vn)(*value)
 
-            elif self.vt == PvType.I16:              
+            elif self._vt == PvType.I16:              
                 if self._vn == 1: # single value
                     assert type(value) is int                    
                     buffer = c_int16(value)
                 else: # array of I16
                     buffer = (c_int16*self._vn)(*value)
 
-            elif self.vt == PvType.U32:              
+            elif self._vt == PvType.U32:              
                 if self._vn == 1: # single value
                     assert type(value) is int                    
                     buffer = c_uint32(value)
                 else: # array of U32
                     buffer = (c_uint32*self._vn)(*value)
 
-            elif self.vt == PvType.DT:
+            elif self._vt == PvType.DT:
                 if self._vn == 1: # single value
                     if type(value) == datetime.datetime:
                         buffer = c_uint32( int(value.timestamp()) )
@@ -330,7 +370,7 @@ class VariableTypeDescription():
                     elif type(value[0]) == int:
                         buffer = (c_uint32*self._vn)(*value)
 
-            elif self.vt == PvType.DATE:
+            elif self._vt == PvType.DATE:
                 if self._vn == 1: # single value
                     if type(value) == datetime.date:
                         value = datetime.datetime.combine(value, datetime.time())
@@ -344,7 +384,7 @@ class VariableTypeDescription():
                     elif type(value[0]) == int:
                         buffer = (c_uint32*self._vn)(*value)            
 
-            elif self.vt == PvType.TOD:
+            elif self._vt == PvType.TOD:
                 if self._vn == 1: # single value
                     if type(value) == datetime.time:
                         buffer = c_uint32( value.hour * 3600000 + value.minute * 60000 + value.second * 1000 + int(value.microsecond / 1000) )
@@ -357,7 +397,7 @@ class VariableTypeDescription():
                     elif type(value[0]) == int:
                         buffer = (c_uint32*self._vn)(*value)
 
-            elif self.vt == PvType.TIME:
+            elif self._vt == PvType.TIME:
                 if self._vn == 1: # single value
                     if type(value) == datetime.timedelta: 
                         buffer = c_int32( int( value / datetime.timedelta(milliseconds=1)) )
@@ -370,54 +410,54 @@ class VariableTypeDescription():
                     elif type(value[0]) == int:
                         buffer = (c_int32*self._vn)(value)
 
-            elif self.vt == PvType.I32:
+            elif self._vt == PvType.I32:
                 if self._vn == 1: # single value
                     assert type(value) is int                    
                     buffer = c_int32(value)
                 else: # array of I32
                     buffer = (c_int32*self._vn)(*value)                
 
-            elif self.vt == PvType.U64:              
+            elif self._vt == PvType.U64:              
                 if self._vn == 1: # single value
                     assert type(value) is int                    
                     buffer = c_uint64(value)
                 else: # array of U64
                     buffer = (c_uint64*self._vn)(*value)                
 
-            elif self.vt == PvType.I64:               
+            elif self._vt == PvType.I64:               
                 if self._vn == 1: # single value 
                     assert type(value) is int                    
                     buffer = c_int64(value)
                 else: # array of I64
                     buffer = (c_int64*self._vn)(*value)                                
 
-            elif self.vt == PvType.F32:
+            elif self._vt == PvType.F32:
                 if self._vn == 1: # single value
                     assert type(value) is float                    
                     buffer = c_float(value)
                 else: # array of F32
                     buffer = (c_float*self._vn)(*value)                
 
-            elif self.vt == PvType.F64:              
+            elif self._vt == PvType.F64:              
                 if self._vn == 1: # single value
                     assert type(value) is float
                     buffer = c_double(value)
                 else: # array of F64
                     buffer = (c_double*self._vn)(*value)                
 
-            elif self.vt == PvType.STRING:
+            elif self._vt == PvType.STRING:
                 if self._vn == 1: # single value
                     if type(value) == bytes:
-                        buffer = (c_char * self.vl)(*value)
+                        buffer = (c_char * self._vl)(*value)
                 else: # array of STRING
                     if type(value[0]) == bytes:
-                        buffer = ((c_char * self.vl) * self._vn)()
+                        buffer = ((c_char * self._vl) * self._vn)()
                         for n, v in enumerate(value):
-                            s = (c_char*self.vl)(*v)
+                            s = (c_char*self._vl)(*v)
                             buffer[n] = s
 
-            elif self.vt == PvType.WSTRING:
-                ch = int(self.vl/2) # no of characters
+            elif self._vt == PvType.WSTRING:
+                ch = int(self._vl/2) # no of characters
                 if self._vn == 1:
                     if type(value) == bytes:
                         value = value.decode()                
@@ -430,7 +470,7 @@ class VariableTypeDescription():
                         for j,c in enumerate(v):
                             buffer[n][j] = c
             else:
-                raise RuntimeError( "data type " + str(self.vt) + " not implemented")
+                raise RuntimeError( "data type " + str(self._vt) + " not implemented")
             
         except IndexError:
             raise IndexError(f'wrong length writing {value}\nto {repr(self._parentObject)}')            

@@ -182,17 +182,25 @@ class Variable(PviObject):
     def dataType(self) -> str:
         '''
         variable's type as string. e.g 'i8', 'i16', 'f32', 'boolean', 'string'
-        in case of an array the string is surrouned by brackets, e.g. '[i32]'
+        in case of an array the indices are given in a bracket, e.g. 'i32[0..2]'
         '''
         t = "?"
         if self._variableTypeDescription.vt == PvType.UNKNOWN:
             self._variableTypeDescription.readFrom(self)
-            t = self._variableTypeDescription.vt.value
-            if self._variableTypeDescription.vn > 1: # is variable an array ?
-                t += f'[{self._variableTypeDescription._vn}]'
+
+        if self._variableTypeDescription.vt == PvType.STRUCT:
+            t = self._variableTypeDescription.sn
+            if self.isArray: # is variable an array of structs ?
+                t += f'[{self._variableTypeDescription.indices[0]}..{self._variableTypeDescription.indices[1]}]'
         else:
             t = self._variableTypeDescription.vt.value
+            if self.isArray: # is variable an array ?
+                t += f'[{self._variableTypeDescription.indices[0]}..{self._variableTypeDescription.indices[1]}]'            
         return t
+    
+    @property
+    def isArray(self) -> bool:
+        return( self._variableTypeDescription.vn > 1 or self._variableTypeDescription.sn.startswith('a'))
 
     @property
     def attributes(self) -> dict:

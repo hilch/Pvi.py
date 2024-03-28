@@ -1,5 +1,11 @@
 # Version history
 
+## V1.2.1
+
+- fix: reading arrays of structures only returned first element
+- new: Variable.dataType returns name of structure type
+- new: Variable.dataType returns `<data type>[<lower index>..<higher index>]` now
+
 ## V1.2.0
 
 - Object: the objectDescriptor can now contain a field 'LinkDescriptor'
