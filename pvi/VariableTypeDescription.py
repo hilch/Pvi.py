@@ -21,14 +21,14 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from typing import List, NamedTuple
 import datetime
-
 from ctypes import sizeof, create_string_buffer
 from ctypes import c_bool, c_uint8, c_int8, c_uint16, c_int16, c_uint32, c_int32, c_uint64, c_int64, c_float, c_double
 from ctypes import c_char, c_wchar
 import re
 import struct
-from collections import namedtuple, OrderedDict
+from collections import OrderedDict
 from .Error import PviError
 from .Object import PviObject
 from .include import *
@@ -37,7 +37,7 @@ from .include import *
 patternDataTypeInformation = re.compile(r"([A-Z]{2}=\w+)|(\{[^}]+\})")
 patternStructureElementDefinition = re.compile(r"(\x2E[a-zA-z0-9_.]+)|([A-Z]{2}=\w+)")
 
-StructMember = namedtuple( 'StructMember', ['name', 'vt', 'vn', 'vo', 'vl'])
+StructMember = NamedTuple( 'StructMember', [('name', str), ('vt', PvType), ('vn', int), ('vo', int), ('vl', int)])
 '''
 helper class for structure member 
 '''
@@ -52,7 +52,8 @@ class VariableTypeDescription():
         self._vl = -1
         self._vt = PvType.UNKNOWN
         self._parentObject = None
-        self._members = None # let's assume a basic variable type
+        self._members : List[StructMember] = list()
+        self._innerStructures : List[StructMember] = list()
         '''
         list of all data type (structure) members if this variable is a struct
         '''
@@ -73,7 +74,7 @@ class VariableTypeDescription():
 
         self._parentObject._objectDescriptor.update({'VN' : '1', 'VL' : '1' })
 
-        self._updateObjectDescriptor(s) # udpate objects descriptor
+        self._updateObjectDescriptor(s) # udpate object descriptor
         vt = PvType( self._parentObject._objectDescriptor.get('VT')) 
         self._vt = vt
 
@@ -110,18 +111,38 @@ class VariableTypeDescription():
         '''
         update object descriptor and find all members if this PV is a structure
         '''
-        self._innerStructOffsets = dict() # save vo of inner structs to correct their members' offsets
         for m in patternDataTypeInformation.finditer(s) : # update object descriptor
             ex = m.group()
             if ex.startswith('{'): # structure member definition
-                if self._members == None:
-                    self._members = list()
                 self._updateMemberList(ex)
             else:
                 assert isinstance(self._parentObject, PviObject)
-                self._parentObject._objectDescriptor.update({ex[0:2]: ex[3:]}) 
-        del self._innerStructOffsets
-
+                self._parentObject._objectDescriptor.update({ex[0:2]: ex[3:]})
+        
+        # sort inner structures with highest nesting depth first
+        self._innerStructures.sort( key = lambda s : s.name.count('.'), reverse=True)
+        # correct names and offsets of structure members
+        for structure in self._innerStructures:
+            newMembers : List[StructMember] = list()
+            oldMembers = self._members.copy()
+            for m in self._members:
+                if m.name.startswith( structure.name ):
+                    if structure.vn > 1: # struct is an array
+                        elementName = m.name[len(structure.name):]
+                        oldMembers.remove(m)
+                        for index in range(0, structure.vn ):
+                            # correct name + offset
+                            newMembers.append( StructMember( f"{structure.name}[{index}]{elementName}", m.vt, m.vn, m.vo + structure.vo + structure.vl*index, m.vl))
+                    else: # structure is not an array
+                        oldMembers.remove(m)
+                        # correct offset only
+                        newMembers.append( StructMember( m.name, m.vt, m.vn, m.vo + structure.vo, m.vl ) )
+            self._members = oldMembers                            
+            self._members.extend(newMembers)
+            del oldMembers, newMembers
+        # sort structure members according variable offsets
+        self._members.sort(key = lambda m: m.vo)
+        pass
 
     def _updateMemberList(self, s ):
         '''
@@ -138,25 +159,21 @@ class VariableTypeDescription():
                 desc.update({ex[0:2]: ex[3:]}) # member's object descriptor
 
         vt = PvType(desc.get('VT'))
-        vo = int(desc.get('VO')) # variable offset
-        vn = int(desc.get('VN'))
-        vl = int(desc.get('VL'))
-        name = desc.get('name')
-        parentStruct = name.rpartition('.')[0]
-
-        if parentStruct in self._innerStructOffsets: # does member belong to an inner struct ?
-            vo += self._innerStructOffsets[parentStruct]
- 
-        if vt == PvType.STRUCT: # is member itself an inner structure ?
-            self._innerStructOffsets.update( { name :vo } )
-        else:
-            assert isinstance( self._members, list )
+        vo = int(desc.get('VO',0)) # variable offset
+        vn = int(desc.get('VN',0))
+        vl = int(desc.get('VL',0))
+        name = desc.get('name','')
+        if vt == PvType.STRUCT:
+            self._innerStructures.append(  StructMember( name, vt, vn, vo, vl ) )
+        elif vt != PvType.UNKNOWN:
             self._members.append(  StructMember( name, vt, vn, vo, vl ) )
+
+        
 
 
     def _unpackRawData(self, data : bytes, vt : PvType, vl :int):
         '''
-        unpacks data returned by PVI_ACC_DATA or PVI_EVENT_DATA to the appropiate Python data type
+        unpacks data returned by PVI_ACC_DATA or PVI_EVENT_DATA to the appropriate Python data type
         data: ctype raw data        
         vt: PVI variable type
         vl: variable byte length 
