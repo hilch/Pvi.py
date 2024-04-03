@@ -35,7 +35,7 @@ from .include import *
 
 
 patternDataTypeInformation = re.compile(r"([A-Z]{2}=[\w\x2C]+)|(\{[^}]+\})") # pattern for variable definition
-patternStructureElementDefinition = re.compile(r"(\x2E[\w\x2E]+)|([A-Z]{2}=[\w\x2C]+)") # patern for structure member definition
+patternStructureMemberDefinition = re.compile(r"(\x2E[\w\x2E]+)|([A-Z]{2}=[\w\x2C]+)") # pattern for structure member definition
 patternVSa = re.compile(r"a,(\d+),(\d+)") # pattern for parameter VS=a
 
 StructMember = NamedTuple( 'StructMember', [('name', str), ('vt', PvType), ('sn', str), ('vn', int), ('vo', int), ('vl', int), ('vs', str)])
@@ -58,6 +58,7 @@ class VariableTypeDescription():
         self._lowerIndex = -1
         self._higherIndex = -1
         self._parentObject = None
+        self._memberOffsets : List[StructMember] = list()
         self._members : List[StructMember] = list()
         self._innerStructures : List[StructMember] = list()
         '''
@@ -70,19 +71,26 @@ class VariableTypeDescription():
         object: Variable object
         '''        
         self._parentObject = object
+        self._parentObject._objectDescriptor.update({'VN' : '1', 'VL' : '1' })        
+
+        s = create_string_buffer(b'\000' * 64*1024) 
+        object._result = PviRead( self._parentObject._linkID, POBJ_ACC_TYPE_INTERN, None, 0, s, sizeof(s) )
+        if self._parentObject._result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+        else:
+            raise PviError(self._parentObject._result, self._parentObject)
+        
+        self._getByteOffsetsAndLength(s)
 
         s = create_string_buffer(b'\000' * 64*1024) 
         object._result = PviRead( self._parentObject._linkID, POBJ_ACC_TYPE_EXTERN, None, 0, s, sizeof(s) )
         if self._parentObject._result == 0:
             s = str(s, 'ascii').rstrip('\x00')
         else:
-            raise PviError(self._parentObject._result, self._parentObject)
-
-
-        self._parentObject._objectDescriptor.update({'VN' : '1', 'VL' : '1' })
+            raise PviError(self._parentObject._result, self._parentObject)        
 
         self._updateObjectDescriptor(s) # udpate object descriptor
-        del s
+
         self._vt = PvType( self._parentObject._objectDescriptor.get('VT')) 
 
         self._vn = int( self._parentObject.descriptor.get('VN', 0) )
@@ -101,7 +109,8 @@ class VariableTypeDescription():
             if m:
                 self._lowerIndex = int(m[0][0])
             self._higherIndex = self._lowerIndex + self._vn -1
-         
+        pass     
+
     @property
     def vn(self) -> int:
         '''
@@ -137,22 +146,78 @@ class VariableTypeDescription():
         structure name : str
         '''        
         return self._sn if self._vt == PvType.STRUCT else ''
+    
+
+    def _getByteOffsetsAndLength(self, s):
+        '''
+        get the offsets and length of the variable and the members in case of a structure 
+        given by information delivered by POBJ_ACC_TYPE_INTERN
+        since information from POBJ_ACC_TYPE_EXTERN does not fit to POBJ_ACC_DATA
+        '''
+        for m in patternDataTypeInformation.finditer(s) : # update object descriptor
+            ex = m.group()
+            if ex.startswith('{'): # structure member definition
+                self._updateMemberOffsetsAndLength(ex)
+            else: # definition of variable itself
+                assert isinstance(self._parentObject, PviObject)
+                parameter = ex[0:2]
+                value = ex[3:]
+                if parameter == 'VL':
+                    self._parentObject._objectDescriptor.update({parameter: value })
+
+    def _updateMemberOffsetsAndLength(self, s):
+        '''
+        extract data type member's information
+        s : member definition returned by POBJ_ACC_TYPE_INTERN
+            e.g "{.ton.IN VT=boolean VL=1 VN=1 VO=16}"
+        '''
+        desc: dict[str, str] = {} # member's object descriptor
+        for m in patternStructureMemberDefinition.finditer(s): # find matches
+            ex = m.group()
+            if ex.startswith('.'):
+                desc.update({'name' : ex}) # member's name
+            else:
+                desc.update({ex[0:2]: ex[3:]}) # member's object descriptor
+
+        vt = PvType(desc.get('VT'))
+        vo = int(desc.get('VO',0)) # variable offset in PVI
+        vn = int(desc.get('VN',0))
+        vl = int(desc.get('VL',0))
+        name = desc.get('name','')
+        self._memberOffsets.append(  StructMember( name, vt, '', vn, vo, vl, '' ) )
+
 
     def _updateObjectDescriptor(self, s):
         '''
         update object descriptor and find all members if this PV is a structure
+        s : member definition returned by POBJ_ACC_TYPE_EXTERN
+            e.g "{.ton.IN VT=boolean VL=1 VN=1 VO=16}"       
         '''
         for m in patternDataTypeInformation.finditer(s) : # update object descriptor
             ex = m.group()
             if ex.startswith('{'): # structure member definition
                 self._updateMemberList(ex)
-            else:
+            else: # definition of variable itself
                 assert isinstance(self._parentObject, PviObject)
-                self._parentObject._objectDescriptor.update({ex[0:2]: ex[3:]})
+                parameter = ex[0:2]
+                value = ex[3:]
+                if parameter != 'VL': # VL is length of variable in PLC not in PVI !
+                    self._parentObject._objectDescriptor.update({parameter: value })
         del ex
+
+        # correct the members' VO and VL since PVI_ACC_TYPE_EXTERN delivers PLC variable information 
+        # not PVI tag information !
+
+        for li in (self._innerStructures, self._members):
+            for n, extern in enumerate(li):
+                for intern in self._memberOffsets:
+                    if extern.name == intern.name and extern.vt == intern.vt and extern.vo != intern.vo:
+                        li[n] = StructMember( extern.name, extern.vt, extern.sn, extern.vn, intern.vo, intern.vl, extern.vs)
+        self._memberOffsets.clear() # the offsets are not needed anymore
 
         # sort inner structures with highest nesting depth first
         self._innerStructures.sort( key = lambda s : s.name.count('.'), reverse=True)
+
         # correct names and offsets of structure members
         for structure in self._innerStructures:
             newMembers : List[StructMember] = list()
@@ -182,14 +247,15 @@ class VariableTypeDescription():
         self._members.sort(key = lambda m: m.vo)
         pass
 
+
     def _updateMemberList(self, s ):
         '''
         extract data type member's information
-        s : member definition returned by POBJ_ACC_TYPE_INTERN
+        s : member definition returned by POBJ_ACC_TYPE_EXTERN
             e.g "{.ton.IN VT=boolean VL=1 VN=1 VO=16}"
         '''
         desc: dict[str, str] = {} # member's object descriptor
-        for m in patternStructureElementDefinition.finditer(s): # find matches
+        for m in patternStructureMemberDefinition.finditer(s): # find matches
             ex = m.group()
             if ex.startswith('.'):
                 desc.update({'name' : ex}) # member's name
@@ -198,7 +264,7 @@ class VariableTypeDescription():
 
         vt = PvType(desc.get('VT'))
         sn = str(desc.get('SN', ''))        
-        vo = int(desc.get('VO',0)) # variable offset
+        vo = int(desc.get('VO',0)) # variable offset in PLC but not in PVI !
         vn = int(desc.get('VN',0))
         vl = int(desc.get('VL',0))
         vs = str(desc.get('VS',''))
