@@ -21,7 +21,7 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import List, NamedTuple, Tuple
+from typing import List, Dict, Union, NamedTuple, Tuple
 import datetime
 from ctypes import sizeof, create_string_buffer
 from ctypes import c_bool, c_uint8, c_int8, c_uint16, c_int16, c_uint32, c_int32, c_uint64, c_int64, c_float, c_double
@@ -57,7 +57,6 @@ class VariableTypeDescription():
         self._vs = ''
         self._lowerIndex = -1
         self._higherIndex = -1
-        self._parentObject = None
         self._memberOffsets : List[StructMember] = list()
         self._members : List[StructMember] = list()
         self._innerStructures : List[StructMember] = list()
@@ -65,43 +64,42 @@ class VariableTypeDescription():
         list of all data type (structure) members if this variable is a struct
         '''
 
-    def readFrom(self, object : PviObject ):
+    def readFrom(self, linkID : int ) -> Dict[str,str]:
         '''
         read type description from object
         object: Variable object
-        '''        
-        self._parentObject = object
-        self._parentObject._objectDescriptor.update({'VN' : '1', 'VL' : '1' })        
+        ''' 
+        objectDescriptor : Dict[str, str] = {'VN' : '1', 'VL' : '1' }
 
         s = create_string_buffer(b'\000' * 64*1024) 
-        object._result = PviRead( self._parentObject._linkID, POBJ_ACC_TYPE_INTERN, None, 0, s, sizeof(s) )
-        if self._parentObject._result == 0:
+        result = PviRead( linkID, POBJ_ACC_TYPE_INTERN, None, 0, s, sizeof(s) )
+        if result == 0:
             s = str(s, 'ascii').rstrip('\x00')
         else:
-            raise PviError(self._parentObject._result, self._parentObject)
+            raise PviError(result)
         
-        self._getByteOffsetsAndLength(s)
+        self._getByteOffsetsAndLength(s, objectDescriptor)
 
         s = create_string_buffer(b'\000' * 64*1024) 
-        object._result = PviRead( self._parentObject._linkID, POBJ_ACC_TYPE_EXTERN, None, 0, s, sizeof(s) )
-        if self._parentObject._result == 0:
+        result = PviRead( linkID, POBJ_ACC_TYPE_EXTERN, None, 0, s, sizeof(s) )
+        if result == 0:
             s = str(s, 'ascii').rstrip('\x00')
         else:
-            raise PviError(self._parentObject._result, self._parentObject)        
+            raise PviError(result)        
 
-        self._updateObjectDescriptor(s) # udpate object descriptor
+        self._updateObjectDescriptor(s, objectDescriptor) # udpate object descriptor
 
-        self._vt = PvType( self._parentObject._objectDescriptor.get('VT')) 
+        self._vt = PvType( objectDescriptor.get('VT')) 
 
-        self._vn = int( self._parentObject.descriptor.get('VN', 0) )
+        self._vn = int( objectDescriptor.get('VN', 0) )
         assert self._vn > 0
 
-        self._vl = int( self._parentObject.descriptor.get('VL', 0) )
+        self._vl = int( objectDescriptor.get('VL', 0) )
         assert self._vl > 0
 
-        self._sn = str( self._parentObject.descriptor.get('SN', '') )
-        self._sc = str( self._parentObject.descriptor.get('SC', '') )
-        self._vs = str( self._parentObject.descriptor.get('VS', '') )  
+        self._sn = str( objectDescriptor.get('SN', '') )
+        self._sc = str( objectDescriptor.get('SC', '') )
+        self._vs = str( objectDescriptor.get('VS', '') )  
         
         if self._vn > 1 or self._vs.startswith('a'): # is variable an array ?
             self._lowerIndex = 0
@@ -109,7 +107,8 @@ class VariableTypeDescription():
             if m:
                 self._lowerIndex = int(m[0][0])
             self._higherIndex = self._lowerIndex + self._vn -1
-        pass     
+
+        return objectDescriptor  
 
     @property
     def vn(self) -> int:
@@ -148,7 +147,7 @@ class VariableTypeDescription():
         return self._sn if self._vt == PvType.STRUCT else ''
     
 
-    def _getByteOffsetsAndLength(self, s):
+    def _getByteOffsetsAndLength(self, s : str, objectDescriptor : Dict[str,str]):
         '''
         get the offsets and length of the variable and the members in case of a structure 
         given by information delivered by POBJ_ACC_TYPE_INTERN
@@ -159,13 +158,12 @@ class VariableTypeDescription():
             if ex.startswith('{'): # structure member definition
                 self._updateMemberOffsetsAndLength(ex)
             else: # definition of variable itself
-                assert isinstance(self._parentObject, PviObject)
                 parameter = ex[0:2]
                 value = ex[3:]
                 if parameter == 'VL':
-                    self._parentObject._objectDescriptor.update({parameter: value })
+                    objectDescriptor.update({parameter: value })
 
-    def _updateMemberOffsetsAndLength(self, s):
+    def _updateMemberOffsetsAndLength(self, s : str ):
         '''
         extract data type member's information
         s : member definition returned by POBJ_ACC_TYPE_INTERN
@@ -187,7 +185,7 @@ class VariableTypeDescription():
         self._memberOffsets.append(  StructMember( name, vt, '', vn, vo, vl, '' ) )
 
 
-    def _updateObjectDescriptor(self, s):
+    def _updateObjectDescriptor(self, s : str, objectDescriptor : Dict[str,str]):
         '''
         update object descriptor and find all members if this PV is a structure
         s : member definition returned by POBJ_ACC_TYPE_EXTERN
@@ -198,11 +196,10 @@ class VariableTypeDescription():
             if ex.startswith('{'): # structure member definition
                 self._updateMemberList(ex)
             else: # definition of variable itself
-                assert isinstance(self._parentObject, PviObject)
                 parameter = ex[0:2]
                 value = ex[3:]
                 if parameter != 'VL': # VL is length of variable in PLC not in PVI !
-                    self._parentObject._objectDescriptor.update({parameter: value })
+                    objectDescriptor.update({parameter: value })
         del ex
 
         # correct the members' VO and VL since PVI_ACC_TYPE_EXTERN delivers PLC variable information 
@@ -248,7 +245,7 @@ class VariableTypeDescription():
         pass
 
 
-    def _updateMemberList(self, s ):
+    def _updateMemberList(self, s : str ):
         '''
         extract data type member's information
         s : member definition returned by POBJ_ACC_TYPE_EXTERN
@@ -539,11 +536,11 @@ class VariableTypeDescription():
                 raise RuntimeError( "data type " + str(self._vt) + " not implemented")
             
         except IndexError:
-            raise IndexError(f'wrong length writing {value}\nto {repr(self._parentObject)}')            
+            raise IndexError('wrong length writing {value}')            
         except BaseException as e:
             raise e
                     
         if buffer == None:
-            raise ValueError(f'wrong data type {type(value)} used\nwriting {repr(self._parentObject)}')
+            raise ValueError(f'wrong data type {type(value)} used.')
 
         return buffer
