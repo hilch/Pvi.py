@@ -38,7 +38,7 @@ patternDataTypeInformation = re.compile(r"([A-Z]{2}=[\w\x2C]+)|(\{[^}]+\})") # p
 patternStructureMemberDefinition = re.compile(r"(\x2E[\w\x2E]+)|([A-Z]{2}=[\w\x2C]+)") # pattern for structure member definition
 patternVSa = re.compile(r"a,(\d+),(\d+)") # pattern for parameter VS=a
 
-StructMember = NamedTuple( 'StructMember', [('name', str), ('vt', PvType), ('sn', str), ('vn', int), ('vo', int), ('vl', int), ('vs', str)])
+StructMember = NamedTuple( 'StructMember', [('name', str), ('vt', PvType), ('sn', str), ('vn', int), ('vo', int), ('vl', int), ('vs', str),('tn', str)])
 '''
 helper class for structure member 
 '''
@@ -181,8 +181,9 @@ class VariableTypeDescription():
         vo = int(desc.get('VO',0)) # variable offset in PVI
         vn = int(desc.get('VN',0))
         vl = int(desc.get('VL',0))
+        tn = str(desc.get('TN',''))
         name = desc.get('name','')
-        self._memberOffsets.append(  StructMember( name, vt, '', vn, vo, vl, '' ) )
+        self._memberOffsets.append(  StructMember( name, vt, '', vn, vo, vl, '','' ) )
 
 
     def _updateObjectDescriptor(self, s : str, objectDescriptor : Dict[str,str]):
@@ -209,7 +210,7 @@ class VariableTypeDescription():
             for n, extern in enumerate(li):
                 for intern in self._memberOffsets:
                     if extern.name == intern.name and extern.vt == intern.vt and extern.vo != intern.vo:
-                        li[n] = StructMember( extern.name, extern.vt, extern.sn, extern.vn, intern.vo, intern.vl, extern.vs)
+                        li[n] = StructMember( extern.name, extern.vt, extern.sn, extern.vn, intern.vo, intern.vl, extern.vs, extern.tn)
         self._memberOffsets.clear() # the offsets are not needed anymore
 
         # sort inner structures with highest nesting depth first
@@ -231,12 +232,12 @@ class VariableTypeDescription():
                         oldMembers.remove(mb)
                         for index in range(0, structure.vn ):
                             # correct name + offset
-                            newMembers.append( StructMember( f"{structure.name}[{index+lowerIndex}]{elementName}", mb.vt, mb.sn, mb.vn, mb.vo + structure.vo + structure.vl*index, mb.vl, mb.vs))
+                            newMembers.append( StructMember( f"{structure.name}[{index+lowerIndex}]{elementName}", mb.vt, mb.sn, mb.vn, mb.vo + structure.vo + structure.vl*index, mb.vl, mb.vs, mb.tn))
                         del index, elementName
                     else: # structure is not an array
                         oldMembers.remove(mb)
                         # correct offset only
-                        newMembers.append( StructMember( mb.name, mb.vt, mb.sn, mb.vn, mb.vo + structure.vo, mb.vl, mb.vs ) )
+                        newMembers.append( StructMember( mb.name, mb.vt, mb.sn, mb.vn, mb.vo + structure.vo, mb.vl, mb.vs, mb.tn ) )
             self._members = oldMembers                            
             self._members.extend(newMembers)
             del oldMembers, newMembers, mb
@@ -265,11 +266,12 @@ class VariableTypeDescription():
         vn = int(desc.get('VN',0))
         vl = int(desc.get('VL',0))
         vs = str(desc.get('VS',''))
+        tn = str(desc.get('TN',''))        
         name = desc.get('name','')
         if vt == PvType.STRUCT:
-            self._innerStructures.append(  StructMember( name, vt, sn, vn, vo, vl, vs ) )
+            self._innerStructures.append(  StructMember( name, vt, sn, vn, vo, vl, vs, tn ) )
         elif vt != PvType.UNKNOWN:
-            self._members.append(  StructMember( name, vt, sn, vn, vo, vl, vs ) )
+            self._members.append(  StructMember( name, vt, sn, vn, vo, vl, vs, tn ) )
 
         
 
