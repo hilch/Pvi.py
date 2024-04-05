@@ -466,7 +466,7 @@ class PviObject():
             raise PviError(self._result, self)        
 
     def __del__(self):
-        self.kill
+        self.kill()
 
     def kill(self):
         '''
