@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?AutomationStudio Version="4.0.14.207"?>
+<Trend xmlns="http://br-automation.co.at/AS/VC/Project" Name="Trend_Temperature">
+  <Property Name="BackColor" Value="9"/>
+  <Property Name="Cursor1" Value="True"/>
+  <Property Name="Cursor1Color" Value="253"/>
+  <Property Name="Cursor1PositionDatapoint" Value="Source[global].Variable[Local.Visualisation.visTrend.TrendControl.Cursor1Position]"/>
+  <Property Name="Cursor1StatusDatapoint" Value="None"/>
+  <Property Name="Cursor2" Value="True"/>
+  <Property Name="Cursor2Color" Value="221"/>
+  <Property Name="Cursor2PositionDatapoint" Value="Source[global].Variable[Local.Visualisation.visTrend.TrendControl.Cursor2Position]"/>
+  <Property Name="Cursor2StatusDatapoint" Value="None"/>
+  <Property Name="Description" Value=""/>
+  <Property Name="Height" Value="768"/>
+  <Property Name="Left" Value="0"/>
+  <Property Name="Top" Value="0"/>
+  <Property Name="Width" Value="1024"/>
+  <Controls>
+    <Control ClassId="0x00001015" Name="TrendGrid_1">
+      <Property Name="Description" Value=""/>
+      <Property Name="ForeColor" Value="251"/>
+      <Property Name="Height" Value="465"/>
+      <Property Name="Left" Value="148"/>
+      <Property Name="SpacingHorizontal" Value="30"/>
+      <Property Name="SpacingVertical" Value="30"/>
+      <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[StyleClass_1]"/>
+      <Property Name="Top" Value="99"/>
+      <Property Name="Width" Value="544"/>
+    </Control>
+    <Control ClassId="0x00001019" Name="TrendScaleContainer_1">
+      <Property Name="AlignIndex" Value="1"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Height" Value="48"/>
+      <Property Name="Horizontal" Value="True"/>
+      <Property Name="Left" Value="148"/>
+      <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[StyleClass_1]"/>
+      <Property Name="Top" Value="564"/>
+      <Property Name="Width" Value="587"/>
+    </Control>
+    <Control ClassId="0x00001019" Name="TrendScaleContainer_2">
+      <Property Name="AlignIndex" Value="-1"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Height" Value="465"/>
+      <Property Name="Horizontal" Value="False"/>
+      <Property Name="Left" Value="81"/>
+      <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[StyleClass_1]"/>
+      <Property Name="Top" Value="99"/>
+      <Property Name="Width" Value="67"/>
+    </Control>
+    <Control ClassId="0x0000101A" Name="TrendTimeScale_1">
+      <Property Name="AutomaticScrollOffset" Value="10"/>
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="Cursor1TimeDatapoint" Value="Source[global].Variable[Local.Visualisation.visTrend.TrendControl.TrendTimeScale.Cursor1TimeDatapoint]"/>
+      <Property Name="Cursor2TimeDatapoint" Value="Source[global].Variable[Local.Visualisation.visTrend.TrendControl.TrendTimeScale.Cursor2TimeDatapoint]"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial9pxValue]"/>
+      <Property Name="LabelPosition" Value="Left+Right"/>
+      <Property Name="LabelSpacing" Value="80"/>
+      <Property Name="LineWidth" Value="1"/>
+      <Property Name="ModeDatapoint" Value="Source[global].Variable[Local.Visualisation.visTrend.TrendControl.TrendTimeScale.ModeDatapoint]"/>
+      <Property Name="ScaleContainer" Value="Source[local].Trend[Trend_Temperature].Control[TrendScaleContainer_1]"/>
+      <Property Name="ScrollDatapoint" Value="Source[global].Variable[Local.Visualisation.visTrend.TrendControl.TrendTimeScale.ScrollDatapoint]"/>
+      <Property Name="StatusDatapoint" Value="Source[global].Variable[Local.Visualisation.visTrend.TrendControl.TrendTimeScale.StatusDatapoint]"/>
+      <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[StyleClass_1]"/>
+      <Property Name="TextGroup" Value="Source[local].TextGroup[DateTimeFormats]"/>
+      <Property Name="TextIndex" Value="1"/>
+      <Property Name="TextSource" Value="SingleText"/>
+      <Property Name="UnitText" Value="Abbreviation"/>
+      <Property Name="UnitTextPosition" Value="End"/>
+      <Property Name="ZoomDatapoint" Value="Source[global].Variable[Local.Visualisation.visTrend.TrendControl.TrendTimeScale.ZoomDatapoint]"/>
+    </Control>
+    <Control ClassId="0x00001017" Name="TrendValueScale_1">
+      <Property Name="BackColor" Value="15"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Font" Value="Source[local].Font[Arial9pxValue]"/>
+      <Property Name="LineWidth" Value="1"/>
+      <Property Name="PitchLineSpacing" Value="10"/>
+      <Property Name="ScaleContainer" Value="Source[local].Trend[Trend_Temperature].Control[TrendScaleContainer_2]"/>
+      <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[StyleClass_1]"/>
+      <Property Name="UnitText" Value="Abbreviation"/>
+      <Property Name="UnitTextPosition" Value="End"/>
+    </Control>
+    <Control ClassId="0x00001016" Name="TrendCurveCPUtemp">
+      <Property Name="Cursor1ValueDatapoint" Value="None"/>
+      <Property Name="Cursor2ValueDatapoint" Value="None"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="ForeColor" Value="125"/>
+      <Property Name="Height" Value="75"/>
+      <Property Name="HorizontalScale" Value="Source[local].Trend[Trend_Temperature].Control[TrendTimeScale_1]"/>
+      <Property Name="Left" Value="342"/>
+      <Property Name="MarkerType" Value="None"/>
+      <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[StyleClass_1]"/>
+      <Property Name="Top" Value="214"/>
+      <Property Name="TrendData" Value="Source[local].TrendData[CpuTemperature]"/>
+      <Property Name="VerticalScale" Value="Source[local].Trend[Trend_Temperature].Control[TrendValueScale_1]"/>
+      <Property Name="Width" Value="75"/>
+      <Property Name="ZoomDisplayMode" Value="Average"/>
+    </Control>
+    <Control ClassId="0x00001016" Name="TrendCurveWaterTemp">
+      <Property Name="Cursor1ValueDatapoint" Value="Source[global].Variable[Local.Visualisation.visTrend.TrendControl.TrendCurve[0].Cursor1ValueDatapoint]"/>
+      <Property Name="Cursor2ValueDatapoint" Value="Source[global].Variable[Local.Visualisation.visTrend.TrendControl.TrendCurve[0].Cursor2ValueDatapoint]"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="ForeColor" Value="253"/>
+      <Property Name="Height" Value="75"/>
+      <Property Name="HorizontalScale" Value="Source[local].Trend[Trend_Temperature].Control[TrendTimeScale_1]"/>
+      <Property Name="Left" Value="158"/>
+      <Property Name="MarkerType" Value="None"/>
+      <Property Name="StatusDatapoint" Value="Source[global].Variable[Local.Visualisation.visTrend.TrendControl.TrendCurve[0].StatusDatapoint]"/>
+      <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[StyleClass_1]"/>
+      <Property Name="Top" Value="194"/>
+      <Property Name="TrendData" Value="Source[local].TrendData[ActTemperature]"/>
+      <Property Name="VerticalScale" Value="Source[local].Trend[Trend_Temperature].Control[TrendValueScale_1]"/>
+      <Property Name="Width" Value="75"/>
+      <Property Name="ZoomDisplayMode" Value="Average"/>
+    </Control>
+  </Controls>
+</Trend>

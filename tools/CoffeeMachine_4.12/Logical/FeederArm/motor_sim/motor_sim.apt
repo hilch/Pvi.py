@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=3.0.80.15?>
+<AcoposParameterTable>
+  <Root Name="Parameters">
+    <Parameter Name="CMD_SIMULATION" ID="110" Value="ncSW_ON" Description="Simulation mode: Command" />
+  </Root>
+</AcoposParameterTable>

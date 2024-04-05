@@ -1,0 +1,5 @@
+Just for internal use. Do not modify or delete this file!!
+
+This file indicates that the default library structure for Ar dependent libraries will be irgnored and the libary is treated as versioned library.
+
+Therefore if a library folder contains this file but no library versions the library isn't valid anymore.

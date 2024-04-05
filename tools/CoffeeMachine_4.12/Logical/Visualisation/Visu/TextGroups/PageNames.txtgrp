@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?AutomationStudio Version="4.0.14.207"?>
+<TextGroup xmlns="http://br-automation.co.at/AS/VC/Project" Name="PageNames">
+  <Property Name="Description" Value=""/>
+  <Property Name="Index" Value="13"/>
+  <TextSnippets/>
+  <TextLayer LanguageId="en">
+    <Text ID="87617" Value="Main Page"/>
+    <Text ID="87618" Value="Takeout Page"/>
+    <Text ID="87626" Value="Screen Saver"/>
+    <Text ID="89144" Value="Setup"/>
+    <Text ID="91311" Value="Trend"/>
+    <Text ID="91510" Value="Active Alarms"/>
+    <Text ID="91511" Value="Alarm History"/>
+    <Text ID="93066" Value="Diagnostics"/>
+    <Text ID="93499" Value="Information"/>
+  </TextLayer>
+  <TextLayer LanguageId="de">
+    <Text ID="87617" Value="Haupt Seite"/>
+    <Text ID="87618" Value="Ausgabebereich"/>
+    <Text ID="87626" Value="Bildschirmschoner"/>
+    <Text ID="89144" Value="Setup"/>
+    <Text ID="91311" Value="Trend"/>
+    <Text ID="91510" Value="Aktive Alarme"/>
+    <Text ID="91511" Value="Alarm Historie"/>
+    <Text ID="93066" Value="Diagnose"/>
+    <Text ID="93499" Value="Information"/>
+  </TextLayer>
+  <TextLayer LanguageId="zh-CN">
+    <Text ID="87617" Value="10 主页"/>
+    <Text ID="87618" Value="11 取出"/>
+    <Text ID="87626" Value="00 初始化"/>
+    <Text ID="89144" Value="60 设置"/>
+    <Text ID="91311" Value="20 趋势图"/>
+    <Text ID="91510" Value="30 主动报警"/>
+    <Text ID="91511" Value="31 历史警钟"/>
+    <Text ID="93066" Value="Diagnostics"/>
+    <Text ID="93499" Value="12 資訊"/>
+  </TextLayer>
+  <IndexMap>
+    <Index ID="87617" Value="10"/>
+    <Index ID="87618" Value="11"/>
+    <Index ID="87626" Value="0"/>
+    <Index ID="89144" Value="60"/>
+    <Index ID="91311" Value="20"/>
+    <Index ID="91510" Value="30"/>
+    <Index ID="91511" Value="31"/>
+    <Index ID="93066" Value="61"/>
+    <Index ID="93499" Value="12"/>
+  </IndexMap>
+</TextGroup>

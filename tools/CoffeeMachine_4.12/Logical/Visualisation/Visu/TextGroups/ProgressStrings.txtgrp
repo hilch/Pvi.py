@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?AutomationStudio Version="4.0.14.207"?>
+<TextGroup xmlns="http://br-automation.co.at/AS/VC/Project" Name="ProgressStrings">
+  <Property Name="Description" Value=""/>
+  <Property Name="Index" Value="9"/>
+  <TextSnippets/>
+  <TextLayer LanguageId="en">
+    <Text ID="87347" Value="Transporting cup to brewing assembly"/>
+    <Text ID="87348" Value="Brewing in progress"/>
+    <Text ID="87349" Value="Ready for takeout!"/>
+  </TextLayer>
+  <TextLayer LanguageId="de">
+    <Text ID="87347" Value="Tasse wird zur Brüheinrichtung befördert"/>
+    <Text ID="87348" Value="Zubereitung wird durchgeführt"/>
+    <Text ID="87349" Value="Fertig! Bitte entnehmen!"/>
+  </TextLayer>
+  <TextLayer LanguageId="zh-CN">
+    <Text ID="87347" Value="准备杯子"/>
+    <Text ID="87348" Value="正在灌装"/>
+    <Text ID="87349" Value="完成！请用"/>
+  </TextLayer>
+  <IndexMap>
+    <Index ID="87347" Value="0"/>
+    <Index ID="87348" Value="1"/>
+    <Index ID="87349" Value="2"/>
+  </IndexMap>
+</TextGroup>

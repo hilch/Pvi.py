@@ -1,0 +1,15 @@
+(********************************************************************
+ * COPYRIGHT (C) BERNECKER + RAINER, AUSTRIA, A-5142 EGGELSBERG
+ ********************************************************************
+ * Library: Runtime
+ * File: Runtime.var
+ * Created: 09.08.2007
+ ********************************************************************
+ * Functions and function blocks of library Runtime
+ ********************************************************************)
+VAR CONSTANT
+	ERR_OK                : UINT := 0;			(*no error*)
+	ERR_NOTIMPLEMENTED    : UINT := 9999;       (*function or function block not implemented*)
+	ERR_FUB_ENABLE_FALSE  : UINT := 16#FFFE;	(*function block parameter "enable" is FALSE*)
+	ERR_FUB_BUSY          : UINT := 16#FFFF;	(*function block still working*)
+END_VAR

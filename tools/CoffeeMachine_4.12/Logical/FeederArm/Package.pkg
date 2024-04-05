@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=3.0.90.11?>
+<Package xmlns="http://br-automation.co.at/AS/Package">
+  <Objects>
+    <Object Type="DataObject" Language="Ett" Description="ACP10: ErrorText data object.">acp_err</Object>
+    <Object Type="DataObject" Language="Apt" Description="Parameters for motor simulation">motor_sim</Object>
+    <Object Type="DataObject" Language="Apt" Description="ACOPOS Parameter Table">motor_office</Object>
+    <Object Type="DataObject" Language="Ax" Description="Feeder axis configuration">feed_ini</Object>
+    <Object Type="Program" Language="IEC" Description="feeder logic control">feeder</Object>
+  </Objects>
+</Package>

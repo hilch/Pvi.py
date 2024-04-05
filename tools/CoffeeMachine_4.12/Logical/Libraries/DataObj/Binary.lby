@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=3.0.64?>
+<Library xmlns="http://br-automation.co.at/AS/Library">
+  <Files>
+    <File>DataObj.fun</File>
+    <File>DataObj.typ</File>
+    <File>DataObj.var</File>
+  </Files>
+</Library>

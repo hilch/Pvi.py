@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=3.0.80.15?>
+<AcoposParameterTable>
+  <Root Name="Parameters">
+    <Parameter Name="PHASE_MON_IGNORE" ID="80" Value="1" Description="Power mains: Ignore phase failure" />
+    <Parameter Name="UDC_NOMINAL" ID="390" Value="24" Unit="V" Description="CTRL DC bus: Nominal voltage" />
+  </Root>
+</AcoposParameterTable>

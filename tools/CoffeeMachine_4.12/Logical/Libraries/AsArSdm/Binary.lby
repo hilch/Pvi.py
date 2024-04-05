@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=3.0.90.18?>
+<Library Description="The AsArSdm library supports the System Diagnostics Manager" xmlns="http://br-automation.co.at/AS/Library">
+  <Files>
+    <File>AsArSdm.var</File>
+    <File>AsArSdm.typ</File>
+    <File>AsArSdm.fun</File>
+  </Files>
+  <Dependencies>
+    <Dependency ObjectName="runtime" />
+  </Dependencies>
+</Library>

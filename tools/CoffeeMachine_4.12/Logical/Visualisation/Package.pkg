@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=4.0.14.207?>
+<Package xmlns="http://br-automation.co.at/AS/Package">
+  <Objects>
+    <Object Type="DataObject" Language="Vc" Description="640x480 (VGA)">Visu</Object>
+    <Object Type="DataObject" Language="Vc" Description="800x480 WVGA">VisuW</Object>
+    <Object Type="Program" Language="IEC" Description="Visualization Control">visCtrl</Object>
+    <Object Type="Program" Language="IEC" Description="Alarm Control">visAlarm</Object>
+    <Object Type="Program" Language="IEC" Description="Trend Control">visTrend</Object>
+  </Objects>
+</Package>

@@ -1,0 +1,20 @@
+(********************************************************************
+ * COPYRIGHT -- B&R
+ ********************************************************************
+ * Program: feeder
+ * File: feeder.var
+ * Author: B&R
+ * Created: June 13, 2007
+ ********************************************************************
+ * Local variables of program feeder
+ ********************************************************************)
+VAR
+	feederMC_Power : MC_Power;
+	feederMC_Home : MC_Home;
+	feederMC_ReadAxisError : MC_ReadAxisError;
+	feederMC_Reset : MC_Reset;
+	feederMC_MoveAdditive : MC_MoveAdditive;
+	feederMC_ReadStatus : MC_ReadStatus;
+	MC_ReadActualPosition_0 : MC_ReadActualPosition;
+	MC_ReadActualVelocity_0 : MC_ReadActualVelocity;
+END_VAR

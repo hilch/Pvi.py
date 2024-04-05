@@ -1,0 +1,13 @@
+VAR CONSTANT
+    ncSDC_ENC16                       :UINT :=100;
+    ncSDC_ENC32                       :UINT :=101;
+    ncSDC_DRVSM16                     :UINT :=110;
+    ncSDC_DRVSM32                     :UINT :=111;
+    ncSDC_DRVSM16_CTRL                :UINT :=112;
+    ncSDC_DRVSM32_CTRL                :UINT :=113;
+    ncSDC_DRVSERVO16                  :UINT :=120;
+    ncSDC_TRIG                        :UINT :=130;
+    ncSDC_TRIGDIGin                   :UINT :=131;
+    ncSDC_DIDO                        :UINT :=140;
+END_VAR
+

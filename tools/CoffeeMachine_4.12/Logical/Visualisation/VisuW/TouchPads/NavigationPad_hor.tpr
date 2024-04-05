@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?AutomationStudio Version="4.0.14.207"?>
+<TouchPad xmlns="http://br-automation.co.at/AS/VC/Project" Name="NavigationPad_hor">
+  <Property Name="BackColor" Value="8"/>
+  <Property Name="BitmapGroup" Value="Source[local].BitmapGroup[NavigationPad]"/>
+  <Property Name="BitmapIndex" Value="None"/>
+  <Property Name="BitmapOffset" Value="2"/>
+  <Property Name="BitmapSource" Value="MultipleBitmaps"/>
+  <Property Name="Description" Value=""/>
+  <Property Name="Height" Value="250"/>
+  <Property Name="Left" Value="0"/>
+  <Property Name="NumLevel" Value="1"/>
+  <Property Name="PressedBitmapGroup" Value="Source[local].BitmapGroup[NavigationPad]"/>
+  <Property Name="PressedBitmapIndex" Value="None"/>
+  <Property Name="PressedBitmapOffset" Value="3"/>
+  <Property Name="PressedBitmapSource" Value="MultipleBitmaps"/>
+  <Property Name="Top" Value="0"/>
+  <Property Name="Width" Value="300"/>
+  <Controls>
+    <Control ClassId="0x00000500" Name="TouchPadGrid_1">
+      <Property Name="ColumnWidth" Value="62"/>
+      <Property Name="Columns" Value="3"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Height" Value="98"/>
+      <Property Name="Left" Value="0"/>
+      <Property Name="RowHeight" Value="49"/>
+      <Property Name="Rows" Value="2"/>
+      <Property Name="Top" Value="0"/>
+      <Property Name="Width" Value="186"/>
+    </Control>
+  </Controls>
+  <PanelItems>
+    <PanelItem Index="1">
+      <KeyLevels/>
+    </PanelItem>
+    <PanelItem Index="2">
+      <KeyLevels/>
+    </PanelItem>
+    <PanelItem Index="3">
+      <KeyLevels>
+        <KeyLevel Level="0" VirtualKey="TP_FocusDependent4"/>
+      </KeyLevels>
+    </PanelItem>
+    <PanelItem Index="4">
+      <KeyLevels>
+        <KeyLevel Level="0" VirtualKey="TP_FocusDependent1"/>
+      </KeyLevels>
+    </PanelItem>
+    <PanelItem Index="5">
+      <KeyLevels>
+        <KeyLevel Level="0" VirtualKey="TP_FocusDependent2"/>
+      </KeyLevels>
+    </PanelItem>
+    <PanelItem Index="6">
+      <KeyLevels>
+        <KeyLevel Level="0" VirtualKey="TP_FocusDependent3"/>
+      </KeyLevels>
+    </PanelItem>
+  </PanelItems>
+</TouchPad>

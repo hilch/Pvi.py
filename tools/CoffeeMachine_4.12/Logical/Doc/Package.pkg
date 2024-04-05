@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=3.0.90.18?>
+<Package xmlns="http://br-automation.co.at/AS/Package">
+  <Objects>
+    <Object Type="File">SoftwareArchitecture.png</Object>
+    <Object Type="File" Description="B&amp;R Coding Guideline">B&amp;RCodingGuideline-ENG.pdf</Object>
+    <Object Type="File">B&amp;R Coffee Machine-ENG.pdf</Object>
+  </Objects>
+</Package>

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=3.0.90.1?>
+<Library Description="The Visapi library provides support to access and control visualizations at runtime." xmlns="http://br-automation.co.at/AS/Library">
+  <Files>
+    <File>Visapi.typ</File>
+    <File>Visapi.fun</File>
+    <File>Visapi.var</File>
+  </Files>
+</Library>

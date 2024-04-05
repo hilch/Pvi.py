@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=3.0.64?>
+<Library xmlns="http://br-automation.co.at/AS/Library">
+  <Files>
+    <File>FileIO.typ</File>
+    <File>FileIO.var</File>
+    <File>FileIO.fun</File>
+  </Files>
+</Library>

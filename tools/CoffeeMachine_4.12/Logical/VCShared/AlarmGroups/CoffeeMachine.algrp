@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?AutomationStudio Version="4.0.14.207"?>
+<AlarmGroup xmlns="http://br-automation.co.at/AS/VC/Project" Name="CoffeeMachine">
+  <Property Name="AcknowledgeImage" Value="Source[global].Variable[Local.Visualisation.visAlarm.alarmAckCoffee]"/>
+  <Property Name="ActiveBackColor" Value="253"/>
+  <Property Name="ActiveForeColor" Value="0"/>
+  <Property Name="AlarmImage" Value="Source[global].Variable[Local.Visualisation.visAlarm.alarmCoffee]"/>
+  <Property Name="BypassBackColor" Value="14"/>
+  <Property Name="BypassForeColor" Value="0"/>
+  <Property Name="BypassImage" Value="None"/>
+  <Property Name="DefaultBackColor" Value="15"/>
+  <Property Name="DefaultForeColor" Value="0"/>
+  <Property Name="Description" Value=""/>
+  <Property Name="GroupAlarm" Value="None"/>
+  <Property Name="ImageOffset" Value="0"/>
+  <Property Name="Index" Value="1"/>
+  <Property Name="LatchedBackColor" Value="2"/>
+  <Property Name="LatchedForeColor" Value="0"/>
+  <Property Name="Priority" Value="1"/>
+  <Property Name="QuitBackColor" Value="15"/>
+  <Property Name="QuitForeColor" Value="45"/>
+  <Alarms>
+    <Alarm Index="2">
+      <Property Name="Acknowledge" Value="Possible"/>
+      <Property Name="AcknowledgeActive" Value="Enabled"/>
+      <Property Name="Bypass" Value="Enabled"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Latched" Value="False"/>
+      <Property Name="RecordAcknowledge" Value="True"/>
+      <Property Name="RecordBypass" Value="All"/>
+      <Property Name="RecordReset" Value="All"/>
+      <Property Name="RecordTrigger" Value="True"/>
+      <Property Name="TriggerGroupAlarm" Value="False"/>
+    </Alarm>
+    <Alarm Index="1">
+      <Property Name="Acknowledge" Value="Possible"/>
+      <Property Name="AcknowledgeActive" Value="Enabled"/>
+      <Property Name="Bypass" Value="Enabled"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Latched" Value="False"/>
+      <Property Name="RecordAcknowledge" Value="True"/>
+      <Property Name="RecordBypass" Value="All"/>
+      <Property Name="RecordReset" Value="All"/>
+      <Property Name="RecordTrigger" Value="True"/>
+      <Property Name="TriggerGroupAlarm" Value="False"/>
+    </Alarm>
+    <Alarm Index="0">
+      <Property Name="Acknowledge" Value="Possible"/>
+      <Property Name="AcknowledgeActive" Value="Enabled"/>
+      <Property Name="Bypass" Value="Enabled"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Latched" Value="False"/>
+      <Property Name="RecordAcknowledge" Value="True"/>
+      <Property Name="RecordBypass" Value="All"/>
+      <Property Name="RecordReset" Value="All"/>
+      <Property Name="RecordTrigger" Value="True"/>
+      <Property Name="TriggerGroupAlarm" Value="False"/>
+    </Alarm>
+    <Alarm Index="3">
+      <Property Name="Acknowledge" Value="Possible"/>
+      <Property Name="AcknowledgeActive" Value="Enabled"/>
+      <Property Name="Bypass" Value="Enabled"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Latched" Value="False"/>
+      <Property Name="RecordAcknowledge" Value="True"/>
+      <Property Name="RecordBypass" Value="All"/>
+      <Property Name="RecordReset" Value="All"/>
+      <Property Name="RecordTrigger" Value="True"/>
+      <Property Name="TriggerGroupAlarm" Value="False"/>
+    </Alarm>
+    <Alarm Index="4">
+      <Property Name="Acknowledge" Value="Possible"/>
+      <Property Name="AcknowledgeActive" Value="Enabled"/>
+      <Property Name="Bypass" Value="Enabled"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Latched" Value="False"/>
+      <Property Name="RecordAcknowledge" Value="True"/>
+      <Property Name="RecordBypass" Value="All"/>
+      <Property Name="RecordReset" Value="All"/>
+      <Property Name="RecordTrigger" Value="True"/>
+      <Property Name="TriggerGroupAlarm" Value="False"/>
+    </Alarm>
+    <Alarm Index="5">
+      <Property Name="Acknowledge" Value="Possible"/>
+      <Property Name="AcknowledgeActive" Value="Enabled"/>
+      <Property Name="Bypass" Value="Enabled"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Latched" Value="False"/>
+      <Property Name="RecordAcknowledge" Value="True"/>
+      <Property Name="RecordBypass" Value="All"/>
+      <Property Name="RecordReset" Value="All"/>
+      <Property Name="RecordTrigger" Value="True"/>
+      <Property Name="TriggerGroupAlarm" Value="False"/>
+    </Alarm>
+    <Alarm Index="6">
+      <Property Name="Acknowledge" Value="Required"/>
+      <Property Name="AcknowledgeActive" Value="Enabled"/>
+      <Property Name="Bypass" Value="Enabled"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Latched" Value="False"/>
+      <Property Name="RecordAcknowledge" Value="True"/>
+      <Property Name="RecordBypass" Value="All"/>
+      <Property Name="RecordReset" Value="All"/>
+      <Property Name="RecordTrigger" Value="True"/>
+      <Property Name="TriggerGroupAlarm" Value="False"/>
+    </Alarm>
+    <Alarm Index="7">
+      <Property Name="Acknowledge" Value="Required"/>
+      <Property Name="AcknowledgeActive" Value="Enabled"/>
+      <Property Name="Bypass" Value="Enabled"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Latched" Value="False"/>
+      <Property Name="RecordAcknowledge" Value="True"/>
+      <Property Name="RecordBypass" Value="All"/>
+      <Property Name="RecordReset" Value="All"/>
+      <Property Name="RecordTrigger" Value="True"/>
+      <Property Name="TriggerGroupAlarm" Value="False"/>
+    </Alarm>
+    <Alarm Index="Group">
+      <Property Name="Acknowledge" Value="Possible"/>
+      <Property Name="AcknowledgeActive" Value="Enabled"/>
+      <Property Name="Bypass" Value="Enabled"/>
+      <Property Name="Description" Value=""/>
+      <Property Name="Latched" Value="False"/>
+      <Property Name="RecordAcknowledge" Value="True"/>
+      <Property Name="RecordBypass" Value="All"/>
+      <Property Name="RecordReset" Value="All"/>
+      <Property Name="RecordTrigger" Value="True"/>
+    </Alarm>
+  </Alarms>
+  <TextGroup>
+    <TextSnippets>
+      <TextSnippet ClassId="0x00002001" Name="ConveyorErrorNo">
+        <Property Name="AddFractionDigits" Value="0"/>
+        <Property Name="Alignment" Value="Right"/>
+        <Property Name="Content" Value="Value Unittext"/>
+        <Property Name="Datapoint" Value="Source[global].Variable[Local.gConveyor.status.axisErrorNumber]"/>
+        <Property Name="Description" Value=""/>
+        <Property Name="FillCharacter" Value=""/>
+        <Property Name="MaxChars" Value="None"/>
+        <Property Name="MinChars" Value="None"/>
+        <Property Name="MinIntegerDigits" Value="1"/>
+        <Property Name="Persistent" Value="True"/>
+        <Property Name="UnitText" Value="Abbreviation"/>
+      </TextSnippet>
+      <TextSnippet ClassId="0x00002002" Name="ConveyorErrorText">
+        <Property Name="Alignment" Value="Left"/>
+        <Property Name="Datapoint" Value="Source[global].Variable[Local.gConveyor.status.axisErrorText]"/>
+        <Property Name="Description" Value=""/>
+        <Property Name="FillCharacter" Value=""/>
+        <Property Name="MaxChars" Value="None"/>
+        <Property Name="MinChars" Value="None"/>
+        <Property Name="Persistent" Value="False"/>
+      </TextSnippet>
+      <TextSnippet ClassId="0x00002001" Name="FeederErrorNo">
+        <Property Name="AddFractionDigits" Value="0"/>
+        <Property Name="Alignment" Value="Right"/>
+        <Property Name="Content" Value="Value Unittext"/>
+        <Property Name="Datapoint" Value="Source[global].Variable[Local.gFeeder.status.axisErrorNumber]"/>
+        <Property Name="Description" Value=""/>
+        <Property Name="FillCharacter" Value=""/>
+        <Property Name="MaxChars" Value="None"/>
+        <Property Name="MinChars" Value="None"/>
+        <Property Name="MinIntegerDigits" Value="1"/>
+        <Property Name="Persistent" Value="True"/>
+        <Property Name="UnitText" Value="Abbreviation"/>
+      </TextSnippet>
+      <TextSnippet ClassId="0x00002002" Name="FeederErrorText">
+        <Property Name="Alignment" Value="Left"/>
+        <Property Name="Datapoint" Value="Source[global].Variable[Local.gFeeder.status.axisErrorText]"/>
+        <Property Name="Description" Value=""/>
+        <Property Name="FillCharacter" Value=""/>
+        <Property Name="MaxChars" Value="None"/>
+        <Property Name="MinChars" Value="None"/>
+        <Property Name="Persistent" Value="False"/>
+      </TextSnippet>
+    </TextSnippets>
+    <TextLayer LanguageId="en">
+      <Text ID="43" Value="Feeder axis controller is switched off"/>
+      <Text ID="44" Value="Water temperature not ok"/>
+      <Text ID="45" Value="Machine is switched off"/>
+      <Text ID="80" Value="Feeder axis not homed"/>
+      <Text ID="81" Value="Conveyor axis controller is switched off"/>
+      <Text ID="82" Value="Conveyor axis not homed"/>
+      <Text ID="86" Value="Conveyor axis error {ConveyorErrorNo} - {ConveyorErrorText}"/>
+      <Text ID="87" Value="Feeder axis error {FeederErrorNo} - {FeederErrorText}"/>
+      <Text ID="34" Value=""/>
+    </TextLayer>
+    <TextLayer LanguageId="de">
+      <Text ID="43" Value="Regler der Zuführung ist ausgeschaltet"/>
+      <Text ID="44" Value="Wassertemperatur nicht ok"/>
+      <Text ID="45" Value="Maschine ist ausgeschaltet"/>
+      <Text ID="80" Value="Zuführung nicht referenziert"/>
+      <Text ID="81" Value="Regler des Transportbandes ist ausgeschaltet"/>
+      <Text ID="82" Value="Transportband nicht referenziert"/>
+      <Text ID="86" Value="Transportband Achsfehler {ConveyorErrorNo} - {ConveyorErrorText}"/>
+      <Text ID="87" Value="Zuführung Achsefehler {FeederErrorNo} - {FeederErrorText}"/>
+      <Text ID="34" Value=""/>
+    </TextLayer>
+    <TextLayer LanguageId="zh-CN">
+      <Text ID="43" Value="进料控制关闭"/>
+      <Text ID="44" Value="水温尚未达到"/>
+      <Text ID="45" Value="机器已关闭"/>
+      <Text ID="80" Value="进料未定位"/>
+      <Text ID="81" Value="传送带控制关闭　"/>
+      <Text ID="82" Value="传送带未定位"/>
+      <Text ID="86" Value="Conveyor axis error {ConveyorErrorNo} - {ConveyorErrorText}"/>
+      <Text ID="87" Value="Feeder axis error {FeederErrorNo} - {FeederErrorText}"/>
+      <Text ID="34" Value=""/>
+    </TextLayer>
+    <IndexMap>
+      <Index ID="43" Value="2"/>
+      <Index ID="44" Value="1"/>
+      <Index ID="45" Value="0"/>
+      <Index ID="80" Value="3"/>
+      <Index ID="81" Value="4"/>
+      <Index ID="82" Value="5"/>
+      <Index ID="86" Value="6"/>
+      <Index ID="87" Value="7"/>
+      <Index ID="34" Value="Group"/>
+    </IndexMap>
+  </TextGroup>
+</AlarmGroup>

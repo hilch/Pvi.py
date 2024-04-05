@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=4.0.14.37?>
+<NcMapping NcSwId="acp10">
+  <NcObject Name="axFeeder" ModuleId="axFeeder" Type="ncAXIS" Channel="1" AcoposSimulation="Standard" InitParameter="feed_ini" AcoposParameter="motor_sim" AdditionalData="PLCopen_ModPos=&quot;36000,100&quot;" Disabled="FALSE" ModuleDisabled="FALSE" />
+  <NcObject Name="axConveyor" ModuleId="axConveyor" Type="ncAXIS" Channel="1" AcoposSimulation="Standard" InitParameter="conv_ini" AcoposParameter="motor_sim" AdditionalData="PLCopen_ModPos=&quot;8388608,100&quot;" Disabled="FALSE" ModuleDisabled="FALSE" />
+</NcMapping>

@@ -1,0 +1,17 @@
+(********************************************************************
+ * COPYRIGHT -- Bernecker + Rainer
+ ********************************************************************
+ * Program: visAlarm
+ * File: visAlarm.var
+ * Author: B&R
+ * Created: November 22, 2007
+ ********************************************************************
+ * Local variables of program visAlarm
+ ********************************************************************)
+VAR
+	sdmAppLink : STRING[80]; (*URL for application status*)
+	alarmCoffee : ARRAY[0..19] OF BOOL := [20(FALSE)]; (*alarm image for alarms of coffee machine*)
+	sdmStatus : UINT; (*status of SdmSetAppParam fbk*)
+	SdmSetAppParam_0 : SdmSetAppParam; (*SdmSetAppParam fbk*)
+	alarmAckCoffee : ARRAY[0..19] OF BOOL; (*acknowledge image for alarms of coffee machine*)
+END_VAR

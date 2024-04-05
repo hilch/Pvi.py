@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?AutomationStudio Version="4.0.14.207"?>
+<BitmapGroup xmlns="http://br-automation.co.at/AS/VC/Project" Name="KeyRings">
+  <Property Name="Description" Value=""/>
+  <Property Name="Index" Value="10"/>
+  <Property Name="Translate" Value="False"/>
+  <BitmapLayer LanguageId="neutral">
+    <BitmapRef ID="767" Value="Source[local].Bitmap[switchOff]"/>
+    <BitmapRef ID="768" Value="Source[local].Bitmap[switchOn]"/>
+    <BitmapRef ID="769" Value="Source[local].Bitmap[switchReady]"/>
+    <BitmapRef ID="770" Value="Source[local].Bitmap[switchError]"/>
+  </BitmapLayer>
+  <IndexMap>
+    <Index ID="767" Value="0"/>
+    <Index ID="768" Value="1"/>
+    <Index ID="769" Value="2"/>
+    <Index ID="770" Value="3"/>
+  </IndexMap>
+</BitmapGroup>

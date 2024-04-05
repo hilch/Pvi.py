@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?AutomationStudio Version="4.0.14.207"?>
+<BitmapGroup xmlns="http://br-automation.co.at/AS/VC/Project" Name="CoffeeTypes">
+  <Property Name="Description" Value=""/>
+  <Property Name="Index" Value="7"/>
+  <Property Name="Translate" Value="False"/>
+  <BitmapLayer LanguageId="neutral">
+    <BitmapRef ID="475" Value="Source[local].Bitmap[coffee]"/>
+    <BitmapRef ID="476" Value="Source[local].Bitmap[cappucino]"/>
+    <BitmapRef ID="477" Value="Source[local].Bitmap[espresso]"/>
+  </BitmapLayer>
+  <IndexMap>
+    <Index ID="475" Value="0"/>
+    <Index ID="476" Value="1"/>
+    <Index ID="477" Value="2"/>
+  </IndexMap>
+</BitmapGroup>

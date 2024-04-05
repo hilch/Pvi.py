@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version="4.12.5.95 SP" WorkingVersion="4.12"?>
+<Project Description="Default project" Version="1.00.0" Edition="Standard" EditionComment="Standard" xmlns="http://br-automation.co.at/AS/Project">
+  <Communication />
+  <ANSIC Declarations="false" DefaultIncludes="true" />
+  <Build CreateCrossRef="false" />
+  <IEC ExtendedConstants="true" IecBitOperations="true" IecExtendedComments="true" KeywordsAsStructureMembers="false" NamingConventions="true" Pointers="true" Preprocessor="true" />
+  <Motion NcLanguage="49" RestartAcoposParameter="true" RestartInitParameter="true" />
+  <Project StoreRuntimeInProject="false" />
+  <Variables DefaultInitValue="0" DefaultRetain="false" DefaultVolatile="false" />
+  <TechnologyPackages>
+    <Acp10Arnc0 Version="5.16.2" />
+  </TechnologyPackages>
+</Project>
