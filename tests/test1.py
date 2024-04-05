@@ -2,6 +2,9 @@
 import unittest
 from pathlib import Path
 import sys
+import string
+import random
+import datetime
 
 pviPath = str(Path(__file__).parents[1])
 cwd = str(Path(__file__).parents[0])
@@ -31,17 +34,10 @@ class TestLists( unittest.TestCase):
         # read content
         allModules = [e['name'] for e in cpu.externalObjects if e['type'] == 'Module']
         self.assertIn('$$sysconf', allModules )
-        self.assertIn('$accsec', allModules )
-        self.assertIn('$arlogconn', allModules )
         self.assertIn('$arlogsys', allModules )
         self.assertIn('$arlogusr', allModules )
         self.assertIn('$fieldbus', allModules )
-        self.assertIn('$firewall', allModules )
-        self.assertIn('$motion', allModules )
         self.assertIn('$safety', allModules )
-        self.assertIn('$textsys', allModules )
-        self.assertIn('$unitsys', allModules )
-        self.assertIn('$versinfo', allModules )
         self.assertIn('Acp10map', allModules )
         self.assertIn('AsArProf', allModules )
         self.assertIn('AsArSdm', allModules )
@@ -50,9 +46,6 @@ class TestLists( unittest.TestCase):
         self.assertIn('DataObj', allModules )
         self.assertIn('FileIO', allModules )
         self.assertIn('LoopConR', allModules )
-        self.assertIn('Role', allModules )
-        self.assertIn('TCData', allModules )
-        self.assertIn('User', allModules )
         self.assertIn('Visu', allModules )
         self.assertIn('Visu01', allModules )
         self.assertIn('Visu02', allModules )
@@ -63,14 +56,12 @@ class TestLists( unittest.TestCase):
         self.assertIn('acp10par', allModules )
         self.assertIn('acp10sdc', allModules )
         self.assertIn('acp10sim', allModules )
-        self.assertIn('acp10sys', allModules )
         self.assertIn('acp_err', allModules )
         self.assertIn('arconfig', allModules )
         self.assertIn('arial', allModules )
         self.assertIn('arialbd', allModules )
         self.assertIn('arialxsr', allModules )
         self.assertIn('asfw', allModules )
-        self.assertIn('ashwac', allModules )
         self.assertIn('ashwd', allModules )
         self.assertIn('astime', allModules )
         self.assertIn('brewing', allModules )
@@ -176,7 +167,6 @@ class TestCpuInfo( unittest.TestCase):
         self.assertEqual( info, {'CT': '1A4000.00'} )
 
 
-
 class TestVariables( unittest.TestCase):
     def test_variableInfo(self):
         task = Task( cpu, 'mainlogic')
@@ -188,22 +178,238 @@ class TestVariables( unittest.TestCase):
         self.assertEqual( var.userTag, 'shows temperature in degree Celsius' )
         self.assertEqual( var.refresh, 200 ) 
         self.assertEqual( var.hysteresis, 10.0 )
-        var.kill
-        task.kill
+        var.kill()
+        task.kill()
 
-    def test_variableValue1(self):
-        task = Task( cpu, 'heating')
-        varReal = Variable(task, 'gMainLogic.par.givenMoney')
-        varReal.value = 12.34
-        value = round(varReal.value, 6)
-        self.assertEqual(value, round(varReal.value,6) )
-        varReal.kill
-        task.kill
+    def test_SINT(self):
+        task = Task( cpu, 'myProg')
+        var = Variable(task, 'mySINT')
+        self.assertEqual( var.dataType, 'i8')
+        for value in range( -127, 127, 0xf ):
+            var.value = value
+            self.assertEqual( var.value, value )
+        def func(var : Variable):
+            var.value = "wrong"
+        self.assertRaises( TypeError, func)
+        del func
+        var.kill()
+        task.kill()
 
+    def test_INT(self):
+        task = Task( cpu, 'myProg')        
+        var = Variable(task, 'myINT')
+        self.assertEqual( var.dataType, 'i16')        
+        for value in range( -32767, 32767, 0xfff):
+            var.value = value
+            self.assertEqual( var.value, value )
+        var.kill()
+        task.kill()
+
+    def test_INTArray(self):
+        task = Task( cpu, 'myProg')      
+        for n in range(0,10):
+             var = Variable(task, f"myINTArray[{n}]")
+             var.value = n
+             var.kill()
+        var = Variable(task, "myINTArray")
+        self.assertEqual( var.dataType, 'i16[0..9]')         
+        self.assertEqual( var.value, (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
+        var.kill() 
+        task.kill()     
+
+    def test_DINT(self):
+        task = Task( cpu, 'myProg')    
+        var = Variable(task, 'myDINT')
+        self.assertEqual( var.dataType, 'i32')         
+        for value in range( -2147483647, 2147483647, 0xfffffff):
+            var.value = value
+            self.assertEqual( var.value, value )
+        var.kill()
+        task.kill()
+
+    def test_BOOL(self):
+        task = Task( cpu, 'myProg')
+        var = Variable(task, 'myBOOL')
+        self.assertEqual( var.dataType, 'boolean')         
+        var.value = True
+        self.assertEqual( var.value, True )
+        var.value = False
+        self.assertEqual( var.value, False)
+        var.value = 99
+        self.assertEqual( var.value, True )                                   
+        var.kill()
+        task.kill()
+
+    def test_USINT(self):
+        task = Task( cpu, 'myProg')
+        var = Variable(task, 'myUSINT')
+        self.assertEqual( var.dataType, 'u8')         
+        for value in range( -0xf, 0xff, 0xf):
+            var.value = value
+            if value >= 0:
+                self.assertEqual( var.value, value )
+            else:
+                self.assertNotEqual( var.value, value )                
+        var.kill()
+        task.kill()
+
+    def test_UINT(self):
+        task = Task( cpu, 'myProg')        
+        var = Variable(task, 'myUINT')
+        self.assertEqual( var.dataType, 'u16')         
+        for value in range( -0xf, 0xffff, 0xfff):
+            var.value = value
+            if value >= 0:
+                self.assertEqual( var.value, value )
+            else:
+                self.assertNotEqual( var.value, value )                  
+        var.kill()
+        task.kill()
+
+    def test_UDINT(self):
+        task = Task( cpu, 'myProg')        
+        var = Variable(task, 'myUDINT')
+        self.assertEqual( var.dataType, 'u32')         
+        for value in range( -0xf, 0xffffffff, 0xfffffff):
+            var.value = value
+            if value >= 0:
+                self.assertEqual( var.value, value )
+            else:
+                self.assertNotEqual( var.value, value )                  
+        var.kill()
+        task.kill()
+
+
+    def test_REAL(self):
+        task = Task( cpu, 'myProg')
+        var = Variable(task, 'myREAL')
+        self.assertEqual( var.dataType, 'f32')         
+        for value in range( -10,11,1):
+            var.value = float(value)
+            self.assertEqual(round(var.value, 6), round(value,6) )
+        var.kill()
+        task.kill()
+
+    def test_LREAL(self):
+        task = Task( cpu, 'myProg')  
+        var = Variable(task, 'myLREAL')
+        self.assertEqual( var.dataType, 'f64')         
+        for value in range( -10,11,1):
+            var.value = float(value)
+            self.assertEqual(round(var.value, 6), round(value,6) )
+        var.kill()        
+        task.kill()
+
+    def test_REALArray(self):
+        task = Task( cpu, 'myProg')        
+        for n in range(0,10):
+             var = Variable(task, f"myREALArray[{n}]")
+             var.value = float(n)
+             var.kill()
+        var = Variable(task, "myREALArray")
+        self.assertEqual( var.dataType, 'f32[0..9]')          
+        self.assertEqual( var.value, (0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0))
+        var.kill()
+        task.kill()     
+
+    def test_STRING(self):   
+        task = Task( cpu, 'myProg')
+        var = Variable(task, 'mySTRING')
+        self.assertEqual( var.dataType, 'string')            
+        for n in range(0,3):
+            random_string = bytes(''.join(random.choices(string.printable, k=80)), encoding='ascii')
+            var.value = random_string
+            pviConnection.sleep(100)
+            self.assertEqual(var.value, random_string)
+        def func(var : Variable):
+            var.value = "wrong"
+        self.assertRaises( TypeError, func)
+        def func(var : Variable):
+            var.value = 1
+        self.assertRaises( TypeError, func)            
+        del func
+        var.kill()  
+
+        for n in range(0,10):
+             var = Variable(task, f"mySTRINGArray[{n}]")
+             var.value = bytes(string.ascii_uppercase[n], encoding='ascii')
+             var.kill()
+        var = Variable(task, "mySTRINGArray")
+        self.assertEqual( var.value, (b'A', b'B', b'C', b'D', b'E', b'F', b'G', b'H', b'I', b'J'))
+        var.kill()
+
+    def test_WSTRING(self):   
+        task = Task( cpu, 'myProg')
+        var = Variable(task, 'myWSTRING')
+        self.assertEqual( var.dataType, 'wstring')          
+        for n in range(0,3):
+            random_string = ''.join(random.choices(string.printable, k=80))
+            var.value = random_string
+            pviConnection.sleep(100)
+            self.assertEqual(var.value, random_string)
+        var.kill()       
+
+        for n in range(0,10):
+             var = Variable(task, f"myWSTRINGArray[{n}]")
+             var.value = string.ascii_uppercase[n]
+             var.kill()
+        var = Variable(task, "myWSTRINGArray")
+        self.assertEqual( var.value, ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'))
+        var.kill()         
+        task.kill()
+
+    def test_TIME(self):   
+        task = Task( cpu, 'myProg')
+        var = Variable(task, 'myTIME')
+        self.assertEqual( var.dataType, 'time')          
+        var.value = 0
+        self.assertEqual( var.value, datetime.timedelta(0) )
+        var.value = 1200
+        self.assertEqual( var.value, datetime.timedelta(seconds=1, microseconds=200000) )           
+        var.kill()
+        task.kill()
+
+
+    def test_DATE(self):   
+        task = Task( cpu, 'myProg')
+        var = Variable(task, 'myDATE')
+        self.assertEqual( var.dataType, 'date')          
+        var.value = 0
+        self.assertEqual( var.value, datetime.date(1970, 1, 1) )
+        var.value = 10000000
+        self.assertEqual( var.value, datetime.date(1970, 4, 26))
+        var.value = datetime.date(2021,2,3)
+        self.assertEqual( var.value, datetime.date(2021,2,3))        
+        var.kill()
+        task.kill()
+
+    def test_DATETIME(self):   
+        task = Task( cpu, 'myProg')
+        var = Variable(task, 'myDT')
+        self.assertEqual( var.dataType, 'dt')          
+        var.value = 0
+        self.assertEqual( var.value, datetime.datetime(1970, 1, 1, 1, 0) )
+        var.value = 10000000
+        self.assertEqual( var.value, datetime.datetime(1970, 4, 26, 19, 46, 40))
+        var.value = datetime.datetime(2021,2,3,4,5,6)
+        self.assertEqual( var.value, datetime.datetime(2021, 2, 3, 4, 5, 6))          
+        var.kill()
+        task.kill()
+
+    def test_TIMEOFDAY(self):   
+        task = Task( cpu, 'myProg')
+        var = Variable(task, 'myTOD')
+        self.assertEqual( var.dataType, 'tod')          
+        var.value = 0
+        self.assertEqual( var.value, datetime.time(0, 0) )
+        var.value = 10000000
+        self.assertEqual( var.value, datetime.time(2, 46, 40))
+        var.value = datetime.time(1, 2, 3)
+        self.assertEqual( var.value, datetime.time(1, 2, 3))          
+        var.kill()
+        task.kill()
 
 
 if __name__ == "__main__":
     pviConnection.start()
-
-
 

@@ -143,3 +143,4 @@ tools/CoffeeMachine/Binaries/
 tools/CoffeeMachine/Diagnosis/
 *.set
 tools/CoffeeMachine/Temp/
+*.isopen

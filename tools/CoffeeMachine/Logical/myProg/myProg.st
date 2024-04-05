@@ -20,6 +20,7 @@ PROGRAM _INIT
 	myDINT;
 	myINTArray;
 	mySTRINGArray;
+	myWSTRINGArray;
 	myUDINT;
 	myDATE;
 	myLREAL;

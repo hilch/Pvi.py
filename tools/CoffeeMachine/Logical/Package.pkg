@@ -13,7 +13,6 @@
     <Object Type="Package" Description="Coffee Recipes">Recipes</Object>
     <Object Type="Package" Description="Visualization">Visualisation</Object>
     <Object Type="Package" Description="Global Libraries">Libraries</Object>
-    <Object Type="Program" Language="IEC" Description="Program">NewProgram</Object>
     <Object Type="Program" Language="IEC" Description="Program">myProg</Object>
     <Object Type="DataObject" Language="Cnc" Description="CNC Program">cnc3</Object>
     <Object Type="DataObject" Language="Cnc" Description="CNC Program">cnc1</Object>
