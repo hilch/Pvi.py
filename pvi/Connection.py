@@ -359,5 +359,22 @@ class Connection():
         ```
         """
         self._eventLoopIsRunning = False
+   # ----------------------------------------------------------------------------------
+    def sleep( self, millis : int ):
+        """
+        helper function for waiting actions
+        typical usage example:
 
-        
+        Args:
+            millis: sleep time in milliseconds
+        ```
+        pviConnection = Connection()
+            ....
+        pviConnection.sleep(2000) # pause code for 2 seconds  
+        ```   
+        """
+        t1 = datetime.datetime.now()
+        while True:
+            self.doEvents()
+            if (datetime.datetime.now() - t1) >= datetime.timedelta( microseconds= millis*1000):
+                break
