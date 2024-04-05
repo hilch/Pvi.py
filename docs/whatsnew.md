@@ -3,6 +3,7 @@
 ## V1.2.1
 
 - fix: reading arrays of structures only returned first element
+- fix: Object.__del__ did not call Object.kill()
 - new: Variable.dataType returns name of structure type
 - new: Variable.dataType returns `<data type>[<lower index>..<higher index>]` now
 
