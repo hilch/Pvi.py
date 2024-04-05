@@ -5,6 +5,7 @@ import sys
 import string
 import random
 import datetime
+from collections import OrderedDict
 
 pviPath = str(Path(__file__).parents[1])
 cwd = str(Path(__file__).parents[0])
@@ -409,6 +410,78 @@ class TestVariables( unittest.TestCase):
         var.kill()
         task.kill()
 
+class TestEnums( unittest.TestCase):
+    def test_enum(self):
+        task = Task( cpu, 'myProg')
+        var = Variable( task, 'myEnumeration' )
+        self.assertEqual( var.dataType, 'i32')
+        var.value = 2
+        self.assertEqual( var.value, 2 )
+        var.kill
+        task.kill
+
+class TestDerivedDatatypes( unittest.TestCase):
+    def test_derived1(self):
+        task = Task( cpu, 'myProg')
+        var = Variable( task, 'myDerivedDataType' )
+        self.assertEqual( var.dataType, 'u8[0..3]')
+        var.kill
+        task.kill
+
+
+class TestStructures( unittest.TestCase):
+    def test_simpleStructure(self):
+        task = Task( cpu, 'myProg')
+        var = Variable( task, 'mySimpleStruct' )
+        self.assertEqual( var.dataType, 'myStructType')        
+        var.kill
+        task.kill
+
+    def test_structArray(self):
+        task = Task( cpu, 'myProg')
+        var = Variable( task, 'myStructArray' )
+        self.assertEqual( var.dataType, 'myStructType[0..1]')        
+        var.kill
+        task.kill
+
+    def test_complexStructure(self):
+        task = Task( cpu, 'myProg')
+        var = Variable( task, 'myComplexStruct.element' )
+        var.value = 11
+        var.kill()
+        var = Variable( task, 'myComplexStruct.positionDataElements[0].EndlessPositionData[0].MTPhase' )
+        var.value = 22
+        var.kill()
+        var = Variable( task, 'myComplexStruct.positionDataElements[0].EndlessPositionData[1].RefOffset' )
+        var.value = 33
+        var.kill()
+        var = Variable( task, 'myComplexStruct.myStruct2.member' )
+        var.value = 44
+        var.kill()
+        var = Variable( task, 'myComplexStruct.myEnum' )
+        var.value = 2
+        var.kill()
+        var = Variable( task, 'myComplexStruct.myDerived[3]' )
+        var.value = 55
+        var.kill()
+        var = Variable( task, 'myComplexStruct' )
+        self.assertEqual( var.value, OrderedDict([('.element', 11), 
+                                                  ('.positionDataElements[2].EndlessPositionData[0].MTPhase', 22), 
+                                                  ('.positionDataElements[2].EndlessPositionData[0].MTDiffInteger', 0), 
+                                                  ('.positionDataElements[2].EndlessPositionData[0].MTDiffFract', 0), 
+                                                  ('.positionDataElements[2].EndlessPositionData[0].RefOffset', 0), 
+                                                  ('.positionDataElements[2].EndlessPositionData[0].Checksum', 0), 
+                                                  ('.positionDataElements[2].EndlessPositionData[1].MTPhase', 0), 
+                                                  ('.positionDataElements[2].EndlessPositionData[1].MTDiffInteger', 0), 
+                                                  ('.positionDataElements[2].EndlessPositionData[1].MTDiffFract', 0), 
+                                                  ('.positionDataElements[2].EndlessPositionData[1].RefOffset', 33), 
+                                                  ('.positionDataElements[2].EndlessPositionData[1].Checksum', 0), 
+                                                  ('.myStruct1.member', 0), 
+                                                  ('.myStruct2.member', 44), 
+                                                  ('.myEnum', 2), 
+                                                  ('.myDerived', (0, 0, 0, 55))]) )
+        var.kill()
+        task.kill()
 
 if __name__ == "__main__":
     pviConnection.start()

@@ -29,6 +29,11 @@ PROGRAM _INIT
 	mySINT;
 	myBOOL;
 	myREALArray;
+	myEnumeration;
+	myDerivedDataType;
+	mySimpleStruct;
+	myStructArray;
+	myComplexStruct;
 END_PROGRAM
 
 PROGRAM _CYCLIC
