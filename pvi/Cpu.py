@@ -352,9 +352,23 @@ class Cpu(PviObject):
             return time            
         else:
             raise PviError(self._result, self)
+         
             
-
-
+    @time.setter
+    def time(self, time : datetime.datetime):
+        '''
+        sets the CPU time
+        '''        
+        t = struct_tm()
+        t.tm_year = time.year - 1900
+        t.tm_mon = time.month - 1
+        t.tm_mday = time.day
+        t.tm_hour = time.hour
+        t.tm_min = time.minute
+        t.tm_sec = time.second
+        self._result = PviWrite( self._linkID, POBJ_ACC_DATE_TIME, byref(t), sizeof(t), None, 0 )
+        if self._result != 0:
+            raise PviError(self._result, self)
      
 
             
