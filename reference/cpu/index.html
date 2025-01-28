@@ -2046,7 +2046,24 @@ task1 = Task( cpu, 'mainlogic')
 <span class="normal">351</span>
 <span class="normal">352</span>
 <span class="normal">353</span>
-<span class="normal">354</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Cpu</span><span class="p">(</span><span class="n">PviObject</span><span class="p">):</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Cpu</span><span class="p">(</span><span class="n">PviObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;representing a PVI CPU object</span>
 <span class="sd">    ANSL &amp; INA2000 : specifies a cpu</span>
 <span class="sd">    SNMP : can be used but is not necessary</span>
@@ -2368,6 +2385,23 @@ task1 = Task( cpu, 'mainlogic')
             <span class="k">return</span> <span class="n">time</span>            
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+
+    <span class="nd">@time</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span> <span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        sets the CPU time</span>
+<span class="sd">        &#39;&#39;&#39;</span>        
+        <span class="n">t</span> <span class="o">=</span> <span class="n">struct_tm</span><span class="p">()</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">tm_year</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">year</span> <span class="o">-</span> <span class="mi">1900</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">tm_mon</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">month</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">tm_mday</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">day</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">tm_hour</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">hour</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">tm_min</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">minute</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">tm_sec</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">second</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviWrite</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_DATE_TIME</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
@@ -2677,6 +2711,7 @@ print(&quot;cpu.tasks=&quot;, cpu.tasks)
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-property"><code>property</code></small>
+      <small class="doc doc-label doc-label-writable"><code>writable</code></small>
   </span>
 
 </h3>
