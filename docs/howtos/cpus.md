@@ -10,6 +10,10 @@ this simple example just reads out some info from CPU
 
 this example shows how to use .stopTarget(), .warmStart and .diagnostics()
 
+### [cpu3.py](https://github.com/hilch/Pvi.py/tree/main/examples/cpu3.py) (ANSL)
+
+in this example we just set and check the CPU's clock
+
 ### [modules1.py](https://github.com/hilch/Pvi.py/tree/main/examples/modules1.py) (ANSL)
 
 this simple example creates a module on CPU by downloading a bytestream and checks if it exists
