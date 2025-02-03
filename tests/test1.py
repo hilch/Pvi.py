@@ -168,6 +168,23 @@ class TestCpuInfo( unittest.TestCase):
         self.assertEqual( info, {'CT': '1A4000.00'} )
 
 
+class TestTaskInfo( unittest.TestCase ):
+    def test_Taskinfo1(self):
+        task = Task( cpu, 'mainlogic')
+        self.assertEqual( 'Running', task.status['ST'] )
+        task.kill
+
+    def test_Taskinfo2(self):
+        task = Task( cpu, 'myTask', CD='/RO=::mainlogic')
+        self.assertEqual( 'Running', task.status['ST'] )
+        task.kill
+
+    def test_applicationModuleTask(self):
+        task = Task( cpu, 'myAppTask', CD='/RO=AppMod1::myApptask1')
+        self.assertEqual( 'Running', task.status['ST'] )
+        task.kill
+
+
 class TestVariables( unittest.TestCase):
     def test_variableInfo(self):
         task = Task( cpu, 'mainlogic')
@@ -226,6 +243,9 @@ class TestVariables( unittest.TestCase):
             var.value = value
             self.assertEqual( var.value, value )
         var.kill()
+
+        var = Variable(task, 'RefOffset', CD='/RO=myComplexStruct.positionDataElements[2].EndlessPositionData[1].RefOffset /ROI=1') 
+        var.status
         task.kill()
 
     def test_BOOL(self):
@@ -311,7 +331,10 @@ class TestVariables( unittest.TestCase):
         self.assertEqual( var.dataType, 'f32[0..9]')          
         self.assertEqual( var.value, (0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0))
         var.kill()
-        task.kill()     
+        var = Variable(task, 'myReal', CD="myREALArray[3]")
+        self.assertEqual( var.value, 3.0 )
+        var.kill
+        task.kill()       
 
     def test_STRING(self):   
         task = Task( cpu, 'myProg')
@@ -322,13 +345,12 @@ class TestVariables( unittest.TestCase):
             var.value = random_string
             pviConnection.sleep(100)
             self.assertEqual(var.value, random_string)
-        def func(var : Variable):
+        def func1(var : Variable):
             var.value = "wrong"
-        self.assertRaises( TypeError, func)
-        def func(var : Variable):
+        self.assertRaises( TypeError, func1)
+        def func2(var : Variable):
             var.value = 1
-        self.assertRaises( TypeError, func)            
-        del func
+        self.assertRaises( TypeError, func2)            
         var.kill()  
 
         for n in range(0,10):
