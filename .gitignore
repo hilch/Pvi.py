@@ -141,8 +141,11 @@ $fieldbus.txt
 # Automation Studio
 tools/CoffeeMachine/Binaries/
 tools/CoffeeMachine/Diagnosis/
-*.set
 tools/CoffeeMachine/Temp/
+*.set
 *.isopen
 tools/CoffeeMachine_4.12/Binaries/
 tools/CoffeeMachine_4.12/Temp/
+tools/CoffeeMachine_4.12/Binaries/
+tools/CoffeeMachine_4.12/Diagnosis/
+
