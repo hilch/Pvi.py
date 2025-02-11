@@ -7,3 +7,7 @@
  ********************************************************************
  * IO mapping file
  ********************************************************************)
+VAR_CONFIG
+	Cyclic#4.::diStartCoffee AT %IX."SimDevice".input;
+	Cyclic#4.::doCupPull AT %QX."SimDevice".output;
+END_VAR

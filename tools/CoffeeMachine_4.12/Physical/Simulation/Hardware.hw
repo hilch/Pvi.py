@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<?AutomationStudio Version=4.12.5.95 FileVersion="4.9"?>
+<?AutomationStudio Version=4.12.7.113 FileVersion="4.9"?>
 <Hardware xmlns="http://br-automation.co.at/AS/Hardware">
   <Module Name="5LS182.6-1" Type="5LS182.6-1" Version="1.5.0.0">
     <Connection Connector="SL" TargetModule="ARsim" TargetConnector="SL1" />
@@ -41,6 +41,16 @@
     <Parameter ID="FileDevicePath1" Value="USER_PATH" />
     <Parameter ID="ActivateOpcUa" Value="1" />
     <Parameter ID="OpcUaInformationModels_PV_Version" Value="1" />
+  </Module>
+  <Module Name="SimDevice" Type="SimDevice" Version="1.0.0.5">
+    <Connection Connector="ETH1" TargetModule="ARsim" TargetConnector="IF3">
+      <Cable Type="PowerlinkCable" Length="10" Version="1.0.0.3" />
+    </Connection>
+    <Group ID="Channel1" />
+    <Parameter ID="ChannelID1" Value="input" />
+    <Parameter ID="ChannelDirection1" Value="IN" />
+    <Group ID="Channel2" />
+    <Parameter ID="ChannelID2" Value="output" />
   </Module>
   <Module Name="axConveyor" Type="8V1045.00-2" Version="2.2.0.0">
     <Parameter ID="Simulate" Value="standard" />
