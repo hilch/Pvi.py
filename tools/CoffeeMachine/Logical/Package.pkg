@@ -18,5 +18,7 @@
     <Object Type="DataObject" Language="Cnc" Description="CNC Program">cnc1</Object>
     <Object Type="DataObject" Language="Cnc" Description="CNC Program">cnc2</Object>
     <Object Type="DataObject" Language="Simple" Description="Simple data object">data</Object>
+    <Object Type="Package">myAppMod1</Object>
+    <Object Type="Package">NewModule</Object>
   </Objects>
 </Package>

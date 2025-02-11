@@ -83,22 +83,23 @@
     <BinaryObject Name="vccgauge" Source="" Memory="UserROM" Language="Binary" />
     <BinaryObject Name="vccshape" Source="" Memory="UserROM" Language="Binary" />
     <BinaryObject Name="vccdt" Source="" Memory="UserROM" Language="Binary" />
-    <BinaryObject Name="ARIALBD" Source="" Memory="UserROM" Language="Binary" />
-    <BinaryObject Name="ARIAL" Source="" Memory="UserROM" Language="Binary" />
-    <BinaryObject Name="Acp10cfg" Source="" Memory="UserROM" Language="Binary" />
-    <BinaryObject Name="Acp10map" Source="" Memory="UserROM" Language="Binary" />
-    <BinaryObject Name="iomap" Source="" Memory="UserROM" Language="Binary" />
-    <BinaryObject Name="sysconf" Source="" Memory="UserROM" Language="Binary" />
-    <BinaryObject Name="ashwd" Source="" Memory="UserROM" Language="Binary" />
-    <BinaryObject Name="asfw" Source="" Memory="UserROM" Language="Binary" />
-    <BinaryObject Name="arconfig" Source="" Memory="UserROM" Language="Binary" />
-    <BinaryObject Name="ARIALU_1" Source="" Memory="UserROM" Language="Binary" />
-    <BinaryObject Name="vcbmpng" Source="" Memory="UserROM" Language="Binary" />
-    <BinaryObject Name="arialu_1" Source="" Memory="UserROM" Language="Binary" />
-    <BinaryObject Name="acp10map" Source="" Memory="UserROM" Language="Binary" />
-    <BinaryObject Name="acp10cfg" Source="" Memory="UserROM" Language="Binary" />
     <BinaryObject Name="arialbd" Source="" Memory="UserROM" Language="Binary" />
     <BinaryObject Name="arial" Source="" Memory="UserROM" Language="Binary" />
+    <BinaryObject Name="appmod1" Source="" Memory="UserROM" Language="Binary" />
+    <BinaryObject Name="acp10cfg" Source="" Memory="UserROM" Language="Binary" />
+    <BinaryObject Name="acp10map" Source="" Memory="UserROM" Language="Binary" />
+    <BinaryObject Name="arconfig" Source="" Memory="UserROM" Language="Binary" />
+    <BinaryObject Name="asfw" Source="" Memory="UserROM" Language="Binary" />
+    <BinaryObject Name="ashwd" Source="" Memory="UserROM" Language="Binary" />
+    <BinaryObject Name="sysconf" Source="" Memory="UserROM" Language="Binary" />
+    <BinaryObject Name="iomap" Source="" Memory="UserROM" Language="Binary" />
+    <BinaryObject Name="arialu_1" Source="" Memory="UserROM" Language="Binary" />
+    <BinaryObject Name="vcbmpng" Source="" Memory="UserROM" Language="Binary" />
+    <BinaryObject Name="ARIALU_1" Source="" Memory="UserROM" Language="Binary" />
+    <BinaryObject Name="Acp10map" Source="" Memory="UserROM" Language="Binary" />
+    <BinaryObject Name="Acp10cfg" Source="" Memory="UserROM" Language="Binary" />
+    <BinaryObject Name="ARIAL" Source="" Memory="UserROM" Language="Binary" />
+    <BinaryObject Name="ARIALBD" Source="" Memory="UserROM" Language="Binary" />
   </Binaries>
   <Libraries>
     <LibraryObject Name="AsTime" Source="Libraries.AsTime.lby" Memory="UserROM" Language="Binary" Debugging="true" />
