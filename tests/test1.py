@@ -182,6 +182,7 @@ class TestTaskInfo( unittest.TestCase ):
     def test_applicationModuleTask(self):
         task = Task( cpu, 'myAppTask', CD='/RO=AppMod1::myApptask1')
         self.assertEqual( 'Running', task.status['ST'] )
+        self.assertIn( 'i', task.variables)
         task.kill
 
 
@@ -189,8 +190,8 @@ class TestVariables( unittest.TestCase):
     def test_variableInfo(self):
         task = Task( cpu, 'mainlogic')
         var = Variable( task, 'a-nicer-variable-name', CD ='gHeating.status.actTemp', UT='shows temperature in degree Celsius', RF=200, HY = 10 )
-        self.assertEqual( var.name, '@Pvi/LNANSL/TCP/myArsim/mainlogic/gHeating.status.actTemp' )
-        self.assertEqual( var.objectName, 'gHeating.status.actTemp' )
+        self.assertEqual( var.name, '@Pvi/LNANSL/TCP/myArsim/mainlogic/a-nicer-variable-name' )
+        self.assertEqual( var.objectName, 'a-nicer-variable-name' )
         self.assertEqual( var.dataType, 'f32' )
         self.assertEqual( var.userName, 'a-nicer-variable-name' )
         self.assertEqual( var.userTag, 'shows temperature in degree Celsius' )
