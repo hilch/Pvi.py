@@ -75,10 +75,14 @@ class PviObject():
         self._pviError = int(0)
         self._errorChanged = None
         self._parent = parent
+        self._hPvi = wintypes.DWORD()
         debuglog(f'{self._objectDescriptor} - {self._linkDescriptor}')
         if parent: # all objects but '@Pvi' have a parent
             self._connection = parent._connection # type: ignore
-            self._connection.link(self) 
+            self._hPvi = self._connection._hPvi
+            self._connection.link(self)
+            
+            
             
     def __hash__(self):
         return hash( (self._name, self._type) )
@@ -91,6 +95,7 @@ class PviObject():
 
     def __repr__(self):
         return f"PviObject( name={self._name}, linkID={self._linkID} )"
+
 
     @property
     def name(self) -> str:
@@ -171,7 +176,7 @@ class PviObject():
         "u": Change in the user tag string        
         '''
         s = create_string_buffer(b'\000' * 10)   
-        self._result = PviRead( self._linkID, POBJ_ACC_EVMASK , None, 0, byref(s), sizeof(s) )
+        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_EVMASK , None, 0, byref(s), sizeof(s) )
         if self._result == 0:
             s = str(s, 'ascii')
             self._linkDescriptor.update( {'EV': str(s)})
@@ -183,7 +188,7 @@ class PviObject():
     def evmask(self, mask : str ):
         s = create_string_buffer(mask.encode())
 
-        self._result = PviWrite( self._linkID, POBJ_ACC_EVMASK, byref(s), sizeof(s), None, 0 ) 
+        self._result = PviXWrite( self._hPvi, self._linkID, POBJ_ACC_EVMASK, byref(s), sizeof(s), None, 0 ) 
         if self._result == 0:
             self._linkDescriptor.update( {'EV': str(s)})
         else:
@@ -201,7 +206,7 @@ class PviObject():
         ```
         '''
         s = create_string_buffer(b'\000' * 4096)   
-        self._result = PviRead( self._linkID, POBJ_ACC_USERTAG , None, 0, byref(s), sizeof(s) )
+        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_USERTAG , None, 0, byref(s), sizeof(s) )
         if self._result == 0:
             s = str(s, 'ascii').rstrip('\x00')
             self._objectDescriptor.update({ 'UT': s}) # type: ignore
@@ -215,7 +220,7 @@ class PviObject():
         user tag
         '''
         s = create_string_buffer(tag.encode('ascii'))
-        self._result = PviWrite( self._linkID, POBJ_ACC_USERTAG, byref(s), sizeof(s), None, 0 ) 
+        self._result = PviXWrite( self._hPvi, self._linkID, POBJ_ACC_USERTAG, byref(s), sizeof(s), None, 0 ) 
         if self._result:
             raise PviError(self._result, self)  
         self._objectDescriptor.update({ 'UT': tag}) # type: ignore
@@ -302,7 +307,7 @@ class PviObject():
         """
         (internal) handle data events
         """
-        self._result = PviReadResponse( wParam, None, 0 )
+        self._result = PviXReadResponse( self._hPvi, wParam, None, 0 )
         if callable(self._errorChanged):
             self._errorChanged(0)             
 
@@ -310,14 +315,14 @@ class PviObject():
         """
         (internal) handle data type events
         """        
-        self._result = PviReadResponse( wParam, None, 0 ) 
+        self._result = PviXReadResponse( self._hPvi, wParam, None, 0 ) 
        
 
     def _eventUploadStream( self, wParam, responseInfo, dataLen : int ):  
         """
         (internal) handle uploading data streams
         """                   
-        self._result = PviReadResponse( wParam, None, 0 ) 
+        self._result = PviXReadResponse( self._hPvi, wParam, None, 0 ) 
 
 
     def _eventStatus( self, wParam, responseInfo ):
@@ -328,7 +333,7 @@ class PviObject():
         """         
         (internal) handle error events
         """      
-        self._result = PviReadResponse( wParam, None, 0 )
+        self._result = PviXReadResponse( self._hPvi, wParam, None, 0 )
         if callable(self._errorChanged):
             sig = inspect.signature(self._errorChanged)
             if len(sig.parameters) == 1:
@@ -349,9 +354,9 @@ class PviObject():
         ld = ''
         for key, value in self._linkDescriptor.items():
             ld += f'{key}={value} '
-        self._result = PviCreate( byref(linkID), bytes(self._name, 'ascii'),
+        self._result = PviXCreate( self._hPvi, byref(linkID), bytes(self._name, 'ascii'),
             self._type, bytes(descr, 'ascii'), PVI_HMSG_NIL, SET_PVIFUNCTION, 0, ld.encode())
-        debuglog(f'PviCreate({self.name}, { T_POBJ_TYPE(self._type)  }, {self._objectDescriptor}) = {self._result}, linkID={linkID.value}')          
+        debuglog(f'PviXCreate({self.name}, { T_POBJ_TYPE(self._type)  }, {self._objectDescriptor}) = {self._result}, linkID={linkID.value}')          
         if self._result == 0: # object creation successful
             self._linkID = linkID.value
             # if self._type == T_POBJ_TYPE.POBJ_PVAR: # read variable's data type
@@ -387,7 +392,7 @@ class PviObject():
 
         """    
         s = create_string_buffer(b'\000' * 65536)   
-        self._result = PviRead( self._linkID, POBJ_ACC_LIST_EXTERN, None, 0, byref(s), sizeof(s) )
+        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_LIST_EXTERN, None, 0, byref(s), sizeof(s) )
         if self._result == 0:
             s = str(s, 'ascii').rstrip('\x00')
             li1 = [r.split(' OT=') for r in s.split('\t')]
@@ -405,7 +410,7 @@ class PviObject():
 
         """    
         s = create_string_buffer(b'\000' * 1024)             
-        self._result = PviRead( self._linkID, POBJ_ACC_VERSION, None, 0, byref(s), sizeof(s) )     
+        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_VERSION, None, 0, byref(s), sizeof(s) )     
         if self._result == 0:
             s = str(s, 'ascii').rstrip('\x00')
         else:
@@ -439,7 +444,7 @@ class PviObject():
         ```
         """    
         s = create_string_buffer(b'\000' * 64)             
-        self._result = PviRead( self._linkID, POBJ_ACC_STATUS, None, 0, byref(s), sizeof(s) )
+        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_STATUS, None, 0, byref(s), sizeof(s) )
         st = dict()        
         if self._result == 0:
             s = str(s, 'ascii').rstrip('\x00')
@@ -452,7 +457,7 @@ class PviObject():
     @status.setter
     def status(self, st : bytes):
         s = create_string_buffer(st)
-        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 ) 
+        self._result = PviXWrite( self._hPvi, self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 ) 
         if self._result:
             raise PviError(self._result, self)        
 
@@ -466,11 +471,12 @@ class PviObject():
         to save PVI resources
         '''
         if self._linkID != 0 and self._connection != None:
+
             self._connection._linkIDs.pop(self._linkID) # remove from linkIDs
             self._connection._pviObjects.remove(self) # remove from PviObjects
-            self._result = PviUnlink(self._linkID)
+            self._result = PviXUnlink(self._hPvi, self._linkID)
             self._linkID = 0
-            if self._result != 0:
+            if self._result != 0 and self._result != 12045:
                 raise PviError(self._result, self)
 
     

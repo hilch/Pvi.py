@@ -67,7 +67,7 @@ class Module(PviObject):
         (internal) upload a data module as stream
         '''
         s = create_string_buffer(dataLen)       
-        self._result = PviReadResponse( wParam, s, sizeof(s) )
+        self._result = PviXReadResponse( self._hPvi, wParam, s, sizeof(s) )
         if self._result == 0:
             if self._uploaded:
                 sig = inspect.signature(self._uploaded)
@@ -84,7 +84,7 @@ class Module(PviObject):
         (internal) upload XML logger data (ANSL only)
         '''
         s = create_string_buffer(dataLen+256)       
-        self._result = PviReadResponse( wParam, s, sizeof(s) )
+        self._result = PviXReadResponse( self._hPvi, wParam, s, sizeof(s) )
         s = s.raw.replace(b'\x00',b'')
         if self._result == 0:
             logger = ET.fromstring(s) 
@@ -120,7 +120,7 @@ class Module(PviObject):
         '''
         patternParameterPairs = re.compile(r"\s*([A-Z]{1,4}=\w*)\s*")        
         s = create_string_buffer(dataLen)       
-        self._result = PviReadResponse( wParam, s, sizeof(s) )
+        self._result = PviXReadResponse( self._hPvi, wParam, s, sizeof(s) )
         if self._result == 0:
             entries = list()            
             data = s.raw.split(b'\00')                    
@@ -171,7 +171,7 @@ class Module(PviObject):
         (internal) return proceeding info
         '''  
         proceedingInfo = T_PROCEEDING_INFO()
-        self._result = PviReadResponse( wParam, byref(proceedingInfo), sizeof(proceedingInfo) )
+        self._result = PviXReadResponse( self._hPvi, wParam, byref(proceedingInfo), sizeof(proceedingInfo) )
         if self._result == 0:
             if self._progress:
                 sig = inspect.signature(self._progress)
@@ -216,25 +216,25 @@ class Module(PviObject):
         if loggerModule:
             # try ANSL logger module
             s = create_string_buffer(b'\000' * 4096)   
-            self._result = PviRead( self._linkID, POBJ_ACC_LN_XML_LOGM_INFO, None, 0, byref(s), sizeof(s) )
+            self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_LN_XML_LOGM_INFO, None, 0, byref(s), sizeof(s) )
             if self._result == 0:
                 s = str(s, 'ascii').rstrip('\x00')
                 xmlTree = ET.fromstring(s)
                 loggerVersion = xmlTree.attrib.get('Version', '1000').encode('ascii')
                 s = create_string_buffer(b'DN=10000000 VI=' + loggerVersion )   
-                self._result = PviReadArgumentRequest( self._linkID, POBJ_ACC_LN_XML_LOGM_DATA, byref(s), sizeof(s), PVI_HMSG_NIL, SET_PVIFUNCTION, 0 )            
+                self._result = PviXReadArgumentRequest( self._hPvi, self._linkID, POBJ_ACC_LN_XML_LOGM_DATA, byref(s), sizeof(s), PVI_HMSG_NIL, SET_PVIFUNCTION, 0 )            
                 if self._result:
                     raise PviError(self._result)           
             elif self._result == 12058: # access not aupported ?
                 s = create_string_buffer(b'DN=100000') # maximum possible is undocumented.
-                self._result = PviReadArgumentRequest( self._linkID, POBJ_ACC_MOD_DATA, byref(s), sizeof(s), PVI_HMSG_NIL, SET_PVIFUNCTION, 0    ) 
+                self._result = PviXReadArgumentRequest( self._hPvi, self._linkID, POBJ_ACC_MOD_DATA, byref(s), sizeof(s), PVI_HMSG_NIL, SET_PVIFUNCTION, 0    ) 
                 if self._result:
                     raise PviError(self._result)           
             else:
                 raise PviError(self._result)
         else:
             s = create_string_buffer(bytes(arguments, 'ascii'))
-            self._result = PviReadArgumentRequest( self._linkID, POBJ_ACC_UPLOAD_STM, byref(s), sizeof(s), PVI_HMSG_NIL, SET_PVIFUNCTION, 0    ) 
+            self._result = PviXReadArgumentRequest( self._hPvi, self._linkID, POBJ_ACC_UPLOAD_STM, byref(s), sizeof(s), PVI_HMSG_NIL, SET_PVIFUNCTION, 0    ) 
             if self._result:
                 raise PviError(self._result)           
                             

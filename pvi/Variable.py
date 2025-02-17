@@ -57,12 +57,13 @@ class Variable(PviObject):
         self._value = None 
         self._valueChanged = lambda _ : _
         self._valueChangedArgCount = 0      
-        self._variableTypeDescription = VariableTypeDescription()
+
         if 'CD' not in objectDescriptor:
             objectDescriptor.update({'CD':name})
         if 'RF' not in objectDescriptor:
             objectDescriptor.update({'RF':0}) # do not cyclic refrehs variables by default       
         super().__init__( parent, T_POBJ_TYPE.POBJ_PVAR, name, **objectDescriptor)
+        self._variableTypeDescription = VariableTypeDescription(self._hPvi)
 
     def __repr__(self):
         return f"Variable( name={self._name}, linkID={self._linkID}, VT={self._objectDescriptor.get('VT')} )"
@@ -105,9 +106,9 @@ class Variable(PviObject):
         buffer = create_string_buffer(self._variableTypeDescription.vn * self._variableTypeDescription.vl)
 
         if responseInfo: # data is answer of a request
-            self._result = PviReadResponse( wParam, byref(buffer), sizeof(buffer) )
+            self._result = PviXReadResponse( self._hPvi, wParam, byref(buffer), sizeof(buffer) )
         else: # data shall be immediately read
-            self._result = PviRead( self._linkID, POBJ_ACC_DATA, None, 0, byref(buffer), sizeof(buffer) )
+            self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_DATA, None, 0, byref(buffer), sizeof(buffer) )
         
         if self._result == 0:
             self._value = self._variableTypeDescription.readFromBuffer(bytes(buffer))
@@ -128,7 +129,7 @@ class Variable(PviObject):
 
     def _eventDataType( self, wParam, responseInfo ):
         s = create_string_buffer(b'\000' * 64*1024)       
-        self._result = PviReadResponse( wParam, s, sizeof(s) )
+        self._result = PviXReadResponse( self._hPvi, wParam, s, sizeof(s) )
         if self._result == 0:
             pass # TODO
 
@@ -157,7 +158,7 @@ class Variable(PviObject):
             raise ValueError(f'Writing of struct not implemented\n{repr(self)}')
         else:
             buffer = self._variableTypeDescription.writeToBuffer(v)
-            self._result = PviWrite( self._linkID, POBJ_ACC_DATA, byref(buffer), sizeof(buffer), None, 0 )  
+            self._result = PviXWrite( self._hPvi, self._linkID, POBJ_ACC_DATA, byref(buffer), sizeof(buffer), None, 0 )  
         if self._result:
             raise PviError(self._result, self)
 
@@ -223,7 +224,7 @@ class Variable(PviObject):
  
         '''
         s = create_string_buffer(b'\000' * 256)   
-        self._result = PviRead( self._linkID, POBJ_ACC_TYPE , None, 0, byref(s), sizeof(s) )
+        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_TYPE , None, 0, byref(s), sizeof(s) )
         if self._result == 0:
             ret = dict()
             ret.update( dictFromParameterPairString(str(s, 'ascii').rstrip('\x00')))
@@ -238,7 +239,7 @@ class Variable(PviObject):
         object attributes
         '''
         s = create_string_buffer(a.encode('ascii'))
-        self._result = PviWrite( self._linkID, POBJ_ACC_TYPE, byref(s), sizeof(s), None, 0 ) 
+        self._result = PviXWrite( self._hPvi, self._linkID, POBJ_ACC_TYPE, byref(s), sizeof(s), None, 0 ) 
         if self._result:
             raise PviError(self._result, self)  
 
@@ -255,7 +256,7 @@ class Variable(PviObject):
         ```
         '''
         t = c_int32(0)
-        self._result = PviRead( self._linkID, POBJ_ACC_REFRESH , None, 0, byref(t), sizeof(t) )
+        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_REFRESH , None, 0, byref(t), sizeof(t) )
         if self._result == 0:
             self._objectDescriptor.update({'RF' : t.value }) # type: ignore
             return t.value
@@ -268,7 +269,7 @@ class Variable(PviObject):
         refresh time [ms]
         '''
         t = c_int32(time)
-        self._result = PviWrite( self._linkID, POBJ_ACC_REFRESH, byref(t), sizeof(t), None, 0 ) 
+        self._result = PviXWrite( self._hPvi, self._linkID, POBJ_ACC_REFRESH, byref(t), sizeof(t), None, 0 ) 
         if self._result:
             raise PviError(self._result, self) 
         self._objectDescriptor.update({'RF' : time }) # type: ignore 
@@ -285,7 +286,7 @@ class Variable(PviObject):
         ```
         '''
         s = create_string_buffer(b'\000' * 10)   
-        self._result = PviRead( self._linkID, POBJ_ACC_HYSTERESE , None, 0, byref(s), sizeof(s) )
+        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_HYSTERESE , None, 0, byref(s), sizeof(s) )
         if self._result == 0:
             s = str(s, 'ascii').rstrip('\x00')
             self._objectDescriptor.update({'HY' : s }) # type: ignore  
@@ -302,7 +303,7 @@ class Variable(PviObject):
         event hysteresis
         '''
         s = create_string_buffer(str(h).encode('ascii'))
-        self._result = PviWrite( self._linkID, POBJ_ACC_HYSTERESE, byref(s), sizeof(s), None, 0 ) 
+        self._result = PviXWrite( self._hPvi, self._linkID, POBJ_ACC_HYSTERESE, byref(s), sizeof(s), None, 0 ) 
         if self._result:
             raise PviError(self._result, self)  
         self._objectDescriptor.update({'HY' : h }) # type: ignore                    

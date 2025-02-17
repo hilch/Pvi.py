@@ -68,14 +68,14 @@ class Cpu(PviObject):
         '''         
         (internal) handle status events
         '''      
-        self._result = PviReadResponse( wParam, None, 0 ) 
+        self._result = PviXReadResponse( self._hPvi, wParam, None, 0 ) 
 
 
     def _eventDownloadStream( self, wParam, responseInfo : T_RESPONSE_INFO): 
         '''
         (internal) handle stream download
         '''   
-        self._result = PviWriteResponse( wParam )
+        self._result = PviXWriteResponse( self._hPvi, wParam )
         if self._result == 0:
             if self._downloaded:
                 sig = inspect.signature(self._downloaded)
@@ -89,7 +89,7 @@ class Cpu(PviObject):
 
     def _eventProceeding( self, wParam, responseInfo : T_RESPONSE_INFO ):    
         proceedingInfo = T_PROCEEDING_INFO()
-        self._result = PviReadResponse( wParam, byref(proceedingInfo), sizeof(proceedingInfo) )
+        self._result = PviXReadResponse( self._hPvi, wParam, byref(proceedingInfo), sizeof(proceedingInfo) )
         if self._result == 0:
             if self._progress:
                 sig = inspect.signature(self._progress)
@@ -170,7 +170,7 @@ class Cpu(PviObject):
             else:
                 arguments += f"{key}={value} "
         s = create_string_buffer(bytes(arguments,'ascii') + b'\0' + bytes(data) )            
-        self._result = PviWriteRequest( self._linkID, POBJ_ACC_DOWNLOAD_STM, byref(s), sizeof(s), PVI_HMSG_NIL, SET_PVIFUNCTION, 0)
+        self._result = PviXWriteRequest( self._hPvi, self._linkID, POBJ_ACC_DOWNLOAD_STM, byref(s), sizeof(s), PVI_HMSG_NIL, SET_PVIFUNCTION, 0)
         if self._result:
             raise PviError( self._result, self )
 
@@ -196,7 +196,7 @@ class Cpu(PviObject):
         ```
         """
         s = create_string_buffer(b'\000' * 4096)   
-        self._result = PviRead( self._linkID, POBJ_ACC_LIST_MODULE, None, 0, byref(s), sizeof(s) )
+        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_LIST_MODULE, None, 0, byref(s), sizeof(s) )
         if self._result == 0:
             s = str(s, 'ascii').rstrip('\x00')
             return s.split('\t')
@@ -224,7 +224,7 @@ class Cpu(PviObject):
         ```
         '''
         s = create_string_buffer(b'\000' * 4096)   
-        self._result = PviRead( self._linkID, POBJ_ACC_LIST_TASK, None, 0, byref(s), sizeof(s) )
+        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_LIST_TASK, None, 0, byref(s), sizeof(s) )
         if self._result == 0:
             s = str(s, 'ascii').rstrip('\x00')
             return s.split('\t')
@@ -252,7 +252,7 @@ class Cpu(PviObject):
         ```
         '''
         s = create_string_buffer(b'\000' * 65536)   
-        self._result = PviRead( self._linkID, POBJ_ACC_LIST_PVAR, None, 0, byref(s), sizeof(s) )
+        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_LIST_PVAR, None, 0, byref(s), sizeof(s) )
         if( self._result == 0 ):
             s = str(s, 'ascii').rstrip('\x00')
             variables = [v.split(' ')[0] for v in s.split('\t')]
@@ -295,7 +295,7 @@ class Cpu(PviObject):
         sets the CPU status
         '''        
         s = create_string_buffer(b"ST=" + status.encode())
-        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
+        self._result = PviXWrite( self._hPvi, self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
         if self._result != 0:
             raise PviError(self._result, self)
 
@@ -312,7 +312,7 @@ class Cpu(PviObject):
 
         """    
         s = create_string_buffer(b'\000' * 1024)             
-        self._result = PviRead( self._linkID, POBJ_ACC_CPU_INFO  , None, 0, byref(s), sizeof(s) )     
+        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_CPU_INFO  , None, 0, byref(s), sizeof(s) )     
         if self._result == 0:
             s = str(s, 'ascii').rstrip('\x00')
             ret = dict()
@@ -343,7 +343,7 @@ class Cpu(PviObject):
         ```
         """
         t = struct_tm()       
-        self._result = PviRead( self._linkID, POBJ_ACC_DATE_TIME , None, 0, byref(t), sizeof(t) )
+        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_DATE_TIME , None, 0, byref(t), sizeof(t) )
         if self._result == 0:
             try:
                 time =  datetime.datetime( year = t.tm_year+1900, month = t.tm_mon+1, day=t.tm_mday, hour=t.tm_hour, minute = t.tm_min, second = t.tm_sec)
@@ -366,7 +366,7 @@ class Cpu(PviObject):
         t.tm_hour = time.hour
         t.tm_min = time.minute
         t.tm_sec = time.second
-        self._result = PviWrite( self._linkID, POBJ_ACC_DATE_TIME, byref(t), sizeof(t), None, 0 )
+        self._result = PviXWrite( self._hPvi, self._linkID, POBJ_ACC_DATE_TIME, byref(t), sizeof(t), None, 0 )
         if self._result != 0:
             raise PviError(self._result, self)
      

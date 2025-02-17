@@ -67,9 +67,9 @@ class Connection():
         self._objectsArranged = False
         self._pviObjects = []
         self._rootObject = PviObject(None, T_POBJ_TYPE.POBJ_PVI, '@Pvi')
-        self._rootObject._connection = self
-        self.link(self._rootObject)
+ 
         self._linkIDs = {}
+        self._hPvi = wintypes.DWORD(0)
 
         initParameter = ""
         if 'IP' in kwargs:
@@ -79,13 +79,16 @@ class Connection():
         if 'COMT' in kwargs:
             initParameter = initParameter + 'COMT=' + str(kwargs['COMT']) + ' '
            
-        self._result = PviInitialize( timeout, 0, initParameter, None )
-        debuglog(f'PviInitialize( {timeout}, 0, "{initParameter}", NULL)')
+        self._result = PviXInitialize( byref(self._hPvi), timeout, 0, initParameter, None )
+        debuglog(f'PviXInitialize( {timeout}, 0, "{initParameter}", NULL)')
 
         if self._result == 0:
+            self._rootObject._connection = self
+            self._rootObject._hPvi = self._hPvi
+            self.link(self._rootObject)
             # set global events
             for m in (POBJ_EVENT_PVI_CONNECT, POBJ_EVENT_PVI_DISCONN, POBJ_EVENT_PVI_ARRANGE):
-                self._result = PviSetGlobEventMsg( m, PVI_HMSG_NIL, SET_PVIFUNCTION, 0 )
+                self._result = PviXSetGlobEventMsg( self._hPvi, m, PVI_HMSG_NIL, SET_PVIFUNCTION, 0 )
                 if self._result != 0:
                     raise PviError(self._result)
         else:
@@ -97,7 +100,16 @@ class Connection():
 
     # ----------------------------------------------------------------------------------
     def __del__(self):
-        PviDeinitialize()
+        PviXDeinitialize(self._hPvi)
+
+    # ----------------------------------------------------------------------------------
+    @property
+    def hPvi(self) ->wintypes.DWORD:
+        """
+        Returns:
+            wintypes.DWORD: handle for PviX.. functions
+        """
+        return self._hPvi
 
     # ----------------------------------------------------------------------------------
     @property
@@ -129,7 +141,7 @@ class Connection():
         if self.root._linkID == 0: # root object not yet valid
             return ('undefined', '', '', '', '', '' )
 
-        self._result = PviRead( self.root._linkID, POBJ_ACC_INFO_LICENCE  , None, 0, byref(li), sizeof(li) )
+        self._result = PviXRead( self._hPvi, self.root._linkID, POBJ_ACC_INFO_LICENCE  , None, 0, byref(li), sizeof(li) )
         if self._result == 0:
             try: 
                 state = ('undefined', 'trial', 'runtime', 'developer', 'locked')[li.PviWorkState0]
@@ -182,14 +194,14 @@ class Connection():
         handle PVI connect event
         """
         debuglog("POBJ_EVENT_PVI_CONNECT")
-        self._result = PviReadResponse( wParam, None, 0 )     
+        self._result = PviXReadResponse( self._hPvi, wParam, None, 0 )     
 
     # ----------------------------------------------------------------------------------
     def _eventPviDisconnect( self, wParam, responseInfo ):
         """
         handle PVI disconnect event
         """  
-        self._result = PviReadResponse( wParam, None, 0 )
+        self._result = PviXReadResponse( self._hPvi, wParam, None, 0 )
         self._pviObjects.clear()
         self._linkIDs.clear()
         self._objectsArranged = False
@@ -201,7 +213,7 @@ class Connection():
         """
         self._pviTrialTimeCheck = None
 
-        self._result = PviReadResponse( wParam, None, 0 )                
+        self._result = PviXReadResponse( self._hPvi, wParam, None, 0 )                
         debuglog("POBJ_EVENT_PVI_ARRANGE")
 
         # create and link objects
@@ -214,7 +226,7 @@ class Connection():
         """
         handle other events
         """
-        self._result = PviReadResponse( wParam, None, 0 )
+        self._result = PviXReadResponse( self._hPvi, wParam, None, 0 )
 
     # ----------------------------------------------------------------------------------
     def doEvents(self):
@@ -234,11 +246,11 @@ class Connection():
         lParam = LPARAM()
         hMsg = HANDLE()
         dataLen = c_uint32()        
-        self._result = PviGetNextResponse( byref(wParam), byref(lParam), byref(hMsg), None )
+        self._result = PviXGetNextResponse( self._hPvi, byref(wParam), byref(lParam), byref(hMsg), None )
 
         if wParam.value != 0:
             responseInfo = T_RESPONSE_INFO()
-            self._result = PviGetResponseInfo( wParam, None, byref(dataLen), byref(responseInfo), sizeof(responseInfo) )
+            self._result = PviXGetResponseInfo( self._hPvi, wParam, None, byref(dataLen), byref(responseInfo), sizeof(responseInfo) )
 
             # if responseInfo.ErrCode != 0:
             #     po = self.findObjectByLinkID(responseInfo.LinkID)

@@ -48,7 +48,7 @@ class VariableTypeDescription():
     '''
     helper class for class Variable to parse data type information
     '''
-    def __init__(self):
+    def __init__(self, hPvi: wintypes.DWORD):
         self._vn = -1
         self._vl = -1
         self._vt = PvType.UNKNOWN
@@ -60,6 +60,7 @@ class VariableTypeDescription():
         self._memberOffsets : List[StructMember] = list()
         self._members : List[StructMember] = list()
         self._innerStructures : List[StructMember] = list()
+        self._hPvi = hPvi
         '''
         list of all data type (structure) members if this variable is a struct
         '''
@@ -72,7 +73,7 @@ class VariableTypeDescription():
         objectDescriptor : Dict[str, str] = {'VN' : '1', 'VL' : '1' }
 
         s = create_string_buffer(b'\000' * 64*1024) 
-        result = PviRead( linkID, POBJ_ACC_TYPE_INTERN, None, 0, s, sizeof(s) )
+        result = PviXRead( self._hPvi, linkID, POBJ_ACC_TYPE_INTERN, None, 0, s, sizeof(s) )
         if result == 0:
             s = str(s, 'ascii').rstrip('\x00')
         else:
@@ -81,7 +82,7 @@ class VariableTypeDescription():
         self._getByteOffsetsAndLength(s, objectDescriptor)
 
         s = create_string_buffer(b'\000' * 64*1024) 
-        result = PviRead( linkID, POBJ_ACC_TYPE_EXTERN, None, 0, s, sizeof(s) )
+        result = PviXRead( self._hPvi, linkID, POBJ_ACC_TYPE_EXTERN, None, 0, s, sizeof(s) )
         if result == 0:
             s = str(s, 'ascii').rstrip('\x00')
         else:

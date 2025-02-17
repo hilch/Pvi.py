@@ -72,7 +72,7 @@ class Task(PviObject):
             status: 'Start', 'Stop', 'Resume', 'Cycle(<x<)'
         '''        
         s = create_string_buffer(b"ST=" + status.encode())
-        self._result = PviWrite( self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
+        self._result = PviXWrite( self._hPvi, self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )
         if self._result != 0:
             raise PviError(self._result, self)
 
@@ -129,7 +129,7 @@ class Task(PviObject):
         list of local variables
         '''
         s = create_string_buffer(b'\000' * 65536)   
-        self._result = PviRead( self._linkID, POBJ_ACC_LIST_PVAR, None, 0, byref(s), sizeof(s) )
+        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_LIST_PVAR, None, 0, byref(s), sizeof(s) )
         if( self._result == 0 ):
             s = str(s, 'ascii').rstrip('\x00')
             variables = [v.split(' ')[0] for v in s.split('\t')]
