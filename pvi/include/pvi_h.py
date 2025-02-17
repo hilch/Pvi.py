@@ -23,11 +23,7 @@
 import ctypes
 import winreg
 
-from ctypes import c_uint32, c_int32, c_uint64, c_int64, c_void_p, c_char_p
-from ctypes import Structure, WinDLL
-from ctypes import c_uint32 as DWORD
-from ctypes import c_uint8 as BYTE
-from ctypes import wintypes
+from ctypes import c_int32, wintypes, Structure, WinDLL
 from enum import IntEnum, Enum
 
 
@@ -147,11 +143,11 @@ class PvType(Enum):
 
 class T_RESPONSE_INFO(Structure):
     _fields_ = [
-        ("LinkID",DWORD),
-        ("nMode", DWORD),
-        ("nType", DWORD),
-        ("ErrCode", DWORD),
-        ("Status", DWORD)
+        ("LinkID",wintypes.DWORD),
+        ("nMode", wintypes.DWORD),
+        ("nType", wintypes.DWORD),
+        ("ErrCode", wintypes.DWORD),
+        ("Status", wintypes.DWORD)
     ]
  
 
@@ -167,8 +163,8 @@ STRING_ProceedingInfo = ctypes.c_char*(32)
 
 class T_PROCEEDING_INFO(Structure):
     _fields_ = [
-        ("nAccess",DWORD),
-        ("Percent", DWORD),
+        ("nAccess",wintypes.DWORD),
+        ("Percent", wintypes.DWORD),
         ("Info", STRING_ProceedingInfo),
     ]
 
@@ -201,11 +197,11 @@ STRING_LcName = ctypes.c_char*(PVI_LCNAME_LEN+1)
 
 class T_PVI_INFO_LICENCE(Structure):
     _fields_ = [
-        ("PviWorkState0",BYTE),    
-        ("PviWorkState1",BYTE),            
-        ("_PviWorkState0",BYTE),               
-        ("_PviWorkState1",BYTE),                       
-        ("Res1",DWORD),           
+        ("PviWorkState0",wintypes.BYTE),    
+        ("PviWorkState1",wintypes.BYTE),            
+        ("_PviWorkState0",wintypes.BYTE),               
+        ("_PviWorkState1",wintypes.BYTE),                       
+        ("Res1",wintypes.DWORD),           
         ("LcName",STRING_LcName)           
     ]
 
@@ -321,7 +317,7 @@ pviDll = WinDLL ( str(pviDllPath) + r"\PviCom64.dll")
 # int PviXInitialize (DWORD hPvi, INT Timeout, INT RetryTime, LPCSTR pInitParam, LPVOID pRes)
 #
 
-pviDll.PviXInitialize.argtypes = [ctypes.POINTER(wintypes.DWORD), c_int32, c_int32, c_char_p, c_void_p]
+pviDll.PviXInitialize.argtypes = [ctypes.POINTER(wintypes.DWORD), wintypes.INT, wintypes.INT, wintypes.LPCSTR, wintypes.LPVOID]
 pviDll.PviXInitialize.restype = c_int32
 def PviXInitialize( hPvi, Timeout, RetryTime, pInitParam, pRes ):
     result = pviDll.PviXInitialize( hPvi, Timeout, RetryTime, bytes( pInitParam, 'ascii'), pRes )
@@ -340,7 +336,7 @@ def PviXDeinitialize( hPvi ):
 # int PviXSetGlobEventMsg (DWORD hPvi, DWORD nGlobEvent, LPVOID hEventMsg, DWORD EventMsgNo, LPARAM EventParam)
 #
 
-pviDll.PviXSetGlobEventMsg.argtypes = [wintypes.DWORD, c_uint32, c_void_p, c_uint32, c_int64 ]
+pviDll.PviXSetGlobEventMsg.argtypes = [wintypes.DWORD, wintypes.DWORD, wintypes.LPVOID, wintypes.DWORD, wintypes.LPARAM ]
 pviDll.PviXSetGlobEventMsg.restype = c_int32
 def PviXSetGlobEventMsg( hPvi, nGlobEvent, hEventMsg, EventMsgNo, EventParam ):
     result = pviDll.PviXSetGlobEventMsg( hPvi, nGlobEvent, hEventMsg, EventMsgNo, EventParam )
@@ -350,7 +346,10 @@ def PviXSetGlobEventMsg( hPvi, nGlobEvent, hEventMsg, EventMsgNo, EventParam ):
 # int PviXGetNextResponse (DWORD hPvi, WPARAM* pwParam, LPARAM* plParam, LPVOID* phMsg, HANDLE hEvent)
 #
 
-pviDll.PviXGetNextResponse.argtypes = [wintypes.DWORD, c_void_p, c_void_p, c_void_p, c_void_p]    
+
+
+pviDll.PviXGetNextResponse.argtypes = [wintypes.DWORD, ctypes.POINTER(wintypes.WPARAM), 
+                                        ctypes.POINTER(wintypes.LPARAM), ctypes.POINTER(wintypes.LPVOID), wintypes.HANDLE]    
 pviDll.PviXGetNextResponse.restype = c_int32
 def PviXGetNextResponse( hPvi, pwParam, plParam, phMsg, hEvent):
     result = pviDll.PviXGetNextResponse( hPvi, pwParam, plParam, phMsg, hEvent )
@@ -362,7 +361,8 @@ def PviXGetNextResponse( hPvi, pwParam, plParam, phMsg, hEvent):
 # int PviXGetResponseInfo (DWORD hPvi, WPARAM wParam, LPARAM* pParam, LPDWORD pDataLen, T_RESPONSE_INFO* pInfo, DWORD InfoLen)
 #
 
-pviDll.PviXGetResponseInfo.argtypes = [wintypes.DWORD, c_uint64, c_void_p, c_void_p, c_void_p, c_uint32 ]
+pviDll.PviXGetResponseInfo.argtypes = [wintypes.DWORD, wintypes.WPARAM, ctypes.POINTER(wintypes.LPARAM), 
+                                       ctypes.POINTER(wintypes.DWORD), ctypes.POINTER(T_RESPONSE_INFO), wintypes.DWORD]
 pviDll.PviXGetResponseInfo.restype = c_int32
 def PviXGetResponseInfo( hPvi, wParam, pParam, pDataLen, pInfo, InfoLen):
     result = pviDll.PviXGetResponseInfo( hPvi, wParam, pParam, pDataLen, pInfo, InfoLen )
@@ -372,7 +372,7 @@ def PviXGetResponseInfo( hPvi, wParam, pParam, pDataLen, pInfo, InfoLen):
 # int PviXLink (DWORD hPvi, LPDWORD pLinkID, LPCSTR pObjectName, LPVOID hEventMsg, DWORD EventMsgNo, LPARAM EventParam, LPCSTR pLinkDescriptor)
 # 
 
-pviDll.PviXLink.argtypes = [wintypes.DWORD, c_void_p, c_char_p, c_void_p, c_uint32, c_uint64, c_char_p ]
+pviDll.PviXLink.argtypes = [wintypes.DWORD, wintypes.LPDWORD, wintypes.LPCSTR, wintypes.LPVOID, wintypes.DWORD, wintypes.LPARAM, wintypes.LPCSTR]
 pviDll.PviXLink.restype = c_int32
 def PviXLink( hPvi, pLinkID, pObjectName, hEventMsg, EventMsgNo, EventParam, pLinkDescriptor ):
     result = pviDll.PviXLink( hPvi, pLinkID, pObjectName, hEventMsg, EventMsgNo, EventParam, pLinkDescriptor)
@@ -383,7 +383,7 @@ def PviXLink( hPvi, pLinkID, pObjectName, hEventMsg, EventMsgNo, EventParam, pLi
 # int PviXUnlink (DWORD hPvi, DWORD LinkID)
 #
 
-pviDll.PviXUnlink.argtypes = [wintypes.DWORD, c_uint32]
+pviDll.PviXUnlink.argtypes = [wintypes.DWORD, wintypes.DWORD]
 pviDll.PviXUnlink.restype = c_int32
 def PviXUnlink( hPvi, pLinkID ) -> int:
     result = pviDll.PviXUnlink( hPvi, pLinkID)
@@ -392,40 +392,48 @@ def PviXUnlink( hPvi, pLinkID ) -> int:
 
 
 #
-# int PviXCreate (DWORD hPvi, LPDWORD pLinkID, LPCSTR pObjectName, DWORD ObjectTyp, LPCSTR pObjektDescriptor, LPVOID hEventMsg, DWORD EventMsgNo, LPARAM EventParam, LPCSTR pLinkDescriptor)
+# int PviXCreate (DWORD hPvi, LPDWORD pLinkID, LPCSTR pObjectName, DWORD ObjectTyp, LPCSTR pObjektDescriptor, 
+#                           LPVOID hEventMsg, DWORD EventMsgNo, LPARAM EventParam, LPCSTR pLinkDescriptor)
 #
 
-pviDll.PviXCreate.argtypes = [wintypes.DWORD, c_void_p, c_char_p, c_uint32, c_char_p, c_void_p, c_uint32, c_uint64, c_char_p]
+pviDll.PviXCreate.argtypes = [wintypes.DWORD, wintypes.LPDWORD, wintypes.LPCSTR, wintypes.DWORD, wintypes.LPCSTR, 
+                              wintypes.LPVOID, wintypes.DWORD, wintypes.LPARAM, wintypes.LPCSTR ]
 pviDll.PviXCreate.restype = c_int32
 def PviXCreate( hPvi, pLinkID, pObjectName, ObjectTyp, pObjectDescriptor, hEventMsg, EventMsgNo, EventParam, pLinkDescriptor ):
     result = pviDll.PviXCreate( hPvi, pLinkID, pObjectName, ObjectTyp, pObjectDescriptor, hEventMsg, EventMsgNo, EventParam, pLinkDescriptor)
     return result
 
 #
-# int PviXRead (DWORD hPvi, DWORD LinkID, DWORD nAccess, LPVOID pArgData, LONG ArgDataLen, LPVOID pData, LONG DataLen)
+# int PviXRead (DWORD hPvi, DWORD LinkID, DWORD nAccess, 
+#               LPVOID pArgData, LONG ArgDataLen, LPVOID pData, LONG DataLen)
 #
 
-pviDll.PviXRead.argtypes = [wintypes.DWORD, c_uint32, c_uint32, c_void_p, c_int64, c_void_p, c_int64]
+pviDll.PviXRead.argtypes = [wintypes.DWORD, wintypes.DWORD, wintypes.DWORD, 
+                            wintypes.LPVOID, wintypes.LONG, wintypes.LPVOID, wintypes.LONG]
 pviDll.PviXRead.restype = c_int32
 def PviXRead( hPvi, LinkID, nAccess, pArgData, ArgDataLen, pData, DataLen):
     result = pviDll.PviXRead( hPvi, LinkID, nAccess, pArgData, ArgDataLen, pData, DataLen)
     return result
 
 #
-# int PviXReadRequest (DWORD hPvi, DWORD LinkID, DWORD nAccess, LPVOID hResMsg, DWORD ResMsgNo, LPARAM ResParam)
+# int PviXReadRequest (DWORD hPvi, DWORD LinkID, DWORD nAccess, LPVOID hResMsg, 
+#                       DWORD ResMsgNo, LPARAM ResParam)
 #
 
-pviDll.PviXReadRequest.argtypes = [wintypes.DWORD, c_uint32, c_uint32, c_void_p, c_uint32, c_int64]
+pviDll.PviXReadRequest.argtypes = [wintypes.DWORD, wintypes.DWORD, wintypes.DWORD, wintypes.LPVOID, 
+                                   wintypes.DWORD, wintypes.LPARAM]
 pviDll.PviXReadRequest.restype = c_int32
 def PviXReadRequest( hPvi, LinkID, nAccess, hResMsg, ResMsgNo, ResParam):
     result = pviDll.PviXReadRequest( hPvi, LinkID, nAccess, hResMsg, ResMsgNo, ResParam)
     return result
 
 #
-# int PviXReadArgumentRequest (DWORD hPvi, DWORD LinkID, DWORD nAccess, LPVOID pArgData, LONG ArgDataLen, LPVOID hResMsg, DWORD ResMsgNo, LPARAM ResParam)
+# int PviXReadArgumentRequest (DWORD hPvi, DWORD LinkID, DWORD nAccess, LPVOID pArgData, LONG ArgDataLen, 
+#                               LPVOID hResMsg, DWORD ResMsgNo, LPARAM ResParam)
 #
 
-pviDll.PviXReadArgumentRequest.argtypes = [wintypes.DWORD, c_uint32, c_uint32, c_void_p, c_int64, c_void_p, c_uint32, c_int64]
+pviDll.PviXReadArgumentRequest.argtypes = [wintypes.DWORD, wintypes.DWORD, wintypes.DWORD, wintypes.LPVOID, wintypes.LONG,
+                                           wintypes.LPVOID, wintypes.DWORD, wintypes.LPARAM]
 pviDll.PviXReadArgumentRequest.restype = c_int32
 def PviXReadArgumentRequest( hPvi, LinkID, nAccess, pArgData, ArgDataLen, hResMsg, ResMsgNo, ResParam):
     result = pviDll.PviXReadArgumentRequest( hPvi, LinkID, nAccess, pArgData, ArgDataLen, hResMsg, ResMsgNo, ResParam)
@@ -435,7 +443,7 @@ def PviXReadArgumentRequest( hPvi, LinkID, nAccess, pArgData, ArgDataLen, hResMs
 # int PviXReadResponse (DWORD hPvi, WPARAM wParam, LPVOID pData, LONG DataLen)
 #
 
-pviDll.PviXReadResponse.argtypes = [wintypes.DWORD, c_uint64, c_void_p, c_int64]
+pviDll.PviXReadResponse.argtypes = [wintypes.DWORD, wintypes.WPARAM, wintypes.LPVOID, wintypes.LONG]
 pviDll.PviXReadResponse.restype = c_int32
 def PviXReadResponse( hPvi, wParam, pData, DataLen ):
     result = pviDll.PviXReadResponse( hPvi, wParam, pData, DataLen )
@@ -443,10 +451,12 @@ def PviXReadResponse( hPvi, wParam, pData, DataLen ):
 
 
 #
-# int PviXWriteRequest (DWORD hPvi, DWORD LinkID, DWORD nAccess, LPVOID pData, LONG DataLen, LPVOID hResMsg, DWORD ResMsgNo, LPARAM ResParam)
+# int PviXWriteRequest (DWORD hPvi, DWORD LinkID, DWORD nAccess, LPVOID pData, LONG DataLen, 
+#                       LPVOID hResMsg, DWORD ResMsgNo, LPARAM ResParam)
 #
 
-pviDll.PviXWriteRequest.argtypes = [wintypes.DWORD, c_uint32, c_uint32, c_void_p, c_int32, c_void_p, c_uint32, c_int64]
+pviDll.PviXWriteRequest.argtypes = [wintypes.DWORD, wintypes.DWORD, wintypes.DWORD, wintypes.LPVOID, wintypes.LONG,
+                                    wintypes.LPVOID, wintypes.DWORD, wintypes.LPARAM]
 pviDll.PviXWriteRequest.restype = c_int32
 def PviXWriteRequest( hPvi, LinkID, nAccess, pData, DataLen, hResMsg, ResMsgNo, ResParam ):
     result = pviDll.PviXWriteRequest( hPvi, LinkID, nAccess, pData, DataLen, hResMsg, ResMsgNo, ResParam )
@@ -456,7 +466,7 @@ def PviXWriteRequest( hPvi, LinkID, nAccess, pData, DataLen, hResMsg, ResMsgNo, 
 # int PviXWriteResultResponse (DWORD hPvi, WPARAM wParam, LPVOID pRstData, LONG RstDataLen)
 #     
 
-pviDll.PviXWriteResultResponse.argtypes = [wintypes.DWORD, c_uint64, c_void_p, c_int32]
+pviDll.PviXWriteResultResponse.argtypes = [wintypes.DWORD, wintypes.WPARAM, wintypes.LPVOID, wintypes.LONG]
 pviDll.PviXWriteResultResponse.restype = c_int32
 def PviXWriteResultResponse( hPvi, wParam, pRstData, RstDataLen ):
     result = pviDll.PviXWriteResultResponse( hPvi, wParam, pRstData, RstDataLen )
@@ -467,7 +477,7 @@ def PviXWriteResultResponse( hPvi, wParam, pRstData, RstDataLen ):
 # int PviXWriteResultResponse (DWORD hPvi, WPARAM wParam)
 #     
 
-pviDll.PviXWriteResponse.argtypes = [wintypes.DWORD, c_uint64]
+pviDll.PviXWriteResponse.argtypes = [wintypes.DWORD, wintypes.WPARAM]
 pviDll.PviXWriteResponse.restype = c_int32
 def PviXWriteResponse( hPvi, wParam ):
     result = pviDll.PviXWriteResponse( hPvi, wParam )
@@ -476,10 +486,12 @@ def PviXWriteResponse( hPvi, wParam ):
 
 
 #
-# int PviXWrite (DWORD hPvi, DWORD LinkID, DWORD nAccess, LPVOID pData, LONG DataLen, LPVOID pRstData, LONG RstDataLen)
+# int PviXWrite (DWORD hPvi, DWORD LinkID, DWORD nAccess, LPVOID pData, LONG DataLen, 
+#                LPVOID pRstData, LONG RstDataLen)
 #
 
-pviDll.PviXWrite.argtypes = [wintypes.DWORD, c_uint32, c_uint32, c_void_p, c_int32, c_void_p, c_int32]
+pviDll.PviXWrite.argtypes = [wintypes.DWORD, wintypes.DWORD, wintypes.DWORD, wintypes.LPVOID, wintypes.LONG,
+                             wintypes.LPVOID, wintypes.LONG]
 pviDll.PviXWrite.restype = c_int32
 def PviXWrite( hPvi, LinkID, nAccess, pData, DataLen, pRstData, RstDataLen ):
     result = pviDll.PviXWrite( hPvi, LinkID, nAccess, pData, DataLen, pRstData, RstDataLen )

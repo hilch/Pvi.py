@@ -65,7 +65,7 @@ class VariableTypeDescription():
         list of all data type (structure) members if this variable is a struct
         '''
 
-    def readFrom(self, linkID : int ) -> Dict[str,str]:
+    def readFrom(self, linkID :int ) -> Dict[str,str]:
         '''
         read type description from object
         object: Variable object

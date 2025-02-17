@@ -23,6 +23,7 @@
 from __future__ import annotations
 from typing import Union
 from ctypes import create_string_buffer, byref, sizeof
+from ctypes import wintypes
 from typing import Callable, Union
 import re
 import ast
@@ -350,7 +351,7 @@ class PviObject():
             quote = '"' if re.search( r"[\/\.\s]", str(value) ) is not None else ''
             descriptor_items += [f'{key}={quote}{value}{quote}']
         descr = ' '.join(descriptor_items) 
-        linkID = DWORD(0)
+        linkID = wintypes.DWORD(0)
         ld = ''
         for key, value in self._linkDescriptor.items():
             ld += f'{key}={value} '

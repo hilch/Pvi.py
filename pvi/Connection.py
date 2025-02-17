@@ -182,7 +182,7 @@ class Connection():
 
     # ----------------------------------------------------------------------------------
 
-    def findObjectByLinkID(self, linkID : DWORD) ->PviObject :
+    def findObjectByLinkID(self, linkID : wintypes.DWORD) ->PviObject :
         for o in self._pviObjects:
             if o._linkID == linkID:
                 return o
@@ -245,7 +245,7 @@ class Connection():
         wParam = WPARAM()
         lParam = LPARAM()
         hMsg = HANDLE()
-        dataLen = c_uint32()        
+        dataLen = wintypes.DWORD()      
         self._result = PviXGetNextResponse( self._hPvi, byref(wParam), byref(lParam), byref(hMsg), None )
 
         if wParam.value != 0:
