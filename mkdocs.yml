@@ -32,6 +32,7 @@ nav:
       - Errors: objects/errors.md
   - How-To : 
       - Basics: howtos/basics.md
+      - Multiple Connections: howtos/multiple_connections.md
       - What to do with CPUs: howtos/cpus.md
       - What to do with Tasks: howtos/tasks.md
       - Create List of Sotware Objects: howtos/object_lists.md

@@ -1,5 +1,17 @@
 # Version history
 
+## V1.2.4
+
+- allow connection to several PVI Managers on different computers using PviX .. functions
+
+## V1.2.3
+
+- fix some issues when addressing objects with parameter 'CD'
+
+## V1.2.2
+
+- add setting Cpu time.
+
 ## V1.2.1
 
 - fix: reading arrays of structures only returned first element
