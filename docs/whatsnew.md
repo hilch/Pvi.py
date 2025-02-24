@@ -1,5 +1,17 @@
 # Version history
 
+## V1.2.4
+
+- fix: PviDeinitialize not working
+
+## V1.2.3
+
+- fix some issues when addressing objects with parameter 'CD'
+
+## V1.2.2
+
+- add setting Cpu time.
+
 ## V1.2.1
 
 - fix: reading arrays of structures only returned first element
