@@ -470,7 +470,7 @@ class PviObject():
             self._connection._pviObjects.remove(self) # remove from PviObjects
             self._result = PviUnlink(self._linkID)
             self._linkID = 0
-            if self._result != 0:
+            if self._result != 0 and self._result != 12062:
                 raise PviError(self._result, self)
 
     

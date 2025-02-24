@@ -329,6 +329,7 @@ def PviInitialize( Timeout, RetryTime, pInitParam, pRes ):
 pviDll.PviDeinitialize.restype = c_int32
 result = pviDll.PviDeinitialize()
 def PviDeinitialize():
+    result = pviDll.PviDeinitialize()
     return result
 
 #
