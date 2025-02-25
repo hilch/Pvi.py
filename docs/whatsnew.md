@@ -1,8 +1,12 @@
 # Version history
 
-## V1.2.4
+## V1.2.5
 
 - allow connection to several PVI Managers on different computers using PviX .. functions
+
+## V1.2.4
+
+- fix: PviDeinitialize not working
 
 ## V1.2.3
 
