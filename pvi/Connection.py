@@ -63,7 +63,6 @@ class Connection():
         timeout = int(kwargs.get('timeout', 5 ))
         self._eventLoopIsRunning = False
         self._startTime = datetime.datetime.now()
-        self._pviManagerConnectionCheck = datetime.timedelta(seconds=timeout * 2 )
         self._objectsArranged = False
         self._pviObjects = []
         self._rootObject = PviObject(None, T_POBJ_TYPE.POBJ_PVI, '@Pvi')
@@ -309,13 +308,7 @@ class Connection():
                 self._eventOther( wParam, responseInfo )
                 # po = self.findObjectByLinkID(responseInfo.LinkID)
                 # print(f'{po.name} : nMode = {responseInfo.nMode}, nType = {responseInfo.nType}, ErrCode = {responseInfo.ErrCode}')                
-        
-        if self._pviManagerConnectionCheck:
-            if datetime.datetime.now() - self._startTime > self._pviManagerConnectionCheck:
-                PviDeinitialize()
-                raise PviError(12040)
-                
-
+                   
 
    # ----------------------------------------------------------------------------------
     def start(self, callback : Union[Callable,None] = None ):
