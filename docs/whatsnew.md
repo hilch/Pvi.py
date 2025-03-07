@@ -3,6 +3,7 @@
 ## V1.2.4
 
 - fix: PviDeinitialize not working
+- fix: call PviDeinitialize when connection to PVIManger failed
 
 ## V1.2.3
 
