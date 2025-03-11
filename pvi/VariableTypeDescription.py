@@ -425,12 +425,13 @@ class VariableTypeDescription():
             elif self._vt == PvType.DT:
                 if self._vn == 1: # single value
                     if type(value) == datetime.datetime:
-                        buffer = c_uint32( int(value.timestamp()) )
+                        v = int(value.replace(tzinfo=datetime.timezone.utc).timestamp())
+                        buffer = c_uint32( v )
                     elif type(value) == int:
                         buffer = c_uint32(value)
                 else: # array of DT
                     if type(value[0]) == datetime.datetime:
-                        v = (int(v.timestamp()) for v in value)
+                        v = (int(v.replace(tzinfo=datetime.timezone.utc).timestamp()) for v in value)
                         buffer = (c_uint32*self._vn)( *v )
                     elif type(value[0]) == int:
                         buffer = (c_uint32*self._vn)(*value)
