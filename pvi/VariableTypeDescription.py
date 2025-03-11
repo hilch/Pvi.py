@@ -297,9 +297,9 @@ class VariableTypeDescription():
         elif vt == PvType.U32 or vt == PvType.DT  or vt == PvType.DATE or vt == PvType.TOD:
             value = struct.unpack('<L', data)[0]
             if vt == PvType.DT:
-                return datetime.datetime.fromtimestamp(value)
+                return datetime.datetime.fromtimestamp( value, tz = datetime.timezone.utc )
             elif vt == PvType.DATE:
-                return datetime.date.fromtimestamp(value)                    
+                return datetime.date.fromtimestamp(value)
             elif vt == PvType.TOD:
                 hour = int(value / 3600000)
                 value %= 3600000
@@ -426,12 +426,13 @@ class VariableTypeDescription():
             elif self._vt == PvType.DT:
                 if self._vn == 1: # single value
                     if type(value) == datetime.datetime:
-                        buffer = c_uint32( int(value.timestamp()) )
+                        v = int(value.replace(tzinfo=datetime.timezone.utc).timestamp())
+                        buffer = c_uint32( v )
                     elif type(value) == int:
                         buffer = c_uint32(value)
                 else: # array of DT
                     if type(value[0]) == datetime.datetime:
-                        v = (int(v.timestamp()) for v in value)
+                        v = (int(v.replace(tzinfo=datetime.timezone.utc).timestamp()) for v in value)
                         buffer = (c_uint32*self._vn)( *v )
                     elif type(value[0]) == int:
                         buffer = (c_uint32*self._vn)(*value)
