@@ -3,28 +3,13 @@
 ## V1.2.5
 
 - allow connection to several PVI Managers on different computers using PviX .. functions
+- new property 'connectionChanged' for Connection object
 
 ## V1.2.4
 
 - fix: PviDeinitialize not working
 - fix: remove PVI trial time check
 - fix: the time zone of the PC running the script influences the result of DATE_AND_TIME objects
-
-## V1.2.3
-
-- fix some issues when addressing objects with parameter 'CD'
-
-## V1.2.2
-
-- add setting Cpu time.
-
-## V1.2.5
-
-- allow connection to several PVI Managers on different computers using PviX .. functions
-
-## V1.2.4
-
-- fix: PviDeinitialize not working
 
 ## V1.2.3
 

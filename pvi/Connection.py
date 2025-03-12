@@ -66,9 +66,10 @@ class Connection():
         self._objectsArranged = False
         self._pviObjects = []
         self._rootObject = PviObject(None, T_POBJ_TYPE.POBJ_PVI, '@Pvi')
- 
+
         self._linkIDs = {}
         self._hPvi = wintypes.DWORD(0)
+        self._connected = None
 
         initParameter = ""
         if 'IP' in kwargs:
@@ -187,23 +188,60 @@ class Connection():
                 return o
         raise KeyError('PviObject not found by LinkID')      
 
+    @property
+    def connectionChanged(self) -> Callable | None:
+        """
+        callback for 'connected to PVI-Manger'
+
+            Args:
+                cb: callback(status : bool) 
+
+                where status is 'True' if connected, 'False' if disconnected
+
+        typical example:
+
+        ```
+        pviConnection = Connection(IP="192.168.182.128") # start a remote Pvi connection
+
+        pviConnection.connectionChanged = lambda s : print("connected" if s else "disconnected")
+        ```
+        """
+        return self._connected
+
+
+    @connectionChanged.setter
+    def connectionChanged(self, cb : Callable):
+        """
+        set callback for 'connected to PVI-Manger'
+        """
+        if callable(cb):
+            self._connected = cb
+        else:
+            raise TypeError("only callable allowed for Connection.connected")
+
+
     # ----------------------------------------------------------------------------------
+    
     def _eventPviConnect( self, wParam, responseInfo ):
         """
         handle PVI connect event
         """
         debuglog("POBJ_EVENT_PVI_CONNECT")
-        self._result = PviXReadResponse( self._hPvi, wParam, None, 0 )     
+        self._result = PviXReadResponse( self._hPvi, wParam, None, 0 )
+        if self._connected:
+            self._connected(True)
 
     # ----------------------------------------------------------------------------------
     def _eventPviDisconnect( self, wParam, responseInfo ):
         """
         handle PVI disconnect event
-        """  
+        """      
         self._result = PviXReadResponse( self._hPvi, wParam, None, 0 )
         self._pviObjects.clear()
         self._linkIDs.clear()
         self._objectsArranged = False
+        if self._connected:
+            self._connected(False)
 
     # ----------------------------------------------------------------------------------
     def _eventPviArrange( self, wParam, responseInfo ): 

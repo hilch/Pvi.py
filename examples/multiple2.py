@@ -14,12 +14,14 @@ import threading
 from pvi import *
 
 pviConnection1 = Connection() # start a Pvi connection to local PVI manager
+pviConnection1.connectionChanged = lambda status : print("PVI-Manager 1 connected" if status else "PVI-Manager 1 disconnected")
 #
 line1 = Line( pviConnection1.root, 'LNANSL', CD='LNANSL')
 device1 = Device( line1, 'TCP', CD='/IF=TcpIp' )
 cpu1 = Cpu( device1, 'myArsim', CD='/IP=127.0.0.1' )
 
 pviConnection2 = Connection(IP='192.168.182.128', PN=20000 ) # start a remote Pvi
+pviConnection2.connectionChanged = lambda status : print("PVI-Manager 2 connected" if status else "PVI-Manager 2 disconnected")
 #
 line2 = Line( pviConnection2.root, 'LNANSL', CD='LNANSL')
 device2 = Device( line2, 'TCP', CD='/IF=TcpIp' )
