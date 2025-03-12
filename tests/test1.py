@@ -412,9 +412,9 @@ class TestVariables( unittest.TestCase):
         var = Variable(task, 'myDT')
         self.assertEqual( var.dataType, 'dt')          
         var.value = 0
-        self.assertEqual( var.value, datetime.datetime(1970, 1, 1, 1, 0) )
+        self.assertEqual( var.value, datetime.datetime(1970, 1, 1, 0, 0) )
         var.value = 10000000
-        self.assertEqual( var.value, datetime.datetime(1970, 4, 26, 19, 46, 40))
+        self.assertEqual( var.value, datetime.datetime(1970, 4, 26, 17, 46, 40))
         var.value = datetime.datetime(2021,2,3,4,5,6)
         self.assertEqual( var.value, datetime.datetime(2021, 2, 3, 4, 5, 6))          
         var.kill()
