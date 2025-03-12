@@ -296,7 +296,8 @@ class VariableTypeDescription():
         elif vt == PvType.U32 or vt == PvType.DT  or vt == PvType.DATE or vt == PvType.TOD:
             value = struct.unpack('<L', data)[0]
             if vt == PvType.DT:
-                return datetime.datetime.fromtimestamp( value, tz = datetime.timezone.utc )
+                date = datetime.datetime.fromtimestamp( value, tz = datetime.timezone.utc )
+                return date.replace(tzinfo=None)
             elif vt == PvType.DATE:
                 return datetime.date.fromtimestamp(value)
             elif vt == PvType.TOD:
