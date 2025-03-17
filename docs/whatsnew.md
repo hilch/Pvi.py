@@ -4,7 +4,7 @@
 
 - fix: PviDeinitialize not working
 - fix: remove PVI trial time check
-- fix: the time zone of the PC running the script influences the result of DATE_AND_TIME objects
+- fix: the time zone of the PC running the script influences the result of DATE_AND_TIME and DATE objects
 
 ## V1.2.3
 
