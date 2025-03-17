@@ -298,7 +298,7 @@ class VariableTypeDescription():
             if vt == PvType.DT:
                 date = datetime.datetime.fromtimestamp( value, tz = datetime.timezone.utc )
                 return date.replace(tzinfo=None)
-            elif vt == PvType.DATE:
+            elif vt == PvType.DATE:            
                 return datetime.date.fromtimestamp(value)
             elif vt == PvType.TOD:
                 hour = int(value / 3600000)
@@ -440,13 +440,13 @@ class VariableTypeDescription():
             elif self._vt == PvType.DATE:
                 if self._vn == 1: # single value
                     if type(value) == datetime.date:
-                        value = datetime.datetime.combine(value, datetime.time())
+                        value = datetime.datetime.combine(value, datetime.time(), tzinfo=datetime.timezone.utc)
                         buffer = c_uint32( int(value.timestamp()) )
                     elif type(value) == int:
                         buffer = c_uint32(value)
                 else: # array of DATE
                     if type(value[0]) == datetime.date:
-                        v = (int(datetime.datetime.combine(v, datetime.time()).timestamp()) for v in value)
+                        v = (int(datetime.datetime.combine(v, datetime.time(), tzinfo=datetime.timezone.utc).timestamp()) for v in value)
                         buffer = (c_uint32*self._vn)( *v )
                     elif type(value[0]) == int:
                         buffer = (c_uint32*self._vn)(*value)            
