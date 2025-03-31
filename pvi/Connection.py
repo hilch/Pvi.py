@@ -20,7 +20,7 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Union, Callable
+from typing import Union, Callable, Optional
 from ctypes import c_uint64 as WPARAM, c_int64 as LPARAM, c_void_p as HANDLE, byref, sizeof
 from .include import *
 from .Error import PviError
@@ -189,7 +189,7 @@ class Connection():
         raise KeyError('PviObject not found by LinkID')      
 
     @property
-    def connectionChanged(self) -> Callable | None:
+    def connectionChanged(self) -> Optional[Callable]:
         """
         callback for 'connected to PVI-Manger'
 
