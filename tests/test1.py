@@ -400,6 +400,8 @@ class TestVariables( unittest.TestCase):
         self.assertEqual( var.dataType, 'date')          
         var.value = 0
         self.assertEqual( var.value, datetime.date(1970, 1, 1) )
+        var.value = datetime.date(1970,1,1)
+        self.assertEqual( var.value, datetime.date(1970, 1, 1) )        
         var.value = 10000000
         self.assertEqual( var.value, datetime.date(1970, 4, 26))
         var.value = datetime.date(2021,2,3)
