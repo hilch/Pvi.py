@@ -645,6 +645,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../../howtos/multiple_connections/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Multiple Connections
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../howtos/cpus/" class="md-nav__link">
         
   
@@ -1790,7 +1811,7 @@ temperature = Variable( task1, 'gHeating.status.actTemp' )
 <span class="sd">            status: &#39;Start&#39;, &#39;Stop&#39;, &#39;Resume&#39;, &#39;Cycle(&lt;x&lt;)&#39;</span>
 <span class="sd">        &#39;&#39;&#39;</span>        
         <span class="n">s</span> <span class="o">=</span> <span class="n">create_string_buffer</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;ST=&quot;</span> <span class="o">+</span> <span class="n">status</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviWrite</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_STATUS</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXWrite</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_STATUS</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 
@@ -1847,7 +1868,7 @@ temperature = Variable( task1, 'gHeating.status.actTemp' )
 <span class="sd">        list of local variables</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">create_string_buffer</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\000</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="mi">65536</span><span class="p">)</span>   
-        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviRead</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_LIST_PVAR</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXRead</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_LIST_PVAR</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">)</span>
         <span class="k">if</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">):</span>
             <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s1">&#39;ascii&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)]</span>
@@ -2287,7 +2308,10 @@ to save PVI resources</p>
 
           <details class="quote">
             <summary>Source code in <code>pvi\Object.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">471</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">468</span>
+<span class="normal">469</span>
+<span class="normal">470</span>
+<span class="normal">471</span>
 <span class="normal">472</span>
 <span class="normal">473</span>
 <span class="normal">474</span>
@@ -2297,20 +2321,19 @@ to save PVI resources</p>
 <span class="normal">478</span>
 <span class="normal">479</span>
 <span class="normal">480</span>
-<span class="normal">481</span>
-<span class="normal">482</span>
-<span class="normal">483</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">481</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    PviObject.kill: kills this object</span>
 <span class="sd">    this should be called when object is not beeing used anymore</span>
 <span class="sd">    to save PVI resources</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">)</span> <span class="c1"># remove from linkIDs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">_pviObjects</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="c1"># remove from PviObjects</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviUnlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXUnlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">!=</span> <span class="mi">12045</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>

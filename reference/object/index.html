@@ -645,6 +645,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../../howtos/multiple_connections/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Multiple Connections
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../howtos/cpus/" class="md-nav__link">
         
   
@@ -1607,8 +1628,7 @@
 
             <details class="quote">
               <summary>Source code in <code>pvi\Object.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 37</span>
-<span class="normal"> 38</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 38</span>
 <span class="normal"> 39</span>
 <span class="normal"> 40</span>
 <span class="normal"> 41</span>
@@ -2051,9 +2071,7 @@
 <span class="normal">478</span>
 <span class="normal">479</span>
 <span class="normal">480</span>
-<span class="normal">481</span>
-<span class="normal">482</span>
-<span class="normal">483</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PviObject</span><span class="p">():</span>
+<span class="normal">481</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PviObject</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;super class representing a PVI object </span>
 
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -2071,15 +2089,6 @@
         <span class="n">parentName</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;(</span><span class="se">\\</span><span class="s1">S+)&#39;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;/&#39;</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">parentName</span><span class="si">}{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>        
         <span class="bp">self</span><span class="o">.</span><span class="n">_userName</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="k">if</span> <span class="s1">&#39;CD&#39;</span> <span class="ow">in</span> <span class="n">objectDescriptor</span> <span class="ow">and</span> <span class="p">(</span><span class="n">objType</span> <span class="o">==</span> <span class="n">T_POBJ_TYPE</span><span class="o">.</span><span class="n">POBJ_MODULE</span> <span class="ow">or</span> <span class="n">objType</span> <span class="o">==</span> <span class="n">T_POBJ_TYPE</span><span class="o">.</span><span class="n">POBJ_TASK</span> <span class="ow">or</span> <span class="n">objType</span> <span class="o">==</span> <span class="n">T_POBJ_TYPE</span><span class="o">.</span><span class="n">POBJ_PVAR</span><span class="p">):</span>
-            <span class="n">cd</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">objectDescriptor</span><span class="p">[</span><span class="s1">&#39;CD&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span>
-            <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\/RO\s*=\s*)?(\w[\w\.]*)&quot;</span><span class="p">,</span> <span class="n">cd</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">m</span><span class="p">:</span> <span class="c1"># PLC object name is entered in CD</span>
-                <span class="n">ro</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">ro</span> <span class="o">!=</span> <span class="n">name</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">parentName</span><span class="si">}{</span><span class="n">ro</span><span class="si">}</span><span class="s1">&#39;</span>                    
-            <span class="k">else</span><span class="p">:</span> <span class="c1"># pLC object name is not given so derive it from user assigned name</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">parentName</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">_userName</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_linkDescriptor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;EV&#39;</span><span class="p">:</span><span class="s1">&#39;ed&#39;</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">objType</span> <span class="o">==</span> <span class="n">T_POBJ_TYPE</span><span class="o">.</span><span class="n">POBJ_CPU</span> <span class="ow">or</span> <span class="n">objType</span> <span class="o">==</span> <span class="n">T_POBJ_TYPE</span><span class="o">.</span><span class="n">POBJ_MODULE</span><span class="p">:</span>
@@ -2103,10 +2112,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_pviError</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_errorChanged</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span> <span class="o">=</span> <span class="n">wintypes</span><span class="o">.</span><span class="n">DWORD</span><span class="p">()</span>
         <span class="n">debuglog</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_objectDescriptor</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkDescriptor</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">parent</span><span class="p">:</span> <span class="c1"># all objects but &#39;@Pvi&#39; have a parent</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">_connection</span> <span class="c1"># type: ignore</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">_hPvi</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+
 
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="p">)</span> <span class="p">)</span>
@@ -2119,6 +2132,7 @@
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;PviObject( name=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">, linkID=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="si">}</span><span class="s2"> )&quot;</span>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -2199,7 +2213,7 @@
 <span class="sd">        &quot;u&quot;: Change in the user tag string        </span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">create_string_buffer</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\000</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span>   
-        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviRead</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_EVMASK</span> <span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXRead</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_EVMASK</span> <span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_linkDescriptor</span><span class="o">.</span><span class="n">update</span><span class="p">(</span> <span class="p">{</span><span class="s1">&#39;EV&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)})</span>
@@ -2211,7 +2225,7 @@
     <span class="k">def</span> <span class="nf">evmask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span> <span class="p">:</span> <span class="nb">str</span> <span class="p">):</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">create_string_buffer</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviWrite</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_EVMASK</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXWrite</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_EVMASK</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span> 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_linkDescriptor</span><span class="o">.</span><span class="n">update</span><span class="p">(</span> <span class="p">{</span><span class="s1">&#39;EV&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)})</span>
         <span class="k">else</span><span class="p">:</span>
@@ -2229,7 +2243,7 @@
 <span class="sd">        ```</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">create_string_buffer</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\000</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="mi">4096</span><span class="p">)</span>   
-        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviRead</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_USERTAG</span> <span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXRead</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_USERTAG</span> <span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s1">&#39;ascii&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_objectDescriptor</span><span class="o">.</span><span class="n">update</span><span class="p">({</span> <span class="s1">&#39;UT&#39;</span><span class="p">:</span> <span class="n">s</span><span class="p">})</span> <span class="c1"># type: ignore</span>
@@ -2243,7 +2257,7 @@
 <span class="sd">        user tag</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">create_string_buffer</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviWrite</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_USERTAG</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXWrite</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_USERTAG</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span> 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>  
         <span class="bp">self</span><span class="o">.</span><span class="n">_objectDescriptor</span><span class="o">.</span><span class="n">update</span><span class="p">({</span> <span class="s1">&#39;UT&#39;</span><span class="p">:</span> <span class="n">tag</span><span class="p">})</span> <span class="c1"># type: ignore</span>
@@ -2330,7 +2344,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        (internal) handle data events</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviReadResponse</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXReadResponse</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="n">wParam</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span>
         <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_errorChanged</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_errorChanged</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>             
 
@@ -2338,14 +2352,14 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        (internal) handle data type events</span>
 <span class="sd">        &quot;&quot;&quot;</span>        
-        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviReadResponse</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXReadResponse</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="n">wParam</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span> 
 
 
     <span class="k">def</span> <span class="nf">_eventUploadStream</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span><span class="p">,</span> <span class="n">dataLen</span> <span class="p">:</span> <span class="nb">int</span> <span class="p">):</span>  
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        (internal) handle uploading data streams</span>
 <span class="sd">        &quot;&quot;&quot;</span>                   
-        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviReadResponse</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXReadResponse</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="n">wParam</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span> 
 
 
     <span class="k">def</span> <span class="nf">_eventStatus</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">wParam</span><span class="p">,</span> <span class="n">responseInfo</span> <span class="p">):</span>
@@ -2356,7 +2370,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;         </span>
 <span class="sd">        (internal) handle error events</span>
 <span class="sd">        &quot;&quot;&quot;</span>      
-        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviReadResponse</span><span class="p">(</span> <span class="n">wParam</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXReadResponse</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="n">wParam</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span>
         <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_errorChanged</span><span class="p">):</span>
             <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_errorChanged</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -2373,13 +2387,13 @@
             <span class="n">quote</span> <span class="o">=</span> <span class="s1">&#39;&quot;&#39;</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span> <span class="sa">r</span><span class="s2">&quot;[\/\.\s]&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
             <span class="n">descriptor_items</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">quote</span><span class="si">}{</span><span class="n">value</span><span class="si">}{</span><span class="n">quote</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
         <span class="n">descr</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">descriptor_items</span><span class="p">)</span> 
-        <span class="n">linkID</span> <span class="o">=</span> <span class="n">DWORD</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">linkID</span> <span class="o">=</span> <span class="n">wintypes</span><span class="o">.</span><span class="n">DWORD</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">ld</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkDescriptor</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">ld</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1"> &#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviCreate</span><span class="p">(</span> <span class="n">byref</span><span class="p">(</span><span class="n">linkID</span><span class="p">),</span> <span class="nb">bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="s1">&#39;ascii&#39;</span><span class="p">),</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXCreate</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">linkID</span><span class="p">),</span> <span class="nb">bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="s1">&#39;ascii&#39;</span><span class="p">),</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">descr</span><span class="p">,</span> <span class="s1">&#39;ascii&#39;</span><span class="p">),</span> <span class="n">PVI_HMSG_NIL</span><span class="p">,</span> <span class="n">SET_PVIFUNCTION</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ld</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
-        <span class="n">debuglog</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PviCreate(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="w"> </span><span class="n">T_POBJ_TYPE</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="p">)</span><span class="w">  </span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_objectDescriptor</span><span class="si">}</span><span class="s1">) = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="si">}</span><span class="s1">, linkID=</span><span class="si">{</span><span class="n">linkID</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>          
+        <span class="n">debuglog</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PviXCreate(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="w"> </span><span class="n">T_POBJ_TYPE</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="p">)</span><span class="w">  </span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_objectDescriptor</span><span class="si">}</span><span class="s1">) = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="si">}</span><span class="s1">, linkID=</span><span class="si">{</span><span class="n">linkID</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>          
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># object creation successful</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span> <span class="o">=</span> <span class="n">linkID</span><span class="o">.</span><span class="n">value</span>
             <span class="c1"># if self._type == T_POBJ_TYPE.POBJ_PVAR: # read variable&#39;s data type</span>
@@ -2415,7 +2429,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>    
         <span class="n">s</span> <span class="o">=</span> <span class="n">create_string_buffer</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\000</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="mi">65536</span><span class="p">)</span>   
-        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviRead</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_LIST_EXTERN</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXRead</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_LIST_EXTERN</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s1">&#39;ascii&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">li1</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; OT=&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)]</span>
@@ -2433,7 +2447,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>    
         <span class="n">s</span> <span class="o">=</span> <span class="n">create_string_buffer</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\000</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span>             
-        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviRead</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_VERSION</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">)</span>     
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXRead</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_VERSION</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">)</span>     
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s1">&#39;ascii&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -2467,7 +2481,7 @@
 <span class="sd">        ```</span>
 <span class="sd">        &quot;&quot;&quot;</span>    
         <span class="n">s</span> <span class="o">=</span> <span class="n">create_string_buffer</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\000</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="mi">64</span><span class="p">)</span>             
-        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviRead</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_STATUS</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXRead</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_STATUS</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">)</span>
         <span class="n">st</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>        
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s1">&#39;ascii&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -2480,7 +2494,7 @@
     <span class="nd">@status</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">st</span> <span class="p">:</span> <span class="nb">bytes</span><span class="p">):</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">create_string_buffer</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviWrite</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_STATUS</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXWrite</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_STATUS</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span> 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>        
 
@@ -2494,11 +2508,12 @@
 <span class="sd">        to save PVI resources</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">)</span> <span class="c1"># remove from linkIDs</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">_pviObjects</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="c1"># remove from PviObjects</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviUnlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXUnlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">!=</span> <span class="mi">12045</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2916,8 +2931,7 @@ read the object's version</p>
 
           <details class="quote">
             <summary>Source code in <code>pvi\Object.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">42</span>
-<span class="normal">43</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">43</span>
 <span class="normal">44</span>
 <span class="normal">45</span>
 <span class="normal">46</span>
@@ -2958,13 +2972,7 @@ read the object's version</p>
 <span class="normal">81</span>
 <span class="normal">82</span>
 <span class="normal">83</span>
-<span class="normal">84</span>
-<span class="normal">85</span>
-<span class="normal">86</span>
-<span class="normal">87</span>
-<span class="normal">88</span>
-<span class="normal">89</span>
-<span class="normal">90</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">PviObject</span><span class="p">,</span><span class="kc">None</span><span class="p">],</span> <span class="n">objType</span> <span class="p">:</span> <span class="n">T_POBJ_TYPE</span><span class="p">,</span> <span class="n">name</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">objectDescriptor</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]):</span>
+<span class="normal">84</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">PviObject</span><span class="p">,</span><span class="kc">None</span><span class="p">],</span> <span class="n">objType</span> <span class="p">:</span> <span class="n">T_POBJ_TYPE</span><span class="p">,</span> <span class="n">name</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">objectDescriptor</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Args: </span>
 <span class="sd">        parent: the parent Pvi Object</span>
@@ -2977,15 +2985,6 @@ read the object's version</p>
     <span class="n">parentName</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;(</span><span class="se">\\</span><span class="s1">S+)&#39;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;/&#39;</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">parentName</span><span class="si">}{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>        
     <span class="bp">self</span><span class="o">.</span><span class="n">_userName</span> <span class="o">=</span> <span class="n">name</span>
-    <span class="k">if</span> <span class="s1">&#39;CD&#39;</span> <span class="ow">in</span> <span class="n">objectDescriptor</span> <span class="ow">and</span> <span class="p">(</span><span class="n">objType</span> <span class="o">==</span> <span class="n">T_POBJ_TYPE</span><span class="o">.</span><span class="n">POBJ_MODULE</span> <span class="ow">or</span> <span class="n">objType</span> <span class="o">==</span> <span class="n">T_POBJ_TYPE</span><span class="o">.</span><span class="n">POBJ_TASK</span> <span class="ow">or</span> <span class="n">objType</span> <span class="o">==</span> <span class="n">T_POBJ_TYPE</span><span class="o">.</span><span class="n">POBJ_PVAR</span><span class="p">):</span>
-        <span class="n">cd</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">objectDescriptor</span><span class="p">[</span><span class="s1">&#39;CD&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\/RO\s*=\s*)?(\w[\w\.]*)&quot;</span><span class="p">,</span> <span class="n">cd</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">m</span><span class="p">:</span> <span class="c1"># PLC object name is entered in CD</span>
-            <span class="n">ro</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">ro</span> <span class="o">!=</span> <span class="n">name</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">parentName</span><span class="si">}{</span><span class="n">ro</span><span class="si">}</span><span class="s1">&#39;</span>                    
-        <span class="k">else</span><span class="p">:</span> <span class="c1"># pLC object name is not given so derive it from user assigned name</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">parentName</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">_userName</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_linkDescriptor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;EV&#39;</span><span class="p">:</span><span class="s1">&#39;ed&#39;</span><span class="p">}</span>
     <span class="k">if</span> <span class="n">objType</span> <span class="o">==</span> <span class="n">T_POBJ_TYPE</span><span class="o">.</span><span class="n">POBJ_CPU</span> <span class="ow">or</span> <span class="n">objType</span> <span class="o">==</span> <span class="n">T_POBJ_TYPE</span><span class="o">.</span><span class="n">POBJ_MODULE</span><span class="p">:</span>
@@ -3009,10 +3008,12 @@ read the object's version</p>
     <span class="bp">self</span><span class="o">.</span><span class="n">_pviError</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_errorChanged</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span> <span class="o">=</span> <span class="n">wintypes</span><span class="o">.</span><span class="n">DWORD</span><span class="p">()</span>
     <span class="n">debuglog</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_objectDescriptor</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkDescriptor</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">parent</span><span class="p">:</span> <span class="c1"># all objects but &#39;@Pvi&#39; have a parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">_connection</span> <span class="c1"># type: ignore</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">_hPvi</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -3038,7 +3039,10 @@ to save PVI resources</p>
 
           <details class="quote">
             <summary>Source code in <code>pvi\Object.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">471</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">468</span>
+<span class="normal">469</span>
+<span class="normal">470</span>
+<span class="normal">471</span>
 <span class="normal">472</span>
 <span class="normal">473</span>
 <span class="normal">474</span>
@@ -3048,20 +3052,19 @@ to save PVI resources</p>
 <span class="normal">478</span>
 <span class="normal">479</span>
 <span class="normal">480</span>
-<span class="normal">481</span>
-<span class="normal">482</span>
-<span class="normal">483</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">481</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    PviObject.kill: kills this object</span>
 <span class="sd">    this should be called when object is not beeing used anymore</span>
 <span class="sd">    to save PVI resources</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">)</span> <span class="c1"># remove from linkIDs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">_pviObjects</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="c1"># remove from PviObjects</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviUnlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXUnlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">!=</span> <span class="mi">12045</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
