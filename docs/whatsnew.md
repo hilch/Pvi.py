@@ -4,6 +4,7 @@
 
 - allow connection to several PVI Managers on different computers using PviX .. functions
 - new property 'connectionChanged' for Connection object
+- PVI installation path can be set with environment variable PVIPY_PVIDLLPATH now
 
 ## V1.2.4
 
