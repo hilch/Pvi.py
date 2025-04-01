@@ -296,11 +296,19 @@ POBJ_EVENT_LINEBASE = 256		# base number for advanced line events
 POBJ_EVENT_LN_XML_MOD_LIST = 403		# module list event (XML format)
 POBJ_EVENT_LN_XML_RED_CTRL = 440		# redundancy event (XML format)
 
+PVI4_REGISTRY_KEY = r"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\PviMan.exe"
+PVI4_PVICOMDLL_NAME = "PviCom64.dll"
+PVI6_REGISTRY_KEY = r"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\Pvi6Man.exe"
+PVI6_PVICOMDLL_NAME = "Pvi6Com64.dll"
 
 pviDllPath = os.environ.get("PVIPY_PVIDLLPATH")
 if pviDllPath == None:
     accessRegistry = winreg.ConnectRegistry(None,winreg.HKEY_LOCAL_MACHINE)
-    pviKey = winreg.OpenKey(accessRegistry,r"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\PviMan.exe")
+    try:
+        pviKey = winreg.OpenKey(accessRegistry, PVI4_REGISTRY_KEY)
+    except FileNotFoundError:
+        pviKey = winreg.OpenKey(accessRegistry, PVI6_REGISTRY_KEY)
+
     for n in range(10):
         try:
             value = list(winreg.EnumValue( pviKey, n))
@@ -314,7 +322,10 @@ if pviDllPath == None:
     print("Pvi is not installed")
     exit(1)
 
-pviDll = WinDLL ( str(pviDllPath) + r"\PviCom64.dll")
+try:
+    pviDll = WinDLL ( str(pviDllPath) + "\\" + PVI4_PVICOMDLL_NAME)
+except FileNotFoundError:
+    pviDll = WinDLL ( str(pviDllPath) + "\\" + PVI6_PVICOMDLL_NAME)
 
 
 #
