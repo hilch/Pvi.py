@@ -63,13 +63,14 @@ class Connection():
         timeout = int(kwargs.get('timeout', 5 ))
         self._eventLoopIsRunning = False
         self._startTime = datetime.datetime.now()
-        self._objectsArranged = False
+        self._pviObjectsAreArranged = False
         self._pviObjects = []
         self._rootObject = PviObject(None, T_POBJ_TYPE.POBJ_PVI, '@Pvi')
 
         self._linkIDs = {}
         self._hPvi = wintypes.DWORD(0)
         self._connected = None
+        self._objectsArranged = None
 
         initParameter = ""
         if 'IP' in kwargs:
@@ -156,6 +157,7 @@ class Connection():
         return ('undefined', '', '', '', '', '' )
 
     # ----------------------------------------------------------------------------------
+
     def link(self, *args ):
         """
         registers new PviObject(s)
@@ -165,7 +167,7 @@ class Connection():
         for o in args:
             if isinstance(o, PviObject):
                 self._pviObjects.append(o)
-                if self._objectsArranged:
+                if self._pviObjectsAreArranged:
                     o._createAndLink(self)
             elif isinstance(o, list ):
                 for oo in o:
@@ -188,6 +190,31 @@ class Connection():
                 return o
         raise KeyError('PviObject not found by LinkID')      
 
+    # ----------------------------------------------------------------------------------
+       
+    def _eventPviConnect( self, wParam, responseInfo ):
+        """
+        handle PVI connect event
+        """
+        debuglog("POBJ_EVENT_PVI_CONNECT")
+        self._result = PviXReadResponse( self._hPvi, wParam, None, 0 )
+        if self._connected:
+            self._connected(True)
+
+    # ----------------------------------------------------------------------------------
+
+    def _eventPviDisconnect( self, wParam, responseInfo ):
+        """
+        handle PVI disconnect event
+        """      
+        self._result = PviXReadResponse( self._hPvi, wParam, None, 0 )
+        self._pviObjects.clear()
+        self._linkIDs.clear()
+        self._pviObjectsAreArranged = False
+        if self._connected:
+            self._connected(False)
+
+    # ----------------------------------------------------------------------------------
     @property
     def connectionChanged(self) -> Optional[Callable]:
         """
@@ -208,7 +235,7 @@ class Connection():
         """
         return self._connected
 
-
+    # ----------------------------------------------------------------------------------
     @connectionChanged.setter
     def connectionChanged(self, cb : Callable):
         """
@@ -221,42 +248,46 @@ class Connection():
 
 
     # ----------------------------------------------------------------------------------
-    
-    def _eventPviConnect( self, wParam, responseInfo ):
-        """
-        handle PVI connect event
-        """
-        debuglog("POBJ_EVENT_PVI_CONNECT")
-        self._result = PviXReadResponse( self._hPvi, wParam, None, 0 )
-        if self._connected:
-            self._connected(True)
-
-    # ----------------------------------------------------------------------------------
-    def _eventPviDisconnect( self, wParam, responseInfo ):
-        """
-        handle PVI disconnect event
-        """      
-        self._result = PviXReadResponse( self._hPvi, wParam, None, 0 )
-        self._pviObjects.clear()
-        self._linkIDs.clear()
-        self._objectsArranged = False
-        if self._connected:
-            self._connected(False)
-
-    # ----------------------------------------------------------------------------------
     def _eventPviArrange( self, wParam, responseInfo ): 
         """
         handle pvi arrange event
         """
-        self._pviTrialTimeCheck = None
-
         self._result = PviXReadResponse( self._hPvi, wParam, None, 0 )                
         debuglog("POBJ_EVENT_PVI_ARRANGE")
 
         # create and link objects
         for po in self._pviObjects:
             po._createAndLink(self)
-        self._objectsArranged = True
+        self._pviObjectsAreArranged = True
+        if self._objectsArranged:
+            self._objectsArranged()
+
+    # ----------------------------------------------------------------------------------
+    @property
+    def objectsArranged(self) -> Optional[Callable]:
+        """
+        callback for 'POBJ_EVENT_PVI_ARRANGE'
+
+        After the manager is restarted or the communication connection is reestablished, 
+        the application has to set up these objects again. 
+        The global event POBJ_EVENT_PVI_ARRANGE notifies the application 
+        of when objects need to be recreated.        
+
+            Args:
+                cb: callback() 
+        """
+        return self._objectsArranged
+
+    # ----------------------------------------------------------------------------------
+    @objectsArranged.setter
+    def objectsArranged(self, cb : Callable):
+        """
+        set callback for 'POBJ_EVENT_PVI_ARRANGE'
+        """
+        if callable(cb):
+            self._objectsArranged = cb
+        else:
+            raise TypeError("only callable allowed for Connection.pviArranged")
 
     # ----------------------------------------------------------------------------------
     def _eventOther( self, wParam, responseInfo ):
@@ -390,6 +421,8 @@ class Connection():
             sleep(0.05)
             if( callback ) : callback(False)
             self.doEvents()
+        for linkID in self._linkIDs: # cleanup
+            PviXUnlink(self._hPvi, linkID)            
 
     # ----------------------------------------------------------------------------------
     def stop(self):

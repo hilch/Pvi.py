@@ -20,13 +20,14 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from .Connection import Connection
-from .Error import PviError
-from .Object import PviObject
-from .Line import Line
-from .Device import Device
-from .Station import Station
-from .Cpu import Cpu
-from .Task import Task
-from .Module import Module
-from .Variable import Variable
+from .pvi_objects.Connection import Connection
+from .pvi_objects.Error import PviError
+from .pvi_objects.Object import PviObject
+from .pvi_objects.Line import Line
+from .pvi_objects.Device import Device
+from .pvi_objects.Station import Station
+from .pvi_objects.Cpu import Cpu
+from .pvi_objects.Task import Task
+from .pvi_objects.Module import Module
+from .pvi_objects.Variable import Variable
+
