@@ -37,7 +37,7 @@ from pvi import Line
 from pvi import Device
 from pvi import Cpu
 
-ScanResult = namedtuple('ScanResult', ['target','ip','status'])
+ScanResult = namedtuple('ScanResult', ['target','AR', 'ip','status'])
 
 pviConnection = Connection() # start a Pvi connection
 line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
@@ -73,6 +73,7 @@ def cpu_error_change( cpu : Cpu, error : int ):
     if error == 0:
         cpu_list.append( ScanResult( 
                             target= cpu.cpuInfo.get('CT', 'unknown'),
+                            AR = cpu.version,
                             ip = cpu.ip_address, # type: ignore
                             status = cpu.status.get('RunState','unknown')
                             )
@@ -112,7 +113,7 @@ def ansl_scan( ipAddress = '127.0.0.1')->List[ScanResult] :
         ipAddress : IP address to define address range
 
     Returns:
-        list with scan results, namedtuple('ScanResult', ['target','ip','status'])
+        list with scan results, namedtuple('ScanResult', ['target','AR', 'ip','status'])
     """    
     global pviConnection, ip, cpu_list
     cpu_list.clear()
@@ -139,7 +140,7 @@ if __name__ == "__main__":
     
     results = ansl_scan(args.ip)
     for result in results:
-        print(f"Target: {result.target}, IP:{result.ip}, Status:{result.status}")
+        print(f"Target: {result.target}, AR: {result.AR}, IP:{result.ip}, Status:{result.status}")
         
     if len(results) > 0:
         print(f"{len(results)} target{'s' if len(results) > 1 else '' } found")
