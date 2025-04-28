@@ -26,11 +26,11 @@
 
 import socket
 from concurrent.futures import ThreadPoolExecutor
-import re
 from collections import namedtuple
 from typing import List
 import argparse
 import sys
+import ipaddress
 
 from pvi import Connection
 from pvi import Line
@@ -42,18 +42,8 @@ ScanResult = namedtuple('ScanResult', ['target','AR', 'ip','status'])
 pviConnection = Connection() # start a Pvi connection
 line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
 device = Device( line, 'TCP', CD='/IF=TcpIp' )
-ip = '127.0.0.1'
+network_to_scan = ipaddress.IPv4Network('127.0.0.1')
 cpu_list = list()
-
-
-# Regular expression for validating an IP address
-def is_valid_ip(ip):
-    pattern = re.compile( r"^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$" )
-    # Check if the IP address matches the pattern
-    if pattern.match(ip):
-        return True
-    else:
-        return False
 
 
 # Function to check if a ANSL server is reachable
@@ -66,6 +56,7 @@ def check_server(host):
     except OSError as e:
         print(f"{host}: {e}")
         return None
+
 
 def cpu_error_change( cpu : Cpu, error : int ):
     global cpu_list
@@ -83,13 +74,13 @@ def cpu_error_change( cpu : Cpu, error : int ):
         print()
         cpu.checked = True # type: ignore               
 
-def objectsArranged():
-    global ip    
-    servers = (re.sub(r'\.\w+$', f'.{i}', ip) for i in range(0,254))
 
+def objectsArranged():
+    global network_to_scan
+    
     # Check servers simultaneously using ThreadPoolExecutor
     with ThreadPoolExecutor(max_workers=255) as executor:
-        results = executor.map(lambda server: check_server(server), servers)
+        results = executor.map(lambda host: check_server(str(host)), network_to_scan.hosts() ) # type: ignore
         results = [item for item in results if item is not None]
 
     # connect to all CPUs found with PVI to get further information
@@ -106,42 +97,47 @@ def objectsArranged():
     pviConnection.stop()
 
 
-def ansl_scan( ipAddress = '127.0.0.1')->List[ScanResult] :
+def ansl_scan( network : ipaddress.IPv4Network )->List[ScanResult] :
     """Initializes the connection to PVI manager
 
     Args:
-        ipAddress : IP address to define address range
+        network : IP4 network, e.g. 192.168.100.0/24 or 192.168.100.0/255.255.255.0
 
     Returns:
         list with scan results, namedtuple('ScanResult', ['target','AR', 'ip','status'])
     """    
-    global pviConnection, ip, cpu_list
+    global pviConnection, ip, cpu_list, network_to_scan
+    network_to_scan = network
     cpu_list.clear()
-    ip = ipAddress
     pviConnection.objectsArranged = objectsArranged
     pviConnection.start() 
     return cpu_list   
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":   
     # Create the parser
     parser = argparse.ArgumentParser( prog= "Anslscan", description="perform a scan with the ANSL protocol")
 
     # Add arguments
-    parser.add_argument('ip', type=str, help='ip address')
+    parser.add_argument('network', type=str, help='IP4 network, e.g. 192.168.100.0/24 or 192.168.100.0/255.255.255.0 ')
 
     # Parse the arguments
 
     args = parser.parse_args()
-
-    if not is_valid_ip(args.ip):
-        print( "Anslscan: Wrong syntax for IP Address !")
-        sys.exit(1)
     
-    results = ansl_scan(args.ip)
+    try:
+        network = ipaddress.IPv4Network(args.network)
+    except (ipaddress.AddressValueError, ValueError, TypeError) as e:
+        print( "Anslscan: Wrong syntax for IP Address ! " + str(e))
+        sys.exit(1)
+
+    
+    results = ansl_scan(network)
+    if network.num_addresses > 1:
+        print(f"{network.num_addresses} hosts were checked.")
     for result in results:
         print(f"Target: {result.target}, AR: {result.AR}, IP:{result.ip}, Status:{result.status}")
-        
+               
     if len(results) > 0:
         print(f"{len(results)} target{'s' if len(results) > 1 else '' } found")
     else:
