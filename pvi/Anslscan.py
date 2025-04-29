@@ -54,8 +54,8 @@ def check_server(host):
     except (socket.timeout, ConnectionRefusedError):
         return None
     except OSError as e:
-        print(f"{host}: {e}")
-        return None
+        print(f"Error during checking {host}: {e}")
+        sys.exit(1)
 
 
 def cpu_error_change( cpu : Cpu, error : int ):

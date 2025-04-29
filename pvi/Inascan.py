@@ -63,7 +63,8 @@ def check_server(broadcast : ipaddress.IPv4Address, node, port = 11159):
     except socket.timeout:
         return None
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error during checking {str(broadcast)}/Node {node}: {e}")
+        sys.exit(1)
     finally:
         # Close the socket
         sock.close()
