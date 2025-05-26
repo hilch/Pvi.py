@@ -22,7 +22,7 @@
 
 # This module is used to scan for CPU with ANSL protocol activated 
 # since SNMP might be disabled due to security risks
-# The idea is to scan for open TCP port 11169 within a given IP range
+# The idea is to scan for reaction on UDP port 11159 within a given IP range
 
 import socket
 from collections import namedtuple
