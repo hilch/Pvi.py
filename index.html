@@ -235,6 +235,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#command-line-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Line Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command Line Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#snmpscan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Snmpscan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#anslscan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Anslscan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inascan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inascan
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#source-code" class="md-nav__link">
     <span class="md-ellipsis">
       Source Code
@@ -1241,6 +1283,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/tools/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1322,6 +1385,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#command-line-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Line Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command Line Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#snmpscan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Snmpscan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#anslscan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Anslscan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inascan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inascan
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#source-code" class="md-nav__link">
     <span class="md-ellipsis">
       Source Code
@@ -1370,6 +1475,24 @@ If this is not set it will search in Windows registry which is the most common w
 <h2 id="installation">Installation</h2>
 <pre><code class="language-console">pip install pvipy
 </code></pre>
+<h2 id="command-line-usage">Command Line Usage</h2>
+<p>pvi.py contains some modules for usage in a terminal.</p>
+<h3 id="snmpscan">Snmpscan</h3>
+<p>This module is used to scan for CPU with ANSL protocol activated.</p>
+<pre><code class="language-console">py pvi/Snmpscan.py
+</code></pre>
+<h3 id="anslscan">Anslscan</h3>
+<p>This module is used to scan for CPU with ANSL protocol activated since SNMP might be disabled due to security risks.
+The idea is to scan for open TCP port 11169 within a given IP range</p>
+<pre><code class="language-console">py pvi/Anslscan.py &lt;network&gt;
+</code></pre>
+<p>where network is a network address like <code>192.168.100.0/24</code> or <code>192.168.100.0/255.255.255</code>.</p>
+<h3 id="inascan">Inascan</h3>
+<p>This module is used to scan for CPU with ANSL protocol activated since SNMP might be disabled due to security risks
+The idea is to scan for reaction on UDP port 11159 within a given IP range</p>
+<pre><code class="language-console">py pvi/Inascan.py &lt;network&gt;
+</code></pre>
+<p>where network is a network address like <code>192.168.100.0/24</code> or <code>192.168.100.0/255.255.255</code>.</p>
 <h2 id="source-code">Source Code</h2>
 <p>Find it on GitHub <a href="https://github.com/hilch/Pvi.py">github.com/hilch/Pvi.py</a></p>
 
