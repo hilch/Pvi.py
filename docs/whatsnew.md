@@ -1,5 +1,10 @@
 # Version history
 
+## V1.2.6
+
+- add support for PVI6
+- add Snmpscan.py, Anslscan.py, Snmpscan.py
+
 ## V1.2.5
 
 - allow connection to several PVI Managers on different computers using PviX .. functions
