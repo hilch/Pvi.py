@@ -1,6 +1,6 @@
 # Class definition
 
-::: pvi.Cpu
+::: pvi.pvi_objects.Cpu
     options:
         inherited_members:
             - name

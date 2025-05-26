@@ -1,6 +1,6 @@
 # Class definition
 
-::: pvi.Device
+::: pvi.pvi_objects.Device
     options:
         inherited_members:
             - name

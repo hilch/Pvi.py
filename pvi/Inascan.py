@@ -25,7 +25,7 @@
 # The idea is to scan for reaction on UDP port 11159 within a given IP range
 
 import socket
-from collections import namedtuple
+from dataclasses import dataclass
 from typing import List
 import argparse
 import sys
@@ -36,7 +36,16 @@ from pvi import Line
 from pvi import Device
 from pvi import Cpu
 
-ScanResult = namedtuple('ScanResult', ['target','AR', 'ip', 'node', 'status'])
+@dataclass
+class ScanResult: 
+    """Inascan's result
+    """
+    target: str  # CPU type
+    AR: str  # Automation Runtime Version
+    ip: str  # IP address
+    node: str  # INA node number
+    status: str  # Automation Runtime status
+
 
 pviConnection = Connection() # start a Pvi connection
 line = Line( pviConnection.root, 'LNINA2', CD='LNINA2')
@@ -117,7 +126,7 @@ def objectsArranged():
 
 
 def ina_scan( network : ipaddress.IPv4Network )->List[ScanResult] :
-    """Initializes the connection to PVI manager
+    """Scan for CPU with INA2000 protocol activated
 
     Args:
         network : IP4 network, e.g. 192.168.100.0/24 or 192.168.100.0/255.255.255.0

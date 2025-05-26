@@ -1,6 +1,6 @@
 # Class definition
 
-::: pvi.Station
+::: pvi.pvi_objects.Station
     options:
         inherited_members:
             - name

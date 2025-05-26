@@ -1,3 +1,3 @@
 # Class definition
 
-::: pvi.Error
+::: pvi.pvi_objects.Error

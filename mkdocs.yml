@@ -55,6 +55,7 @@ nav:
       - Variable : reference/variable.md
       - Module : reference/module.md
       - PVI Errors : reference/error.md
+      - Tools : reference/tools.md
   - Version history: whatsnew.md
   
 

@@ -20,15 +20,24 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# This module is used to scan for CPU with ANSL protocol activated 
+# This module is used to scan for CPUs with SNMP protocol activated 
 
-from collections import namedtuple
+from dataclasses import dataclass
 import argparse
 from typing import List
 from pvi import Connection, Line, Device, Station, Variable
 
-ScanResult = namedtuple('ScanResult', ['target', 'AR', 'ip', 'subnet', "serial_number", 'status'])
-
+@dataclass
+class ScanResult:
+    """Snmpscan's result
+    """
+    target : str # CPU type
+    AR : str # Automation Runtime Version
+    ip : str # IP Address
+    subnet : str # Subnet mask
+    serial_number : str # hardware serial number
+    status: str # Automation Runtime status
+    
 pviConnection = Connection() # start a Pvi connection
 line = Line( pviConnection.root, 'LNSNMP', CD='LNSNMP')
 device = Device( line, 'Device', CD='/IF=snmp /RT=1000' )
@@ -65,7 +74,7 @@ def deviceErrorChanged( error : int ):
                                     ip = data.get("ipAddress", ""),
                                     subnet = data.get("subnetMask", ""),
                                     serial_number = data.get("serialNumber", ""),
-                                    status = {-1:'undefined', 1:'BOOT', 2:"DIAG", 3:"SERV", 4:"RUN"}.get(arState, -1)
+                                    status = {-1:"undefined", 1:"BOOT", 2:"DIAG", 3:"SERV", 4:"RUN"}.get(arState, "undefined")
                                 )
                     )
             
@@ -76,7 +85,7 @@ def deviceErrorChanged( error : int ):
 
 
 def snmp_scan()->List[ScanResult] :
-    """Initializes the connection to PVI manager
+    """scans for CPUs with SNMP protocol activated
 
     Returns:
         list with scan results, namedtuple 'ScanResult'

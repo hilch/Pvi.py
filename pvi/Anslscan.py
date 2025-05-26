@@ -26,7 +26,7 @@
 
 import socket
 from concurrent.futures import ThreadPoolExecutor
-from collections import namedtuple
+from dataclasses import dataclass
 from typing import List
 import argparse
 import sys
@@ -37,7 +37,15 @@ from pvi import Line
 from pvi import Device
 from pvi import Cpu
 
-ScanResult = namedtuple('ScanResult', ['target','AR', 'ip','status'])
+@dataclass
+class ScanResult:
+    """Anslscan's result
+    """    
+    target: str # CPU type
+    AR: str  # Automation Runtime Version
+    ip: str #IP address
+    status: str # Automation Runtime status
+
 
 pviConnection = Connection() # start a Pvi connection
 line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
@@ -98,7 +106,7 @@ def objectsArranged():
 
 
 def ansl_scan( network : ipaddress.IPv4Network )->List[ScanResult] :
-    """Initializes the connection to PVI manager
+    """Scan for CPU with ANSL protocol activated
 
     Args:
         network : IP4 network, e.g. 192.168.100.0/24 or 192.168.100.0/255.255.255.0

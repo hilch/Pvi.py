@@ -1,3 +1,3 @@
 # Class definition
 
-::: pvi.Object
+::: pvi.pvi_objects.Object

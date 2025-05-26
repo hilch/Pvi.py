@@ -1,5 +1,5 @@
 # Class definition
 
-::: pvi.Module
+::: pvi.pvi_objects.Module
     options:
         inherited_members: true

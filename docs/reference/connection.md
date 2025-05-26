@@ -1,3 +1,3 @@
 # Class definition
 
-::: pvi.Connection
+::: pvi.pvi_objects.Connection

@@ -37,6 +37,40 @@ Pvi.py is tested with 3.8 so it could not run on Windows XP or earlier.
 pip install pvipy
 ```
 
+## Command Line Usage
+
+pvi.py contains some modules for usage in a terminal.
+
+### Snmpscan
+
+This module is used to scan for CPU with ANSL protocol activated.
+
+```console
+py pvi/Snmpscan.py
+```
+
+### Anslscan
+
+This module is used to scan for CPU with ANSL protocol activated since SNMP might be disabled due to security risks.
+The idea is to scan for open TCP port 11169 within a given IP range
+
+```console
+py pvi/Anslscan.py <network>
+```
+
+where network is a network address like `192.168.100.0/24` or `192.168.100.0/255.255.255`.
+
+### Inascan
+
+This module is used to scan for CPU with ANSL protocol activated since SNMP might be disabled due to security risks
+The idea is to scan for reaction on UDP port 11159 within a given IP range
+
+```console
+py pvi/Inascan.py <network>
+```
+
+where network is a network address like `192.168.100.0/24` or `192.168.100.0/255.255.255`.
+
 ## Source Code
 
 Find it on GitHub [github.com/hilch/Pvi.py](https://github.com/hilch/Pvi.py)

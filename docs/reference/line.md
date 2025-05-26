@@ -1,6 +1,6 @@
 
 # Class definition
 
-::: pvi.Line
+::: pvi.pvi_objects.Line
     options:
         inherited_members: true
