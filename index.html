@@ -1317,6 +1317,71 @@
   
   
   
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    AddOns
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            AddOns
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="netmask_cidr/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Netmask / CDIR Translation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="whatsnew/" class="md-nav__link">
         
@@ -1479,20 +1544,24 @@ If this is not set it will search in Windows registry which is the most common w
 <p>pvi.py contains some modules for usage in a terminal.</p>
 <h3 id="snmpscan">Snmpscan</h3>
 <p>This module is used to scan for CPU with ANSL protocol activated.</p>
-<pre><code class="language-console">py pvi/Snmpscan.py
+<pre><code class="language-console">Snmpscan
 </code></pre>
 <h3 id="anslscan">Anslscan</h3>
 <p>This module is used to scan for CPU with ANSL protocol activated since SNMP might be disabled due to security risks.
 The idea is to scan for open TCP port 11169 within a given IP range</p>
-<pre><code class="language-console">py pvi/Anslscan.py &lt;network&gt;
+<pre><code class="language-console">Anslscan &lt;network&gt;
 </code></pre>
-<p>where network is a network address like <code>192.168.100.0/24</code> or <code>192.168.100.0/255.255.255</code>.</p>
+<p>where network is an <a href="https://docs.python.org/3/library/ipaddress.html#ipaddress.IPv4Network">IP4 network address specification</a>.
+For example, the following address specifications are equivalent: 192.168.1.0/24, 192.168.1.0/255.255.255.0 and 192.168.1.0/0.0.0.255.</p>
+<p><a href="netmask_cidr/">Netmask / CDIR Translation Table</a></p>
 <h3 id="inascan">Inascan</h3>
 <p>This module is used to scan for CPU with ANSL protocol activated since SNMP might be disabled due to security risks
 The idea is to scan for reaction on UDP port 11159 within a given IP range</p>
-<pre><code class="language-console">py pvi/Inascan.py &lt;network&gt;
+<pre><code class="language-console">Inascan &lt;network&gt;
 </code></pre>
-<p>where network is a network address like <code>192.168.100.0/24</code> or <code>192.168.100.0/255.255.255</code>.</p>
+<p>where network is an <a href="https://docs.python.org/3/library/ipaddress.html#ipaddress.IPv4Network">IP4 network address specification</a>.
+For example, the following address specifications are equivalent: 192.168.1.0/24, 192.168.1.0/255.255.255.0 and 192.168.1.0/0.0.0.255.</p>
+<p><a href="netmask_cidr/">Netmask / CDIR Translation Table</a></p>
 <h2 id="source-code">Source Code</h2>
 <p>Find it on GitHub <a href="https://github.com/hilch/Pvi.py">github.com/hilch/Pvi.py</a></p>
 
