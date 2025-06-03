@@ -56,6 +56,8 @@ nav:
       - Module : reference/module.md
       - PVI Errors : reference/error.md
       - Tools : reference/tools.md
+  - AddOns:
+      - Netmask / CDIR Translation : netmask_cidr.md
   - Version history: whatsnew.md
   
 

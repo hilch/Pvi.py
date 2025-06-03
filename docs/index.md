@@ -61,6 +61,8 @@ Anslscan <network>
 where network is an [IP4 network address specification](https://docs.python.org/3/library/ipaddress.html#ipaddress.IPv4Network).
 For example, the following address specifications are equivalent: 192.168.1.0/24, 192.168.1.0/255.255.255.0 and 192.168.1.0/0.0.0.255.
 
+[Netmask / CDIR Translation Table](netmask_cidr.md)
+
 ### Inascan
 
 This module is used to scan for CPU with ANSL protocol activated since SNMP might be disabled due to security risks
@@ -72,6 +74,8 @@ Inascan <network>
 
 where network is an [IP4 network address specification](https://docs.python.org/3/library/ipaddress.html#ipaddress.IPv4Network).
 For example, the following address specifications are equivalent: 192.168.1.0/24, 192.168.1.0/255.255.255.0 and 192.168.1.0/0.0.0.255.
+
+[Netmask / CDIR Translation Table](netmask_cidr.md)
 
 ## Source Code
 
