@@ -1,5 +1,9 @@
 # Version history
 
+## V1.2.7
+
+- creating executable scripts for Snmpscan, Anslscan, Snmpscan
+
 ## V1.2.6
 
 - add support for PVI6

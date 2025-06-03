@@ -22,6 +22,7 @@
 
 # This module is used to scan for CPUs with SNMP protocol activated 
 
+import sys
 from dataclasses import dataclass
 import argparse
 from typing import List
@@ -99,7 +100,7 @@ def snmp_scan()->List[ScanResult] :
     return cpu_list   
 
 
-if __name__ == "__main__":
+def main_cli():   
     # Create the parser
     parser = argparse.ArgumentParser( prog= "Snmpscan", description="perform a scan with the SNMP protocol")
 
@@ -118,4 +119,7 @@ if __name__ == "__main__":
     else:
         print( "no targets found")
 
+    sys.exit(0)
 
+if __name__ == "__main__":
+    main_cli()      

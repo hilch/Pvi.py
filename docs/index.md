@@ -46,7 +46,7 @@ pvi.py contains some modules for usage in a terminal.
 This module is used to scan for CPU with ANSL protocol activated.
 
 ```console
-py pvi/Snmpscan.py
+Snmpscan
 ```
 
 ### Anslscan
@@ -55,10 +55,11 @@ This module is used to scan for CPU with ANSL protocol activated since SNMP migh
 The idea is to scan for open TCP port 11169 within a given IP range
 
 ```console
-py pvi/Anslscan.py <network>
+Anslscan <network>
 ```
 
-where network is a network address like `192.168.100.0/24` or `192.168.100.0/255.255.255`.
+where network is an [IP4 network address specification](https://docs.python.org/3/library/ipaddress.html#ipaddress.IPv4Network).
+For example, the following address specifications are equivalent: 192.168.1.0/24, 192.168.1.0/255.255.255.0 and 192.168.1.0/0.0.0.255.
 
 ### Inascan
 
@@ -66,10 +67,11 @@ This module is used to scan for CPU with ANSL protocol activated since SNMP migh
 The idea is to scan for reaction on UDP port 11159 within a given IP range
 
 ```console
-py pvi/Inascan.py <network>
+Inascan <network>
 ```
 
-where network is a network address like `192.168.100.0/24` or `192.168.100.0/255.255.255`.
+where network is an [IP4 network address specification](https://docs.python.org/3/library/ipaddress.html#ipaddress.IPv4Network).
+For example, the following address specifications are equivalent: 192.168.1.0/24, 192.168.1.0/255.255.255.0 and 192.168.1.0/0.0.0.255.
 
 ## Source Code
 

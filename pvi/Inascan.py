@@ -142,7 +142,7 @@ def ina_scan( network : ipaddress.IPv4Network )->List[ScanResult] :
     return cpu_list   
 
 
-if __name__ == "__main__":
+def main_cli(): 
     # Create the parser
     parser = argparse.ArgumentParser( prog= "Inascan", description="perform a scan with the INA2000 protocol")
 
@@ -168,3 +168,7 @@ if __name__ == "__main__":
         print(f"{len(results)} target{'s' if len(results) > 1 else '' } found")
     else:
         print( "no targets found")
+    sys.exit(0)
+        
+if __name__ == "__main__":
+    main_cli()        
