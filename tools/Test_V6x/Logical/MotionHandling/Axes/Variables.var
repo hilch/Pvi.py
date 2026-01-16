@@ -1,0 +1,6 @@
+VAR
+	ax : REFERENCE TO AxisHandlingAxisType;
+	axX : REFERENCE TO AxisHandlingAxisType; (*OPCUa tag*)
+	axY : REFERENCE TO AxisHandlingAxisType; (*OPCUa tag*)
+	size1 : UDINT;
+END_VAR
