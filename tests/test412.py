@@ -474,14 +474,14 @@ class TestDerivedDatatypes( unittest.TestCase):
 class TestStructures( unittest.TestCase):
     def test_simpleStructure(self):
         task = Task( cpu, 'myProg')
-        var = Variable( task, 'mySimpleStruct' )
+        var = Variable( task, 'myComplexStruct.myStruct0' )
         self.assertEqual( var.dataType, 'myStructType')        
         var.kill
         task.kill
 
     def test_structArray(self):
         task = Task( cpu, 'myProg')
-        var = Variable( task, 'myStructArray' )
+        var = Variable( task, 'myComplexStruct.myStruct1' )
         self.assertEqual( var.dataType, 'myStructType[0..1]')        
         var.kill
         task.kill

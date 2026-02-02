@@ -9,8 +9,6 @@
  * Local variables of program myProg
  ********************************************************************)
 VAR
-	myStructArray : ARRAY[0..1] OF myStructType;
-	mySimpleStruct : myStructType;
 	myComplexStruct : myComplexStructType;
 	i : INT;
 	j : INT;

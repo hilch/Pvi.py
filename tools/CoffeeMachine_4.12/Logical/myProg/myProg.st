@@ -21,6 +21,7 @@ PROGRAM _INIT
 
 	FOR i := 0 TO 9 DO
 		myComplexStruct.vector[i+1] := 200 + i;
+		myComplexStruct.intvector[i] := 300+1;
 		FOR j := 0 TO 3 DO
 			myComplexStruct.matrix[i,j] := 1000 + (10 * i + j);
 		END_FOR

@@ -1,5 +1,9 @@
 
 TYPE
+	myStructType2 : 	STRUCT 
+		struct1 : myStructType;
+		structList : ARRAY[0..2]OF myStructType;
+	END_STRUCT;
 	myStructType : 	STRUCT 
 		member1 : USINT := 3;
 		member2 : ARRAY[0..2]OF USINT := [33,44,55];
@@ -38,6 +42,7 @@ TYPE
 		myStruct2 : ARRAY[2..2]OF myStructType;
 		myStruct3 : ARRAY[-1..1]OF myStructType;
 		myStruct4 : ARRAY[0..2,0..3]OF myStructType;
+		myStruct5 : myStructType2;
 		myEnum : myEnumType;
 		subrange1 : SINT(-3..6) ;
 		derived1 : myDerivedType1;
