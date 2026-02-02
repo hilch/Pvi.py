@@ -26,6 +26,32 @@ PROGRAM _INIT
 			myComplexStruct.matrix[i,j] := 1000 + (10 * i + j);
 		END_FOR
 	END_FOR
+
+	FOR i := -1 TO +1 DO
+		myComplexStruct.myStruct3[i].member1 := INT_TO_USINT(5+i);
+		myComplexStruct.myStruct3[i].member2[0] := INT_TO_USINT(10+i);
+		myComplexStruct.myStruct3[i].member2[1] := INT_TO_USINT(20+i);
+		myComplexStruct.myStruct3[i].member2[2] := INT_TO_USINT(30+i);
+	END_FOR
+
+	FOR i := 0 TO 2 DO
+		FOR j := 0 TO 3 DO
+			myComplexStruct.myStruct4[i,j].member1 := INT_TO_USINT(10 * i +j);
+			myComplexStruct.myStruct4[i,j].member2[0] := INT_TO_USINT(20 * i +j);
+			myComplexStruct.myStruct4[i,j].member2[1] := INT_TO_USINT(30 * i +j);
+			myComplexStruct.myStruct4[i,j].member2[2] := INT_TO_USINT(40 * i +j);
+		END_FOR
+	END_FOR
+
+	FOR i := 0 TO 2 DO
+		myComplexStruct.myStruct5.struct1.member1 := INT_TO_USINT(3 + 1);
+		FOR j := 0 TO 2 DO
+			myComplexStruct.myStruct5.structList[i].member1 := INT_TO_USINT(5 + 1);
+			myComplexStruct.myStruct5.struct1.member2[j] := INT_TO_USINT(33 +j);
+			myComplexStruct.myStruct5.structList[i].member2[j] := INT_TO_USINT((i+1)*10 + j);
+		END_FOR
+	END_FOR
+
 	myComplexStruct.myEnum := drei;
 	myComplexStruct.derived2[3] := 3;
 	myComplexStruct.derived2[4] := 4;

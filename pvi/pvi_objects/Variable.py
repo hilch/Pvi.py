@@ -24,6 +24,7 @@ from inspect import signature
 from ctypes import create_string_buffer, sizeof, byref, c_int32
 from typing import Union, Any, List
 from collections import OrderedDict
+from copy import deepcopy
 from .include import *
 from .Error import PviError
 from .Object import PviObject
@@ -413,7 +414,8 @@ class Variable(PviObject):
         expand if variable is array or struct
         '''
         members : OrderedDict[ str, TypeDescription] = OrderedDict()
-        structs = MemberStack()       
+        structs = MemberStack()
+        struct_arrays : OrderedDict[ str, TypeDescription] = OrderedDict()       
                         
         for idx, m in self._struct_members.items():
             idx : str
@@ -424,30 +426,68 @@ class Variable(PviObject):
                 if hierarchical_level == 1: # base level
                     structs.clear()
                     structs.push( m )
+                    members.update( {m.name : m} )
                 elif hierarchical_level == (structs.level + 1): # nth level
                     m.vo = m.vo + structs.peek().vo
                     structs.push( m )
+                    members.update( {m.name : m} )                    
                 elif hierarchical_level == (structs.level - 1):
                     structs.pop()
                 elif hierarchical_level == structs.level:
                     structs.pop()
                     m.vo = m.vo + structs.peek().vo
                     structs.push( m )
+                if m.get_array_indices(): # struct is an array
+                    struct_arrays.update( {m.name : m} )
+                
             else: # all datatypes but structs go to here
                 if hierarchical_level == 1:
                     structs.clear()
-
-                current_struct = structs.peek()
-                if current_struct.vt == PvType.STRUCT and  current_struct.get_array_indices(): # do not expand array of structs
-                    members.update( { current_struct.name : current_struct}) # take struct itself and ignore its members
-                else: # 
-                    member = m
-                    member.vo += structs.peek().vo
-                    members.update( {m.name :  m} )
+                member = m
+                member.vo += structs.peek().vo
+                members.update( {m.name :  m} )
                 
-        self._struct_members = members # member list without structs
-                    
+                
+        # if we have array of structs we expand all array elements, too
+        self._struct_members.clear()
+        for idx, m in members.items():
+            idx : str
+            m : TypeDescription
+            if m.vt != PvType.STRUCT:
+                if m.name == '.myStruct5.structList.member1':
+                    pass
+                is_element_of_struct_array = False
+                for sname, s in struct_arrays.items():
+                    if idx.startswith( sname ): # is member element of a struct array ?
+                        is_element_of_struct_array = True
+                        indices = s.get_array_indices()
+                        assert(indices)
+                        if len(indices) == 2:
+                            offset = m.vo
+                            for i in range(indices[0][0],indices[0][1]+1):
+                                for j in range(indices[1][0],indices[1][1]+1):
+                                    new_member = deepcopy(m)
+                                    new_member.name = m.name.replace( sname, f'{sname}[{i},{j}]', 1)
+                                    new_member.vo = offset
+                                    offset += s.vl
+                                    self._struct_members.update( { new_member.name : new_member})
+                        else:
+                            offset = m.vo
+                            for i in range(indices[0][0], indices[0][1]+1):
+                                new_member = deepcopy(m)
+                                new_member.name = m.name.replace( sname, f'{sname}[{i}]', 1)
+                                new_member.vo = offset
+                                offset += s.vl
+                                self._struct_members.update( { new_member.name : new_member})
+                        break
+                if not(is_element_of_struct_array):
+                    self._struct_members.update( {m.name :  m} )
+            else:
+                self._struct_members.update( {m.name :  m} )
         
+        # sort dict according variable offset
+        self._struct_members = OrderedDict(sorted( self._struct_members.items(), key = lambda x : x[1].vo ))
+        pass
         
     def _readValueFromBuffer(self, buffer : bytes):
         '''
@@ -468,25 +508,22 @@ class Variable(PviObject):
                         buf = buffer[m.vo : m.vo+m.vl]
                         value = m.unpack_data_from_buffer( buf )
                     else: # struct member is an array
-                        if m.vt == PvType.STRUCT: # array of structs are returned as simple bytes
-                            value = buffer[m.vo : m.vo + m.vn * m.vl]
-                        else: # struct member is an array of basic datatype
-                            indices = m.get_array_indices()
-                            value = []
-                            if indices and len(indices) == 2: # two dimensional array
-                                el1dim = indices[0][1] - indices[0][0] + 1 # number of elements in first dimension
-                                el2dim = indices[1][1] - indices[1][0] + 1 # number of elements in second dimension
-                                offset = m.vo
-                                for i in range(el1dim):
-                                    r = []
-                                    for _ in range(el2dim):
-                                        v = m.unpack_data_from_buffer( buffer[offset:offset+m.vl] )
-                                        r.append( v )
-                                        offset += m.vl
-                                    value.append( r )
-                            else: # one dimension only                      
-                                memberBuffers = ( buffer[_:_+m.vl] for _ in range( m.vo, m.vo + m.vl*m.vn, m.vl)) # split buffer
-                                value = [ m.unpack_data_from_buffer( buf ) for buf in memberBuffers ]
+                        indices = m.get_array_indices()
+                        value = []
+                        if indices and len(indices) == 2: # two dimensional array
+                            el1dim = indices[0][1] - indices[0][0] + 1 # number of elements in first dimension
+                            el2dim = indices[1][1] - indices[1][0] + 1 # number of elements in second dimension
+                            offset = m.vo
+                            for i in range(el1dim):
+                                r = []
+                                for _ in range(el2dim):
+                                    v = m.unpack_data_from_buffer( buffer[offset:offset+m.vl] )
+                                    r.append( v )
+                                    offset += m.vl
+                                value.append( r )
+                        else: # one dimension only                      
+                            memberBuffers = ( buffer[_:_+m.vl] for _ in range( m.vo, m.vo + m.vl*m.vn, m.vl)) # split buffer
+                            value = [ m.unpack_data_from_buffer( buf ) for buf in memberBuffers ]
                     structResult.update( { m.name : value } )
                 result.append( structResult )
             else:
