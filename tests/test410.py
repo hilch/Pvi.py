@@ -449,7 +449,7 @@ class TestDerivedDatatypes( unittest.TestCase):
     def test_derived1(self):
         task = Task( cpu, 'myProg')
         var = Variable( task, 'myDerivedDataType' )
-        self.assertEqual( var.dataType, 'u8[0..3]')
+        self.assertEqual( var.dataType, 'u8[3..6]')
         var.kill
         task.kill
 
