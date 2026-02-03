@@ -90,7 +90,7 @@ class TypeDescription:
         if 'e' in self.vs:
             enum_values = dict()
             for m in patternVSe.finditer(self.vs):
-                enum_values.update({ m.group(3) : m.group(2)})
+                enum_values.update({ m.group(3) : int(m.group(2))})
             return enum_values
         else:
             return None
@@ -153,8 +153,10 @@ class TypeDescription:
                     enum_range = self.get_enum_range()
                     assert(enum_range)
                     dynamic_enum : IntEnum = IntEnum( self.sn, enum_range )
-                    if value in dynamic_enum:
+                    try:
                         value = dynamic_enum(value) # type: ignore
+                    except:
+                        pass
                 return value
         elif self.vt == PvType.U64:
             return struct.unpack('<Q', data)[0] 
@@ -289,6 +291,11 @@ class TypeDescription:
 
             elif self.vt == PvType.I32:
                 if single_value: # single value
+                    if 'e' in self.vs: # enum ?
+                        enum_range = self.get_enum_range()
+                        assert(enum_range)
+                        dynamic_enum : IntEnum = IntEnum( self.sn, enum_range )
+                        value = value.value
                     assert type(value) is int                    
                     buffer = c_int32(value)
                 else: # array of I32
