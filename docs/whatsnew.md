@@ -1,8 +1,8 @@
 # Version history
 
-## V
+## V1.2.8
 
-- extend reading for Enums, two-dimensional variables, subranges
+- Improve reading for struct arrays, Enums, two-dimensional variables, subranges
 - change return type of arrays to list instead tuple (incompatible change)
 
 ## V1.2.7
