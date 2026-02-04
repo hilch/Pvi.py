@@ -368,22 +368,6 @@ class TypeDescription:
 
         return buffer        
                 
-          
-    def as_dict( self ) -> dict:
-        return {
-            'name' : self.name,
-            'at' : self.at,
-            'sc' : self.sc,
-            'vt' : self.vt,
-            'vl' : self.vl,
-            'vn' : self.vn,
-            'vs' : self.vs,
-            'al' : self.al,
-            'sn' : self.sn,
-            'tn' : self.tn,
-            'vo' : self.vo
-        }
-
 
 class MemberStack:
     '''
