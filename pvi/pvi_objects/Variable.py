@@ -26,6 +26,7 @@ from typing import Union, Any, OrderedDict as OrderedDictType
 from collections import OrderedDict 
 import re
 from copy import deepcopy
+import gc
 from .include import *
 from .Error import PviError
 from .Object import PviObject
@@ -397,7 +398,9 @@ class Variable(PviObject):
         del s, stripped
 
         if self._type_description.vn > 1 or self._type_description.vt == PvType.STRUCT:
-            self._expand_struct()             
+            self._expand_struct() 
+            
+        gc.collect() # run garbage collector
                         
               
     def _expand_struct_array(self, struct_array : TypeDescription, members : OrderedDictType[ str, TypeDescription] ) -> OrderedDictType[ str, TypeDescription]:
