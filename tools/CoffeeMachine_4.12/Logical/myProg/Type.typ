@@ -32,8 +32,8 @@ TYPE
 		dt : DATE_AND_TIME;
 		string : STRING[80];
 		wstring : WSTRING[80];
-		stringlist : ARRAY[1..10]OF STRING[40];
-		wstringlist : ARRAY[1..10]OF WSTRING[40];
+		stringlist : ARRAY[1..10]OF STRING[40] := ['A','B','C','D','E','F','G','H','I','J'];
+		wstringlist : ARRAY[1..10]OF WSTRING[40] := ["A","B","C","D","E","F","G","H","I","J"];
 		vector : ARRAY[1..10]OF REAL;
 		intvector : ARRAY[0..9]OF INT;
 		matrix : ARRAY[0..9,0..3]OF REAL;
@@ -42,8 +42,9 @@ TYPE
 		myStruct2 : ARRAY[2..2]OF myStructType;
 		myStruct3 : ARRAY[-1..1]OF myStructType;
 		myStruct4 : ARRAY[0..2,0..3]OF myStructType;
-		myStruct5 : myStructType2;
+		myStruct5 : ARRAY[0..2]OF myStructType2;
 		myEnum : myEnumType;
+		enumlist : ARRAY[0..4]OF myEnumType;
 		subrange1 : SINT(-3..6) ;
 		derived1 : myDerivedType1;
 		derived2 : myDerivedType2;

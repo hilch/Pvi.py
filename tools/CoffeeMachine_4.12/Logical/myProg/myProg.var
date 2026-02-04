@@ -12,5 +12,6 @@ VAR
 	myComplexStruct : myComplexStructType;
 	i : INT;
 	j : INT;
+	n : USINT := 0;
 	sizeof_myComplexStruct : UDINT;
 END_VAR
