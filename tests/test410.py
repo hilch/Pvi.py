@@ -6,6 +6,7 @@ import string
 import random
 import datetime
 from collections import OrderedDict
+from enum import IntEnum
 
 pviPath = str(Path(__file__).parents[1])
 cwd = str(Path(__file__).parents[0])
@@ -13,6 +14,11 @@ cwd = str(Path(__file__).parents[0])
 sys.path.append( pviPath )
 
 from pvi import *
+
+class myEnumType(IntEnum):
+    eins = 0
+    zwei = 1
+    drei = 2
 
 
 def cpuErrorChanged( self, error : int):     
@@ -232,7 +238,7 @@ class TestVariables( unittest.TestCase):
              var.kill()
         var = Variable(task, "myINTArray")
         self.assertEqual( var.dataType, 'i16[0..9]')         
-        self.assertEqual( var.value, (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
+        self.assertEqual( var.value, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
         var.kill() 
         task.kill()     
 
@@ -330,7 +336,7 @@ class TestVariables( unittest.TestCase):
              var.kill()
         var = Variable(task, "myREALArray")
         self.assertEqual( var.dataType, 'f32[0..9]')          
-        self.assertEqual( var.value, (0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0))
+        self.assertEqual( var.value, [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0])
         var.kill()
         var = Variable(task, 'myReal', CD="myREALArray[3]")
         self.assertEqual( var.value, 3.0 )
@@ -359,7 +365,7 @@ class TestVariables( unittest.TestCase):
              var.value = bytes(string.ascii_uppercase[n], encoding='ascii')
              var.kill()
         var = Variable(task, "mySTRINGArray")
-        self.assertEqual( var.value, (b'A', b'B', b'C', b'D', b'E', b'F', b'G', b'H', b'I', b'J'))
+        self.assertEqual( var.value, [b'A', b'B', b'C', b'D', b'E', b'F', b'G', b'H', b'I', b'J'])
         var.kill()
 
     def test_WSTRING(self):   
@@ -378,7 +384,7 @@ class TestVariables( unittest.TestCase):
              var.value = string.ascii_uppercase[n]
              var.kill()
         var = Variable(task, "myWSTRINGArray")
-        self.assertEqual( var.value, ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'))
+        self.assertEqual( var.value, ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
         var.kill()         
         task.kill()
 
@@ -439,9 +445,8 @@ class TestEnums( unittest.TestCase):
     def test_enum(self):
         task = Task( cpu, 'myProg')
         var = Variable( task, 'myEnumeration' )
-        self.assertEqual( var.dataType, 'i32')
         var.value = 2
-        self.assertEqual( var.value, 2 )
+        self.assertEqual( var.value, myEnumType.drei)
         var.kill
         task.kill
 
@@ -449,7 +454,7 @@ class TestDerivedDatatypes( unittest.TestCase):
     def test_derived1(self):
         task = Task( cpu, 'myProg')
         var = Variable( task, 'myDerivedDataType' )
-        self.assertEqual( var.dataType, 'u8[3..6]')
+        self.assertEqual( var.dataType, 'myDerivedType[3..6]')
         var.kill
         task.kill
 
@@ -484,27 +489,27 @@ class TestStructures( unittest.TestCase):
         var.value = 44
         var.kill()
         var = Variable( task, 'myComplexStruct.myEnum' )
-        var.value = 2
+        var.value = myEnumType.drei
         var.kill()
         var = Variable( task, 'myComplexStruct.myDerived[3]' )
         var.value = 55
         var.kill()
         var = Variable( task, 'myComplexStruct' )
-        self.assertEqual( var.value, OrderedDict([('.element', 11), 
-                                                  ('.positionDataElements[2].EndlessPositionData[0].MTPhase', 22), 
-                                                  ('.positionDataElements[2].EndlessPositionData[0].MTDiffInteger', 0), 
-                                                  ('.positionDataElements[2].EndlessPositionData[0].MTDiffFract', 0), 
-                                                  ('.positionDataElements[2].EndlessPositionData[0].RefOffset', 0), 
-                                                  ('.positionDataElements[2].EndlessPositionData[0].Checksum', 0), 
-                                                  ('.positionDataElements[2].EndlessPositionData[1].MTPhase', 0), 
-                                                  ('.positionDataElements[2].EndlessPositionData[1].MTDiffInteger', 0), 
-                                                  ('.positionDataElements[2].EndlessPositionData[1].MTDiffFract', 0), 
-                                                  ('.positionDataElements[2].EndlessPositionData[1].RefOffset', 33), 
-                                                  ('.positionDataElements[2].EndlessPositionData[1].Checksum', 0), 
-                                                  ('.myStruct1.member', 0), 
-                                                  ('.myStruct2.member', 44), 
-                                                  ('.myEnum', 2), 
-                                                  ('.myDerived', (0, 0, 0, 55))]) )
+        self.assertEqual( var.value['.element'], 11)
+        self.assertEqual( var.value['.positionDataElements[2].EndlessPositionData[0].MTPhase'], 22), 
+        self.assertEqual( var.value['.positionDataElements[2].EndlessPositionData[0].MTDiffInteger'], 0), 
+        self.assertEqual( var.value['.positionDataElements[2].EndlessPositionData[0].MTDiffFract'], 0), 
+        self.assertEqual( var.value['.positionDataElements[2].EndlessPositionData[0].RefOffset'], 0), 
+        self.assertEqual( var.value['.positionDataElements[2].EndlessPositionData[0].Checksum'], 0), 
+        self.assertEqual( var.value['.positionDataElements[2].EndlessPositionData[1].MTPhase'], 0), 
+        self.assertEqual( var.value['.positionDataElements[2].EndlessPositionData[1].MTDiffInteger'], 0), 
+        self.assertEqual( var.value['.positionDataElements[2].EndlessPositionData[1].MTDiffFract'], 0), 
+        self.assertEqual( var.value['.positionDataElements[2].EndlessPositionData[1].RefOffset'], 33), 
+        self.assertEqual( var.value['.positionDataElements[2].EndlessPositionData[1].Checksum'], 0), 
+        self.assertEqual( var.value['.myStruct1.member'], 0), 
+        self.assertEqual( var.value['.myStruct2.member'], 44), 
+        self.assertEqual( var.value['.myEnum'], 2), 
+        self.assertEqual( var.value['.myDerived'], [0, 0, 0, 55])
         var.kill()
         task.kill()
 
