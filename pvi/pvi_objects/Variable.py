@@ -22,8 +22,8 @@
 
 from inspect import signature
 from ctypes import create_string_buffer, sizeof, byref, c_int32
-from typing import Union, Any, List
-from collections import OrderedDict
+from typing import Union, Any, OrderedDict as OrderedDictType
+from collections import OrderedDict 
 import re
 from copy import deepcopy
 from .include import *
@@ -413,8 +413,8 @@ class Variable(PviObject):
   
                     
               
-    def _expand_struct_array(self, struct_array : TypeDescription, members : OrderedDict[ str, TypeDescription] ) -> OrderedDict[ str, TypeDescription]:
-        new_members : OrderedDict[ str, TypeDescription] = OrderedDict()
+    def _expand_struct_array(self, struct_array : TypeDescription, members : OrderedDictType[ str, TypeDescription] ) -> OrderedDictType[ str, TypeDescription]:
+        new_members : OrderedDictType[ str, TypeDescription] = OrderedDict()
         indices = struct_array.get_array_indices()
         sname = struct_array.name
         assert(indices)
