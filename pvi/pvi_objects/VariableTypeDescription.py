@@ -102,6 +102,9 @@ class TypeDescription:
                 return (int(m.group(1)), int(m.group(2)))
         return None
         
+    def get_order(self) -> int:
+        return self.name.count('.')
+        
     def get_buffer_size(self) -> int:
         return self.vn * self.vl
                 
@@ -182,7 +185,7 @@ class TypeDescription:
             raise BaseException("not implemented")                
         
         
-    def pack_value_to_buffer(self, value) -> Any:
+    def pack_value_to_buffer(self, value : Any) -> Any:
         '''
         packs Python data type to byte buffer
         value: value
@@ -291,11 +294,10 @@ class TypeDescription:
 
             elif self.vt == PvType.I32:
                 if single_value: # single value
-                    if 'e' in self.vs: # enum ?
-                        enum_range = self.get_enum_range()
-                        assert(enum_range)
-                        dynamic_enum : IntEnum = IntEnum( self.sn, enum_range )
-                        value = value.value
+                    try:
+                        value = value.value # type: ignore
+                    except:
+                        pass
                     assert type(value) is int                    
                     buffer = c_int32(value)
                 else: # array of I32
@@ -317,14 +319,14 @@ class TypeDescription:
 
             elif self.vt == PvType.F32:
                 if single_value: # single value
-                    assert type(value) is float                    
+                    value = float(value) # type: ignore
                     buffer = c_float(value)
                 else: # array of F32
                     buffer = (c_float*self.vn)(*value)                
 
             elif self.vt == PvType.F64:              
                 if single_value: # single value
-                    assert type(value) is float
+                    value = (value) # type: ignore
                     buffer = c_double(value)
                 else: # array of F64
                     buffer = (c_double*self.vn)(*value)                

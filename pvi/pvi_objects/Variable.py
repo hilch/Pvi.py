@@ -24,6 +24,7 @@ from inspect import signature
 from ctypes import create_string_buffer, sizeof, byref, c_int32
 from typing import Union, Any, List
 from collections import OrderedDict
+import re
 from copy import deepcopy
 from .include import *
 from .Error import PviError
@@ -215,6 +216,8 @@ class Variable(PviObject):
                     t += f'[{dim1[0]}..{dim1[1]}]'
         else:
             t = self._type_description.vt.value
+            if self._type_description.vt == PvType.I32 and 'e' in self._type_description.vs: # enum ?
+                t = self._type_description.sn
             if 'v' in self._type_description.vs: # derived datatype
                 subrange = self._type_description.get_subrange()
                 if len(self._type_description.tn) > 0:
@@ -407,33 +410,63 @@ class Variable(PviObject):
             with open( 'C:/temp/members3.txt', 'w') as f:
                 for i, m in self._struct_members.items():
                     f.write( str(m) + '\n')
+  
+                    
+              
+    def _expand_struct_array(self, struct_array : TypeDescription, members : OrderedDict[ str, TypeDescription] ) -> OrderedDict[ str, TypeDescription]:
+        new_members : OrderedDict[ str, TypeDescription] = OrderedDict()
+        indices = struct_array.get_array_indices()
+        sname = struct_array.name
+        assert(indices)
+        re_child_of_struct = re.compile(rf'{struct_array.name}(\[\d*\])?')
+        for idx, m in members.items():
+            if re_child_of_struct.match(idx): # is member a part of this struct ?
+                if len(indices) == 2:
+                    offset = m.vo
+                    for i in range(indices[0][0],indices[0][1]+1):
+                        for j in range(indices[1][0],indices[1][1]+1):
+                            new_member = deepcopy(m)
+                            new_member.name = m.name.replace( sname, f'{sname}[{i},{j}]', 1)
+                            new_member.vo = offset
+                            offset += struct_array.vl
+                            new_members.update( { new_member.name : new_member})
+                else:
+                    offset = m.vo
+                    for i in range(indices[0][0], indices[0][1]+1):
+                        new_member = deepcopy(m)
+                        new_member.name = m.name.replace( sname, f'{sname}[{i}]', 1)
+                        new_member.vo = offset
+                        offset += struct_array.vl
+                        new_members.update( { new_member.name : new_member})
+            else: # member is not part of this struct
+                new_members.update( { m.name : m})
+        return new_members             
                     
                     
     def _expand(self):
         '''
-        expand if variable is array or struct
+        expand if variable is struct
         '''
         members : OrderedDict[ str, TypeDescription] = OrderedDict()
         structs = MemberStack()
         struct_arrays : OrderedDict[ str, TypeDescription] = OrderedDict()       
-                        
+           
+        # remove struct definitions and expand the members             
         for idx, m in self._struct_members.items():
             idx : str
             m : TypeDescription
                         
-            hierarchical_level = m.name.count('.')
+            order = m.get_order()
             if m.vt == PvType.STRUCT: # struct member is a struct itself
-                if hierarchical_level == 1: # base level
+                if order == 1: # base level
                     structs.clear()
                     structs.push( m )
-                    members.update( {m.name : m} )
-                elif hierarchical_level == (structs.level + 1): # nth level
+                elif order == (structs.level + 1): # nth level
                     m.vo = m.vo + structs.peek().vo
-                    structs.push( m )
-                    members.update( {m.name : m} )                    
-                elif hierarchical_level == (structs.level - 1):
+                    structs.push( m )               
+                elif order == (structs.level - 1):
                     structs.pop()
-                elif hierarchical_level == structs.level:
+                elif order == structs.level:
                     structs.pop()
                     m.vo = m.vo + structs.peek().vo
                     structs.push( m )
@@ -441,52 +474,20 @@ class Variable(PviObject):
                     struct_arrays.update( {m.name : m} )
                 
             else: # all datatypes but structs go to here
-                if hierarchical_level == 1:
+                if order == 1:
                     structs.clear()
                 member = m
                 member.vo += structs.peek().vo
                 members.update( {m.name :  m} )
                 
-                
-        # if we have array of structs we expand all array elements, too
-        self._struct_members.clear()
-        for idx, m in members.items():
-            idx : str
-            m : TypeDescription
-            if m.vt != PvType.STRUCT:
-                if m.name == '.myStruct5.structList.member1':
-                    pass
-                is_element_of_struct_array = False
-                for sname, s in struct_arrays.items():
-                    if idx.startswith( sname ): # is member element of a struct array ?
-                        is_element_of_struct_array = True
-                        indices = s.get_array_indices()
-                        assert(indices)
-                        if len(indices) == 2:
-                            offset = m.vo
-                            for i in range(indices[0][0],indices[0][1]+1):
-                                for j in range(indices[1][0],indices[1][1]+1):
-                                    new_member = deepcopy(m)
-                                    new_member.name = m.name.replace( sname, f'{sname}[{i},{j}]', 1)
-                                    new_member.vo = offset
-                                    offset += s.vl
-                                    self._struct_members.update( { new_member.name : new_member})
-                        else:
-                            offset = m.vo
-                            for i in range(indices[0][0], indices[0][1]+1):
-                                new_member = deepcopy(m)
-                                new_member.name = m.name.replace( sname, f'{sname}[{i}]', 1)
-                                new_member.vo = offset
-                                offset += s.vl
-                                self._struct_members.update( { new_member.name : new_member})
-                        break
-                if not(is_element_of_struct_array):
-                    self._struct_members.update( {m.name :  m} )
-            else:
-                self._struct_members.update( {m.name :  m} )
+        # order struct arrays according their deepest level coming first
+        struct_arrays = OrderedDict(sorted( struct_arrays.items(), key = lambda x : x[1].get_order(), reverse=True))
+        
+        for idx, s in struct_arrays.items():
+            members = self._expand_struct_array( s, members )
         
         # sort dict according variable offset
-        self._struct_members = OrderedDict(sorted( self._struct_members.items(), key = lambda x : x[1].vo ))
+        self._struct_members = OrderedDict(sorted( members.items(), key = lambda x : x[1].vo ))
         pass
         
     def _readValueFromBuffer(self, buffer : bytes):
