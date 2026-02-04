@@ -336,7 +336,7 @@ class Variable(PviObject):
         
     def _readTypeDescription(self):
         '''
-        read type description from object
+        read type description from plc
         object: Variable object
         ''' 
 
@@ -367,11 +367,6 @@ class Variable(PviObject):
                 td.name = self._type_description.name
                 self._type_description = td
                 
-        with open( 'C:/temp/members1.txt', 'w') as f:
-            for i, m in self._struct_members.items():
-                f.write( str(m) + '\n')
-    
-
         result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_TYPE_INTERN, None, 0, s, sizeof(s) )
         if result == 0:
             stripped = str(s, 'ascii').rstrip('\x00')
@@ -401,17 +396,9 @@ class Variable(PviObject):
                 
         del s, stripped
 
-        with open( 'C:/temp/members2.txt', 'w') as f:
-            for i, m in self._struct_members.items():
-                f.write( str(m) + '\n')
-        
         if self._type_description.vn > 1 or self._type_description.vt == PvType.STRUCT:
-            self._expand()             
-            with open( 'C:/temp/members3.txt', 'w') as f:
-                for i, m in self._struct_members.items():
-                    f.write( str(m) + '\n')
-  
-                    
+            self._expand_struct()             
+                        
               
     def _expand_struct_array(self, struct_array : TypeDescription, members : OrderedDictType[ str, TypeDescription] ) -> OrderedDictType[ str, TypeDescription]:
         new_members : OrderedDictType[ str, TypeDescription] = OrderedDict()
@@ -443,7 +430,7 @@ class Variable(PviObject):
         return new_members             
                     
                     
-    def _expand(self):
+    def _expand_struct(self):
         '''
         expand if variable is struct
         '''
