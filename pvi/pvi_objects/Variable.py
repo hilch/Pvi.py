@@ -396,6 +396,7 @@ class Variable(PviObject):
                 self._type_description.vl = m.vl # use length given by POBJ_ACC_TYPE_INTERN
                 
         del s, stripped
+        self._objectDescriptor.update({ 'AT' : self._type_description.at })    
 
         if self._type_description.vn > 1 or self._type_description.vt == PvType.STRUCT:
             self._expand_struct()                

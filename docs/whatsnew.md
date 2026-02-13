@@ -1,5 +1,9 @@
 # Version history
 
+## V1.2.9
+
+- Fix 'writable' attribute of Variable
+
 ## V1.2.8
 
 - Improve reading for struct arrays, Enums, two-dimensional variables, subranges
