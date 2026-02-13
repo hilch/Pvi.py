@@ -16,12 +16,12 @@
     <Object Type="Package">mappSafety</Object>
     <Object Type="Package">mappView</Object>
     <Object Type="Package">mappCockpit</Object>
+    <Object Type="Package">AppMod1</Object>
   </Objects>
   <Configuration ModuleId="PC_any">
-    <AutomationRuntime Version="6.4.2" />
+    <AutomationRuntime Version="6.5.1" />
     <Build GccVersion="11.3.0" />
     <DefaultTargetMemory Tasks="UserROM" />
     <Transfer WaitForReconnectAfterReboot="True" />
-    <Vc FirmwareVersion="6.0.0" />
   </Configuration>
 </Cpu>

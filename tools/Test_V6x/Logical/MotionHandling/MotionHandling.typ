@@ -21,7 +21,7 @@ TYPE
 		name : STRING[32];
 		step : AxisHandlingAxesStepEnum; (*Schrittkette*)
 		errorTextHeader : STRING[80];
-		errorText : STRING[16384]; (*Fehlertexte*)
+		errorText : ARRAY[0..14]OF STRING[120]; (*Fehlertexte*)
 		errorTextLines : UINT; (*Fehlertexte: Anzahl der Zeilen*)
 		pAxis : UDINT;
 		fbMpAxis : MpAxisBasic;

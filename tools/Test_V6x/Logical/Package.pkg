@@ -6,5 +6,12 @@
     <Object Type="File" Description="Global variables">Global.var</Object>
     <Object Type="Package" Description="Global libraries">Libraries</Object>
     <Object Type="Package" TransferedForTargetSourceCompare="true">MotionHandling</Object>
+    <Object Type="DataObject" Language="Cnc" Description="CNC Program">cnc3</Object>
+    <Object Type="DataObject" Language="Cnc" Description="CNC Program">cnc1</Object>
+    <Object Type="DataObject" Language="Cnc" Description="CNC Program">cnc2</Object>
+    <Object Type="DataObject" Language="Simple" Description="Simple data object">data</Object>
+    <Object Type="Package">myAppMod1</Object>
+    <Object Type="Package">Programs</Object>
+    <Object Type="Program" Language="IEC" Description="Program">myProg</Object>
   </Objects>
 </Package>

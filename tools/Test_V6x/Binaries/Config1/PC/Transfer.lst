@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=3.0?>
+<Transfer xmlns="http://br-automation.co.at/AS/Transfer">
+  <OperatingSystem Version="6.5.1" />
+  <Hardware Target="SG4" />
+  <Operation Download="ashwd.br" Memory="SystemROM" />
+  <Operation Download="asfw.br" Memory="SystemROM" />
+  <Operation Download="arconfig.br" Memory="SystemROM" />
+  <Operation Download="sysconf.br" Memory="SystemROM" />
+  <Operation Restart="warm" />
+  <Operation Download="McAcpSys.br" Memory="UserROM" />
+  <Operation Download="McDriveLog.br" Memory="UserROM" />
+  <Operation Download="McAcpSim.br" Memory="UserROM" />
+  <Operation Download="UaCsConfig.br" Memory="UserROM" />
+  <Operation Download="UaCore.br" Memory="UserROM" />
+  <Operation Download="runtime.br" Memory="UserROM" />
+  <Operation Download="arsvcreg.br" Memory="UserROM" />
+  <Operation Download="powerlnk.br" Memory="UserROM" />
+  <Operation Download="astime.br" Memory="UserROM" />
+  <Operation Download="sys_lib.br" Memory="UserROM" />
+  <Operation Download="fileio.br" Memory="UserROM" />
+  <Operation Download="MpBase.br" Memory="UserROM" />
+  <Operation Download="asepl.br" Memory="UserROM" />
+  <Operation Download="uacoal.br" Memory="UserROM" />
+  <Operation Download="uacoalprv.br" Memory="UserROM" />
+  <Operation Download="McBase.br" Memory="UserROM" />
+  <Operation Download="McAcpDrv.br" Memory="UserROM" />
+  <Operation Download="McAxis.br" Memory="UserROM" />
+  <Operation Download="McAcpAx.br" Memory="UserROM" />
+  <Operation Restart="warm" />
+  <Operation Download="udbdef.br" Memory="UserROM" />
+  <Operation Download="FWRules.br" Memory="UserROM" />
+  <Operation Download="TCData.br" Memory="SystemROM" />
+  <Operation Download="iomap.br" Memory="UserROM" />
+  <Operation Download="BRRole.br" Memory="UserROM" />
+  <Operation Download="Config_1.br" Memory="UserROM" />
+  <Operation Download="ashwac.br" Memory="UserROM" />
+  <Operation Download="AsBrStr.br" Memory="UserROM" />
+  <Operation Download="mcprofgen.br" Memory="UserROM" />
+  <Operation Download="asieccon.br" Memory="UserROM" />
+  <Operation Download="MpAxis.br" Memory="UserROM" />
+  <Operation Download="McAxGroup.br" Memory="UserROM" />
+  <Operation Download="McPureVAx.br" Memory="UserROM" />
+  <Operation Download="Axes.br" Memory="UserROM" />
+  <Operation Download="myProg.br" Memory="UserROM" />
+  <Operation Download="appmo.br" Memory="UserROM" />
+  <Operation Download="myApptask1.br" Memory="UserROM" />
+</Transfer>
