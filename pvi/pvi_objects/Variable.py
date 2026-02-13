@@ -30,7 +30,7 @@ import gc
 from .include import *
 from .Error import PviError
 from .Object import PviObject
-from .VariableTypeDescription import TypeDescription, MemberStack
+from .VariableTypeDescription import TypeDescription
 from .Helpers import dictFromParameterPairString
 
 
@@ -270,7 +270,6 @@ class Variable(PviObject):
             raise PviError(self._result, self)  
 
 
-
     @property
     def refresh(self) -> int:
         '''
@@ -347,7 +346,8 @@ class Variable(PviObject):
         if result == 0:
             stripped = str(s, 'ascii').rstrip('\x00')
         else:
-            raise PviError(result)        
+            raise PviError(result)      
+                 
 
         '''
         update object descriptor and find all members if this PV is a structure
@@ -367,7 +367,7 @@ class Variable(PviObject):
                 td.parse(d)
                 td.name = self._type_description.name
                 self._type_description = td
-                
+                                
         result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_TYPE_INTERN, None, 0, s, sizeof(s) )
         if result == 0:
             stripped = str(s, 'ascii').rstrip('\x00')
@@ -398,7 +398,7 @@ class Variable(PviObject):
         del s, stripped
 
         if self._type_description.vn > 1 or self._type_description.vt == PvType.STRUCT:
-            self._expand_struct() 
+            self._expand_struct()                
             
         gc.collect() # run garbage collector
                         
@@ -408,7 +408,7 @@ class Variable(PviObject):
         indices = struct_array.get_array_indices()
         sname = struct_array.name
         assert(indices)
-        re_child_of_struct = re.compile(rf'{struct_array.name}(\[\d*\])?')
+        re_child_of_struct = re.compile(rf'{struct_array.name}(\[\d*\])?\x2e')
         for idx, m in members.items():
             if re_child_of_struct.match(idx): # is member a part of this struct ?
                 if len(indices) == 2:
@@ -438,36 +438,26 @@ class Variable(PviObject):
         expand if variable is struct
         '''
         members : OrderedDict[ str, TypeDescription] = OrderedDict()
-        structs = MemberStack()
-        struct_arrays : OrderedDict[ str, TypeDescription] = OrderedDict()       
+        struct_arrays : OrderedDict[ str, TypeDescription] = OrderedDict()          
+        structs = [TypeDescription()]*32
            
         # remove struct definitions and expand the members             
         for idx, m in self._struct_members.items():
             idx : str
-            m : TypeDescription
+            m : TypeDescription               
                         
             order = m.get_order()
             if m.vt == PvType.STRUCT: # struct member is a struct itself
-                if order == 1: # base level
-                    structs.clear()
-                    structs.push( m )
-                elif order == (structs.level + 1): # nth level
-                    m.vo = m.vo + structs.peek().vo
-                    structs.push( m )               
-                elif order == (structs.level - 1):
-                    structs.pop()
-                elif order == structs.level:
-                    structs.pop()
-                    m.vo = m.vo + structs.peek().vo
-                    structs.push( m )
+                if order > 1:
+                    m.vo += structs[order-1].vo
+                structs[order] = m
                 if m.get_array_indices(): # struct is an array
                     struct_arrays.update( {m.name : m} )
                 
             else: # all datatypes but structs go to here
-                if order == 1:
-                    structs.clear()
+                struct_offset = structs[order-1].vo
                 member = m
-                member.vo += structs.peek().vo
+                member.vo += struct_offset #structs.peek().vo
                 members.update( {m.name :  m} )
                 
         # order struct arrays according their deepest level coming first
@@ -478,7 +468,7 @@ class Variable(PviObject):
         
         # sort dict according variable offset
         self._struct_members = OrderedDict(sorted( members.items(), key = lambda x : x[1].vo ))
-        pass
+
         
     def _readValueFromBuffer(self, buffer : bytes):
         '''

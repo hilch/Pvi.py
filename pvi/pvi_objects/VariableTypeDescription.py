@@ -21,7 +21,7 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import List, Deque, Tuple, Union, Any
+from typing import List, Tuple, Union, Any
 from enum import IntEnum
 import datetime
 from dataclasses import dataclass
@@ -29,7 +29,6 @@ from ctypes import c_bool, c_uint8, c_int8, c_uint16, c_int16, c_uint32, c_int32
 from ctypes import c_char, c_wchar
 import re
 import struct
-from collections import deque
 from .include import *
 
 
@@ -368,36 +367,3 @@ class TypeDescription:
 
         return buffer        
                 
-
-class MemberStack:
-    '''
-    class for calculating byte offsets of internal members
-    '''
-    def __init__(self) -> None:
-        self._items: Deque[TypeDescription] = deque()
-        self._currentLevel = 0
-
-    def clear(self):
-        self._items.clear()
-        self._currentLevel = 0
-
-    def push(self, member : TypeDescription) -> None:       
-        self._items.append(member)
-        self._currentLevel += 1
-
-    def pop(self) -> TypeDescription:
-        if not self._items:
-            raise IndexError("pop from empty stack")
-        self._currentLevel -= 1
-        return self._items.pop()
-    
-    def peek(self) -> TypeDescription :
-        if not self._items:
-            return TypeDescription()
-        return self._items[-1]
-    
-    @property
-    def level(self) -> int:
-        return self._currentLevel
-    
-    
