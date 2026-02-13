@@ -6,6 +6,7 @@ import string
 import random
 import datetime
 from collections import OrderedDict
+import time
 from enum import IntEnum
 
 pviPath = str(Path(__file__).parents[1])
@@ -517,6 +518,10 @@ class TestStructures( unittest.TestCase):
     def test_complexStructure(self):
         task = Task( cpu, 'myProg')
         var = Variable( task, 'myComplexStruct' )
+        
+        start = time.time()
+        while (time.time() - start) < 5: # ensure all writes have been done
+            pviConnection.doEvents()
         
         self.assertEqual( var.value['.bool'], False)
         self.assertEqual( var.value['.usint'], 11)
