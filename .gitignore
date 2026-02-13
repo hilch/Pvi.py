@@ -145,9 +145,10 @@ tools/CoffeeMachine/Temp/
 tools/CoffeeMachine_4.12/Binaries/
 tools/CoffeeMachine_4.12/Diagnosis/
 tools/CoffeeMachine_4.12/Temp/
-tools/Test_V6x/test/Binaries/
-tools/Test_V6x/test/Diagnosis/
-tools/Test_V6x/test/Temp/
+tools/Test_V6x/Binaries/*
+tools/Test_V6x/Diagnosis/*
+tools/Test_V6x/Temp/*
 *.set
 *.isopen
+
 

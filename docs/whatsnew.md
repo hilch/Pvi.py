@@ -1,5 +1,10 @@
 # Version history
 
+## V1.2.8
+
+- Improve reading for struct arrays, Enums, two-dimensional variables, subranges
+- change return type of arrays to list instead tuple (incompatible change)
+
 ## V1.2.7
 
 - creating executable scripts for Snmpscan, Anslscan, Snmpscan
