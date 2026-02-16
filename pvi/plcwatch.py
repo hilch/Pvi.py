@@ -34,64 +34,12 @@ class ApplicationWindow(tk.Tk):
         
         # LEFT SECTION: TreeView (added directly to top_paned)
         # Create TreeView with scrollbar
-        tree_scroll = tk.Scrollbar(self.top_paned)
-        
-        self.tree = ttk.Treeview(self.top_paned, yscrollcommand=tree_scroll.set)
-        self.top_paned.add(self.tree, minsize=150)
-        
-        tree_scroll.config(command=self.tree.yview)
-        # Note: scrollbar added after tree to maintain proper z-order
-        
-        # Add sample data to TreeView
-        self.tree.heading('#0', text='Tree View')
-        parent1 = self.tree.insert('', 'end', text='Parent 1')
-        self.tree.insert(parent1, 'end', text='Child 1.1')
-        self.tree.insert(parent1, 'end', text='Child 1.2')
-        parent2 = self.tree.insert('', 'end', text='Parent 2')
-        self.tree.insert(parent2, 'end', text='Child 2.1')
+        self.tree = ObjectTreeView(self.top_paned)
         
         # RIGHT SECTION: Multi-column Listbox (added directly to top_paned)
         # Create Treeview with columns for multi-column listbox
-        list_scroll = tk.Scrollbar(self.top_paned)
-        
-        # Define columns
-        self.listbox = ttk.Treeview(self.top_paned, columns=('Name', 'Type', 'Value'), 
-                                     show='headings', yscrollcommand=list_scroll.set)
-        self.top_paned.add(self.listbox, minsize=150)
-        
-        list_scroll.config(command=self.listbox.yview)
-        
-        # Configure column headings
-        self.listbox.heading('Name', text='Name')
-        self.listbox.heading('Type', text='Type')
-        self.listbox.heading('Value', text='Value')
-        
-        # Configure column widths
-        self.listbox.column('Name', width=150, anchor='w')
-        self.listbox.column('Type', width=100, anchor='center')
-        self.listbox.column('Value', width=150, anchor='w')
-        
-        # Add sample data to multi-column listbox
-        sample_data = [
-            ('Variable_1', 'INT', '100'),
-            ('Variable_2', 'BOOL', 'TRUE'),
-            ('Variable_3', 'REAL', '3.14'),
-            ('Temperature', 'REAL', '25.5'),
-            ('Pressure', 'INT', '1013'),
-            ('Status', 'BOOL', 'FALSE'),
-            ('Counter', 'DINT', '12345'),
-            ('Timer', 'TIME', '1000ms'),
-            ('Speed', 'REAL', '45.8'),
-            ('Position', 'INT', '500'),
-            ('Alarm', 'BOOL', 'TRUE'),
-            ('SetPoint', 'REAL', '100.0'),
-            ('Output', 'INT', '75'),
-            ('Input', 'INT', '50'),
-            ('Mode', 'STRING', 'AUTO'),
-        ]
-        
-        for item in sample_data:
-            self.listbox.insert('', 'end', values=item)
+        self.listbox = VariableListBox(self.top_paned)
+
         
         # BOTTOM SECTION: Entry Widget directly in main_paned
         self.entry = tk.Entry(self.main_paned, font=('Arial', 12))
