@@ -1,7 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-import re
+import os
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 from pvi.plcwatch_modules import *
 from pvi import *
@@ -12,6 +14,7 @@ class ApplicationWindow(tk.Tk):
         super().__init__()        
         self.title("PLCWATCH")
         self.geometry("1024x768")
+        self.iconbitmap(f'{script_dir}/plcwatch_modules/resources/app.ico')
         
         # Create menu bar
         menubar = tk.Menu(self)
@@ -20,7 +23,7 @@ class ApplicationWindow(tk.Tk):
         # Add File menu
         file_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="File", menu=file_menu)
-        file_menu.add_command(label="Search for CPU", command=self.show_network_dialog)
+        file_menu.add_command(label="Search for CPU", command=self.show_network_search_dialog)
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=self.quit)
         
@@ -40,7 +43,6 @@ class ApplicationWindow(tk.Tk):
         # Create Treeview with columns for multi-column listbox
         self.listbox = VariableListBox(self.top_paned)
 
-        
         # BOTTOM SECTION: Entry Widget directly in main_paned
         self.entry = tk.Entry(self.main_paned, font=('Arial', 12))
         self.main_paned.add(self.entry, minsize=30)
@@ -51,21 +53,16 @@ class ApplicationWindow(tk.Tk):
         self.device = Device( self.line, 'TCP', CD='/IF=TcpIp' )
         self.after( 10, self.update)        
     
-    def show_network_dialog(self):
-        """Show the network address configuration dialog"""
-        dialog = NetworkAddressDialog(self)
+    def show_network_search_dialog(self):
+        """Show the network search configuration dialog"""
+        dialog = NetworkSearchDialog(self)
         result = dialog.show()
         
         if result:
             # Display the result in the entry field
             self.entry.delete(0, tk.END)
-            self.entry.insert(0, f"IP: {result['ip']} | Subnet: {result['subnet']}")
+            self.entry.insert(0, str(result))
             
-            # Add to multi-column listbox
-            self.listbox.insert('', 'end', values=(f"Network_{result['ip']}", 'STRING', result['subnet']))
-            
-            print(f"Network configured: IP={result['ip']}, Subnet={result['subnet']}")
-
     def update(self):
         try:
             self.connection.doEvents() # execute PVI event loop
