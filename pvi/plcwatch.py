@@ -2,8 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 import os
+from plcwatch_modules import icon_storage
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
 
 from pvi.plcwatch_modules import *
 from pvi import *
@@ -14,7 +14,7 @@ class ApplicationWindow(tk.Tk):
         super().__init__()        
         self.title("PLCWATCH")
         self.geometry("1024x768")
-        self.iconbitmap(f'{script_dir}/plcwatch_modules/resources/app.ico')
+        self.iconbitmap(icon_storage['app'])
         
         # Create menu bar
         menubar = tk.Menu(self)

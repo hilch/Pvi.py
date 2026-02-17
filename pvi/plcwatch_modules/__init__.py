@@ -1,3 +1,5 @@
 from pvi.plcwatch_modules.network_search_dialog import NetworkSearchDialog
 from pvi.plcwatch_modules.variable_listbox import VariableListBox
 from pvi.plcwatch_modules.object_treeview import ObjectTreeView
+from pvi.plcwatch_modules.resources import icon_storage
+

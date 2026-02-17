@@ -3,8 +3,8 @@ from typing import Union
 from ipaddress import IPv4Network
 import os
 from pvi.Anslscan import ansl_scan, ScanResult
+from pvi.plcwatch_modules.resources import icon_storage
 from pvi.plcwatch_modules.ifaddr import get_adapters, IP as Ifaddr_IP
-
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -15,7 +15,7 @@ class NetworkSearchDialog:
         self.dialog.title("Search for CPUs")
         self.dialog.geometry("700x500")
         self.dialog.resizable(False, False)
-        self.dialog.iconbitmap(f'{script_dir}/resources/app.ico')
+        self.dialog.iconbitmap(icon_storage['app'])
         
         # Make dialog modal
         self.dialog.transient(parent)
