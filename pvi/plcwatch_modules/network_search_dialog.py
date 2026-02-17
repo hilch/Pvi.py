@@ -77,15 +77,18 @@ class NetworkSearchDialog:
                                 selectmode=tk.SINGLE)
         self.listbox_targets.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar_targets.config(command=self.listbox_targets.yview)
-        
+        self.listbox_targets.bind('<<ListboxSelect>>', lambda e : self.button_ok.config( state = 'normal') )
         
         
         # Buttons
         button_frame = tk.Frame(main_frame)
         button_frame.grid(row=4, column=0, pady=10)
         
-        tk.Button(button_frame, text="OK", command=self.ok_clicked, width=10, font=('Arial', 10, 'bold')).pack(side=tk.LEFT, padx=5)
-        tk.Button(button_frame, text="Cancel", command=self.cancel_clicked, width=10, font=('Arial', 10)).pack(side=tk.LEFT, padx=5)
+        self.button_ok = tk.Button(button_frame, text="OK", command=self.ok_clicked, 
+                                   width=10, font=('Arial', 10, 'bold'), state='disabled')
+        self.button_ok.pack(side=tk.LEFT, padx=5)
+        tk.Button(button_frame, text="Cancel", command=self.cancel_clicked, 
+                  width=10, font=('Arial', 10)).pack(side=tk.LEFT, padx=5)
         
         # Bind Enter key to OK
         self.dialog.bind('<Return>', lambda e: self.ok_clicked())
@@ -102,6 +105,7 @@ class NetworkSearchDialog:
         old_cursor = self.dialog.cget('cursor')
         self.dialog.config(cursor='watch')
         self.dialog.update()
+        self.button_ok.config( state = 'disabled')
         self.listbox_targets.delete(0,tk.END)        
         self.result_cpu_found.set("0 CPU(s) found: (ANSL)") 
         self.list_of_targets.clear()    
@@ -122,8 +126,7 @@ class NetworkSearchDialog:
             self.result_cpu_found.set("Error") 
         self.dialog.config(cursor=old_cursor) 
         return 'break'
-        
-            
+                
      
     def ok_clicked(self):
         
