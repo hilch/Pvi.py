@@ -47,11 +47,6 @@ class ScanResult:
     status: str # Automation Runtime status
 
 
-pviConnection = Connection() # start a Pvi connection
-line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
-device = Device( line, 'TCP', CD='/IF=TcpIp' )
-network_to_scan = ipaddress.IPv4Network('127.0.0.1')
-cpu_list = list()
 
 
 # Function to check if a ANSL server is reachable
@@ -83,26 +78,7 @@ def cpu_error_change( cpu : Cpu, error : int ):
         cpu.checked = True # type: ignore               
 
 
-def objectsArranged():
-    global network_to_scan
-    
-    # Check servers simultaneously using ThreadPoolExecutor
-    with ThreadPoolExecutor(max_workers=255) as executor:
-        results = executor.map(lambda host: check_server(str(host)), network_to_scan.hosts() ) # type: ignore
-        results = [item for item in results if item is not None]
 
-    # connect to all CPUs found with PVI to get further information
-    for result in results:          
-        cpu = Cpu( device, 'newCpu', CD='/IP=' + result )
-        cpu.ip_address = result # type: ignore ,add dynamic member for IP address
-        cpu.checked = False # type: ignore , add dynamic member for 'checked' state
-        cpu.errorChanged = cpu_error_change
-        while not(cpu.checked): # type: ignore
-            pviConnection.doEvents()
-        cpu.kill()
-        del cpu
-
-    pviConnection.stop()
 
 
 def ansl_scan( network : ipaddress.IPv4Network )->List[ScanResult] :
@@ -114,11 +90,39 @@ def ansl_scan( network : ipaddress.IPv4Network )->List[ScanResult] :
     Returns:
         list with scan results, namedtuple('ScanResult', ['target','AR', 'ip','status'])
     """    
-    global pviConnection, ip, cpu_list, network_to_scan
+    global cpu_list, network_to_scan
+    
+    pviConnection = Connection() # start a Pvi connection
+    line = Line( pviConnection.root, 'LNANSL', CD='LNANSL')
+    device = Device( line, 'TCP', CD='/IF=TcpIp' )
+    network_to_scan = ipaddress.IPv4Network('127.0.0.1')
+    cpu_list = list()
+
+    def objectsArranged():       
+        # Check servers simultaneously using ThreadPoolExecutor
+        with ThreadPoolExecutor(max_workers=255) as executor:
+            results = executor.map(lambda host: check_server(str(host)), network_to_scan.hosts() ) # type: ignore
+            results = [item for item in results if item is not None]
+
+        # connect to all CPUs found with PVI to get further information
+        for result in results:          
+            cpu = Cpu( device, 'newCpu', CD='/IP=' + result )
+            cpu.ip_address = result # type: ignore ,add dynamic member for IP address
+            cpu.checked = False # type: ignore , add dynamic member for 'checked' state
+            cpu.errorChanged = cpu_error_change
+            while not(cpu.checked): # type: ignore
+                pviConnection.doEvents()
+            cpu.kill()
+            del cpu
+            
+        device.kill()
+        line.kill()
+        pviConnection.stop()
+    
     network_to_scan = network
-    cpu_list.clear()
     pviConnection.objectsArranged = objectsArranged
     pviConnection.start() 
+
     return cpu_list   
 
 
