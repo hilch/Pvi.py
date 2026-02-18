@@ -6,8 +6,6 @@ from pvi.Anslscan import ansl_scan, ScanResult
 from pvi.plcwatch_modules.resources import icon_storage
 from pvi.plcwatch_modules.ifaddr import get_adapters, IP as Ifaddr_IP
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
-
 class NetworkSearchDialog:
     def __init__(self, parent : tk.Tk):
         self.result = None
@@ -54,8 +52,9 @@ class NetworkSearchDialog:
         for adapter in get_adapters(include_unconfigured=True) :
             if adapter.operational_status == 'Up':
                 for ip in adapter.ips:
-                    self.ip_addresses.append(ip)
-                    self.listbox_adapters.insert(tk.END, f"{ip.ip}/{ip.network_prefix} ({adapter.nice_name} / {ip.nice_name})")
+                    if ip.is_IPv4:
+                        self.ip_addresses.append(ip)
+                        self.listbox_adapters.insert(tk.END, f"{ip.ip}/{ip.network_prefix} ({adapter.nice_name} / {ip.nice_name})")
 
         self.listbox_adapters.bind('<<ListboxSelect>>', self.adapter_selected )
 
@@ -104,7 +103,7 @@ class NetworkSearchDialog:
             return 'break' # why is this so complicated ?
         old_cursor = self.dialog.cget('cursor')
         self.dialog.config(cursor='watch')
-        self.dialog.update()
+        self.dialog.update_idletasks()
         self.button_ok.config( state = 'disabled')
         self.listbox_targets.delete(0,tk.END)        
         self.result_cpu_found.set("0 CPU(s) found: (ANSL)") 
@@ -122,7 +121,7 @@ class NetworkSearchDialog:
                 cpu : ScanResult
                 self.listbox_targets.insert(tk.END, f"CPU {cpu.target}, IP: {cpu.ip}, {cpu.AR}, {cpu.status}")    
                 self.list_of_targets.append(cpu)
-        except:
+        except Exception as e:
             self.result_cpu_found.set("Error") 
         self.dialog.config(cursor=old_cursor) 
         return 'break'
