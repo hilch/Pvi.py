@@ -57,9 +57,11 @@ def check_server(host):
     except (socket.timeout, ConnectionRefusedError):
         return None
     except OSError as e:
-        print(f"Error during checking {host}: {e}")
-        sys.exit(1)
-
+        if e.errno == 10049:  # ip not reachable
+            pass
+        else:
+            print(f"Error during checking {host}: {e}")
+        return None
 
 def cpu_error_change( cpu : Cpu, error : int ):
     global cpu_list
