@@ -2,6 +2,7 @@
 
 - Anslscan.py : do not exit on OS errors
 - fix : values of two-dimensional arrays were double-packed into a list
+- fix : values of arrays with just one element weren't return as list
 
 ## V1.2.9
 

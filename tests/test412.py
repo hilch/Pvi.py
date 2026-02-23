@@ -518,8 +518,14 @@ class TestStructures( unittest.TestCase):
     def test_structArray(self):
         task = Task( cpu, 'myProg')
         var = Variable( task, 'myComplexStruct.myStruct1' )
-        self.assertEqual( var.dataType, 'myStructType[0..1]')        
+        self.assertEqual( var.dataType, 'myStructType[0..1]')
+        self.assertEqual( var.value,[OrderedDict({'.member1': 3, '.member2': [33, 44, 55]}), 
+                                     OrderedDict({'.member1': 3, '.member2': [33, 44, 55]})])        
         var.kill
+        var = Variable( task, 'myComplexStruct.myStruct2' ) # array with only one element
+        self.assertEqual( var.dataType, 'myStructType[2..2]')  
+        self.assertEqual( var.value, [OrderedDict({'.member1': 3, '.member2': [33, 44, 55]})])     
+        var.kill        
         task.kill
 
     def test_complexStructure(self):

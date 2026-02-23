@@ -511,10 +511,8 @@ class Variable(PviObject):
             else:
                 result.append( self._type_description.unpack_data_from_buffer( buffer ) )
 
-        if len(result) == 1: # single value
-            return result[0]
-        else: # array
-            indices = self._type_description.get_array_indices()
+        indices = self._type_description.get_array_indices()
+        if indices: # array ?
             if indices and len(indices) == 2: # two dimensional array
                 r = []
                 el1dim = indices[0][1] - indices[0][0] + 1 # number of elements in first dimension
@@ -524,6 +522,7 @@ class Variable(PviObject):
                 return r
             else: # one dimension only
                 return result
-            
+        else: # single value
+            return result[0]
             
    
