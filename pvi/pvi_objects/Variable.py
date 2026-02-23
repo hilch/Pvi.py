@@ -520,7 +520,7 @@ class Variable(PviObject):
                 el1dim = indices[0][1] - indices[0][0] + 1 # number of elements in first dimension
                 el2dim = indices[1][1] - indices[1][0] + 1 # number of elements in second dimension
                 for i in range(el1dim):
-                    r.append( [result[i*el2dim:(i+1)*el2dim]] )
+                    r.append( result[i*el2dim:(i+1)*el2dim] )
                 return r
             else: # one dimension only
                 return result

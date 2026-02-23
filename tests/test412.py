@@ -359,6 +359,13 @@ class TestVariables( unittest.TestCase):
         var.kill()
         var = Variable(task, 'myReal', CD="myComplexStruct.vector")
         self.assertEqual( var.value, [200.0, 201.0, 202.0, 203.0, 204.0, 205.0, 206.0, 207.0, 208.0, 209.0] )
+        var.kill()
+        var = Variable( task, 'myComplexStruct.matrix')
+        self.assertEqual( var.value, [[1000.0, 1001.0, 1002.0, 1003.0], [1010.0, 1011.0, 1012.0, 1013.0], 
+                                      [1020.0, 1021.0, 1022.0, 1023.0], [1030.0, 1031.0, 1032.0, 1033.0], 
+                                      [1040.0, 1041.0, 1042.0, 1043.0], [1050.0, 1051.0, 1052.0, 1053.0], 
+                                      [1060.0, 1061.0, 1062.0, 1063.0], [1070.0, 1071.0, 1072.0, 1073.0], 
+                                      [1080.0, 1081.0, 1082.0, 1083.0], [1090.0, 1091.0, 1092.0, 1093.0]] )
         var.kill
         task.kill()       
 

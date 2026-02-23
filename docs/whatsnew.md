@@ -1,5 +1,8 @@
 # Version history
 
+- Anslscan.py : do not exit on OS errors
+- fix : values of two-dimensional arrays were double-packed into a list
+
 ## V1.2.9
 
 - Fix 'writable' attribute of Variable
