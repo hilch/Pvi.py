@@ -28,7 +28,7 @@ def cpuErrorChanged( cpu : Cpu,  error : int ):
     global step
 
     if error == 11020:
-        print("Unabled to establish connection")
+        print("Unable to establish connection")
         pviConnection.stop() # exit
     elif error != 0:
         raise PviError(error)

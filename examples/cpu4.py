@@ -22,7 +22,7 @@ cpu = Cpu( device, 'myArsim', CD='/DAIP=192.168.0.10' )
 def cpuErrorChanged( cpu : Cpu,  error : int ):
 
     if error == 4808:
-        print("Unabled to establish connection")
+        print("Unable to establish connection")
         pviConnection.stop() # exit
     elif error != 0:
         raise PviError(error)

@@ -24,7 +24,7 @@ var1 = Variable( task1, 'a-nicer-variable-name', CD ='gHeating.status.actTemp', 
 def cpuErrorChanged( cpu : Cpu,  error : int ):
 
     if error == 11020:
-        print("Unabled to establish connection")
+        print("Unable to establish connection")
         pviConnection.stop() # exit
     elif error != 0:
         raise PviError(error)
