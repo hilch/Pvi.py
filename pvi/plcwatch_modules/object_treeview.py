@@ -193,7 +193,7 @@ class ObjectTreeView(ttk.Treeview):
         
     def insert_cpu(self, device : Device, ip : IPv4Address ):
         name = ip.compressed.replace('.','_')
-        cpu = Cpu( device, name, CD=ip.compressed + ' /PVROI=1' )
+        cpu = Cpu( device, name, CD=f"/IP={ip.compressed} /SDT=5 /PVROI=1 /COMT=5000" )
         cpu.errorChanged = self.cpuErrorChanged
         
         
