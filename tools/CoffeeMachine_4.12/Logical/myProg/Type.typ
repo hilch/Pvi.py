@@ -43,6 +43,7 @@ TYPE
 		myStruct3 : ARRAY[-1..1]OF myStructType;
 		myStruct4 : ARRAY[0..2,0..3]OF myStructType;
 		myStruct5 : ARRAY[0..2]OF myStructType2;
+		myStruct6 : ARRAY[1..2,-1..1]OF myStructType2;
 		myEnum : myEnumType;
 		enumlist : ARRAY[0..4]OF myEnumType;
 		subrange1 : SINT(-3..6) ;

@@ -525,7 +525,106 @@ class TestStructures( unittest.TestCase):
         var = Variable( task, 'myComplexStruct.myStruct2' ) # array with only one element
         self.assertEqual( var.dataType, 'myStructType[2..2]')  
         self.assertEqual( var.value, [OrderedDict({'.member1': 3, '.member2': [33, 44, 55]})])     
-        var.kill        
+        var.kill  
+        var = Variable( task, 'myComplexStruct.myStruct3' ) # array with negative index
+        self.assertEqual( var.dataType, 'myStructType[-1..1]')  
+        self.assertEqual( var.value, [OrderedDict({'.member1': 4, '.member2': [9, 19, 29]}), 
+                                      OrderedDict({'.member1': 5, '.member2': [10, 20, 30]}), 
+                                      OrderedDict({'.member1': 6, '.member2': [11, 21, 31]})])     
+        var.kill                
+        var = Variable( task, 'myComplexStruct.myStruct4' ) # multi-dimensional array
+        self.assertEqual( var.dataType, 'myStructType[0..2,0..3]')
+        self.assertEqual( var.value, [[OrderedDict({'.member1': 0, '.member2': [0, 0, 0]}), 
+                                       OrderedDict({'.member1': 1, '.member2': [1, 1, 1]}), 
+                                       OrderedDict({'.member1': 2, '.member2': [2, 2, 2]}), 
+                                       OrderedDict({'.member1': 3, '.member2': [3, 3, 3]})], 
+                                      [OrderedDict({'.member1': 10, '.member2': [20, 30, 40]}), 
+                                       OrderedDict({'.member1': 11, '.member2': [21, 31, 41]}), 
+                                       OrderedDict({'.member1': 12, '.member2': [22, 32, 42]}), 
+                                       OrderedDict({'.member1': 13, '.member2': [23, 33, 43]})], 
+                                      [OrderedDict({'.member1': 20, '.member2': [40, 60, 80]}), 
+                                       OrderedDict({'.member1': 21, '.member2': [41, 61, 81]}), 
+                                       OrderedDict({'.member1': 22, '.member2': [42, 62, 82]}), 
+                                       OrderedDict({'.member1': 23, '.member2': [43, 63, 83]})]])     
+        var.kill                
+        var = Variable( task, 'myComplexStruct.myStruct5' ) # nested structure arrays
+        self.assertEqual( var.dataType, 'myStructType2[0..2]')
+        self.assertEqual( var.value, [OrderedDict({'.struct1.member1': 5, 
+                                                   '.struct1.member2': [2, 3, 4], 
+                                                   '.structList[0].member1': 10, 
+                                                   '.structList[0].member2': [10, 11, 12], 
+                                                   '.structList[1].member1': 11, 
+                                                   '.structList[1].member2': [20, 21, 22], 
+                                                   '.structList[2].member1': 12, 
+                                                   '.structList[2].member2': [30, 31, 32]}), 
+                                                        OrderedDict({'.struct1.member1': 6, 
+                                                                     '.struct1.member2': [3, 4, 5], 
+                                                                     '.structList[0].member1': 11, 
+                                                                     '.structList[0].member2': [10, 11, 12], 
+                                                                     '.structList[1].member1': 12, 
+                                                                     '.structList[1].member2': [20, 21, 22], 
+                                                                     '.structList[2].member1': 13, 
+                                                                     '.structList[2].member2': [30, 31, 32]}), 
+                                                        OrderedDict({'.struct1.member1': 7, 
+                                                                     '.struct1.member2': [4, 5, 6], 
+                                                                     '.structList[0].member1': 12, 
+                                                                     '.structList[0].member2': [10, 11, 12], 
+                                                                     '.structList[1].member1': 13, 
+                                                                     '.structList[1].member2': [20, 21, 22], 
+                                                                     '.structList[2].member1': 14, 
+                                                                     '.structList[2].member2': [30, 31, 32]})])     
+        var.kill 
+        var = Variable( task, 'myComplexStruct.myStruct6' ) # multi-dimensional struct array and nested struct arrays
+        self.assertEqual( var.dataType, 'myStructType2[1..2,-1..1]')
+        self.assertEqual( var.value, [[OrderedDict({'.struct1.member1': 3, 
+                                                    '.struct1.member2': [33, 44, 55], 
+                                                    '.structList[0].member1': 3, 
+                                                    '.structList[0].member2': [33, 44, 55], 
+                                                    '.structList[1].member1': 3, 
+                                                    '.structList[1].member2': [33, 44, 55], 
+                                                    '.structList[2].member1': 3, 
+                                                    '.structList[2].member2': [33, 44, 55]}), 
+                                       OrderedDict({'.struct1.member1': 3, 
+                                                    '.struct1.member2': [33, 44, 55],
+                                                    '.structList[0].member1': 3, 
+                                                    '.structList[0].member2': [33, 44, 55], 
+                                                    '.structList[1].member1': 3, 
+                                                    '.structList[1].member2': [33, 44, 55], 
+                                                    '.structList[2].member1': 3, 
+                                                    '.structList[2].member2': [33, 44, 55]}), 
+                                       OrderedDict({'.struct1.member1': 3, 
+                                                    '.struct1.member2': [33, 44, 55], 
+                                                    '.structList[0].member1': 3, 
+                                                    '.structList[0].member2': [33, 44, 55], 
+                                                    '.structList[1].member1': 3, 
+                                                    '.structList[1].member2': [33, 44, 55], 
+                                                    '.structList[2].member1': 3, 
+                                                    '.structList[2].member2': [33, 44, 55]})], 
+                                      [OrderedDict({'.struct1.member1': 3, 
+                                                    '.struct1.member2': [33, 44, 55], 
+                                                    '.structList[0].member1': 3, 
+                                                    '.structList[0].member2': [33, 44, 55], 
+                                                    '.structList[1].member1': 3, 
+                                                    '.structList[1].member2': [33, 44, 55], 
+                                                    '.structList[2].member1': 3, 
+                                                    '.structList[2].member2': [33, 44, 55]}), 
+                                       OrderedDict({'.struct1.member1': 3, 
+                                                    '.struct1.member2': [33, 44, 55], 
+                                                    '.structList[0].member1': 3, 
+                                                    '.structList[0].member2': [33, 44, 55], 
+                                                    '.structList[1].member1': 3, 
+                                                    '.structList[1].member2': [33, 44, 55], 
+                                                    '.structList[2].member1': 3, 
+                                                    '.structList[2].member2': [33, 44, 55]}), 
+                                       OrderedDict({'.struct1.member1': 3, 
+                                                    '.struct1.member2': [33, 44, 55], 
+                                                    '.structList[0].member1': 3, 
+                                                    '.structList[0].member2': [33, 44, 55], 
+                                                    '.structList[1].member1': 3, 
+                                                    '.structList[1].member2': [33, 44, 55], 
+                                                    '.structList[2].member1': 3, 
+                                                    '.structList[2].member2': [33, 44, 55]})]] )     
+        var.kill                                                       
         task.kill
 
     def test_complexStructure(self):
