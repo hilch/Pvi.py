@@ -47,8 +47,6 @@ class ObjectTreeView(ttk.Treeview):
             
         for element_name in struct_elements:
             element = Variable(task, struct.objectName + element_name)
-            if element_name == '.myStruct2':
-                pass
 
             try:
                 icon = self.image_storage[element.dataType]
@@ -103,13 +101,22 @@ class ObjectTreeView(ttk.Treeview):
                 for k, vk in enumerate(v):
                     i1 = indices[0][0] + j
                     i2 = indices[1][0] + k
-                    self.insert( array.name, index = 'end', 
+                    if isinstance( vk, OrderedDict ):
+                        #insert struct itself
+                        self.insert( array.name, index = 'end', 
                             iid = f'{array.name}[{i1},{i2}]', text = f'[{i1},{i2}]',
-                            image = icon, values = vk )
+                            image = self.image_storage['struct'] )
+                        struct = Variable( task, f'{array.objectName}[{i1},{i2}]' )
+                        self.expandStruct( task, struct )
+                    else:
+                        self.insert( array.name, index = 'end', 
+                                iid = f'{array.name}[{i1},{i2}]', text = f'[{i1},{i2}]',
+                                image = icon, values = vk )
 
             else: # vector
                 i1 = indices[0][0] + j
                 if isinstance( v, OrderedDict):
+                    #insert struct itself
                     self.insert( array.name, index = 'end', 
                         iid = f'{array.name}[{i1}]', text = f'[{i1}]',
                         image = self.image_storage['struct'] )
