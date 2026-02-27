@@ -211,7 +211,7 @@ class Variable(PviObject):
                 if indices and len(indices) == 2: # two dimensional array
                     dim1 = indices[0]
                     dim2 = indices[1]
-                    t += f'[{dim1[0]}..{dim1[1]}][{dim2[0]}..{dim2[1]}]'
+                    t += f'[{dim1[0]}..{dim1[1]},{dim2[0]}..{dim2[1]}]'
                 else: # one dimension only
                     dim1 = indices[0]
                     t += f'[{dim1[0]}..{dim1[1]}]'
