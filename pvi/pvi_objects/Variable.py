@@ -236,7 +236,22 @@ class Variable(PviObject):
     
     @property
     def isArray(self) -> bool:
+        if self._type_description.vt == PvType.UNKNOWN:
+            try:
+                self._readTypeDescription()
+            except PviError as e:
+                raise PviError( e.number, self._name )           
         return( bool(self._type_description.get_array_indices()) )
+
+    @property
+    def isStructure(self) -> bool:
+        if self._type_description.vt == PvType.UNKNOWN:
+            try:
+                self._readTypeDescription()
+            except PviError as e:
+                raise PviError( e.number, self._name )   
+        return( self._type_description.vt.value == 'struct' )
+
 
     @property
     def attributes(self) -> dict:
