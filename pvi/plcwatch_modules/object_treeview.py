@@ -1,11 +1,11 @@
 import tkinter as tk
 from tkinter import ttk
 from collections import OrderedDict 
-from typing import List, Any
+from typing import Union, List
 from ipaddress import IPv4Address
 import re
-from pvi_objects.include import T_POBJ_TYPE
-from pvi import Connection, PviObject, Line, Device, Cpu, Task, Variable
+import json
+from pvi import Connection, Device, Cpu, Task, Variable
 from pvi.plcwatch_modules.resources import image_files
 
 
@@ -61,13 +61,7 @@ class ObjectTreeView(ttk.Treeview):
         # Add sample data to TreeView
         self.heading('#0', text='Name')
         self.heading('#1', text='Value')
-        self.bind('<<TreeviewSelect>>', self.onItemSelected)
-        # parent1 = self.insert('', 'end', text='Parent 1', image=self.image_storage['cpu'])
-        # self.insert(parent1, 'end', text='Child 1.1', image=self.image_storage['task'])
-        # self.insert(parent1, 'end', text='Child 1.2')
-        # parent2 = self.insert('', 'end', text='Parent 2')
-        # self.insert(parent2, 'end', text='Child 2.1')
-        
+        self.bind('<<TreeviewSelect>>', self.onItemSelected)        
         self.cpu_list : List[Cpu] = []
         
         
@@ -92,30 +86,28 @@ class ObjectTreeView(ttk.Treeview):
                 print( e )
                 pass
 
+            tags = [f'"type":"variable","task-linkid":{task._linkID},"varname":"{struct.objectName}{element_name}"']
+            iid = element.name
             if element.isArray:
-                ##array_variable = Variable( task, struct.objectName + element_name)
                 # insert array variable itself
                 self.insert( struct.name, index = 'end', 
-                                iid = element.name, text = element_name,
-                            image = self.image_storage['array'] ) 
-                self.tooltip_handler.set_tooltip(struct.name, struct.name)   
+                                iid = iid, text = element_name,
+                            image = self.image_storage['array'], tags=tags ) 
+                self.tooltip_handler.set_tooltip(iid, iid)   
                 # insert array elements
-                self.expandArray( task, element )
-                #array_variable.kill()                
-            elif isinstance(element.value, OrderedDict):
-                ##substructure = Variable( task, struct.objectName + element_name )
+                self.expandArray( task, element )        
+            elif element.isStructure:
                 # insert the substructure itself
                 self.insert( struct.name, index = 'end', 
-                                         iid = element.name, text = element_name,
-                            image = self.image_storage['struct'] ) 
-                self.tooltip_handler.set_tooltip(struct.name, struct.name)   
-                self.expandStruct(task, element)           
-                #substructure.kill()
-            else:       
-                self.insert( struct.name, index = 'end', iid = element.name, text = element_name,
-                                image = icon, values = (element.value,) )  
-                self.tooltip_handler.set_tooltip(struct.name, struct.name)  
-            #element.kill()
+                                         iid = iid, text = element_name,
+                            image = self.image_storage['struct'], tags=tags ) 
+                self.tooltip_handler.set_tooltip(iid, iid)   
+                #self.expandStruct(task, element)           
+            else: 
+                self.insert( struct.name, index = 'end', iid = iid, text = element_name,
+                                image = icon, values = (element.value,), tags=tags )  
+                self.tooltip_handler.set_tooltip(iid, iid) 
+            element.kill() 
         
         
     def expandArray( self, task : Task, array : Variable):
@@ -140,34 +132,36 @@ class ObjectTreeView(ttk.Treeview):
                 for k, vk in enumerate(v):
                     i1 = indices[0][0] + j
                     i2 = indices[1][0] + k
+                    tags = [f'"type":"varable","task-linkid":{task._linkID},"varname":"{array.objectName}[{i1},{i2}]"']
                     if isinstance( vk, OrderedDict ):
                         #insert struct itself
+                        iid = f'{task.name}/{array.name}[{i1},{i2}]'
                         self.insert( array.name, index = 'end', 
-                            iid = f'{array.name}[{i1},{i2}]', text = f'[{i1},{i2}]',
-                            image = self.image_storage['struct'] )
-                        self.tooltip_handler.set_tooltip(array.name, array.name)
-                        struct = Variable( task, f'{array.objectName}[{i1},{i2}]' )
-                        self.expandStruct( task, struct )
+                            iid = iid, text = f'[{i1},{i2}]',
+                            image = self.image_storage['struct'], tags = tags )
+                        self.tooltip_handler.set_tooltip(iid, iid)
                     else:
+                        iid = f'{array.name}[{i1},{i2}]'
                         self.insert( array.name, index = 'end', 
-                                iid = f'{array.name}[{i1},{i2}]', text = f'[{i1},{i2}]',
+                                iid = iid, text = f'[{i1},{i2}]',
                                 image = icon, values = vk )
                         self.tooltip_handler.set_tooltip(array.name, array.name)
             else: # vector
                 i1 = indices[0][0] + j
+                tags = [f'"type":"variable","task-linkid":{task._linkID},"varname":"{array.objectName}[{i1}]"']
+                iid = f'{array.name}[{i1}]'
                 if isinstance( v, OrderedDict):
                     #insert struct itself
                     self.insert( array.name, index = 'end', 
-                        iid = f'{array.name}[{i1}]', text = f'[{i1}]',
-                        image = self.image_storage['struct'] )
-                    self.tooltip_handler.set_tooltip(array.name, array.name)
-                    struct = Variable( task, f'{array.objectName}[{i1}]' )
-                    self.expandStruct( task, struct )
-                else:
+                        iid = iid, text = f'[{i1}]',
+                        image = self.image_storage['struct'], tags = tags )
+                    self.tooltip_handler.set_tooltip(iid, iid)
+                else:           
                     self.insert( array.name, index = 'end', 
                             iid = f'{array.name}[{i1}]', text = f'[{i1}]',
-                            image = icon, values = v )
-                    self.tooltip_handler.set_tooltip(array.name, array.name)
+                            image = icon, tags = tags,
+                            values = v )
+                    self.tooltip_handler.set_tooltip(iid, iid)
         
         
     def onTaskClicked( self, item : str, task : Task ):
@@ -182,24 +176,25 @@ class ObjectTreeView(ttk.Treeview):
                     pass
                 
                 value = variable.value
-                if isinstance(value, list ): # is variable an array ?
+                tags = [f'"type":"variable","task-linkid":{task._linkID},"varname":"{name}"']
+                if variable.isArray: # is variable an array ?
                     # insert array itself
-                    self.insert( item, index = 'end', iid = variable.name, text = name,
+                    self.insert( item, index = 'end', iid = variable.name, text = name, tags=tags,
                                 image = self.image_storage['array'] )
                     self.tooltip_handler.set_tooltip(variable.name, variable.name)
                     self.expandArray(task,variable)                
-                elif isinstance(value, OrderedDict): # is variable a struct ?
+                elif variable.isStructure: # is variable a struct ?
                     # insert struct itself
-                    self.insert( item, index = 'end', iid = variable.name, text = name,
+                    self.insert( item, index = 'end', iid = variable.name, text = name, tags=tags,
                                 image = self.image_storage['struct'] )    
                     self.tooltip_handler.set_tooltip(variable.name, variable.name)
                     # insert children
                     self.expandStruct(task, variable)
                 else: # variable with basic datatype        
-                    self.insert( item, index = 'end', iid = variable.name, text = name,
+                    self.insert( item, index = 'end', iid = variable.name, text = name, tags=tags,
                                 image = icon, values = (value,) )    
                     self.tooltip_handler.set_tooltip(variable.name, variable.name)
-                
+                variable.kill()       
         
     def onItemSelected( self, event ):
         # Change cursor to hourglass/watch during execution
@@ -208,12 +203,22 @@ class ObjectTreeView(ttk.Treeview):
         
         try:
             item  = self.selection()[0]
-            try:
-                object : PviObject = self.pvi_connection.findObjectByName(item)
-                if object.type == T_POBJ_TYPE.POBJ_TASK:
-                    self.onTaskClicked( item, object ) # type: ignore
-            except KeyError:
-                pass
+            tags = self.item( item, 'tags' )
+            meta = json.loads( '{' + tags[0] + '}')                
+            
+            if meta['type'] == 'task':
+                task = self.pvi_connection.findObjectByLinkID(meta['task-linkid']) 
+                self.onTaskClicked( item, task ) # type: ignore
+            elif meta['type'] == 'variable':
+                task = self.pvi_connection.findObjectByLinkID(meta['task-linkid']) 
+                variable = Variable( task, meta['varname'])
+                if variable.isArray and not self.get_children(item):
+                    self.expandArray( task, variable ) # type: ignore
+                if variable.isStructure and not self.get_children(item):
+                    self.expandStruct( task, variable ) # type: ignore      
+                variable.kill()              
+        except Exception as e:
+            pass
         finally:
             # Restore cursor to default
             self.config(cursor="")
@@ -228,18 +233,24 @@ class ObjectTreeView(ttk.Treeview):
         else:
             values = cpu.cpuInfo.get('CT', 'unknown') + '/' + cpu.status.get('RunState','unknown')
             self.cpu_list.append(cpu)
-            parent = self.insert('', index = 'end', iid = cpu.name, text=cpu.objectName, 
-                        image=self.image_storage['cpu'], values = values)
-            self.tooltip_handler.set_tooltip(cpu.name, cpu.name)
+            tags = [f'"type":"cpu", "cpu":"{cpu.objectName}"']
+            iid = cpu.name
+            parent = self.insert('', index = 'end', iid = iid, text=cpu.objectName, 
+                        image=self.image_storage['cpu'], tags = tags,
+                        values = values)
+            self.tooltip_handler.set_tooltip(iid, iid)
             allObjects = cpu.externalObjects
             # read task names
             taskNames = [ _['name'] for _ in allObjects if _['type'] == 'Task'] 
             for name in taskNames:  # read the tasks' status
                 task = Task( cpu, name.replace('::','__'), CD=f'"{name}"' )
                 values = task.status['ST']
-                self.insert( parent, index = 'end', iid = task.name, text = name,
-                            image = self.image_storage['task'], values = values )    
-                self.tooltip_handler.set_tooltip(task.name, task.name)
+                tags = [f'"type":"task", "cpu":"{cpu.objectName}","task-linkid":{task._linkID}']
+                iid = f'{task.name}'
+                self.insert( parent, index = 'end', iid = iid, text = name,
+                            image = self.image_storage['task'], tags= tags,
+                            values = values )    
+                self.tooltip_handler.set_tooltip(iid, iid)
     
         
     def insert_cpu(self, device : Device, ip : IPv4Address ):
