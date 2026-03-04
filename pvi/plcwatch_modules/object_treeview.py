@@ -61,7 +61,8 @@ class ObjectTreeView(ttk.Treeview):
         
         # Add sample data to TreeView
         self.heading('#0', text='Name')
-        self.heading('#1', text='Value')
+        self.heading('#1', text='Type')        
+        self.heading('#2', text='Value')
         self.bind('<<TreeviewSelect>>', self.onItemSelected)        
         self.cpu_list : List[Cpu] = []
 
@@ -94,7 +95,8 @@ class ObjectTreeView(ttk.Treeview):
                 # insert array variable itself
                 self.insert( struct.name, index = 'end', 
                                 iid = iid, text = element_name,
-                            image = self.image_storage['array'], tags=tags ) 
+                            image = self.image_storage['array'], tags=tags,
+                            values=[element.dataType] ) 
                 self.tooltip_handler.set_tooltip(iid, iid)   
                 # insert array elements
                 self.expandArray( task, element )        
@@ -102,12 +104,14 @@ class ObjectTreeView(ttk.Treeview):
                 # insert the substructure itself
                 self.insert( struct.name, index = 'end', 
                                          iid = iid, text = element_name,
-                            image = self.image_storage['struct'], tags=tags ) 
+                            image = self.image_storage['struct'], tags=tags,
+                            values=[element.dataType] ) 
                 self.tooltip_handler.set_tooltip(iid, iid)   
                 #self.expandStruct(task, element)           
             else: 
                 self.insert( struct.name, index = 'end', iid = iid, text = element_name,
-                                image = icon, values = (element.value,), tags=tags )  
+                                image = icon, tags=tags, 
+                                values=[element.dataType, element.value] )  
                 self.tooltip_handler.set_tooltip(iid, iid) 
             element.kill() 
         
@@ -182,19 +186,19 @@ class ObjectTreeView(ttk.Treeview):
                 if variable.isArray: # is variable an array ?
                     # insert array itself
                     self.insert( item, index = 'end', iid = variable.name, text = name, tags=tags,
-                                image = self.image_storage['array'] )
+                                image = self.image_storage['array'], values=[variable.dataType] )
                     self.tooltip_handler.set_tooltip(variable.name, variable.name)
                     self.expandArray(task,variable)                
                 elif variable.isStructure: # is variable a struct ?
                     # insert struct itself
                     self.insert( item, index = 'end', iid = variable.name, text = name, tags=tags,
-                                image = self.image_storage['struct'] )    
+                                image = self.image_storage['struct'], values=[variable.dataType] )    
                     self.tooltip_handler.set_tooltip(variable.name, variable.name)
                     # insert children
                     self.expandStruct(task, variable)
                 else: # variable with basic datatype        
                     self.insert( item, index = 'end', iid = variable.name, text = name, tags=tags,
-                                image = icon, values = (value,) )    
+                                image = icon, values = [variable.dataType, value] )    
                     self.tooltip_handler.set_tooltip(variable.name, variable.name)
                 variable.kill()       
         
@@ -233,25 +237,24 @@ class ObjectTreeView(ttk.Treeview):
         elif error != 0:
             pass
         else:
-            values = cpu.cpuInfo.get('CT', 'unknown') + '/' + cpu.status.get('RunState','unknown')
             self.cpu_list.append(cpu)
             tags = [f'"type":"cpu", "cpu":"{cpu.objectName}"']
             iid = cpu.name
             parent = self.insert('', index = 'end', iid = iid, text=cpu.objectName, 
                         image=self.image_storage['cpu'], tags = tags,
-                        values = values)
+                        values = [ cpu.cpuInfo.get('CT', 'unknown'), cpu.status.get('RunState','unknown') ])
             self.tooltip_handler.set_tooltip(iid, iid)
             allObjects = cpu.externalObjects
             # read task names
             taskNames = [ _['name'] for _ in allObjects if _['type'] == 'Task'] 
             for name in taskNames:  # read the tasks' status
                 task = Task( cpu, name.replace('::','__'), CD=f'"{name}"' )
-                values = task.status['ST']
+                task_status = task.status['ST']
                 tags = [f'"type":"task", "cpu":"{cpu.objectName}","task-linkid":{task._linkID}']
                 iid = f'{task.name}'
                 self.insert( parent, index = 'end', iid = iid, text = name,
                             image = self.image_storage['task'], tags= tags,
-                            values = values )    
+                            values = ['Task', task_status] )    
                 self.tooltip_handler.set_tooltip(iid, iid)
             ip = getattr( cpu, 'ip')
             self.callback_ip_connected(ip)
