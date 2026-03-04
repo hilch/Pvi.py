@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from collections import OrderedDict 
-from typing import Union, List
+from typing import Union, List, Callable
 from ipaddress import IPv4Address
 import re
 import json
@@ -45,10 +45,11 @@ class TreeViewTooltip:
 
 
 class ObjectTreeView(ttk.Treeview):
-    def __init__(self, parent : tk.Tk, pvi_connection : Connection ):
+    def __init__(self, parent : tk.Tk, pvi_connection : Connection, callback_ip_connected : Callable[[str],None] ):
         super().__init__( parent, columns=('name', 'value'), selectmode='browse' )
         self.tooltip_handler = TreeViewTooltip(self)
         self.pvi_connection = pvi_connection        
+        self.callback_ip_connected = callback_ip_connected        
         self.image_storage = { str(k) : tk.PhotoImage( file = v ) for k,v in image_files.items() }        
         
         # Create TreeView with scrollbar
@@ -63,6 +64,7 @@ class ObjectTreeView(ttk.Treeview):
         self.heading('#1', text='Value')
         self.bind('<<TreeviewSelect>>', self.onItemSelected)        
         self.cpu_list : List[Cpu] = []
+
         
         
     def expandStruct( self, task : Task, struct : Variable):
@@ -166,7 +168,7 @@ class ObjectTreeView(ttk.Treeview):
         
     def onTaskClicked( self, item : str, task : Task ):
         if not self.get_children(item):
-            variableNames = [ _['name'] for _ in task.externalObjects]
+            variableNames = task.variables
             for name in variableNames:
                 variable = Variable(task, name)
                 try:
@@ -251,11 +253,14 @@ class ObjectTreeView(ttk.Treeview):
                             image = self.image_storage['task'], tags= tags,
                             values = values )    
                 self.tooltip_handler.set_tooltip(iid, iid)
+            ip = getattr( cpu, 'ip')
+            self.callback_ip_connected(ip)
     
         
     def insert_cpu(self, device : Device, ip : IPv4Address ):
         name = ip.compressed.replace('.','_')
         cpu = Cpu( device, name, CD=f"/IP={ip.compressed} /SDT=5 /PVROI=1 /COMT=5000" )
+        setattr( cpu, 'ip', ip.compressed )
         cpu.errorChanged = self.cpuErrorChanged
         
         

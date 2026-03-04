@@ -1,3 +1,6 @@
+from pathlib import Path
+import os
+import json
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -6,7 +9,7 @@ import threading
 from typing import Union, List
 from ipaddress import IPv4Address
 from pvi import Connection, Line, Device
-from pvi.plcwatch_modules import (NetworkSearchDialog, ConnectTargetDialog, 
+from pvi.plcwatch_modules import (NetworkSearchDialog,
                                 VariableListBox, ObjectTreeView, icon_storage)
 from pvi.Anslscan import ScanResult
 
@@ -19,6 +22,10 @@ class ApplicationWindow(tk.Tk):
         self.geometry("1024x768")
         self.iconbitmap(icon_storage['app'])
         
+        self.app_configuration = dict()
+        self.path_local_app_data =  Path(os.getenv('LOCALAPPDATA')) / 'Plcwatch'# type: ignore
+        self.load_app_settings()
+                
         # create PVI objects
         self.pvi_connection = Connection()
         self.ansl_line = Line( self.pvi_connection.root, 'LNANSL', CD='LNANSL')
@@ -33,12 +40,13 @@ class ApplicationWindow(tk.Tk):
         menubar.add_cascade(label="File", menu=file_menu)
         file_menu.add_command(label="Exit", command=self.quit)
         
-        target_menu = tk.Menu(menubar, tearoff=0)
-        menubar.add_cascade(label="Targets", menu=target_menu)
-        target_menu.add_command(label="Search for Targets", command=self.show_network_search_dialog)
-        target_menu.add_command(label="Connect to Target", command=self.show_connect_target_dialog)        
-        #file_menu.add_separator()
-        
+        self.target_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="Targets", menu=self.target_menu)
+        self.target_menu.add_command(label="Search for Targets", command=self.show_network_search_dialog)    
+        self.target_menu.add_separator()
+        for n, ip in enumerate(self.app_configuration['ips']):
+            self.target_menu.add_command(label=f"{n+1}. {ip}", command= lambda ip=ip : self.connect_to_ip(ip) )
+                
         # Create main vertical PanedWindow (splits top and bottom)
         self.main_paned = tk.PanedWindow(self, orient=tk.VERTICAL, sashrelief=tk.FLAT, sashwidth=5)
         self.main_paned.pack(fill=tk.BOTH, expand=True)
@@ -49,7 +57,8 @@ class ApplicationWindow(tk.Tk):
         
         # LEFT SECTION: TreeView (added directly to top_paned)
         # Create TreeView with scrollbar
-        self.tree = ObjectTreeView(self, self.pvi_connection)
+        self.tree = ObjectTreeView(self, pvi_connection= self.pvi_connection, 
+                                   callback_ip_connected = self.connected_to_ip )
         self.top_paned.add(self.tree, minsize=150)
         
         # RIGHT SECTION: Multi-column Listbox (added directly to top_paned)
@@ -73,17 +82,27 @@ class ApplicationWindow(tk.Tk):
         result : Union[ScanResult, None] = dialog.show()
         
         if result:
-            self.tree.insert_cpu( self.ansl_device, IPv4Address(result.ip))
+            self.tree.insert_cpu( self.ansl_device, IPv4Address(result.ip) )
             # Display the result in the entry field
             self.entry.delete(0, tk.END)
             self.entry.insert(0, str(result))
     
-            
-    def show_connect_target_dialog(self):
-        dialog = ConnectTargetDialog(self)
-        result = dialog.show()
-                    
-            
+    def connect_to_ip(self, ip : str ):
+        self.tree.insert_cpu( self.ansl_device, IPv4Address(ip))
+    
+    
+    # after succesful connection to a cpu change menu 'Targets'
+    def connected_to_ip(self, ip : str ):
+        ips = self.app_configuration['ips']
+        if ips[0] != ip:
+            ips = ips[1:5]
+            ips.insert(0,ip)
+            for n, ip in enumerate(ips):
+                self.target_menu.entryconfig(n+2, label = f"{n+1}. {ip}" )
+            self.app_configuration['ips'] = ips  
+            self.save_app_settings()              
+                       
+                        
     def update(self):
         try:
             self.pvi_connection.doEvents() # execute PVI event loop
@@ -91,6 +110,30 @@ class ApplicationWindow(tk.Tk):
             self.entry.delete(0, tk.END)
             self.entry.insert(0, str(e) ) 
         self.after( 100, self.update)  
+
+
+    def load_app_settings(self):
+        # Local AppData
+        try:
+            with open(self.path_local_app_data / 'config.json', 'r') as f:
+                self.app_configuration = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            directory = Path(self.path_local_app_data)
+            if not directory.exists():
+                directory.mkdir()
+            self.app_configuration = { 
+                                      'ips' : ['127.0.0.1']*5
+                                      }
+            self.save_app_settings()
+
+            
+    def save_app_settings(self):
+        try:
+            with open(self.path_local_app_data / 'config.json', 'w') as f:
+                json.dump(self.app_configuration, f)
+        except Exception as e:
+            pass
+        
 
 if __name__ == "__main__":
     app = ApplicationWindow()
