@@ -3,7 +3,7 @@ import tkinter as tk
 
 _script_dir = os.path.dirname(os.path.abspath(__file__))
 _pics = ( 'app', 'array', 'boolean', 'cpu', 'date_and_time', 'device',
-      'i8', 'i16', 'i32', 'lreal', 'real', 'string', 'wstring', 
+      'i8', 'i16', 'i32', 'f64', 'f32', 'string', 'wstring', 
       'struct', 'task', 'time', 'time', 'u8', 'u16', 'u32', 'variable',
       'wstring' )
 
