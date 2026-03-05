@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from collections import OrderedDict 
-from typing import Union, List, Callable
+from typing import List, Callable, Any
 from ipaddress import IPv4Address
 import re
 import json
@@ -52,20 +52,23 @@ class ObjectTreeView(ttk.Treeview):
         self.callback_ip_connected = callback_ip_connected        
         self.image_storage = { str(k) : tk.PhotoImage( file = v ) for k,v in image_files.items() }        
         
-        # Create TreeView with scrollbar
-        tree_scroll = tk.Scrollbar(parent)
-        
-        #self.tree = ttk.Treeview(parent, yscrollcommand=tree_scroll.set)
-        tree_scroll.config(command=self.yview)
-        # Note: scrollbar added after tree to maintain proper z-order
+        # # Create TreeView with scrollbar
+        # tree_scroll = tk.Scrollbar(parent)
+        # self.yscrollcommand=tree_scroll.set
+        # tree_scroll.config(command=self.yview)
+        # # Note: scrollbar added after tree to maintain proper z-order
+        # self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        # tree_scroll.pack(side=tk.RIGHT, fill=tk.Y)        
         
         # Add sample data to TreeView
         self.heading('#0', text='Name')
         self.heading('#1', text='Type')        
         self.heading('#2', text='Value')
-        self.bind('<<TreeviewSelect>>', self.onItemSelected)        
+        self.bind('<<TreeviewSelect>>', self.onItemSelected)
+        self.bind("<<TreeviewOpen>>", self.onItemOpened )
+        self.bind("<<TreeviewClose>>", self.onItemClosed)                
         self.cpu_list : List[Cpu] = []
-
+        self.watch_list = dict()
         
         
     def expandStruct( self, task : Task, struct : Variable):
@@ -208,29 +211,83 @@ class ObjectTreeView(ttk.Treeview):
         self.update_idletasks()  # Force cursor update
         
         try:
-            item  = self.selection()[0]
-            tags = self.item( item, 'tags' )
-            meta = json.loads( '{' + tags[0] + '}')                
-            
-            if meta['type'] == 'task':
-                task = self.pvi_connection.findObjectByLinkID(meta['task-linkid']) 
-                self.onTaskClicked( item, task ) # type: ignore
-            elif meta['type'] == 'variable':
-                task = self.pvi_connection.findObjectByLinkID(meta['task-linkid']) 
-                variable = Variable( task, meta['varname'])
-                if variable.isArray and not self.get_children(item):
-                    self.expandArray( task, variable ) # type: ignore
-                if variable.isStructure and not self.get_children(item):
-                    self.expandStruct( task, variable ) # type: ignore      
-                variable.kill()              
+            item = self.selection()[0] if self.selection() else None
+            if item:
+                tags = self.item( item, 'tags' )
+                meta = json.loads( '{' + tags[0] + '}')                
+                
+                if meta['type'] == 'task':
+                    task = self.pvi_connection.findObjectByLinkID(meta['task-linkid']) 
+                    self.onTaskClicked( item, task ) # type: ignore
+                elif meta['type'] == 'variable':
+                    task = self.pvi_connection.findObjectByLinkID(meta['task-linkid']) 
+                    variable = Variable( task, meta['varname'])
+                    if variable.isArray and not self.get_children(item):
+                        self.expandArray( task, variable ) # type: ignore
+                    if variable.isStructure and not self.get_children(item):
+                        self.expandStruct( task, variable ) # type: ignore      
+                    variable.kill()              
         except Exception as e:
             pass
         finally:
             # Restore cursor to default
             self.config(cursor="")
             self.update_idletasks()
+
+
+    def onItemOpened(self, event):
+        """Called when parent item is expanded"""
+        #tree = event.widget
+        item = self.selection()[0] if self.selection() else None
+    
+        if item:
+            tags = self.item( item, 'tags' )
+            meta = json.loads( '{' + tags[0] + '}')   
+            if meta['type'] == 'cpu':
+                return
+            task = self.pvi_connection.findObjectByLinkID(meta['task-linkid']) 
+
+            # Get all children
+            children = self.get_children(item)
+            for child in children:
+                tags = self.item( child, 'tags' )
+                try:
+                    meta = json.loads( '{' + tags[0] + '}')   
+                except Exception as e:
+                    pass
+                variable = Variable( task, meta['varname'], RF=200 )
+                if not(variable.isArray) and not(variable.isStructure):
+                    def callback( variable : Variable, value : Any):
+                        self.changeValue( variable.name, value )
+                    callback( variable, variable.value )
+                    variable.valueChanged = callback
+                    self.watch_list.update( { child : [variable, callback]})
+                else:
+                    variable.kill() # immediately kill variable in case of complex type
+
+
+    def onItemClosed(self, event):
+        """Called when parent item is collapsed"""
+        #tree = event.widget
+        item = self.selection()[0] if self.selection() else None
         
+        if item:
+            tags = self.item( item, 'tags' )
+            meta = json.loads( '{' + tags[0] + '}')  
+            self.removeChildrenFromWatchList(item)      
+                    
+                    
+    def removeChildrenFromWatchList(self, item : str):
+        """Remove descendant variables from watchlist"""
+        children = self.get_children(item)
+        for child in children:
+            self.item( child, open=False) # close item
+            if child in self.watch_list:
+                variable : Variable = self.watch_list[child][0]
+                variable.kill()
+            self.removeChildrenFromWatchList(child)    
         
+       
     def cpuErrorChanged( self, cpu : Cpu,  error : int ):
         if error == 11020:
             print("Unable to establish connection")
@@ -259,12 +316,18 @@ class ObjectTreeView(ttk.Treeview):
             ip = getattr( cpu, 'ip')
             self.callback_ip_connected(ip)
     
+    
+    def changeValue(self, iid : str, value ):
+        values = self.item(iid)['values']
+        values[1] = value # type: ignore
+        self.item( iid, values = values )
+            
         
-    def insert_cpu(self, device : Device, ip : IPv4Address ):
+    def insertCpu(self, device : Device, ip : IPv4Address ):
         name = ip.compressed.replace('.','_')
         cpu = Cpu( device, name, CD=f"/IP={ip.compressed} /SDT=5 /PVROI=1 /COMT=5000" )
         setattr( cpu, 'ip', ip.compressed )
         cpu.errorChanged = self.cpuErrorChanged
         
-        
+   
         

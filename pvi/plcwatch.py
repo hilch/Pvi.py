@@ -82,13 +82,13 @@ class ApplicationWindow(tk.Tk):
         result : Union[ScanResult, None] = dialog.show()
         
         if result:
-            self.tree.insert_cpu( self.ansl_device, IPv4Address(result.ip) )
+            self.tree.insertCpu( self.ansl_device, IPv4Address(result.ip) )
             # Display the result in the entry field
             self.entry.delete(0, tk.END)
             self.entry.insert(0, str(result))
     
     def connect_to_ip(self, ip : str ):
-        self.tree.insert_cpu( self.ansl_device, IPv4Address(ip))
+        self.tree.insertCpu( self.ansl_device, IPv4Address(ip))
     
     
     # after succesful connection to a cpu change menu 'Targets'
