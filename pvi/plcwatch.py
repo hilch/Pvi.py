@@ -55,11 +55,24 @@ class ApplicationWindow(tk.Tk):
         self.top_paned = tk.PanedWindow(self.main_paned, orient=tk.HORIZONTAL, sashrelief=tk.FLAT, sashwidth=5)
         self.main_paned.add(self.top_paned, minsize=200)
         
-        # LEFT SECTION: TreeView (added directly to top_paned)
-        # Create TreeView with scrollbar
-        self.tree = ObjectTreeView(self, pvi_connection= self.pvi_connection, 
-                                   callback_ip_connected = self.connected_to_ip )
-        self.top_paned.add(self.tree, minsize=150)
+       # LEFT SECTION: TreeView with Scrollbar
+        # Create frame for treeview and scrollbar
+        tree_frame = ttk.Frame(self.top_paned)
+        
+        # Create scrollbar
+        tree_scrollbar = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL)
+        tree_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        # Create TreeView and link scrollbar
+        self.tree = ObjectTreeView( parent=tree_frame, pvi_connection= self.pvi_connection, 
+                                   callback_ip_connected = self.connected_to_ip,
+                                   yscrollcommand=tree_scrollbar.set)
+        self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        
+        # Configure scrollbar to control treeview
+        tree_scrollbar.config(command=self.tree.yview)
+        
+        self.top_paned.add(tree_frame, minsize=150)
         
         # RIGHT SECTION: Multi-column Listbox (added directly to top_paned)
         # Create Treeview with columns for multi-column listbox

@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from collections import OrderedDict 
-from typing import List, Callable, Any
+from typing import List, Any, Union, Callable
 from ipaddress import IPv4Address
 import re
 import json
@@ -45,8 +45,15 @@ class TreeViewTooltip:
 
 
 class ObjectTreeView(ttk.Treeview):
-    def __init__(self, parent : tk.Tk, pvi_connection : Connection, callback_ip_connected : Callable[[str],None] ):
-        super().__init__( parent, columns=('name', 'value'), selectmode='browse' )
+    def __init__(self, parent : tk.Widget, 
+                 yscrollcommand: Union[str,Callable[[float, float],object]],
+                 pvi_connection : Connection, 
+                 callback_ip_connected : Callable[[str],None] ):
+        super().__init__( parent, 
+                         columns=('name', 'value'), 
+                         selectmode='browse', 
+                         yscrollcommand=yscrollcommand
+                         )
         self.tooltip_handler = TreeViewTooltip(self)
         self.pvi_connection = pvi_connection        
         self.callback_ip_connected = callback_ip_connected        
