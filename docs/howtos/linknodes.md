@@ -19,3 +19,7 @@ find the following examples on GitHub [github.com/hilch/Pvi.py](https://github.c
 ### [linknode1.py](https://github.com/hilch/Pvi.py/tree/main/examples/linknode1.py) (ANSL)
 
 this simple example just toggles an forced output
+
+### [linknode1.py](https://github.com/hilch/Pvi.py/tree/main/examples/linknode2.py) (ANSL)
+
+this example reads information about an PLC input via LinkNode
