@@ -22,7 +22,7 @@
 
 from inspect import signature
 from ctypes import create_string_buffer, sizeof, byref, c_int32
-from typing import Union, Any, OrderedDict as OrderedDictType
+from typing import Union, Any, OrderedDict as OrderedDictType, Callable
 from collections import OrderedDict 
 import re
 from copy import deepcopy
@@ -169,20 +169,20 @@ class Variable(PviObject):
 
 
     @property
-    def valueChanged(self):
+    def valueChanged(self) -> Union[Callable[['Variable', Any], None], Callable[[Any], None]]:
         '''
         callback for 'value changed'
 
         accepts:
         fn( value)
         or
-        fn( value, vo ) where 'vo' is the Variable object itself
+        fn( variable, value ) where 'vo' is the Variable object itself
 
         '''
         return self._valueChanged
 
     @valueChanged.setter
-    def valueChanged(self, cb):
+    def valueChanged(self, cb : Union[Callable[['Variable', Any], None], Callable[[Any], None]]):
         if callable(cb):
             self._valueChanged = cb
             self._valueChangedArgCount = len(signature(cb).parameters)
