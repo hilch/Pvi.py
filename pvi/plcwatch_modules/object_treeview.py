@@ -59,21 +59,13 @@ class ObjectTreeView(ttk.Treeview):
         self.callback_ip_connected = callback_ip_connected        
         self.image_storage = { str(k) : tk.PhotoImage( file = v ) for k,v in image_files.items() }        
         
-        # # Create TreeView with scrollbar
-        # tree_scroll = tk.Scrollbar(parent)
-        # self.yscrollcommand=tree_scroll.set
-        # tree_scroll.config(command=self.yview)
-        # # Note: scrollbar added after tree to maintain proper z-order
-        # self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        # tree_scroll.pack(side=tk.RIGHT, fill=tk.Y)        
-        
-        # Add sample data to TreeView
         self.heading('#0', text='Name')
         self.heading('#1', text='Type')        
         self.heading('#2', text='Value')
         self.bind('<<TreeviewSelect>>', self.onItemSelected)
         self.bind("<<TreeviewOpen>>", self.onItemOpened )
-        self.bind("<<TreeviewClose>>", self.onItemClosed)                
+        self.bind("<<TreeviewClose>>", self.onItemClosed)     
+                   
         self.cpu_list : List[Cpu] = []
         self.watch_list = dict()
         
@@ -332,7 +324,7 @@ class ObjectTreeView(ttk.Treeview):
         
     def insertCpu(self, device : Device, ip : IPv4Address ):
         name = ip.compressed.replace('.','_')
-        cpu = Cpu( device, name, CD=f"/IP={ip.compressed} /SDT=5 /PVROI=1 /COMT=5000" )
+        cpu = Cpu( device, name, CD=f"/IP={ip.compressed} /SDT=5 /PVROI=1 /COMT=10000" )
         setattr( cpu, 'ip', ip.compressed )
         cpu.errorChanged = self.cpuErrorChanged
         
