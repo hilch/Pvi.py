@@ -83,13 +83,7 @@ class ObjectTreeView(ttk.Treeview):
         for element_name in struct_elements:
             element = Variable(task, struct.objectName + element_name)
 
-            try:
-                icon = self.image_storage[element.dataType]
-            except KeyError:
-                icon = self.image_storage['variable']
-            except Exception as e:
-                print( e )
-                pass
+            icon = self.image_storage.get(element.dataType, self.image_storage['variable'])
 
             tags = [f'"type":"variable","task-linkid":{task._linkID},"varname":"{struct.objectName}{element_name}"']
             iid = element.name
@@ -127,11 +121,8 @@ class ObjectTreeView(ttk.Treeview):
             task : task containing
             values : elements' values
         '''
-        try:
-            icon = self.image_storage[array.dataType.split('[')[0]]
-        except KeyError:
-            icon = self.image_storage['variable']
-            pass        
+        
+        icon = self.image_storage.get(array.dataType.split('[')[0], self.image_storage['variable'])
         
         indices = array._type_description.get_array_indices()
         assert(indices)
@@ -177,12 +168,8 @@ class ObjectTreeView(ttk.Treeview):
             variableNames = task.variables
             for name in variableNames:
                 variable = Variable(task, name)
-                try:
-                    icon = self.image_storage[variable.dataType]
-                except KeyError:
-                    icon = self.image_storage['variable']
-                    pass
-                
+                icon = self.image_storage.get(variable.dataType, self.image_storage['variable'])
+                 
                 value = variable.value
                 tags = [f'"type":"variable","task-linkid":{task._linkID},"varname":"{name}"']
                 if variable.isArray: # is variable an array ?
