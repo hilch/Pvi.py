@@ -1,29 +1,38 @@
 import tkinter as tk
 from tkinter import ttk
-
+from typing import Union, Callable
+from pvi import Connection, Device, Cpu, Task, Variable
 
 class VariableListBox(ttk.Treeview):
-    def __init__(self, parent : tk.PanedWindow ):
-        super().__init__()
-        # Create Treeview with columns for multi-column listbox
-        list_scroll = tk.Scrollbar(parent)
+    def __init__(self, parent : tk.Widget,
+                 yscrollcommand: Union[str,Callable[[float, float],object]],
+                 pvi_connection : Connection
+                 ):
+        super().__init__( parent, 
+                         columns=('Name', 'Type', 'Value'), 
+                         show='headings',
+                         yscrollcommand=yscrollcommand
+                         )        
         
-        # Define columns
-        self.listbox = ttk.Treeview(parent, columns=('Name', 'Type', 'Value'), 
-                                     show='headings', yscrollcommand=list_scroll.set)
-        parent.add(self.listbox, minsize=150)
+        # # Create Treeview with columns for multi-column listbox
+        # list_scroll = tk.Scrollbar(parent)
         
-        list_scroll.config(command=self.listbox.yview)
+        # # Define columns
+        # self.listbox = ttk.Treeview(parent, columns=('Name', 'Type', 'Value'), 
+        #                              show='headings')
+        # parent.add(self.listbox, minsize=150)
+        
+        # list_scroll.config(command=self.listbox.yview)
         
         # Configure column headings
-        self.listbox.heading('Name', text='Name')
-        self.listbox.heading('Type', text='Type')
-        self.listbox.heading('Value', text='Value')
+        self.heading('Name', text='Name')
+        self.heading('Type', text='Type')
+        self.heading('Value', text='Value')
         
         # Configure column widths
-        self.listbox.column('Name', width=150, anchor='w')
-        self.listbox.column('Type', width=100, anchor='center')
-        self.listbox.column('Value', width=150, anchor='w')
+        self.column('Name', width=150, anchor='w')
+        self.column('Type', width=100, anchor='center')
+        self.column('Value', width=150, anchor='w')
         
         # Add sample data to multi-column listbox
         sample_data = [
@@ -45,4 +54,4 @@ class VariableListBox(ttk.Treeview):
         ]
         
         for item in sample_data:
-            self.listbox.insert('', 'end', values=item)
+            self.insert('', 'end', values=item)

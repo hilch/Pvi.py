@@ -53,9 +53,9 @@ class ApplicationWindow(tk.Tk):
         
         # Create horizontal PanedWindow for top section (splits left and right)
         self.top_paned = tk.PanedWindow(self.main_paned, orient=tk.HORIZONTAL, sashrelief=tk.FLAT, sashwidth=5)
-        self.main_paned.add(self.top_paned, minsize=200)
+        self.main_paned.add(self.top_paned, minsize=600)
         
-       # LEFT SECTION: TreeView with Scrollbar
+        # LEFT SECTION: TreeView with Scrollbar
         # Create frame for treeview and scrollbar
         tree_frame = ttk.Frame(self.top_paned)
         
@@ -64,23 +64,36 @@ class ApplicationWindow(tk.Tk):
         tree_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         
         # Create TreeView and link scrollbar
-        self.tree = ObjectTreeView( parent=tree_frame, pvi_connection= self.pvi_connection, 
+        self.tree = ObjectTreeView( parent=tree_frame, 
+                                   yscrollcommand=tree_scrollbar.set,
+                                   pvi_connection= self.pvi_connection, 
                                    callback_ip_connected = self.connected_to_ip,
-                                   yscrollcommand=tree_scrollbar.set)
+                                   )
         self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         
         # Configure scrollbar to control treeview
         tree_scrollbar.config(command=self.tree.yview)
-        
-        self.top_paned.add(tree_frame, minsize=150)
+        self.top_paned.add(tree_frame, minsize=300)
         
         # RIGHT SECTION: Multi-column Listbox (added directly to top_paned)
         # Create Treeview with columns for multi-column listbox
-        self.listbox = VariableListBox(self.top_paned)
+        listbox_frame = ttk.Frame(self.top_paned)
+        # Create scrollbar
+        listbox_scrollbar = ttk.Scrollbar(listbox_frame, orient=tk.VERTICAL)
+        listbox_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Create listbox and link scrollbar
+        self.listbox = VariableListBox(parent = listbox_frame,
+                                       yscrollcommand = listbox_scrollbar.set,
+                                       pvi_connection= self.pvi_connection
+                                       )
+        self.listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        self.top_paned.add(listbox_frame, minsize = 300)
+        
 
         # BOTTOM SECTION: Entry Widget directly in main_paned
         self.entry = tk.Entry(self.main_paned, font=('Arial', 12))
-        self.main_paned.add(self.entry, minsize=30)
+        self.main_paned.add(self.entry)
         self.entry.insert(0, "Type something here...")
                
         self.after( 10, self.update)        
