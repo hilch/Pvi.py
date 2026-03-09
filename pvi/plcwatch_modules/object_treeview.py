@@ -191,13 +191,15 @@ class ObjectTreeView(ttk.Treeview):
                     task = self.pvi_connection.findObjectByLinkID(meta['task-linkid']) 
                     self.onTaskClicked( item, task ) # type: ignore
                 elif meta['type'] == 'variable':
-                    self.selected_item = item                       
                     task = self.pvi_connection.findObjectByLinkID(meta['task-linkid']) 
                     variable = Variable( task, meta['varname'])
-                    if variable.isArray and not self.get_children(item):
-                        self.expandArray( task, variable ) # type: ignore
-                    if variable.isStructure and not self.get_children(item):
-                        self.expandStruct( task, variable ) # type: ignore      
+                    if not variable.isArray and not variable.isStructure:
+                        self.selected_item = item 
+                    else:                                              
+                        if variable.isArray and not self.get_children(item):
+                            self.expandArray( task, variable ) # type: ignore
+                        if variable.isStructure and not self.get_children(item):
+                            self.expandStruct( task, variable ) # type: ignore               
                     variable.kill()              
         except Exception as e:
             pass
@@ -249,6 +251,7 @@ class ObjectTreeView(ttk.Treeview):
                     pass
                 variable = Variable( task, meta['varname'], RF=200 )
                 if not(variable.isArray) and not(variable.isStructure):
+                    # in case of basic datatypes add variable to watch list
                     def cb_valueChanged( variable : Variable, value : Any):
                         self.changeValue( variable.name, value )
                     cb_valueChanged( variable, variable.value )

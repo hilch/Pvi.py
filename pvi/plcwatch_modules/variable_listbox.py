@@ -42,6 +42,7 @@ class VariableListBox(ttk.Treeview):
             if item not in self.watch_list:
                 pvi_object = self.pvi_connection.findObjectByName(item)
                 if isinstance( pvi_object, Variable ):
+                    # add variable to watch list
                     assert(pvi_object._parent)
                     variable = Variable( pvi_object._parent, pvi_object.objectName)
                     task : Task = variable._parent # type: ignore
