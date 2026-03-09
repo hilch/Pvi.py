@@ -8,7 +8,7 @@ import os
 import threading
 from typing import Union, List
 from ipaddress import IPv4Address
-from pvi import Connection, Line, Device
+from pvi import Connection, Line, Device, Cpu, Task, Variable
 from pvi.plcwatch_modules import (NetworkSearchDialog,
                                 VariableListBox, ObjectTreeView, icon_storage)
 from pvi.Anslscan import ScanResult
@@ -68,6 +68,7 @@ class ApplicationWindow(tk.Tk):
                                    yscrollcommand=tree_scrollbar.set,
                                    pvi_connection= self.pvi_connection, 
                                    callback_ip_connected = self.connected_to_ip,
+                                   callback_mouse_leave= self.onTreeviewMouseLeave
                                    )
         self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         
@@ -88,7 +89,7 @@ class ApplicationWindow(tk.Tk):
                                        pvi_connection= self.pvi_connection
                                        )
         self.listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        self.top_paned.add(listbox_frame, minsize = 300)
+        self.top_paned.add(listbox_frame, minsize = 400)
         
 
         # BOTTOM SECTION: Entry Widget directly in main_paned
@@ -102,6 +103,9 @@ class ApplicationWindow(tk.Tk):
     
     def pvi_cyclic( self):
         pass
+    
+    def onTreeviewMouseLeave( self, item : str ):
+        self.listbox.announceItem( item )
        
     def show_network_search_dialog(self):
         dialog = NetworkSearchDialog(self)

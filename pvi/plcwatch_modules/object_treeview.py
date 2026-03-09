@@ -7,56 +7,25 @@ import re
 import json
 from pvi import Connection, Device, Cpu, Task, Variable
 from pvi.plcwatch_modules.resources import image_files
-
-
-class TreeViewTooltip:
-    def __init__(self, treeview):
-        self.treeview = treeview
-        self.tip_window = None
-        self.item_tooltips = {}
-        self.treeview.bind("<Motion>", self.on_motion)
-        self.treeview.bind("<Leave>", self.hide_tooltip)
-
-    def set_tooltip(self, item_id, tooltip_text):
-        self.item_tooltips[item_id] = tooltip_text
-
-    def on_motion(self, event):
-        item = self.treeview.identify('item', event.x, event.y)
-        if item and item in self.item_tooltips:
-            self.show_tooltip(event, self.item_tooltips[item])
-        else:
-            self.hide_tooltip()
-
-    def show_tooltip(self, event, text):
-        if self.tip_window:
-            self.tip_window.destroy()
-        self.tip_window = tk.Toplevel(self.treeview)
-        self.tip_window.wm_overrideredirect(True)
-        self.tip_window.wm_geometry(f"+{event.x_root + 10}+{event.y_root + 10}")
-        label = tk.Label(self.tip_window, text=text, background="lightyellow",
-                        relief=tk.SOLID, borderwidth=1)
-        label.pack(ipadx=3, ipady=3)
-
-    def hide_tooltip(self, event=None):
-        if self.tip_window:
-            self.tip_window.destroy()
-            self.tip_window = None
-
+from pvi.plcwatch_modules.treeview_tooltip import TreeViewTooltip
 
 
 class ObjectTreeView(ttk.Treeview):
     def __init__(self, parent : tk.Widget, 
                  yscrollcommand: Union[str,Callable[[float, float],object]],
                  pvi_connection : Connection, 
-                 callback_ip_connected : Callable[[str],None] ):
+                 callback_ip_connected : Callable[[str],None],
+                 callback_mouse_leave: Callable[[str],None] 
+                ):
         super().__init__( parent, 
-                         columns=('name', 'value'), 
+                         columns=('name', 'type', 'value'), 
                          selectmode='browse', 
                          yscrollcommand=yscrollcommand
                          )
         self.tooltip_handler = TreeViewTooltip(self)
         self.pvi_connection = pvi_connection        
-        self.callback_ip_connected = callback_ip_connected        
+        self.callback_ip_connected = callback_ip_connected 
+        self.callback_mouse_leave = callback_mouse_leave       
         self.image_storage = { str(k) : tk.PhotoImage( file = v ) for k,v in image_files.items() }        
         
         self.heading('#0', text='Name')
@@ -64,11 +33,18 @@ class ObjectTreeView(ttk.Treeview):
         self.heading('#2', text='Value')
         self.bind('<<TreeviewSelect>>', self.onItemSelected)
         self.bind("<<TreeviewOpen>>", self.onItemOpened )
-        self.bind("<<TreeviewClose>>", self.onItemClosed)     
+        self.bind("<<TreeviewClose>>", self.onItemClosed)
+        self.bind("<B1-Motion>", self.onItemDragged)     
+        self.bind('<ButtonRelease-1>', self.onButtonRelease1)  
+        self.bind('<Leave>', self.onMouseLeave)        
+          
                    
         self.cpu_list : List[Cpu] = []
         self.watch_list = dict()
         
+        self.selected_item = None
+        self.dragged_item = None
+              
         
     def expandStruct( self, task : Task, struct : Variable):
         '''
@@ -200,8 +176,8 @@ class ObjectTreeView(ttk.Treeview):
             item = self.selection()[0] if self.selection() else None
             if item:
                 tags = self.item( item, 'tags' )
-                meta = json.loads( '{' + tags[0] + '}')                
-                
+                meta = json.loads( '{' + tags[0] + '}')
+                self.selected_item = item                
                 if meta['type'] == 'task':
                     task = self.pvi_connection.findObjectByLinkID(meta['task-linkid']) 
                     self.onTaskClicked( item, task ) # type: ignore
@@ -220,6 +196,23 @@ class ObjectTreeView(ttk.Treeview):
             self.config(cursor="")
             self.update_idletasks()
 
+    def onItemDragged( self, event ):
+        if self.selected_item:
+            self.config(cursor='exchange')   
+            self.dragged_item = self.selected_item
+            self.selected_item = None
+            
+    def onButtonRelease1( self, event ):
+        # Restore cursor to normal
+        self.config(cursor="")
+        self.selected_item = None
+        self.dragged_item = None
+         
+    def onMouseLeave( self, event ):
+        if self.dragged_item:
+            self.config(cursor='hand2')   
+            self.callback_mouse_leave(self.dragged_item)
+        
 
     def onItemOpened(self, event):
         """Called when parent item is expanded"""
@@ -283,7 +276,7 @@ class ObjectTreeView(ttk.Treeview):
             self.cpu_list.append(cpu)
             tags = [f'"type":"cpu", "cpu":"{cpu.objectName}"']
             iid = cpu.name
-            parent = self.insert('', index = 'end', iid = iid, text=cpu.objectName, 
+            parent = self.insert('', index = 'end', iid = iid, text=cpu.objectName.replace('_','.'), 
                         image=self.image_storage['cpu'], tags = tags,
                         values = [ cpu.cpuInfo.get('CT', 'unknown'), cpu.status.get('RunState','unknown') ])
             self.tooltip_handler.set_tooltip(iid, iid)
