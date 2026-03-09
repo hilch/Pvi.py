@@ -120,14 +120,18 @@ class Variable(PviObject):
         else:
             raise PviError(self._result, self)
 
-        if self._errorChanged: # fire callback in case of response
-            self._errorChanged(0)
+        if callable(self._errorChanged): # fire callback in case of response
+            args = len(signature(self._errorChanged).parameters)
+            if args == 1:
+                self._errorChanged(0)
+            elif args ==2:
+                self._errorChanged(self,0)
 
  
     def _eventData( self, wParam, responseInfo ):
         self._processRawData( wParam, responseInfo )
         if self._valueChangedArgCount == 1:
-            self._valueChanged(self._value)
+            self._valueChanged(self._value) # type: ignore
         elif self._valueChangedArgCount == 2:
             self._valueChanged(self, self._value) # type: ignore
 

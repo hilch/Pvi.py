@@ -47,11 +47,15 @@ class VariableListBox(ttk.Treeview):
                     task : Task = variable._parent # type: ignore
                     taskname = task.objectName.replace('__', '::')
                     cpu : Cpu = task._parent # type: ignore
-                    def callback( variable : Variable, value : Any):
+                    def cb_valueChanged( variable : Variable, value : Any):
                         self.changeValue( variable.name, value )
-                    callback( variable, variable.value )
-                    variable.valueChanged = callback
-                    self.watch_list.update( { item : [variable, callback]})
+                    cb_valueChanged( variable, variable.value )
+                    variable.valueChanged = cb_valueChanged
+                    def cb_errorChanged( variable : Variable, error : int ):
+                        if error == 11022:
+                            cb_valueChanged( variable, 'OFFLINE')
+                    variable.errorChanged = cb_errorChanged                    
+                    self.watch_list.update( { item : [variable, cb_valueChanged, cb_errorChanged]})
                     self.insert('', 'end', iid=item, values = [f'{cpu.objectName.replace('_','.')}',
                                                                f'{taskname}:{variable.objectName}', 
                                                                variable.dataType, 
