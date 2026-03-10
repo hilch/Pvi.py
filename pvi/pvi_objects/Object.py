@@ -20,8 +20,8 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import annotations
-from typing import Union
+from inspect import signature
+from typing import cast, Union
 from ctypes import create_string_buffer, byref, sizeof
 from ctypes import wintypes
 from typing import Callable, Union
@@ -40,7 +40,7 @@ class PviObject():
 
     '''
 
-    def __init__(self, parent : Union[PviObject,None], objType : T_POBJ_TYPE, name : str, **objectDescriptor : Union[str,int, float]):
+    def __init__(self, parent : Union['PviObject',None], objType : T_POBJ_TYPE, name : str, **objectDescriptor : Union[str,int, float]):
         '''
         Args: 
             parent: the parent Pvi Object
@@ -74,7 +74,8 @@ class PviObject():
         self._type = objType
         self._result = int(0)      
         self._pviError = int(0)
-        self._errorChanged = None
+        self._errorChanged = lambda _ : _
+        self._errorChangedArgCount = 0    
         self._parent = parent
         self._hPvi = wintypes.DWORD()
         debuglog(f'{self._objectDescriptor} - {self._linkDescriptor}')
@@ -248,7 +249,7 @@ class PviObject():
 
 
     @property
-    def errorChanged(self) -> Callable:
+    def errorChanged(self) -> Union[Callable[['PviObject', int], None], Callable[[int], None]]:
         """
         callback for 'error changed'
 
@@ -276,7 +277,7 @@ class PviObject():
 
 
     @errorChanged.setter
-    def errorChanged(self, cb : Callable):
+    def errorChanged(self, cb : Union[Callable[['PviObject', int], None], Callable[[int], None]]):
         """
         set callback for 'error changed'.
 
@@ -300,6 +301,7 @@ class PviObject():
         """
         if callable(cb):
             self._errorChanged = cb
+            self._errorChangedArgCount = len(signature(cb).parameters)            
         else:
             raise TypeError("only callable allowed for Object.errorChanged")
 
@@ -310,7 +312,10 @@ class PviObject():
         """
         self._result = PviXReadResponse( self._hPvi, wParam, None, 0 )
         if callable(self._errorChanged):
-            self._errorChanged(0)             
+            if self._errorChangedArgCount == 1:
+                self._errorChanged(0) # type: ignore
+            elif self._errorChangedArgCount == 2:
+                self._errorChanged(self,0) # type: ignore
 
     def _eventDataType( self, wParam, responseInfo ):
         """
@@ -336,11 +341,10 @@ class PviObject():
         """      
         self._result = PviXReadResponse( self._hPvi, wParam, None, 0 )
         if callable(self._errorChanged):
-            sig = inspect.signature(self._errorChanged)
-            if len(sig.parameters) == 1:
-                self._errorChanged(responseInfo.ErrCode)
-            elif len(sig.parameters) == 2:
-                self._errorChanged( self, responseInfo.ErrCode)
+            if self._errorChangedArgCount == 1:
+                 cast(Callable[[int], None], self._errorChanged)(responseInfo.ErrCode)
+            elif self._errorChangedArgCount == 2:
+                 cast(Callable[[PviObject, int], None], self._errorChanged)(self, responseInfo.ErrCode)
  
     def _createAndLink(self, connection):
         """

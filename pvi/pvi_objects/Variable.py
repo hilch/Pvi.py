@@ -22,7 +22,7 @@
 
 from inspect import signature
 from ctypes import create_string_buffer, sizeof, byref, c_int32
-from typing import Union, Any, OrderedDict as OrderedDictType, Callable
+from typing import cast, Union, Any, OrderedDict as OrderedDictType, Callable
 from collections import OrderedDict 
 import re
 from copy import deepcopy
@@ -123,17 +123,17 @@ class Variable(PviObject):
         if callable(self._errorChanged): # fire callback in case of response
             args = len(signature(self._errorChanged).parameters)
             if args == 1:
-                self._errorChanged(0)
+                self._errorChanged(0) # type: ignore
             elif args ==2:
-                self._errorChanged(self,0)
+                self._errorChanged(self,0) # type: ignore
 
  
     def _eventData( self, wParam, responseInfo ):
         self._processRawData( wParam, responseInfo )
         if self._valueChangedArgCount == 1:
-            self._valueChanged(self._value) # type: ignore
+            cast(Callable[[Any], None], self._valueChanged)(self._value)
         elif self._valueChangedArgCount == 2:
-            self._valueChanged(self, self._value) # type: ignore
+            cast(Callable[['Variable',Any], None], self._valueChanged)(self, self._value)            
 
 
     def _eventDataType( self, wParam, responseInfo ):
