@@ -96,52 +96,6 @@ class Variable(PviObject):
         else:
             return False
 
-    def _processRawData(self, wParam, responseInfo):
-        '''
-        reads data (byte) from PVI_ACC_DATA or PVI_EVENT_DATA
-        > wParam: points to response data
-        > responseInfo: responseInfo or 'None' in case of synchronous read request
-        '''
-        if self._type_description.vt == PvType.UNKNOWN:
-            try:
-                self._readTypeDescription()
-            except PviError as e:
-                raise PviError( e.number, self._name )
-
-        buffer = create_string_buffer(self._type_description.get_buffer_size())
-
-        if responseInfo: # data is answer of a request
-            self._result = PviXReadResponse( self._hPvi, wParam, byref(buffer), sizeof(buffer) )
-        else: # data shall be immediately read
-            self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_DATA, None, 0, byref(buffer), sizeof(buffer) )
-        
-        if self._result == 0:
-            self._value = self._readValueFromBuffer(bytes(buffer))
-        else:
-            raise PviError(self._result, self)
-
-        if callable(self._errorChanged): # fire callback in case of response
-            args = len(signature(self._errorChanged).parameters)
-            if args == 1:
-                self._errorChanged(0) # type: ignore
-            elif args ==2:
-                self._errorChanged(self,0) # type: ignore
-
- 
-    def _eventData( self, wParam, responseInfo ):
-        self._processRawData( wParam, responseInfo )
-        if self._valueChangedArgCount == 1:
-            cast(Callable[[Any], None], self._valueChanged)(self._value)
-        elif self._valueChangedArgCount == 2:
-            cast(Callable[['Variable',Any], None], self._valueChanged)(self, self._value)            
-
-
-    def _eventDataType( self, wParam, responseInfo ):
-        s = create_string_buffer(b'\000' * 64*1024)       
-        self._result = PviXReadResponse( self._hPvi, wParam, s, sizeof(s) )
-        if self._result == 0:
-            pass # TODO
-
             
     @property
     def value(self) ->Any:
@@ -490,6 +444,53 @@ class Variable(PviObject):
         
         # sort dict according variable offset
         self._struct_members = OrderedDict(sorted( members.items(), key = lambda x : x[1].vo ))
+
+
+    def _processRawData(self, wParam, responseInfo):
+        '''
+        reads data (byte) from PVI_ACC_DATA or PVI_EVENT_DATA
+        > wParam: points to response data
+        > responseInfo: responseInfo or 'None' in case of synchronous read request
+        '''
+        if self._type_description.vt == PvType.UNKNOWN:
+            try:
+                self._readTypeDescription()
+            except PviError as e:
+                raise PviError( e.number, self._name )
+
+        buffer = create_string_buffer(self._type_description.get_buffer_size())
+
+        if responseInfo: # data is answer of a request
+            self._result = PviXReadResponse( self._hPvi, wParam, byref(buffer), sizeof(buffer) )
+        else: # data shall be immediately read
+            self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_DATA, None, 0, byref(buffer), sizeof(buffer) )
+        
+        if self._result == 0:
+            self._value = self._readValueFromBuffer(bytes(buffer))
+        else:
+            raise PviError(self._result, self)
+
+        if callable(self._errorChanged): # fire callback in case of response
+            args = len(signature(self._errorChanged).parameters)
+            if args == 1:
+                self._errorChanged(0) # type: ignore
+            elif args ==2:
+                self._errorChanged(self,0) # type: ignore
+
+ 
+    def _eventData( self, wParam, responseInfo ):
+        self._processRawData( wParam, responseInfo )
+        if self._valueChangedArgCount == 1:
+            cast(Callable[[Any], None], self._valueChanged)(self._value)
+        elif self._valueChangedArgCount == 2:
+            cast(Callable[['Variable',Any], None], self._valueChanged)(self, self._value)            
+
+
+    def _eventDataType( self, wParam, responseInfo ):
+        s = create_string_buffer(b'\000' * 64*1024)       
+        self._result = PviXReadResponse( self._hPvi, wParam, s, sizeof(s) )
+        if self._result == 0:
+            pass # TODO
 
         
     def _readValueFromBuffer(self, buffer : bytes):
