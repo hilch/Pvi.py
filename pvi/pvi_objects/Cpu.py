@@ -22,6 +22,7 @@
 
 import datetime
 import inspect
+import xml.etree.ElementTree as ET
 from typing import List, Union
 from ctypes import create_string_buffer, byref, sizeof
 from .include import *
@@ -304,7 +305,7 @@ class Cpu(PviObject):
     def cpuInfo(self) -> dict:
         """
         Returns:
-            dict with memory information
+            dict with cpu information according POBJ_ACC_CPU_INFO
 
         example:
         ```
@@ -318,6 +319,87 @@ class Cpu(PviObject):
             ret = dict()
             ret.update( dictFromParameterPairString(s)  )
             return ret          
+        else:
+            raise PviError(self._result, self)     
+
+
+    @property       
+    def cpuInfoExtended(self) -> dict:
+        """
+        Returns:
+            dict with extended CPU information according POBJ_ACC_LN_XML_CPU_INFO
+
+        example:
+        ```
+        ```
+
+        """    
+        s = create_string_buffer(b'\000' * 4096)             
+        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_LN_XML_CPU_INFO  , None, 0, byref(s), sizeof(s) )     
+        if self._result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+            """Parse CPU Info XML and return as dictionary"""
+            root = ET.fromstring(s)
+            
+            cpu_info = {
+                'SoftwareVers': {},
+                'AnslServer': {},
+                'CpuConfiguration': {},
+                'OperationalValues': {},
+                'TechnologyGuarding': {},
+                'NetworkDevices': {
+                    'Hosts': [],
+                    'Interfaces': []
+                }
+            }
+            
+            # Parse SoftwareVers
+            sw_vers = root.find('SoftwareVers')
+            if sw_vers is not None:
+                cpu_info['SoftwareVers'] = dict(sw_vers.attrib)
+            
+            # Parse AnslServer
+            ansl_server = root.find('AnslServer')
+            if ansl_server is not None:
+                cpu_info['AnslServer'] = dict(ansl_server.attrib)
+            
+            # Parse CpuConfiguration
+            cpu_config = root.find('CpuConfiguration')
+            if cpu_config is not None:
+                cpu_info['CpuConfiguration'] = dict(cpu_config.attrib)
+            
+            # Parse OperationalValues
+            op_values = root.find('OperationalValues')
+            if op_values is not None:
+                if 'CurrentCpuMode' in op_values.attrib:
+                    op_values.attrib['CurrentCpuMode'] = { '1' : 'BOOT', 
+                                                          '2' : 'DIAG', 
+                                                          '3' : 'SERV',
+                                                          '4' : 'RUN'
+                                                          }.get(op_values.attrib['CurrentCpuMode'], '<unknown>')
+                if 'CpuBootMode' in op_values.attrib:
+                    op_values.attrib['CpuBootMode'] = { '1' : 'Warmstart', 
+                                                          '2' : 'Coldstart', 
+                                                          '4' : 'Watchdog',
+                                                          '32' : 'Diagnose',
+                                                          '64' : 'Error'
+                                                          }.get(op_values.attrib['CpuBootMode'], '<unknown>')                                 
+                cpu_info['OperationalValues'] = dict(op_values.attrib)
+            
+            # Parse TechnologyGuarding
+            tech_guard = root.find('TechnologyGuarding')
+            if tech_guard is not None:
+                cpu_info['TechnologyGuarding'] = dict(tech_guard.attrib)
+            
+            # Parse NetworkDevices
+            net_devices = root.find('NetworkDevices')
+            if net_devices is not None:
+                for host in net_devices.findall('Host'):
+                    cpu_info['NetworkDevices']['Hosts'].append(dict(host.attrib))
+                for interface in net_devices.findall('Interface'):
+                    cpu_info['NetworkDevices']['Interfaces'].append(dict(interface.attrib))
+            
+            return cpu_info      
         else:
             raise PviError(self._result, self)     
 
