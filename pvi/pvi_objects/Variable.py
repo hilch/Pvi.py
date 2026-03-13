@@ -205,7 +205,9 @@ class Variable(PviObject):
             try:
                 self._readTypeDescription()
             except PviError as e:
-                raise PviError( e.number, self._name )                  
+                raise PviError( e.number, self._name )  
+            
+        self._objectDescriptor.update({ 'VT': self._type_description.vt.value})
 
         if self._type_description.vt == PvType.STRUCT:
             t = self._type_description.sn

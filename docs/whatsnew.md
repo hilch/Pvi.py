@@ -4,6 +4,7 @@
 - fix : values of two-dimensional arrays were double-packed into a list
 - fix : values of arrays with just one element weren't return as list
 - fix : correct .dataType of multi-dimensional structure arrays
+- fix : correct repr of Variable (VT was incorrect)
 - new property 'isStructure' for Variable object
 
 ## V1.2.9
