@@ -21,7 +21,7 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from inspect import signature
-from typing import cast, Union
+from typing import cast, Union, List, Dict
 from ctypes import create_string_buffer, byref, sizeof
 from ctypes import wintypes
 from typing import Callable, Union
@@ -373,7 +373,7 @@ class PviObject():
 
 
     @property
-    def externalObjects(self):
+    def externalObjects(self) -> List[Dict[str,str]]:
         """     
         PviObject.externalObjects : list of dict
         get a list of external objects retrieved by POBJ_ACC_LIST_EXTERN
