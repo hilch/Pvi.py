@@ -134,12 +134,14 @@ class ApplicationWindow(tk.Tk):
                        
                         
     def update(self):
-        try:
-            self.pvi_connection.doEvents() # execute PVI event loop
-        except Exception as e:
-            self.entry.delete(0, tk.END)
-            self.entry.insert(0, str(e) ) 
-        self.after( 100, self.update)  
+        self.pvi_connection.doEvents()
+        # try:
+        #     self.pvi_connection.doEvents() # execute PVI event loop
+        # except Exception as e:
+        #     self.entry.delete(0, tk.END)
+        #     self.entry.insert(0, str(e) ) 
+        self.tree.update()
+        self.after( 50, self.update)  
 
 
     def load_app_settings(self):

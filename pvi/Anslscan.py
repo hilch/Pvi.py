@@ -27,15 +27,17 @@
 import socket
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
-from typing import List
+from typing import cast, Callable, List, Union
 import argparse
 import sys
 import ipaddress
 
-from pvi import Connection
-from pvi import Line
-from pvi import Device
-from pvi import Cpu
+from pvi import ( Connection, Line, PviObject, Device, Cpu)
+
+ANSL_PORT = 11169
+SOCKET_TIMEOUT = 1
+MAX_WORKERS = 255
+
 
 @dataclass
 class ScanResult:
@@ -50,9 +52,9 @@ class ScanResult:
 
 
 # Function to check if a ANSL server is reachable
-def check_server(host):
+def check_server(host : str) -> Union[str, None]:
     try:
-        with socket.create_connection((host, 11169), timeout=1):
+        with socket.create_connection((host, ANSL_PORT), timeout=SOCKET_TIMEOUT):
             return host
     except (socket.timeout, ConnectionRefusedError):
         return None
@@ -62,6 +64,7 @@ def check_server(host):
         else:
             print(f"Error during checking {host}: {e}")
         return None
+
 
 def cpu_error_change( cpu : Cpu, error : int ):
     global cpu_list
@@ -100,9 +103,9 @@ def ansl_scan( network : ipaddress.IPv4Network )->List[ScanResult] :
     network_to_scan = ipaddress.IPv4Network('127.0.0.1')
     cpu_list = list()
 
-    def objectsArranged():       
+    def objectsArranged() -> None:       
         # Check servers simultaneously using ThreadPoolExecutor
-        with ThreadPoolExecutor(max_workers=255) as executor:
+        with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
             results = executor.map(lambda host: check_server(str(host)), network_to_scan.hosts() ) # type: ignore
             results = [item for item in results if item is not None]
 
@@ -111,7 +114,7 @@ def ansl_scan( network : ipaddress.IPv4Network )->List[ScanResult] :
             cpu = Cpu( device, 'newCpu', CD='/IP=' + result )
             cpu.ip_address = result # type: ignore ,add dynamic member for IP address
             cpu.checked = False # type: ignore , add dynamic member for 'checked' state
-            cpu.errorChanged = cpu_error_change
+            cpu.errorChanged = cast( Callable[[PviObject,int],None], cpu_error_change )
             while not(cpu.checked): # type: ignore
                 pviConnection.doEvents()
             cpu.kill()

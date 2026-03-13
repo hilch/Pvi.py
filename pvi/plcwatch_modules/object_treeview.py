@@ -1,13 +1,24 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from collections import OrderedDict 
-from typing import List, Any, Union, Callable
+from typing import cast, List, Any, Union, Callable
 from ipaddress import IPv4Address
 import re
 import json
+import time
 from pvi import Connection, PviObject, Device, Cpu, Task, Variable
 from pvi.plcwatch_modules.resources import image_files
 from pvi.plcwatch_modules.treeview_tooltip import TreeViewTooltip
+from pvi.plcwatch_modules.edit_cpu_dialog import EditCpuDialog
+ 
+
+class WatchList():
+    def __init__(self):
+        self._dict_by_id = dict()
+        self._dict_by_type = dict()
+        self._data = []
+        
+    
 
 
 class ObjectTreeView(ttk.Treeview):
@@ -22,6 +33,8 @@ class ObjectTreeView(ttk.Treeview):
                          selectmode='browse', 
                          yscrollcommand=yscrollcommand
                          )
+       
+        self.last_update = time.time()
         self.tooltip_handler = TreeViewTooltip(self)
         self.pvi_connection = pvi_connection        
         self.callback_ip_connected = callback_ip_connected 
@@ -39,7 +52,6 @@ class ObjectTreeView(ttk.Treeview):
         self.bind('<Leave>', self.onMouseLeave)        
         self.bind("<Button-3>", self.onButton3)             
                    
-        self.cpu_list : List[Cpu] = []
         self.watch_list = dict()
         
         self.selected_item = None
@@ -52,7 +64,21 @@ class ObjectTreeView(ttk.Treeview):
         self.context_menu_cpu.add_command(label="Warmstart", command= lambda c = 'warmstart': self.onCpuContextMenu(c))
         self.context_menu_cpu.add_command(label="Coldstart", command= lambda c = 'coldstart': self.onCpuContextMenu(c))
         self.context_menu_cpu.add_command(label="Service", command= lambda c = 'stop': self.onCpuContextMenu(c))        
-        self.context_menu_cpu.add_command(label="Diag", command= lambda c = 'diag': self.onCpuContextMenu(c))                
+        self.context_menu_cpu.add_command(label="Diag", command= lambda c = 'diag': self.onCpuContextMenu(c))  
+             
+             
+    def update(self):
+        t = time.time()
+        if (t - self.last_update) > 10:
+            self.last_update = t
+            for iid, data in self.watch_list.items():
+                iid : str
+                data : list
+                object = data[0]
+                if isinstance( object, Task):
+                    self.changeValue( iid, object.status['ST'])
+                
+            
         
     def expandStruct( self, task : Task, struct : Variable):
         '''
@@ -188,18 +214,18 @@ class ObjectTreeView(ttk.Treeview):
                 meta = json.loads( '{' + tags[0] + '}')
              
                 if meta['type'] == 'task':
-                    task = self.pvi_connection.findObjectByLinkID(meta['task-linkid']) 
-                    self.onTaskClicked( item, task ) # type: ignore
+                    task = cast( Task, self.pvi_connection.findObjectByLinkID(meta['task-linkid']))
+                    self.onTaskClicked( item, task ) 
                 elif meta['type'] == 'variable':
-                    task = self.pvi_connection.findObjectByLinkID(meta['task-linkid']) 
+                    task = cast( Task, self.pvi_connection.findObjectByLinkID(meta['task-linkid']) )
                     variable = Variable( task, meta['varname'])
                     if not variable.isArray and not variable.isStructure:
                         self.selected_item = item 
                     else:                                              
                         if variable.isArray and not self.get_children(item):
-                            self.expandArray( task, variable ) # type: ignore
+                            self.expandArray( task, variable ) 
                         if variable.isStructure and not self.get_children(item):
-                            self.expandStruct( task, variable ) # type: ignore               
+                            self.expandStruct( task, variable )             
                     variable.kill()              
         except Exception as e:
             pass
@@ -259,7 +285,7 @@ class ObjectTreeView(ttk.Treeview):
                     def cb_errorChanged( variable : Variable, error : int ):
                         if error == 11022:
                             cb_valueChanged( variable, 'OFFLINE')
-                    variable.errorChanged = cb_errorChanged
+                    variable.errorChanged = cast( Callable[[PviObject,int],None], cb_errorChanged)
                     self.watch_list.update( { child : [variable, cb_valueChanged, cb_errorChanged]})
                 else:
                     variable.kill() # immediately kill variable in case of complex type
@@ -288,19 +314,21 @@ class ObjectTreeView(ttk.Treeview):
         
        
     def cpuErrorChanged( self, cpu : Cpu,  error : int ):
-        if error == 11020 or error == 11022:
+        if error == 11020:
+            messagebox.showerror('Connect to Target', f'Can not connect to {cpu.objectName.replace('_','.')}', parent=self)
+        elif error == 11022:
             values = self.item(cpu.name)['values']
             values[1] = 'OFFLINE' # type: ignore
             self.item( cpu.name, values = values)            
         elif error != 0:
             values = self.item(cpu.name)['values']
-            values[1] = str(error) # type: ignore
+            values[1] = f'Pvi-Error: {error}' # type: ignore
             self.item( cpu.name, values = values)  
         else:
             if self.exists( cpu.name ):
                 self.item( cpu.name, values = [ cpu.cpuInfo.get('CT', 'unknown'), cpu.status.get('RunState','unknown') ])
             else:
-                self.cpu_list.append(cpu)
+                self.watch_list.update( {cpu.name : [cpu] })
                 tags = [f'"type":"cpu", "cpu":"{cpu.objectName}"']
                 iid = cpu.name
                 parent = self.insert('', index = 'end', iid = iid, text=cpu.objectName.replace('_','.'), 
@@ -312,13 +340,24 @@ class ObjectTreeView(ttk.Treeview):
                 taskNames = [ _['name'] for _ in allObjects if _['type'] == 'Task'] 
                 for name in taskNames:  # read the tasks' status
                     task = Task( cpu, name.replace('::','__'), CD=f'"{name}"' )
-                    task_status = task.status['ST']
+   
                     tags = [f'"type":"task", "cpu":"{cpu.objectName}","task-linkid":{task._linkID}']
                     iid = f'{task.name}'
                     self.insert( parent, index = 'end', iid = iid, text = name,
                                 image = self.image_storage['task'], tags= tags,
-                                values = ['Task', task_status] )    
+                                values = ['Task', task.status['ST']] )    
                     self.tooltip_handler.set_tooltip(iid, iid)
+                    # define callbacks for status and error event
+                    def cb_errorChanged( task : Task, error : int ):
+                        if error == 11022:
+                            self.changeValue( task.name, 'OFFLINE')
+                        elif error == 0:
+                            self.changeValue( task.name, task.status['ST']) 
+                        else:
+                            pass
+                    task.errorChanged = cast( Callable[[PviObject,int],None], cb_errorChanged )
+                    self.watch_list.update( { task.name : [task, cb_errorChanged]})                    
+                    
                 ip = getattr( cpu, 'ip')
                 self.callback_ip_connected(ip)
     
@@ -327,13 +366,13 @@ class ObjectTreeView(ttk.Treeview):
         values = self.item(iid)['values']
         values[1] = value # type: ignore
         self.item( iid, values = values )
-      
+          
         
     def insertCpu(self, device : Device, ip : IPv4Address ):
         name = ip.compressed.replace('.','_')
         cpu = Cpu( device, name, CD=f"/IP={ip.compressed} /SDT=5 /PVROI=1 /COMT=10000" )
         setattr( cpu, 'ip', ip.compressed )
-        cpu.errorChanged = self.cpuErrorChanged
+        cpu.errorChanged = cast( Callable[[PviObject,int],None], self.cpuErrorChanged )
         
         
     def onButton3(self, event):
@@ -350,6 +389,8 @@ class ObjectTreeView(ttk.Treeview):
         
     def onCpuContextMenu( self, type : str):
         cpu : Cpu = self.pvi_connection.findObjectByName(self.selected_item) # type: ignore
+        if type == 'edit':
+            EditCpuDialog(self, self.pvi_connection, cpu )
         if type == 'warmstart':
             cpu.warmStart()
         elif type == 'coldstart':

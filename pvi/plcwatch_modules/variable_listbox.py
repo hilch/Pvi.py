@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from typing import Union, Callable, Any
-from pvi import Connection, Device, Cpu, Task, Variable
+from typing import cast, Union, Callable, Any
+from pvi import Connection, PviObject, Device, Cpu, Task, Variable
 
 class VariableListBox(ttk.Treeview):
     def __init__(self, parent : tk.Widget,
@@ -45,7 +45,7 @@ class VariableListBox(ttk.Treeview):
                     # add variable to watch list
                     assert(pvi_object._parent)
                     variable = Variable( pvi_object._parent, pvi_object.objectName)
-                    task : Task = variable._parent # type: ignore
+                    task : Task = cast(Task, variable._parent)
                     taskname = task.objectName.replace('__', '::')
                     cpu : Cpu = task._parent # type: ignore
                     def cb_valueChanged( variable : Variable, value : Any):
@@ -55,7 +55,9 @@ class VariableListBox(ttk.Treeview):
                     def cb_errorChanged( variable : Variable, error : int ):
                         if error == 11022:
                             cb_valueChanged( variable, 'OFFLINE')
-                    variable.errorChanged = cb_errorChanged                    
+                        else:
+                            cb_valueChanged( variable, f'Pvi-Error: {error}')
+                    variable.errorChanged = cast(Callable[[PviObject, int], None], cb_errorChanged)             
                     self.watch_list.update( { item : [variable, cb_valueChanged, cb_errorChanged]})
                     self.insert('', 'end', iid=item, values = [f'{cpu.objectName.replace('_','.')}',
                                                                f'{taskname}:{variable.objectName}', 
