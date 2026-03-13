@@ -145,7 +145,7 @@ def main_cli():
     try:
         network = ipaddress.IPv4Network(args.network)
     except (ipaddress.AddressValueError, ValueError, TypeError) as e:
-        print( "Anslscan: Wrong syntax for IP Address ! " + str(e))
+        print( "Anslscan: Wrong syntax for IP Address ! Must be something like 192.168.100.0/24 or 192.168.100.0/255.255.255.0" + str(e))
         sys.exit(1)
 
     
