@@ -65,7 +65,7 @@ class TypeDescription:
         self.sc = str(desc.get('SC', ''))        
         self.vt = PvType(desc.get('VT'))
         self.vl = int(desc.get('VL',0)) 
-        self.vn = int(desc.get('VN',0))               
+        self.vn = int(desc.get('VN',1))               
         self.vs = str(desc.get('VS',''))
         self.al = int(desc.get('AL', 1))
         self.sn = str(desc.get('SN', ''))

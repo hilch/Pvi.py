@@ -1,5 +1,9 @@
 # Version history
 
+## V1.2.10
+
+- Fix reading SNMP variables
+
 ## V1.2.9
 
 - Fix 'writable' attribute of Variable
