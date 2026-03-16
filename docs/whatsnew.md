@@ -8,7 +8,7 @@
 - fix : bug reading SNMP variables
 - new property 'isStructure' for Variable object
 - new property 'cpuInfoExtended' for Cpu object
-
+- new member function 'readRequestStatus' for all objects
 
 ## V1.2.9
 
