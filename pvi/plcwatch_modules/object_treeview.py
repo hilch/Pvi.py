@@ -12,15 +12,6 @@ from pvi.plcwatch_modules.treeview_tooltip import TreeViewTooltip
 from pvi.plcwatch_modules.edit_cpu_dialog import EditCpuDialog
  
 
-class WatchList():
-    def __init__(self):
-        self._dict_by_id = dict()
-        self._dict_by_type = dict()
-        self._data = []
-        
-    
-
-
 class ObjectTreeView(ttk.Treeview):
     def __init__(self, parent : tk.Widget, 
                  yscrollcommand: Union[str,Callable[[float, float],object]],
@@ -69,16 +60,15 @@ class ObjectTreeView(ttk.Treeview):
              
     def update(self):
         t = time.time()
-        if (t - self.last_update) > 10:
+        if (t - self.last_update) > 5:
             self.last_update = t
             for iid, data in self.watch_list.items():
                 iid : str
                 data : list
                 object = data[0]
                 if isinstance( object, Task):
-                    self.changeValue( iid, object.status['ST'])
+                    object.readRequestStatus( self.statusResponse )
                 
-            
         
     def expandStruct( self, task : Task, struct : Variable):
         '''
@@ -278,15 +268,10 @@ class ObjectTreeView(ttk.Treeview):
                 variable = Variable( task, meta['varname'], RF=200 )
                 if not(variable.isArray) and not(variable.isStructure):
                     # in case of basic datatypes add variable to watch list
-                    def cb_valueChanged( variable : Variable, value : Any):
-                        self.changeValue( variable.name, value )
-                    cb_valueChanged( variable, variable.value )
-                    variable.valueChanged = cb_valueChanged
-                    def cb_errorChanged( variable : Variable, error : int ):
-                        if error == 11022:
-                            cb_valueChanged( variable, 'OFFLINE')
-                    variable.errorChanged = cast( Callable[[PviObject,int],None], cb_errorChanged)
-                    self.watch_list.update( { child : [variable, cb_valueChanged, cb_errorChanged]})
+                    self.onValueChanged( variable, variable.value )
+                    variable.valueChanged = self.onValueChanged
+                    variable.errorChanged = self.onErrorChanged
+                    self.watch_list.update( { child : [variable]})
                 else:
                     variable.kill() # immediately kill variable in case of complex type
 
@@ -313,56 +298,43 @@ class ObjectTreeView(ttk.Treeview):
             self.removeChildrenFromWatchList(child)    
         
        
-    def cpuErrorChanged( self, cpu : Cpu,  error : int ):
-        if error == 11020:
-            messagebox.showerror('Connect to Target', f'Can not connect to {cpu.objectName.replace('_','.')}', parent=self)
-        elif error == 11022:
-            values = self.item(cpu.name)['values']
-            values[1] = 'OFFLINE' # type: ignore
-            self.item( cpu.name, values = values)            
-        elif error != 0:
-            values = self.item(cpu.name)['values']
-            values[1] = f'Pvi-Error: {error}' # type: ignore
-            self.item( cpu.name, values = values)  
-        else:
-            if self.exists( cpu.name ):
-                self.item( cpu.name, values = [ cpu.cpuInfo.get('CT', 'unknown'), cpu.status.get('RunState','unknown') ])
-            else:
-                self.watch_list.update( {cpu.name : [cpu] })
-                tags = [f'"type":"cpu", "cpu":"{cpu.objectName}"']
-                iid = cpu.name
-                parent = self.insert('', index = 'end', iid = iid, text=cpu.objectName.replace('_','.'), 
-                            image=self.image_storage['cpu'], tags = tags,
-                            values = [ cpu.cpuInfo.get('CT', 'unknown'), cpu.status.get('RunState','unknown') ])
-                self.tooltip_handler.set_tooltip(iid, iid)
-                allObjects = cpu.externalObjects
-                # read task names
-                taskNames = [ _['name'] for _ in allObjects if _['type'] == 'Task'] 
-                for name in taskNames:  # read the tasks' status
-                    task = Task( cpu, name.replace('::','__'), CD=f'"{name}"' )
-   
-                    tags = [f'"type":"task", "cpu":"{cpu.objectName}","task-linkid":{task._linkID}']
-                    iid = f'{task.name}'
-                    self.insert( parent, index = 'end', iid = iid, text = name,
-                                image = self.image_storage['task'], tags= tags,
-                                values = ['Task', task.status['ST']] )    
+    def onErrorChanged( self, object : PviObject,  error : int ):
+        if error == 11022:
+            self.displayItemValue( object.name, 'OFFLINE')
+            return
+            
+        if isinstance( object, Cpu ):
+            cpu = cast( Cpu, object )
+            if error == 11020:
+                messagebox.showerror('Connect to Target', f'Can not connect to {cpu.objectName.replace('_','.')}', parent=self) 
+            elif error == 0:
+                if self.exists( cpu.name ):
+                    self.item( cpu.name, values = [ cpu.cpuInfo.get('CT', 'unknown'), cpu.status.get('RunState','unknown') ])
+                else:
+                    self.watch_list.update( {cpu.name : [cpu] })
+                    tags = [f'"type":"cpu", "cpu":"{cpu.objectName}"']
+                    iid = cpu.name
+                    self.insert('', index = 'end', iid = iid, text=cpu.objectName.replace('_','.'), 
+                                image=self.image_storage['cpu'], tags = tags,
+                                values = [ cpu.cpuInfo.get('CT', 'unknown'), cpu.status.get('RunState','unknown') ])
                     self.tooltip_handler.set_tooltip(iid, iid)
-                    # define callbacks for status and error event
-                    def cb_errorChanged( task : Task, error : int ):
-                        if error == 11022:
-                            self.changeValue( task.name, 'OFFLINE')
-                        elif error == 0:
-                            self.changeValue( task.name, task.status['ST']) 
-                        else:
-                            pass
-                    task.errorChanged = cast( Callable[[PviObject,int],None], cb_errorChanged )
-                    self.watch_list.update( { task.name : [task, cb_errorChanged]})                    
-                    
-                ip = getattr( cpu, 'ip')
-                self.callback_ip_connected(ip)
+                    self.insertTasks(cpu)
+            else:
+                values = self.item(cpu.name)['values']
+                values[1] = f'Pvi-Error: {error}' # type: ignore
+                self.item( cpu.name, values = values)  
+
+
+    def onValueChanged( self, variable : Variable, value : Any):
+        self.displayItemValue( variable.name, value )
     
     
-    def changeValue(self, iid : str, value ):
+    def statusResponse( self, object : PviObject, status : dict ):
+        if isinstance( object, Task ):
+            self.displayItemValue( object.name, status.get('ST'))         
+    
+    
+    def displayItemValue(self, iid : str, value ):
         values = self.item(iid)['values']
         values[1] = value # type: ignore
         self.item( iid, values = values )
@@ -372,7 +344,27 @@ class ObjectTreeView(ttk.Treeview):
         name = ip.compressed.replace('.','_')
         cpu = Cpu( device, name, CD=f"/IP={ip.compressed} /SDT=5 /PVROI=1 /COMT=10000" )
         setattr( cpu, 'ip', ip.compressed )
-        cpu.errorChanged = cast( Callable[[PviObject,int],None], self.cpuErrorChanged )
+        cpu.errorChanged = self.onErrorChanged
+        
+        
+    def insertTasks(self, cpu : Cpu ):
+        allObjects = cpu.externalObjects
+        # read task names
+        taskNames = [ _['name'] for _ in allObjects if _['type'] == 'Task'] 
+        for name in taskNames:  # read the tasks' status
+            task = Task( cpu, name.replace('::','__'), CD=f'"{name}"' )
+
+            tags = [f'"type":"task", "cpu":"{cpu.objectName}","task-linkid":{task._linkID}']
+            iid = f'{task.name}'
+            self.insert( cpu.name, index = 'end', iid = iid, text = name,
+                        image = self.image_storage['task'], tags= tags,
+                        values = ['Task', task.status['ST']] )    
+            self.tooltip_handler.set_tooltip(iid, iid)
+            # define callbacks for status and error event
+            task.errorChanged = self.onErrorChanged
+            self.watch_list.update( { task.name : [task]})                                         
+        ip = getattr( cpu, 'ip')
+        self.callback_ip_connected(ip)        
         
         
     def onButton3(self, event):
