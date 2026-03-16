@@ -24,7 +24,7 @@ from inspect import signature
 from typing import cast, Union, List, Dict
 from ctypes import create_string_buffer, byref, sizeof
 from ctypes import wintypes
-from typing import Callable, Union
+from typing import Callable, Union, Dict
 import re
 import ast
 import inspect
@@ -75,7 +75,10 @@ class PviObject():
         self._result = int(0)      
         self._pviError = int(0)
         self._errorChanged = lambda _ : _
-        self._errorChangedArgCount = 0    
+        self._errorChangedArgCount = 0
+        def statusResponse( o : 'PviObject', st : Dict[str,str]):
+            pass
+        self._statusResponse = statusResponse
         self._parent = parent
         self._hPvi = wintypes.DWORD()
         debuglog(f'{self._objectDescriptor} - {self._linkDescriptor}')
@@ -332,7 +335,13 @@ class PviObject():
 
 
     def _eventStatus( self, wParam, responseInfo ):
-        pass
+        s = create_string_buffer(64)
+        self._result = PviXReadResponse( self._hPvi, wParam, byref(s), sizeof(s) )
+        st = dict()        
+        if self._result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+            st.update( dictFromParameterPairString(s))        
+            self._statusResponse( self, st )
 
 
     def _eventError( self, wParam, responseInfo ):
@@ -465,6 +474,23 @@ class PviObject():
         self._result = PviXWrite( self._hPvi, self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 ) 
         if self._result:
             raise PviError(self._result, self)        
+
+
+    def readRequestStatus( self, callback : Callable[['PviObject',Dict[str,str]],None] ):
+        '''
+        starts asynchronous reading of the status.
+        
+        Args:
+            callback: callback function of type (PviObject, dict) returning the status dictionary
+        '''                
+        if callable(callback):
+            self._statusResponse = callback
+            self._result = PviXReadRequest( self._hPvi, self._linkID, POBJ_ACC_STATUS, 1, SET_PVIFUNCTION, 0)
+            if self._result: 
+                raise PviError(self._result, self)
+        else:
+            raise TypeError("Wrong type for Parameter 'callback'")
+
 
     def __del__(self):
         self.kill()
