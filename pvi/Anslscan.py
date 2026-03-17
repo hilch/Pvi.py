@@ -68,8 +68,8 @@ def check_server(host : str) -> Union[str, None]:
 
 def cpu_error_change( cpu : Cpu, error : int ):
     global cpu_list
-
     if error == 0:
+        
         cpu_list.append( ScanResult( 
                             target= cpu.cpuInfo.get('CT', 'unknown'),
                             AR = cpu.version,
@@ -78,8 +78,7 @@ def cpu_error_change( cpu : Cpu, error : int ):
                             )
                         )
         cpu.checked = True # type: ignore
-    elif error == 11020:
-        print()
+    elif error == 11020 or error == 11022:
         cpu.checked = True # type: ignore               
 
 
