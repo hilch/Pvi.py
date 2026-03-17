@@ -22,7 +22,6 @@ class NetworkSearchDialog:
         # Center the dialog
         left = parent.winfo_x()
         top = parent.winfo_y()   
-        self.dialog.update_idletasks()
         x = left +  (parent.winfo_width() - self.dialog.winfo_width())//2
         y = top + (parent.winfo_height() - self.dialog.winfo_height())//2
         self.dialog.geometry(f'+{x}+{y}')

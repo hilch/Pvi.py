@@ -135,11 +135,11 @@ class ApplicationWindow(tk.Tk):
                         
     def update(self):
         self.pvi_connection.doEvents()
-        # try:
-        #     self.pvi_connection.doEvents() # execute PVI event loop
-        # except Exception as e:
-        #     self.entry.delete(0, tk.END)
-        #     self.entry.insert(0, str(e) ) 
+        try:
+            self.pvi_connection.doEvents() # execute PVI event loop
+        except Exception as e:
+            self.entry.delete(0, tk.END)
+            self.entry.insert(0, str(e) ) 
         self.tree.update()
         self.after( 50, self.update)  
 

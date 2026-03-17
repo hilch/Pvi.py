@@ -6,7 +6,7 @@ from ipaddress import IPv4Address
 import re
 import json
 import time
-from pvi import Connection, PviObject, Device, Cpu, Task, Variable
+from pvi import Connection, PviObject, Device, Cpu, Task, Variable, PviError
 from pvi.plcwatch_modules.resources import image_files
 from pvi.plcwatch_modules.treeview_tooltip import TreeViewTooltip
 from pvi.plcwatch_modules.edit_cpu_dialog import EditCpuDialog
@@ -56,7 +56,8 @@ class ObjectTreeView(ttk.Treeview):
         self.context_menu_cpu.add_command(label="Coldstart", command= lambda c = 'coldstart': self.onCpuContextMenu(c))
         self.context_menu_cpu.add_command(label="Service", command= lambda c = 'stop': self.onCpuContextMenu(c))        
         self.context_menu_cpu.add_command(label="Diag", command= lambda c = 'diag': self.onCpuContextMenu(c))  
-             
+        self.context_menu_cpu.add_separator()
+        self.context_menu_cpu.add_command(label="Remove", command= lambda c = 'remove': self.onCpuContextMenu(c))                     
              
     def update(self):
         t = time.time()
@@ -302,11 +303,12 @@ class ObjectTreeView(ttk.Treeview):
         if error == 11022:
             self.displayItemValue( object.name, 'OFFLINE')
             return
-            
         if isinstance( object, Cpu ):
             cpu = cast( Cpu, object )
             if error == 11020:
-                messagebox.showerror('Connect to Target', f'Can not connect to {cpu.objectName.replace('_','.')}', parent=self) 
+                #self.watch_list.pop(cpu.name)
+                print(self.watch_list)
+                cpu.kill()
             elif error == 0:
                 if self.exists( cpu.name ):
                     self.item( cpu.name, values = [ cpu.cpuInfo.get('CT', 'unknown'), cpu.status.get('RunState','unknown') ])
@@ -342,7 +344,7 @@ class ObjectTreeView(ttk.Treeview):
         
     def insertCpu(self, device : Device, ip : IPv4Address ):
         name = ip.compressed.replace('.','_')
-        cpu = Cpu( device, name, CD=f"/IP={ip.compressed} /SDT=5 /PVROI=1 /COMT=10000" )
+        cpu = Cpu( device, name, CD=f"/IP={ip.compressed} /SDT=5 /PVROI=1 /COMT=3000" )
         setattr( cpu, 'ip', ip.compressed )
         cpu.errorChanged = self.onErrorChanged
         
@@ -380,9 +382,19 @@ class ObjectTreeView(ttk.Treeview):
         
         
     def onCpuContextMenu( self, type : str):
-        cpu : Cpu = self.pvi_connection.findObjectByName(self.selected_item) # type: ignore
+        try:
+            cpu : Cpu = self.pvi_connection.findObjectByName(self.selected_item) # type: ignore
+        except KeyError:
+            return
+        try:
+            _ = cpu.status
+        except PviError as e:
+            if e.number == 11022:
+                return
+            
         if type == 'edit':
-            EditCpuDialog(self, self.pvi_connection, cpu )
+            dialog = EditCpuDialog(self, self.pvi_connection, cpu )
+            self.wait_window(dialog)
         if type == 'warmstart':
             cpu.warmStart()
         elif type == 'coldstart':
@@ -391,4 +403,8 @@ class ObjectTreeView(ttk.Treeview):
             cpu.stopTarget()
         elif type == 'diag':
             cpu.diagnostics()
+        elif type == 'remove':
+            self.delete(cpu.name) # remove from tree
+            self.watch_list.pop(cpu.name) # remove from watch list
+            cpu.kill() # remove PVI-Object
         
