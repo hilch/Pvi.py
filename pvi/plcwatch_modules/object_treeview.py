@@ -82,8 +82,9 @@ class ObjectTreeView(ttk.Treeview):
         ''' 
         struct_elements = dict.fromkeys( '.' + re.split(r'[\[.]', e[1:])[0] for e in struct.value )
             
-        for element_name in struct_elements:
-            self.update_idletasks()  
+        for counter, element_name in enumerate(struct_elements):
+            if counter % 10 == 0:
+                self.update_idletasks()  
             element = Variable(task, struct.objectName + element_name)
 
             icon = self.image_storage.get(element.dataType, self.image_storage['variable'])
@@ -131,7 +132,8 @@ class ObjectTreeView(ttk.Treeview):
         indices = array._type_description.get_array_indices()
         assert(indices)
         for j, v in enumerate(array.value):
-            self.update_idletasks()             
+            if j % 10 == 0:
+                self.update_idletasks()             
             if isinstance( v, list ): # two-dimensional array ?
                 for k, vk in enumerate(v):
                     i1 = indices[0][0] + j
@@ -252,6 +254,8 @@ class ObjectTreeView(ttk.Treeview):
         
     def onItemOpened(self, event):
         """Called when parent item is expanded"""
+        self.config(cursor="watch")
+        self.update_idletasks()          
         #tree = event.widget
         item = self.selection()[0] if self.selection() else None
     
@@ -264,8 +268,9 @@ class ObjectTreeView(ttk.Treeview):
 
             # Get all children
             children = self.get_children(item)
-            for child in children:
-                self.update_idletasks()  
+            for counter, child in enumerate(children):
+                if counter %20 == 0:
+                    self.update_idletasks()  
                 tags = self.item( child, 'tags' )
                 try:
                     meta = json.loads( '{' + tags[0] + '}')   
@@ -280,7 +285,8 @@ class ObjectTreeView(ttk.Treeview):
                     self.watch_list.update( { child : [variable]})
                 else:
                     variable.kill() # immediately kill variable in case of complex type
-
+            self.config(cursor='') # restore cursor
+            self.update_idletasks()  
 
     def onItemClosed(self, event):
         """Called when parent item is collapsed"""
@@ -297,13 +303,12 @@ class ObjectTreeView(ttk.Treeview):
         """Remove descendant variables from watchlist"""
         children = self.get_children(item)
         for child in children:
-            self.update_idletasks()  
             self.item( child, open=False) # close item
             if child in self.watch_list:
                 variable : Variable = self.watch_list[child][0]
                 variable.kill()
             self.removeChildrenFromWatchList(child)    
-        
+        self.update_idletasks()          
        
     def onErrorChanged( self, object : PviObject,  error : int ):
         if error == 11022:
@@ -312,8 +317,6 @@ class ObjectTreeView(ttk.Treeview):
         if isinstance( object, Cpu ):
             cpu = cast( Cpu, object )
             if error == 11020:
-                #self.watch_list.pop(cpu.name)
-                print(self.watch_list)
                 cpu.kill()
             elif error == 0:
                 if self.exists( cpu.name ):
