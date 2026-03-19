@@ -9,8 +9,7 @@ import time
 from pvi import Connection, PviObject, Device, Cpu, Task, Variable, PviError
 from pvi.plcwatch_modules.resources import image_files
 from pvi.plcwatch_modules.treeview_tooltip import TreeViewTooltip
-from pvi.plcwatch_modules.edit_cpu_dialog import EditCpuDialog
- 
+from pvi.plcwatch_modules.edit_cpu_dialog import EditCpuDialog 
 
 class ObjectTreeView(ttk.Treeview):
     def __init__(self, parent : tk.Widget, 
@@ -41,9 +40,11 @@ class ObjectTreeView(ttk.Treeview):
         self.bind("<B1-Motion>", self.onItemDragged)     
         self.bind('<ButtonRelease-1>', self.onButtonRelease1)  
         self.bind('<Leave>', self.onMouseLeave)        
-        self.bind("<Button-3>", self.onButton3)             
+        self.bind("<Button-3>", self.onButton3) 
+        self.bind('<Double-1>', self.onDoubleClick)            
                    
         self.watch_list = dict()
+        self.watch_value_entry = tk.Entry(self)
         
         self.selected_item = None
         self.dragged_item = None
@@ -82,6 +83,7 @@ class ObjectTreeView(ttk.Treeview):
         struct_elements = dict.fromkeys( '.' + re.split(r'[\[.]', e[1:])[0] for e in struct.value )
             
         for element_name in struct_elements:
+            self.update_idletasks()  
             element = Variable(task, struct.objectName + element_name)
 
             icon = self.image_storage.get(element.dataType, self.image_storage['variable'])
@@ -129,6 +131,7 @@ class ObjectTreeView(ttk.Treeview):
         indices = array._type_description.get_array_indices()
         assert(indices)
         for j, v in enumerate(array.value):
+            self.update_idletasks()             
             if isinstance( v, list ): # two-dimensional array ?
                 for k, vk in enumerate(v):
                     i1 = indices[0][0] + j
@@ -148,6 +151,7 @@ class ObjectTreeView(ttk.Treeview):
                                 image = icon, values = [datatype_name, vk] )
                         self.tooltip_handler.set_tooltip(array.name, array.name)
             else: # vector
+                self.update_idletasks()             
                 i1 = indices[0][0] + j
                 tags = [f'"type":"variable","task-linkid":{task._linkID},"varname":"{array.objectName}[{i1}]"']
                 iid = f'{array.name}[{i1}]'
@@ -261,6 +265,7 @@ class ObjectTreeView(ttk.Treeview):
             # Get all children
             children = self.get_children(item)
             for child in children:
+                self.update_idletasks()  
                 tags = self.item( child, 'tags' )
                 try:
                     meta = json.loads( '{' + tags[0] + '}')   
@@ -292,6 +297,7 @@ class ObjectTreeView(ttk.Treeview):
         """Remove descendant variables from watchlist"""
         children = self.get_children(item)
         for child in children:
+            self.update_idletasks()  
             self.item( child, open=False) # close item
             if child in self.watch_list:
                 variable : Variable = self.watch_list[child][0]
@@ -328,7 +334,7 @@ class ObjectTreeView(ttk.Treeview):
 
 
     def onValueChanged( self, variable : Variable, value : Any):
-        self.displayItemValue( variable.name, value )
+        self.displayItemValue( variable.name, variable.toIEC() )
     
     
     def statusResponse( self, object : PviObject, status : dict ):
@@ -369,7 +375,7 @@ class ObjectTreeView(ttk.Treeview):
         self.callback_ip_connected(ip)        
         
         
-    def onButton3(self, event):
+    def onButton3(self, event : tk.Event):
         # Select item at cursor position
         item = self.identify('item', event.x, event.y)
         if item:
@@ -379,6 +385,38 @@ class ObjectTreeView(ttk.Treeview):
             meta = json.loads( '{' + tags[0] + '}')   
             if meta['type'] == 'cpu':
                 self.context_menu_cpu.post(event.x_root, event.y_root)     
+     
+     
+    def onDoubleClick(self, event : tk.Event):
+        item = self.identify('item', event.x, event.y)
+        column = self.identify_column(event.x)
+        if item:
+            o = self.watch_list[item][0]
+            if isinstance(o, Variable) and column == '#2':
+                variable = cast( Variable, o)
+                current_value = self.item(item)['values'][1]
+                # set current value as default
+                self.watch_value_entry.delete(0,'end')
+                self.watch_value_entry.insert(0, current_value )
+                self.watch_value_entry.select_range(0,'end')
+                bbox = self.bbox(item, column)
+                if bbox:
+                    self.watch_value_entry.place(x=bbox[0], y=bbox[1], width=bbox[2], height=bbox[3])
+                self.watch_value_entry.focus()
+                def hide_edit(event=None):
+                    self.watch_value_entry.place_forget()
+                    self.watch_value_entry.unbind_all('<Return>')
+                    self.watch_value_entry.unbind_all('<FocusOut>')                
+                def save_edit(event=None):
+                    str_value = self.watch_value_entry.get()
+                    try:
+                        variable.parseIEC( str_value)
+                    except (ValueError, TypeError) as e:
+                        messagebox.showerror( 'Error', str(e))
+                    hide_edit()
+                self.watch_value_entry.bind('<Return>', save_edit)
+                self.watch_value_entry.bind('<FocusOut>', hide_edit)
+              
         
         
     def onCpuContextMenu( self, type : str):

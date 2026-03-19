@@ -93,16 +93,16 @@ class ApplicationWindow(tk.Tk):
         
 
         # BOTTOM SECTION: Entry Widget directly in main_paned
-        self.entry = tk.Entry(self.main_paned, font=('Arial', 12))
-        self.main_paned.add(self.entry)
-        self.entry.insert(0, "Type something here...")
+        # self.entry = tk.Entry(self.main_paned, font=('Arial', 12))
+        # self.main_paned.add(self.entry)
+        # self.entry.insert(0, "Type something here...")
                
         self.after( 10, self.update)        
-        thread = threading.Thread(target = self.pvi_cyclic)
-        thread.start()
+        # thread = threading.Thread(target = self.pvi_cyclic)
+        # thread.start()
     
-    def pvi_cyclic( self):
-        pass
+    # def pvi_cyclic( self):
+    #     pass
     
     def onTreeviewMouseLeave( self, item : str ):
         self.listbox.announceItem( item )
@@ -114,8 +114,8 @@ class ApplicationWindow(tk.Tk):
         if result:
             self.tree.insertCpu( self.ansl_device, IPv4Address(result.ip) )
             # Display the result in the entry field
-            self.entry.delete(0, tk.END)
-            self.entry.insert(0, str(result))
+            # self.entry.delete(0, tk.END)
+            # self.entry.insert(0, str(result))
     
     def connect_to_ip(self, ip : str ):
         self.tree.insertCpu( self.ansl_device, IPv4Address(ip))
@@ -138,8 +138,9 @@ class ApplicationWindow(tk.Tk):
         try:
             self.pvi_connection.doEvents() # execute PVI event loop
         except Exception as e:
-            self.entry.delete(0, tk.END)
-            self.entry.insert(0, str(e) ) 
+            messagebox.showerror( 'Exception', str(e) )
+            # self.entry.delete(0, tk.END)
+            # self.entry.insert(0, str(e) ) 
         self.tree.update()
         self.after( 50, self.update)  
 
