@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from typing import cast, Union, Callable, Any
 from pvi import Connection, PviObject, Device, Cpu, Task, Variable
 
@@ -25,16 +25,18 @@ class VariableListBox(ttk.Treeview):
         self.column('cpu', width=50, anchor='w')
         self.column('name', width=150, anchor='w')
         self.column('type', width=50, anchor='center')
-        self.column('value', width=50, anchor='w')
+        self.column('value', width=100, anchor='w')
                 
         self.bind('<ButtonRelease-1>', self.onItemDropped)
         self.bind('<B1-Motion>', self.onItemDragged)
         self.bind('<Enter>', self.onEnterWindow)
-        self.bind('<Leave>', self.onLeaveWindow)            
+        self.bind('<Leave>', self.onLeaveWindow) 
+        self.bind('<Double-1>', self.onDoubleClick)                      
         
         self.announced_item : Union[str, None] = None
         self.dragged_item = None
         self.watch_list = dict()
+        self.watch_value_entry = tk.Entry(self)
             
     def onEnterWindow( self, event ):
         if self.announced_item:
@@ -48,22 +50,16 @@ class VariableListBox(ttk.Treeview):
                     task : Task = cast(Task, variable._parent)
                     taskname = task.objectName.replace('__', '::')
                     cpu : Cpu = task._parent # type: ignore
-                    def cb_valueChanged( variable : Variable, value : Any):
-                        self.changeValue( variable.name, value )
-                    cb_valueChanged( variable, variable.value )
-                    variable.valueChanged = cb_valueChanged
-                    def cb_errorChanged( variable : Variable, error : int ):
-                        if error == 11022:
-                            cb_valueChanged( variable, 'OFFLINE')
-                        else:
-                            cb_valueChanged( variable, f'Pvi-Error: {error}')
-                    variable.errorChanged = cast(Callable[[PviObject, int], None], cb_errorChanged)             
-                    self.watch_list.update( { item : [variable, cb_valueChanged, cb_errorChanged]})
+                    self.onValueChanged( variable, variable.value )
+                    variable.valueChanged = self.onValueChanged
+                    variable.errorChanged = self.onErrorChanged                                
+                    self.watch_list.update( { item : [variable]})
                     self.insert('', 'end', iid=item, values = [f'{cpu.objectName.replace('_','.')}',
                                                                f'{taskname}:{variable.objectName}', 
                                                                variable.dataType, 
                                                                ''] )
                 self.announced_item = None
+        
         
     def onLeaveWindow( self, event):
         self.announced_item = None  
@@ -71,8 +67,49 @@ class VariableListBox(ttk.Treeview):
             self.delete(self.dragged_item) 
             self.watch_list.pop(self.dragged_item)
             self.dragged_item = None
+    
+    
+    def onDoubleClick(self, event : tk.Event):
+        item = self.identify('item', event.x, event.y)
+        column = self.identify_column(event.x)
+        if item:
+            o = self.watch_list[item][0]
+            if isinstance(o, Variable) and column == '#4':
+                variable = cast( Variable, o)
+                current_value = self.item(item)['values'][3]
+                # set current value as default
+                self.watch_value_entry.delete(0,'end')
+                self.watch_value_entry.insert(0, current_value )
+                self.watch_value_entry.select_range(0,'end')
+                bbox = self.bbox(item, column)
+                if bbox:
+                    self.watch_value_entry.place(x=bbox[0], y=bbox[1], width=bbox[2], height=bbox[3])
+                self.watch_value_entry.focus()
+                def hide_edit(event=None):
+                    self.watch_value_entry.place_forget()
+                    self.watch_value_entry.unbind_all('<Return>')
+                    self.watch_value_entry.unbind_all('<FocusOut>')                
+                def save_edit(event=None):
+                    str_value = self.watch_value_entry.get()
+                    try:
+                        variable.parseIEC( str_value)
+                    except (ValueError, TypeError) as e:
+                        messagebox.showerror( 'Error', str(e))
+                    hide_edit()
+                self.watch_value_entry.bind('<Return>', save_edit)
+                self.watch_value_entry.bind('<FocusOut>', hide_edit)    
+    
+    
+    def onErrorChanged( self, object : PviObject,  error : int ):
+        if error == 11022:
+            self.displayItemValue( object.name, 'OFFLINE')
+            return
+    
+    def onValueChanged( self, variable : Variable, value : Any):
+        self.displayItemValue( variable.name, variable.toIEC() )
+    
            
-    def changeValue(self, iid : str, value ):
+    def displayItemValue(self, iid : str, value ):
         try:
             values = self.item(iid)['values']
             values[3] = value # type: ignore

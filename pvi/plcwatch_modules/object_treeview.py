@@ -19,7 +19,8 @@ class ObjectTreeView(ttk.Treeview):
                  callback_mouse_leave: Callable[[str],None] 
                 ):
         super().__init__( parent, 
-                         columns=('name', 'type', 'value'), 
+                         columns=('name', 'type','value'), 
+                         show=('tree','headings'),                         
                          selectmode='browse', 
                          yscrollcommand=yscrollcommand
                          )
@@ -34,6 +35,12 @@ class ObjectTreeView(ttk.Treeview):
         self.heading('#0', text='Name')
         self.heading('#1', text='Type')        
         self.heading('#2', text='Value')
+        
+        self.column('#0', width=150, anchor='w')
+        self.column('#1', width=70, anchor='center')
+        self.column('#2', width=150, anchor='w')     
+        self.column('#3', width=0)            
+        
         self.bind('<<TreeviewSelect>>', self.onItemSelected)
         self.bind("<<TreeviewOpen>>", self.onItemOpened )
         self.bind("<<TreeviewClose>>", self.onItemClosed)

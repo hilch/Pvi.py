@@ -89,7 +89,7 @@ class ApplicationWindow(tk.Tk):
                                        pvi_connection= self.pvi_connection
                                        )
         self.listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        self.top_paned.add(listbox_frame, minsize = 400)
+        self.top_paned.add(listbox_frame, minsize = 350)
         
 
         # BOTTOM SECTION: Entry Widget directly in main_paned
@@ -125,7 +125,7 @@ class ApplicationWindow(tk.Tk):
     def connected_to_ip(self, ip : str ):
         ips = self.app_configuration['ips']
         if ips[0] != ip:
-            ips = ips[1:5]
+            ips = ips[0:4]
             ips.insert(0,ip)
             for n, ip in enumerate(ips):
                 self.target_menu.entryconfig(n+2, label = f"{n+1}. {ip}" )
@@ -135,12 +135,12 @@ class ApplicationWindow(tk.Tk):
                         
     def update(self):
         self.pvi_connection.doEvents()
-        try:
-            self.pvi_connection.doEvents() # execute PVI event loop
-        except Exception as e:
-            messagebox.showerror( 'Exception', str(e) )
-            # self.entry.delete(0, tk.END)
-            # self.entry.insert(0, str(e) ) 
+        # try:
+        self.pvi_connection.doEvents() # execute PVI event loop
+        # except Exception as e:
+        #     print(e)
+        #     # self.entry.delete(0, tk.END)
+        #     # self.entry.insert(0, str(e) ) 
         self.tree.update()
         self.after( 50, self.update)  
 
