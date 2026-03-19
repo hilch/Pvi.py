@@ -20,6 +20,11 @@ PROGRAM _INIT
 	myComplexStruct.lreal := 2 * myComplexStruct.real;
 	myComplexStruct.string := 'The quick brown fox jumps over the lazy dog';
 	myComplexStruct.wstring := "The quick brown fox jumps over the lazy dog";
+	myComplexStruct.tod := TOD#23:39:59.999;
+	myComplexStruct.time := T#23d_20h_31m_23s_648ms;
+	myComplexStruct.date := D#2017-02-07;
+	myComplexStruct.dt := DT#2016-02-07-06:28:15;
+
 	FOR i := 0 TO 9 DO
 		myComplexStruct.vector[i+1] := 200 + i;
 		myComplexStruct.intvector[i] := 300+ i;
