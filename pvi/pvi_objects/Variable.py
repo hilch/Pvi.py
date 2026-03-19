@@ -23,7 +23,8 @@
 from inspect import signature
 from ctypes import create_string_buffer, sizeof, byref, c_int32
 from typing import cast, Union, Any, OrderedDict as OrderedDictType, Callable
-from collections import OrderedDict 
+from collections import OrderedDict
+import utils.IEC as IEC
 import re
 from copy import deepcopy
 import gc
@@ -125,6 +126,11 @@ class Variable(PviObject):
         if self._result:
             raise PviError(self._result, self)
 
+    def toIEC(self):
+        return IEC.toIEC(self.value)
+    
+    def parseIEC(self, s : str ):
+        self.value = IEC.parseIEC(s, self.dataType)
 
     @property
     def valueChanged(self) -> Union[Callable[['Variable', Any], None], Callable[[Any], None]]:
