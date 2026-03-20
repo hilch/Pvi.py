@@ -24,6 +24,7 @@ from inspect import signature
 from ctypes import create_string_buffer, sizeof, byref, c_int32
 from typing import cast, Union, Any, OrderedDict as OrderedDictType, Callable
 from collections import OrderedDict
+from enum import Enum
 import utils.IEC as IEC
 import re
 from copy import deepcopy
@@ -126,11 +127,42 @@ class Variable(PviObject):
         if self._result:
             raise PviError(self._result, self)
 
+
     def toIEC(self):
+        if isinstance(self.value, Enum):
+            return self.value.name
         return IEC.toIEC(self.value)
+
     
     def parseIEC(self, s : str ):
-        self.value = IEC.parseIEC(s, self.dataType)
+        enum_range = self._type_description.get_enum_range()
+        sub_range = self._type_description.get_subrange()
+        if enum_range:
+            s = s.strip()
+            try:
+                enum_val = int(s)
+            except ValueError:
+                enum_val = None
+            if s in enum_range:
+                self.value = enum_range[s]
+            elif enum_val in enum_range.values():
+                self.value = enum_val
+            else:
+                hint = str(enum_range).replace('{','()').replace('}',')')
+                raise ValueError(f"Cannot convert '{s}' to {self.dataType} -> ({hint})")
+        if sub_range:
+            try:
+                int_val = int(s)
+            except ValueError:
+                raise ValueError(f"Cannot convert '{s}' to int")
+            if int_val >= sub_range[0] and int_val <= sub_range[1]:
+                self.value = int_val
+            else:
+                raise ValueError(f"Cannot convert '{s}' to {self.dataType} "
+                    f"since it exceeds the valid range {sub_range[0]} .. {sub_range[1]}.")
+        else:
+            self.value = IEC.parseIEC(s, self.dataType)
+
 
     @property
     def valueChanged(self) -> Union[Callable[['Variable', Any], None], Callable[[Any], None]]:
@@ -199,6 +231,11 @@ class Variable(PviObject):
                     t += f',{indices[1][0]}..{indices[1][1]}'
                 t += ']'
         return t
+    
+    @property
+    def PvType(self) -> PvType:
+        return self._type_description.vt
+    
     
     @property
     def isArray(self) -> bool:

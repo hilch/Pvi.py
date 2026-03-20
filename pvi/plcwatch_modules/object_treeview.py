@@ -344,6 +344,8 @@ class ObjectTreeView(ttk.Treeview):
 
 
     def onValueChanged( self, variable : Variable, value : Any):
+        if variable.objectName == 'myComplexStruct.myEnum':
+            pass
         self.displayItemValue( variable.name, variable.toIEC() )
     
     

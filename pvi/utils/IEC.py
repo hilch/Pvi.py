@@ -20,7 +20,18 @@ def limit_integer( value : Any, datatype : str ) -> int:
 
 
 def toIEC( value: Any ) -> str:
-    if isinstance( value, datetime.timedelta):
+    """
+    converts a Python datatype to IEC string
+    
+    Parameters:
+        value: text to scan
+        
+    Returns:
+        Python datatype
+    """    
+    if isinstance( value, bool):
+        return 'TRUE' if value else 'FALSE'
+    elif isinstance( value, datetime.timedelta):
         # convert datetime.timedelta to TIME
         # Get total seconds (can be negative)
         total_seconds = value.total_seconds()
@@ -79,6 +90,8 @@ def toIEC( value: Any ) -> str:
         return str( value, 'ascii')
     elif isinstance( value, str ):
         return value
+    elif isinstance( value, int ):
+        return str(value)
     elif isinstance( value, float ):
         if math.isinf(value) and value > 0:
             return 'positive infinite (inf)'
@@ -121,12 +134,20 @@ def parseIEC( value: str, datatype: str ) -> Union[bool, int,
                                             datetime.datetime, datetime.date, datetime.time, 
                                             datetime.timedelta, float,
                                             bytes, str]:
+    """
+    parses text with IEC literals and returns a Python datatype
     
+    Parameters:
+        value: text to scan
+        
+    Returns:
+        Python datatype
+    """
     if not isinstance(value, str):
         raise TypeError("Input must be a string")
     
     # Boolean conversion
-    if datatype == 'bool':
+    if datatype == 'boolean':
         # Regex: case-insensitive true/false, yes/no, 1/0
         if re.match(r'^(true|yes|1)$', value, re.IGNORECASE):
             return True
