@@ -372,6 +372,7 @@ class TestVariables( unittest.TestCase):
     def test_STRING(self):   
         task = Task( cpu, 'myProg')
         var = Variable(task, 'myComplexStruct.string')
+        old_value = var.value
         self.assertEqual( var.dataType, 'string')            
         for n in range(0,3):
             random_string = bytes(''.join(random.choices(string.printable, k=80)), encoding='ascii')
@@ -384,7 +385,7 @@ class TestVariables( unittest.TestCase):
         def func2(var : Variable):
             var.value = 1
         self.assertRaises( TypeError, func2)
-        var.value = b'The quick brown fox jumps over the lazy dog'            
+        var.value = old_value
         var.kill()  
 
         for n in range(0,10):
@@ -419,12 +420,13 @@ class TestVariables( unittest.TestCase):
     def test_TIME(self):   
         task = Task( cpu, 'myProg')
         var = Variable(task, 'myComplexStruct.time')
+        old_value = var.value
         self.assertEqual( var.dataType, 'time')          
         var.value = 0
         self.assertEqual( var.value, datetime.timedelta(0) )
         var.value = 1200
-        self.assertEqual( var.value, datetime.timedelta(seconds=1, microseconds=200000) )           
-        var.value = 0        
+        self.assertEqual( var.value, datetime.timedelta(seconds=1, microseconds=200000) )       
+        var.value = old_value
         var.kill()
         task.kill()
 
@@ -432,6 +434,7 @@ class TestVariables( unittest.TestCase):
     def test_DATE(self):   
         task = Task( cpu, 'myProg')
         var = Variable(task, 'myComplexStruct.date')
+        old_value = var.value
         self.assertEqual( var.dataType, 'date')          
         var.value = 0
         self.assertEqual( var.value, datetime.date(1970, 1, 1) )
@@ -441,13 +444,15 @@ class TestVariables( unittest.TestCase):
         self.assertEqual( var.value, datetime.date(1970, 4, 26))
         var.value = datetime.date(2021,2,3)
         self.assertEqual( var.value, datetime.date(2021,2,3))  
-        var.value = datetime.date(1970,1,1)     
+        var.value = old_value   
         var.kill()
         task.kill()
+
 
     def test_DATETIME(self):   
         task = Task( cpu, 'myProg')
         var = Variable(task, 'myComplexStruct.dt')
+        old_value = var.value
         self.assertEqual( var.dataType, 'dt')          
         var.value = 0
         self.assertEqual( var.value, datetime.datetime(1970, 1, 1, 0, 0) )
@@ -455,7 +460,7 @@ class TestVariables( unittest.TestCase):
         self.assertEqual( var.value, datetime.datetime(1970, 4, 26, 17, 46, 40))
         var.value = datetime.datetime(2021,2,3,4,5,6)
         self.assertEqual( var.value, datetime.datetime(2021, 2, 3, 4, 5, 6))    
-        var.value = 0              
+        var.value = old_value             
         var.kill()
         task.kill()
 
@@ -463,6 +468,7 @@ class TestVariables( unittest.TestCase):
     def test_TIMEOFDAY(self):   
         task = Task( cpu, 'myProg')
         var = Variable(task, 'myComplexStruct.tod')
+        old_value = var.value
         self.assertEqual( var.dataType, 'tod')          
         var.value = 0
         self.assertEqual( var.value, datetime.time(0, 0) )
@@ -470,7 +476,7 @@ class TestVariables( unittest.TestCase):
         self.assertEqual( var.value, datetime.time(2, 46, 40))
         var.value = datetime.time(1, 2, 3)
         self.assertEqual( var.value, datetime.time(1, 2, 3)) 
-        var.value = 0                 
+        var.value = old_value                 
         var.kill()
         task.kill()
 
@@ -644,10 +650,10 @@ class TestStructures( unittest.TestCase):
         self.assertEqual( var.value['.dint'], -13)
         self.assertEqual( round(var.value['.real']), 3)
         self.assertEqual( round(var.value['.lreal']), 6)
-        self.assertEqual( var.value['.time'], datetime.timedelta(0))
-        self.assertEqual( var.value['.tod'], datetime.time(0, 0))
-        self.assertEqual( var.value['.date'], datetime.date(1970, 1, 1))
-        self.assertEqual( var.value['.dt'], datetime.datetime(1970, 1, 1, 0, 0))
+        self.assertEqual( var.value['.time'], datetime.timedelta(days=23, seconds=73883, microseconds=648000))
+        self.assertEqual( var.value['.tod'], datetime.time(23, 39, 59, 999000))
+        self.assertEqual( var.value['.date'], datetime.date(2017, 2, 7))
+        self.assertEqual( var.value['.dt'], datetime.datetime(2016, 2, 7, 6, 28, 15))
         self.assertEqual( var.value['.string'], b'The quick brown fox jumps over the lazy dog')
         self.assertEqual( var.value['.wstring'], 'The quick brown fox jumps over the lazy dog')
         self.assertEqual( var.value['.stringlist'], [b'A', b'B', b'C', b'D', b'E', b'F', b'G', b'H', b'I', b'J'])
