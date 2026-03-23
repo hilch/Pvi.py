@@ -311,11 +311,13 @@ class ObjectTreeView(ttk.Treeview):
         children = self.get_children(item)
         for child in children:
             self.item( child, open=False) # close item
+            self.removeChildrenFromWatchList(child) # remove all children
             if child in self.watch_list:
-                variable : Variable = self.watch_list[child][0]
-                variable.kill()
-            self.removeChildrenFromWatchList(child)    
-        self.update_idletasks()          
+                object : PviObject = self.watch_list[child][0]
+                object.kill()
+                self.watch_list.pop(child)
+                self.delete(child)
+        
        
     def onErrorChanged( self, object : PviObject,  error : int ):
         if error == 11022:
@@ -336,7 +338,7 @@ class ObjectTreeView(ttk.Treeview):
                                 image=self.image_storage['cpu'], tags = tags,
                                 values = [ cpu.cpuInfo.get('CT', 'unknown'), cpu.status.get('RunState','unknown') ])
                     self.tooltip_handler.set_tooltip(iid, iid)
-                    self.insertTasks(cpu)
+                    self.insertTasks(cpu)                   
             else:
                 values = self.item(cpu.name)['values']
                 values[1] = f'Pvi-Error: {error}' # type: ignore
@@ -431,30 +433,35 @@ class ObjectTreeView(ttk.Treeview):
               
         
         
-    def onCpuContextMenu( self, type : str):
+    def onCpuContextMenu( self, type : str):           
         try:
             cpu : Cpu = self.pvi_connection.findObjectByName(self.selected_item) # type: ignore
         except KeyError:
             return
         try:
+            is_online = True
             _ = cpu.status
         except PviError as e:
             if e.number == 11022:
-                return
-            
-        if type == 'edit':
-            dialog = EditCpuDialog(self, self.pvi_connection, cpu )
-            self.wait_window(dialog)
-        if type == 'warmstart':
-            cpu.warmStart()
-        elif type == 'coldstart':
-            cpu.coldStart()
-        elif type == 'stop':
-            cpu.stopTarget()
-        elif type == 'diag':
-            cpu.diagnostics()
-        elif type == 'remove':
-            self.delete(cpu.name) # remove from tree
+                is_online = False
+
+        if is_online: 
+            if type == 'edit':
+                dialog = EditCpuDialog(self, self.pvi_connection, cpu )
+                self.wait_window(dialog)
+            if type == 'warmstart':
+                cpu.warmStart()
+            elif type == 'coldstart':
+                cpu.coldStart()
+            elif type == 'stop':
+                cpu.stopTarget()
+            elif type == 'diag':
+                cpu.diagnostics()
+        if type == 'remove':
+            self.removeChildrenFromWatchList(cpu.name)
+            self.delete(cpu.name) # remove from tree            
             self.watch_list.pop(cpu.name) # remove from watch list
+            print(self.watch_list)            
             cpu.kill() # remove PVI-Object
+
         
