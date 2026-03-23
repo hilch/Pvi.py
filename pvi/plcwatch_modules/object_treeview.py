@@ -90,8 +90,8 @@ class ObjectTreeView(ttk.Treeview):
         struct_elements = dict.fromkeys( '.' + re.split(r'[\[.]', e[1:])[0] for e in struct.value )
             
         for counter, element_name in enumerate(struct_elements):
-            if counter % 10 == 0:
-                self.update_idletasks()  
+            # if counter % 10 == 0:
+            #     self.update_idletasks()  
             element = Variable(task, struct.objectName + element_name)
 
             icon = self.image_storage.get(element.dataType, self.image_storage['variable'])
@@ -139,8 +139,8 @@ class ObjectTreeView(ttk.Treeview):
         indices = array._type_description.get_array_indices()
         assert(indices)
         for j, v in enumerate(array.value):
-            if j % 10 == 0:
-                self.update_idletasks()             
+            # if j % 10 == 0:
+            #     self.update_idletasks()             
             if isinstance( v, list ): # two-dimensional array ?
                 for k, vk in enumerate(v):
                     i1 = indices[0][0] + j
@@ -160,7 +160,7 @@ class ObjectTreeView(ttk.Treeview):
                                 image = icon, values = [datatype_name, vk] )
                         self.tooltip_handler.set_tooltip(array.name, array.name)
             else: # vector
-                self.update_idletasks()             
+                # self.update_idletasks()             
                 i1 = indices[0][0] + j
                 tags = [f'"type":"variable","task-linkid":{task._linkID},"varname":"{array.objectName}[{i1}]"']
                 iid = f'{array.name}[{i1}]'
@@ -276,8 +276,8 @@ class ObjectTreeView(ttk.Treeview):
             # Get all children
             children = self.get_children(item)
             for counter, child in enumerate(children):
-                if counter %20 == 0:
-                    self.update_idletasks()  
+                # if counter %20 == 0:
+                #     self.update_idletasks()  
                 tags = self.item( child, 'tags' )
                 try:
                     meta = json.loads( '{' + tags[0] + '}')   
