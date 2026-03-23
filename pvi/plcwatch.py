@@ -93,11 +93,6 @@ class ApplicationWindow(tk.Tk):
         self.listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         self.top_paned.add(listbox_frame, minsize = 350)
         
-
-        # BOTTOM SECTION: Entry Widget directly in main_paned
-        # self.entry = tk.Entry(self.main_paned, font=('Arial', 12))
-        # self.main_paned.add(self.entry)
-        # self.entry.insert(0, "Type something here...")
                
         self.after( 10, self.update)        
         # thread = threading.Thread(target = self.pvi_cyclic)
@@ -119,9 +114,6 @@ class ApplicationWindow(tk.Tk):
         
         if result:
             self.tree.insertCpu( self.ansl_device, IPv4Address(result.ip) )
-            # Display the result in the entry field
-            # self.entry.delete(0, tk.END)
-            # self.entry.insert(0, str(result))
     
     def connect_to_ip(self, ip : str ):
         self.tree.insertCpu( self.ansl_device, IPv4Address(ip))
@@ -144,8 +136,6 @@ class ApplicationWindow(tk.Tk):
             self.pvi_connection.doEvents() # execute PVI event loop
         except Exception as e:
             print(e)
-        #     # self.entry.delete(0, tk.END)
-        #     # self.entry.insert(0, str(e) ) 
         self.tree.update()
         self.after( 50, self.update)  
 
