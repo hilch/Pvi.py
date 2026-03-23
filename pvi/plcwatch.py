@@ -17,7 +17,9 @@ from pvi.Anslscan import ScanResult
 
 class ApplicationWindow(tk.Tk):
     def __init__(self):
-        super().__init__()        
+        super().__init__()  
+        self.protocol("WM_DELETE_WINDOW", self.onClosing)
+              
         self.title("PLCWATCH")
         self.geometry("1024x768")
         self.iconbitmap(icon_storage['app'])
@@ -104,6 +106,10 @@ class ApplicationWindow(tk.Tk):
     # def pvi_cyclic( self):
     #     pass
     
+    def onClosing(self):
+        del self.pvi_connection
+        self.destroy()
+    
     def onTreeviewMouseLeave( self, item : str ):
         self.listbox.announceItem( item )
        
@@ -134,11 +140,10 @@ class ApplicationWindow(tk.Tk):
                        
                         
     def update(self):
-        self.pvi_connection.doEvents()
-        # try:
-        self.pvi_connection.doEvents() # execute PVI event loop
-        # except Exception as e:
-        #     print(e)
+        try:
+            self.pvi_connection.doEvents() # execute PVI event loop
+        except Exception as e:
+            print(e)
         #     # self.entry.delete(0, tk.END)
         #     # self.entry.insert(0, str(e) ) 
         self.tree.update()
