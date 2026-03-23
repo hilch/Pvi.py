@@ -69,7 +69,7 @@ class Task(PviObject):
         sets the task status
         
         Args:
-            status: 'Start', 'Stop', 'Resume', 'Cycle(<x<)'
+            status: 'Start', 'Stop', 'Resume', 'Cycle(<x>)'
         '''        
         s = create_string_buffer(b"ST=" + status.encode())
         self._result = PviXWrite( self._hPvi, self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )

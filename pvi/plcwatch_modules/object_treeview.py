@@ -56,7 +56,7 @@ class ObjectTreeView(ttk.Treeview):
         self.selected_item = None
         self.dragged_item = None
               
-        # # Create context menus
+        # Create context menus
         self.context_menu_cpu = tk.Menu(self, tearoff=False)
         self.context_menu_cpu.add_command(label="Edit", command= lambda c = 'edit': self.onCpuContextMenu(c))
         self.context_menu_cpu.add_separator()                      
@@ -66,6 +66,13 @@ class ObjectTreeView(ttk.Treeview):
         self.context_menu_cpu.add_command(label="Diag", command= lambda c = 'diag': self.onCpuContextMenu(c))  
         self.context_menu_cpu.add_separator()
         self.context_menu_cpu.add_command(label="Remove", command= lambda c = 'remove': self.onCpuContextMenu(c))                     
+
+        self.context_menu_task = tk.Menu(self, tearoff=False)
+        self.context_menu_task.add_command(label="Start", command= lambda c = 'start': self.onTaskContextMenu(c))
+        self.context_menu_task.add_command(label="Stop", command= lambda c = 'stop': self.onTaskContextMenu(c))
+        self.context_menu_task.add_command(label="Resume", command= lambda c = 'resume': self.onTaskContextMenu(c))
+        self.context_menu_task.add_command(label="1 Cycle", command= lambda c = 'cycle1': self.onTaskContextMenu(c))     
+                
              
     def update(self):
         t = time.time()
@@ -398,7 +405,9 @@ class ObjectTreeView(ttk.Treeview):
             tags = self.item( item, 'tags' )
             meta = json.loads( '{' + tags[0] + '}')   
             if meta['type'] == 'cpu':
-                self.context_menu_cpu.post(event.x_root, event.y_root)     
+                self.context_menu_cpu.post(event.x_root, event.y_root) 
+            elif meta['type'] == 'task':
+                     self.context_menu_task.post(event.x_root, event.y_root) 
      
      
     def onDoubleClick(self, event : tk.Event):
@@ -433,35 +442,60 @@ class ObjectTreeView(ttk.Treeview):
               
         
         
-    def onCpuContextMenu( self, type : str):           
-        try:
-            cpu : Cpu = self.pvi_connection.findObjectByName(self.selected_item) # type: ignore
-        except KeyError:
-            return
-        try:
-            is_online = True
-            _ = cpu.status
-        except PviError as e:
-            if e.number == 11022:
-                is_online = False
+    def onCpuContextMenu( self, type : str):
+        item = self.selected_item
+        if item:           
+            try:
+                cpu : Cpu = cast( Cpu, self.pvi_connection.findObjectByName(item))
+            except KeyError:
+                return
+            try:
+                is_online = True
+                _ = cpu.status
+            except PviError as e:
+                if e.number == 11022:
+                    is_online = False
 
-        if is_online: 
-            if type == 'edit':
-                dialog = EditCpuDialog(self, self.pvi_connection, cpu )
-                self.wait_window(dialog)
-            if type == 'warmstart':
-                cpu.warmStart()
-            elif type == 'coldstart':
-                cpu.coldStart()
-            elif type == 'stop':
-                cpu.stopTarget()
-            elif type == 'diag':
-                cpu.diagnostics()
-        if type == 'remove':
-            self.removeChildrenFromWatchList(cpu.name)
-            self.delete(cpu.name) # remove from tree            
-            self.watch_list.pop(cpu.name) # remove from watch list
-            print(self.watch_list)            
-            cpu.kill() # remove PVI-Object
+            if is_online: 
+                if type == 'edit':
+                    dialog = EditCpuDialog(self, self.pvi_connection, cpu )
+                    self.wait_window(dialog)
+                if type == 'warmstart':
+                    cpu.warmStart()
+                elif type == 'coldstart':
+                    cpu.coldStart()
+                elif type == 'stop':
+                    cpu.stopTarget()
+                elif type == 'diag':
+                    cpu.diagnostics()
+            if type == 'remove':
+                self.removeChildrenFromWatchList(cpu.name)
+                self.delete(cpu.name) # remove from tree            
+                self.watch_list.pop(cpu.name) # remove from watch list
+                print(self.watch_list)            
+                cpu.kill() # remove PVI-Object
 
         
+    def onTaskContextMenu( self, type : str):
+        item = self.selected_item
+        if item:           
+            try:
+                task : Task = cast( Task, self.pvi_connection.findObjectByName(item))
+            except KeyError:
+                return
+            try:
+                is_online = True
+                _ = task.status
+            except PviError as e:
+                if e.number == 11022:
+                    is_online = False
+
+            if is_online: 
+                if type == 'start':
+                    task.status = 'Start'
+                elif type == 'stop':
+                    task.status = 'Stop'
+                elif type == 'resume':
+                    task.status = 'Resume'
+                elif type == 'cycle1':
+                    task.status = 'Cycle(1)'
