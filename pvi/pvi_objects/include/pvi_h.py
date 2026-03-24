@@ -131,6 +131,29 @@ class PvType(Enum):
     '''
 
 
+# request/response/event mode:
+# enum { POBJ_MODE_NULL,				// undefiened
+# 	   POBJ_MODE_EVENT,				// event
+# 	   POBJ_MODE_READ,				// read
+# 	   POBJ_MODE_WRITE,				// write
+# 	   POBJ_MODE_CREATE,			// create object
+# 	   POBJ_MODE_DELETE,			// delete object
+# 	   POBJ_MODE_LINK,				// link object
+# 	   POBJ_MODE_CHGLINK,			// change link object
+# 	   POBJ_MODE_UNLINK };			// unlink object
+
+class PviResponseMode(IntEnum):
+    POBJ_MODE_EVENT = 0			# event
+    POBJ_MODE_READ = 1			# read
+    POBJ_MODE_WRITE = 2			# write
+    POBJ_MODE_CREATE = 3		# create object
+    POBJ_MODE_DELETE = 4		# delete object
+    POBJ_MODE_LINK = 5			# link object
+    POBJ_MODE_CHGLINK = 6	    # change link object
+    POBJ_MODE_UNLINK = 7		# unlink object
+    
+
+
 
 # response and event message information structure:
 # typedef struct t_response_info
