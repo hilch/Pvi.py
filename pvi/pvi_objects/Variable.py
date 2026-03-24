@@ -489,7 +489,7 @@ class Variable(PviObject):
         self._struct_members = OrderedDict(sorted( members.items(), key = lambda x : x[1].vo ))
 
 
-    def _processRawData(self, wParam, responseInfo):
+    def _processRawData(self, wParam, responseInfo : Union[T_RESPONSE_INFO, None]):
         '''
         reads data (byte) from PVI_ACC_DATA or PVI_EVENT_DATA
         > wParam: points to response data
