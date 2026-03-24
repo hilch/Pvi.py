@@ -177,7 +177,8 @@ class TypeDescription:
                     break
             return bytes(result)
         elif self.vt == PvType.WSTRING:
-            return ''.join( chr(int(data[_]) + int(data[_+1])) for _ in range(0,len(data),2) if int(data[_]))
+            s = data.decode('utf-16-le').split('\x00')[0]
+            return s
         elif self.vt == PvType.STRUCT:
             return data
         else:
