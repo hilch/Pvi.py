@@ -1,7 +1,7 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, font
 from typing import cast, Union, Callable, Any
-from pvi import Connection, PviObject, Device, Cpu, Task, Variable
+from pvi import Connection, PviObject, Cpu, Task, Variable
 
 class VariableListBox(ttk.Treeview):
     def __init__(self, parent : tk.Widget,
@@ -12,7 +12,8 @@ class VariableListBox(ttk.Treeview):
                          columns=('cpu', 'name', 'type', 'value'), 
                          show='headings',
                          yscrollcommand=yscrollcommand
-                         )        
+                         ) 
+                       
         self.pvi_connection = pvi_connection
                
         # Configure column headings
@@ -33,36 +34,32 @@ class VariableListBox(ttk.Treeview):
         self.bind('<Leave>', self.onLeaveWindow) 
         self.bind('<Double-1>', self.onDoubleClick)                      
         
-        self.announced_item : Union[str, None] = None
+        self.announced_pvi_object : Union[PviObject, None] = None
         self.dragged_item = None
         self.watch_list = dict()
         self.watch_value_entry = tk.Entry(self)
+
             
     def onEnterWindow( self, event ):
-        if self.announced_item:
-            item = self.announced_item
-            if item not in self.watch_list:
-                pvi_object = self.pvi_connection.findObjectByName(item)
-                if isinstance( pvi_object, Variable ):
-                    # add variable to watch list
-                    assert(pvi_object._parent)
-                    variable = Variable( pvi_object._parent, pvi_object.objectName)
-                    task : Task = cast(Task, variable._parent)
-                    taskname = task.objectName.replace('__', '::')
-                    cpu : Cpu = task._parent # type: ignore
-                    self.onValueChanged( variable, variable.value )
-                    variable.valueChanged = self.onValueChanged
-                    variable.errorChanged = self.onErrorChanged                                
-                    self.watch_list.update( { item : [variable]})
-                    self.insert('', 'end', iid=item, values = [f'{cpu.objectName.replace('_','.')}',
-                                                               f'{taskname}:{variable.objectName}', 
-                                                               variable.dataType, 
-                                                               ''] )
-                self.announced_item = None
-        
+        if isinstance( self.announced_pvi_object, Variable):
+            variable = cast( Variable, self.announced_pvi_object)
+            if variable.name not in self.watch_list:
+                # add variable to watch list
+                task : Task = cast(Task, variable._parent)
+                taskname = task.objectName.replace('__', '::')
+                cpu : Cpu = task._parent # type: ignore
+                self.onValueChanged( variable, variable.value )
+                variable.valueChanged = self.onValueChanged
+                variable.errorChanged = self.onErrorChanged                                
+                self.watch_list.update( { variable.name : [variable]})
+                self.insert('', 'end', iid=variable.name, values = [f'{cpu.objectName.replace('_','.')}',
+                                                            f'{taskname}:{variable.objectName}', 
+                                                            variable.dataType, variable.value] )
+            self.announced_pvi_object = None
+    
         
     def onLeaveWindow( self, event):
-        self.announced_item = None  
+        self.announced_pvi_object = None  
         if self.dragged_item:
             self.delete(self.dragged_item) 
             self.watch_list.pop(self.dragged_item)
@@ -132,5 +129,5 @@ class VariableListBox(ttk.Treeview):
             self.config(cursor='exchange')             
             self.dragged_item = item
             
-    def announceItem(self, item : str ):
-        self.announced_item = item
+    def announcePviObject(self, object : PviObject ):
+        self.announced_pvi_object = object

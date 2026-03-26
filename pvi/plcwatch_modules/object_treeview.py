@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from collections import OrderedDict 
-from typing import cast, List, Any, Union, Callable
+from typing import cast, Any, Union, Callable
 from ipaddress import IPv4Address
 import re
 import json
@@ -10,13 +10,14 @@ from pvi import Connection, PviObject, Device, Cpu, Task, Variable, PviError
 from pvi.plcwatch_modules.resources import image_files
 from pvi.plcwatch_modules.treeview_tooltip import TreeViewTooltip
 from pvi.plcwatch_modules.edit_cpu_dialog import EditCpuDialog 
+from pvi.utils.IEC import toIEC
 
 class ObjectTreeView(ttk.Treeview):
     def __init__(self, parent : tk.Widget, 
                  yscrollcommand: Union[str,Callable[[float, float],object]],
                  pvi_connection : Connection, 
                  callback_ip_connected : Callable[[str],None],
-                 callback_mouse_leave: Callable[[str],None] 
+                 callback_mouse_leave: Callable[[PviObject],None] 
                 ):
         super().__init__( parent, 
                          columns=('name', 'type','value'), 
@@ -94,13 +95,14 @@ class ObjectTreeView(ttk.Treeview):
                 task : task containing this structure
                 struct : structure variable itself
         ''' 
+        
         struct_elements = dict.fromkeys( '.' + re.split(r'[\[.]', e[1:])[0] for e in struct.value )
             
         for counter, element_name in enumerate(struct_elements):
             # if counter % 10 == 0:
             #     self.update_idletasks()  
             element = Variable(task, struct.objectName + element_name)
-
+            
             icon = self.image_storage.get(element.dataType, self.image_storage['variable'])
 
             tags = [f'"type":"variable","task-linkid":{task._linkID},"varname":"{struct.objectName}{element_name}"']
@@ -124,8 +126,8 @@ class ObjectTreeView(ttk.Treeview):
                 #self.expandStruct(task, element)           
             else: 
                 self.insert( struct.name, index = 'end', iid = iid, text = element_name,
-                                image = icon, tags=tags, 
-                                values=[element.dataType, element.value] )  
+                                    image = icon, tags=tags, 
+                                    values=[element.dataType, element.value] )  
                 self.tooltip_handler.set_tooltip(iid, iid) 
             element.kill() 
         
@@ -152,10 +154,10 @@ class ObjectTreeView(ttk.Treeview):
                 for k, vk in enumerate(v):
                     i1 = indices[0][0] + j
                     i2 = indices[1][0] + k
-                    tags = [f'"type":"varable","task-linkid":{task._linkID},"varname":"{array.objectName}[{i1},{i2}]"']
+                    tags = [f'"type":"variable","task-linkid":{task._linkID},"varname":"{array.objectName}[{i1},{i2}]"']
                     if isinstance( vk, OrderedDict ):
                         #insert struct itself
-                        iid = f'{task.name}/{array.name}[{i1},{i2}]'
+                        iid = f'{array.name}[{i1},{i2}]'
                         self.insert( array.name, index = 'end', 
                             iid = iid, text = f'[{i1},{i2}]',
                             image = self.image_storage['struct'], tags = tags )
@@ -230,6 +232,7 @@ class ObjectTreeView(ttk.Treeview):
                 elif meta['type'] == 'variable':
                     task = cast( Task, self.pvi_connection.findObjectByLinkID(meta['task-linkid']) )
                     variable = Variable( task, meta['varname'])
+                                        
                     if not variable.isArray and not variable.isStructure:
                         self.selected_item = item 
                     else:                                              
@@ -262,8 +265,13 @@ class ObjectTreeView(ttk.Treeview):
          
     def onMouseLeave( self, event ):
         if self.dragged_item:
-            self.config(cursor='hand2')   
-            self.callback_mouse_leave(self.dragged_item)
+            self.config(cursor='hand2')
+            tags = self.item( self.dragged_item, 'tags' )
+            meta = json.loads( '{' + tags[0] + '}') 
+            if meta['type'] == 'variable':
+                task = cast( Task, self.pvi_connection.findObjectByLinkID( meta['task-linkid']))
+                variable = Variable( task, meta['varname'], RF=200)
+                self.callback_mouse_leave(variable)
 
         
     def onItemOpened(self, event):
@@ -277,30 +285,27 @@ class ObjectTreeView(ttk.Treeview):
             tags = self.item( item, 'tags' )
             meta = json.loads( '{' + tags[0] + '}')   
             if meta['type'] == 'cpu':
-                return
-            task = self.pvi_connection.findObjectByLinkID(meta['task-linkid']) 
-
-            # Get all children
-            children = self.get_children(item)
-            for counter, child in enumerate(children):
-                # if counter %20 == 0:
-                #     self.update_idletasks()  
-                tags = self.item( child, 'tags' )
-                try:
-                    meta = json.loads( '{' + tags[0] + '}')   
-                except Exception as e:
-                    pass
-                variable = Variable( task, meta['varname'], RF=200 )
-                if not(variable.isArray) and not(variable.isStructure):
-                    # in case of basic datatypes add variable to watch list
+                pass
+            elif meta['type'] == 'task':
+                task = self.pvi_connection.findObjectByLinkID(meta['task-linkid'])                 
+                children = self.get_children(item)                
+                for counter, child in enumerate(children):
+                    tags = self.item( child, 'tags' )
+                    try:
+                        meta = json.loads( '{' + tags[0] + '}')   
+                    except Exception as e:
+                        pass
+                    variable = Variable( task, meta['varname'], RF=200 )
                     self.onValueChanged( variable, variable.value )
                     variable.valueChanged = self.onValueChanged
                     variable.errorChanged = self.onErrorChanged
                     self.watch_list.update( { child : [variable]})
-                else:
-                    variable.kill() # immediately kill variable in case of complex type
+            elif meta['type'] == 'variable':
+                pass
+                            
             self.config(cursor='') # restore cursor
             self.update_idletasks()  
+
 
     def onItemClosed(self, event):
         """Called when parent item is collapsed"""
@@ -353,9 +358,12 @@ class ObjectTreeView(ttk.Treeview):
 
 
     def onValueChanged( self, variable : Variable, value : Any):
-        if variable.objectName == 'myComplexStruct.myEnum':
-            pass
-        self.displayItemValue( variable.name, variable.toIEC() )
+        if isinstance( value, list ): # array ?
+            self.displayItemValuesIfArray( variable.name, value )
+        elif isinstance( value, OrderedDict): # structure ?
+            self.displayItemValuesIfStructure( variable.name, value )
+        else:
+            self.displayItemValue( variable.name, variable.toIEC() )
     
     
     def statusResponse( self, object : PviObject, status : dict ):
@@ -363,11 +371,34 @@ class ObjectTreeView(ttk.Treeview):
             self.displayItemValue( object.name, status.get('ST'))         
     
     
-    def displayItemValue(self, iid : str, value ):
+    def displayItemValue(self, iid : str, value : Any):
         values = self.item(iid)['values']
         values[1] = value # type: ignore
         self.item( iid, values = values )
+     
           
+    def displayItemValuesIfStructure(self, iid : str, struct_values : OrderedDict ):
+        for element, element_value in struct_values.items():
+
+            if isinstance( element_value, list ):
+                if self.exists( iid + element ):               
+                    self.displayItemValuesIfArray( iid + element, element_value )
+            else:
+                if self.exists( iid + element ):
+                    self.displayItemValue( iid + element, toIEC(element_value) )                    
+    
+    
+    def displayItemValuesIfArray(self, iid: str, list_values : list):
+        children = self.get_children(iid)
+        for index, value in enumerate(list_values):
+            if isinstance( value, list): # two-dimensional array ?
+                length = len(value)
+                for index2, v in enumerate(value):
+                    self.displayItemValue( children[index*length+index2], v)    
+            else:          
+                self.displayItemValue( children[index], value)
+    
+        
         
     def insertCpu(self, device : Device, ip : IPv4Address ):
         name = ip.compressed.replace('.','_')
@@ -414,9 +445,11 @@ class ObjectTreeView(ttk.Treeview):
         item = self.identify('item', event.x, event.y)
         column = self.identify_column(event.x)
         if item:
-            o = self.watch_list[item][0]
-            if isinstance(o, Variable) and column == '#2':
-                variable = cast( Variable, o)
+            tags = self.item( item, 'tags' )
+            meta = json.loads( '{' + tags[0] + '}')
+            if meta['type'] == 'variable' and column == '#2': # clicked on variable's value field
+                task = cast( Task, self.pvi_connection.findObjectByLinkID(meta['task-linkid']))
+                variable = Variable( task, meta['varname'])
                 current_value = self.item(item)['values'][1]
                 # set current value as default
                 self.watch_value_entry.delete(0,'end')
@@ -429,7 +462,8 @@ class ObjectTreeView(ttk.Treeview):
                 def hide_edit(event=None):
                     self.watch_value_entry.place_forget()
                     self.watch_value_entry.unbind_all('<Return>')
-                    self.watch_value_entry.unbind_all('<FocusOut>')                
+                    self.watch_value_entry.unbind_all('<FocusOut>') 
+                    variable.kill()               
                 def save_edit(event=None):
                     str_value = self.watch_value_entry.get()
                     try:

@@ -8,7 +8,7 @@ import os
 import threading
 from typing import Union, List
 from ipaddress import IPv4Address
-from pvi import Connection, Line, Device, Cpu, Task, Variable
+from pvi import Connection, PviObject, Line, Device, Cpu, Task, Variable
 from pvi.plcwatch_modules import (NetworkSearchDialog,
                                 VariableListBox, ObjectTreeView, icon_storage)
 from pvi.Anslscan import ScanResult
@@ -105,8 +105,8 @@ class ApplicationWindow(tk.Tk):
         del self.pvi_connection
         self.destroy()
     
-    def onTreeviewMouseLeave( self, item : str ):
-        self.listbox.announceItem( item )
+    def onTreeviewMouseLeave( self, object : PviObject ):
+        self.listbox.announcePviObject( object )
        
     def show_network_search_dialog(self):
         dialog = NetworkSearchDialog(self)
