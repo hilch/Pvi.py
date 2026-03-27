@@ -102,6 +102,11 @@ class NetworkSearchDialog:
         self.button_scan = tk.Button(edit_frame, text="Scan", command=self.manual_scan_clicked, 
                                      width=10, font=('Arial', 10), state='disabled')
         self.button_scan.pack(side=tk.LEFT, padx=5)
+        
+        # Abort Scan button
+        self.button_abort = tk.Button(edit_frame, text="Abort Scan", command=self.abort_scan_clicked, 
+                                      width=10, font=('Arial', 10), state='disabled')
+        self.button_abort.pack(side=tk.LEFT, padx=5)
 
         # Create frame for listbox for CPUs found
         self.result_cpu_found = tk.StringVar()
@@ -142,10 +147,15 @@ class NetworkSearchDialog:
         self.scan_count: int = 0
         self.total_hosts: int = 0
         self.is_scanning: bool = False
+        self.scan_aborted: bool = False
         self.scan_task: Optional[asyncio.Task] = None
     
     async def scan_host(self, ip: str) -> Optional[ScanResult]:
         """Scan a single host for ANSL port"""
+        # Check if scan was aborted
+        if self.scan_aborted:
+            return None
+            
         try:
             conn = asyncio.open_connection(ip, ANSL_PORT)
             reader, writer = await asyncio.wait_for(conn, timeout=SOCKET_TIMEOUT)
@@ -176,6 +186,10 @@ class NetworkSearchDialog:
         
         # Process results as they complete
         for coro in asyncio.as_completed(tasks):
+            # Check if scan was aborted
+            if self.scan_aborted:
+                break
+                
             result = await coro
             if result:
                 results.append(result)
@@ -191,6 +205,7 @@ class NetworkSearchDialog:
     async def run_scan_async(self, network: IPv4Network) -> List[ScanResult]:
         """Run async scan with progress updates"""
         self.is_scanning = True
+        self.scan_aborted = False
         self.scan_count = 0
         
         # Start progress updates
@@ -205,6 +220,10 @@ class NetworkSearchDialog:
     
     def run_async_scan(self, network: IPv4Network):
         """Run async scan in a way that allows tkinter updates"""
+        # Disable scan button, enable abort button
+        self.button_scan.config(state='disabled')
+        self.button_abort.config(state='normal')
+        
         # Create new event loop in a thread-safe way
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -223,6 +242,19 @@ class NetworkSearchDialog:
             return cpu_list
         finally:
             loop.close()
+            # Re-enable scan button, disable abort button
+            if self.selection_mode.get() == 2:  # Only enable if in manual mode
+                self.button_scan.config(state='normal')
+            self.button_abort.config(state='disabled')
+    
+    def abort_scan_clicked(self):
+        """Abort the current scan"""
+        self.scan_aborted = True
+        self.is_scanning = False
+        self.result_cpu_found.set(f"Scan aborted! {self.scan_count}/{self.total_hosts} hosts checked.")
+        self.button_abort.config(state='disabled')
+        if self.selection_mode.get() == 2:
+            self.button_scan.config(state='normal')
     
     def toggle_selection_mode(self):
         """Toggle between adapter list and manual entry mode"""
@@ -231,11 +263,13 @@ class NetworkSearchDialog:
             self.listbox_adapters.config(state='normal')
             self.edit_network_address.config(state='disabled')
             self.button_scan.config(state='disabled')
+            self.button_abort.config(state='disabled')
         else:
             # Disable adapter listbox, enable manual entry
             self.listbox_adapters.config(state='disabled')
             self.edit_network_address.config(state='normal')
             self.button_scan.config(state='normal')
+            self.button_abort.config(state='disabled')
     
     def manual_scan_clicked(self):
         """Perform scan from manually entered network address"""
@@ -254,7 +288,11 @@ class NetworkSearchDialog:
         try:
             ip = IPv4Network(network_addr, strict=False)
             cpu_list = self.run_async_scan(ip)
-            self.result_cpu_found.set(f"{len(cpu_list)} CPU(s) found: (ANSL)")
+            
+            if self.scan_aborted:
+                self.result_cpu_found.set(f"Scan aborted! Found {len(cpu_list)} CPU(s): (ANSL)")
+            else:
+                self.result_cpu_found.set(f"{len(cpu_list)} CPU(s) found: (ANSL)")
             
             for cpu in cpu_list:
                 self.listbox_targets.insert(tk.END, f"CPU {cpu.target}, IP: {cpu.ip}, {cpu.AR}, {cpu.status}")
@@ -277,6 +315,9 @@ class NetworkSearchDialog:
         self.result_cpu_found.set("0 CPU(s) found: (ANSL)") 
         self.list_of_targets.clear()    
         
+        # Enable abort button during adapter scan
+        self.button_abort.config(state='normal')
+        
         try:        
             idx = self.listbox_adapters.curselection()[0]
             ifaddr_ip: Ifaddr_IP = self.ip_addresses[idx]
@@ -284,7 +325,11 @@ class NetworkSearchDialog:
             ip = IPv4Network(f'{ifaddr_ip.ip}/{network_prefix}', strict=False)
             self.network_address.set(ip.compressed)  # preset the field for manual scan
             cpu_list = self.run_async_scan(IPv4Network(f'{ip.network_address}/{ip.prefixlen}'))
-            self.result_cpu_found.set(f"{len(cpu_list)} CPU(s) found: (ANSL)")
+            
+            if self.scan_aborted:
+                self.result_cpu_found.set(f"Scan aborted! Found {len(cpu_list)} CPU(s): (ANSL)")
+            else:
+                self.result_cpu_found.set(f"{len(cpu_list)} CPU(s) found: (ANSL)")
 
             for cpu in cpu_list:
                 self.listbox_targets.insert(tk.END, f"CPU {cpu.target}, IP: {cpu.ip}, {cpu.AR}, {cpu.status}")    
@@ -292,7 +337,8 @@ class NetworkSearchDialog:
         except Exception as e:
             self.result_cpu_found.set(f"Error: {str(e)}") 
         
-        self.dialog.config(cursor=old_cursor) 
+        self.dialog.config(cursor=old_cursor)
+        self.button_abort.config(state='disabled')
         return 'break'
                 
     def ok_clicked(self):
