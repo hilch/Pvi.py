@@ -31,7 +31,7 @@ class EditCpuDialog( tk.Toplevel):
         # Center the dialog
         left = parent.winfo_rootx()
         top = parent.winfo_rooty()   
-        self.geometry(f'400x550+{left +50}+{top + 50}')      
+        self.geometry(f'400x450+{left +50}+{top + 50}')      
         
         #self.geometry("400x550")
         self.resizable(False, False)       
@@ -144,11 +144,6 @@ class EditCpuDialog( tk.Toplevel):
         row+=1
         self.log_label = ttk.Label(main_frame, text='read SNMP settings from CPU ...', relief=tk.SUNKEN)
         self.log_label.grid(row=row, column=0, columnspan=2, sticky="ew")
-
-        # row+=4
-        # self.change_network_settings_button = ttk.Button(main_frame, text="Change", command=self.onChangeNetworkSettings)
-        # self.change_network_settings_button.grid(row=row, column=0, sticky="w") 
-        # self.change_network_settings_button.configure(state='disabled')    
                       
         
         # ===== INA =====
@@ -233,16 +228,21 @@ class EditCpuDialog( tk.Toplevel):
     def deviceErrorChanged( self, device : Device, error : int ):     
         if error == 0:
             macs = [ x['name'] for x in device.externalObjects if x['type'] == 'Station']
-            for mac in macs:
-                self.update_idletasks()
-                station = Station( device, 'station', CD=f'/CN={mac}' )
-                ip_address = Variable( station, 'ipAddress')
-                if ip_address.value == bytes(self.ip_address,'ascii'):
-                    self.mac_label.config( text = mac )
-                    self.mac_address = mac
-                    self.refreshWidgets(station)
-                ip_address.kill()
-                station.kill()
+            if len(macs) == 0:
+                for c in (self.ip_method_combo, self.ip_entry, self.subnet_entry, self.gateway_entry):
+                    c.state(['disabled'])
+            else:
+                for mac in macs:
+                    self.update_idletasks()
+                    station = Station( device, 'station', CD=f'/CN={mac}' )
+                    ip_address = Variable( station, 'ipAddress')
+                    if ip_address.value == bytes(self.ip_address,'ascii'):
+                        self.mac_label.config( text = mac )
+                        self.mac_address = mac
+                        self.refreshWidgets(station)
+                    ip_address.kill()
+                    station.kill()
+            self.log_label.config( text = '')
         else:
             pass
 

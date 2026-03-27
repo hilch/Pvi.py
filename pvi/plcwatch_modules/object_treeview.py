@@ -60,7 +60,7 @@ class ObjectTreeView(ttk.Treeview):
               
         # Create context menus
         self.context_menu_cpu = tk.Menu(self, tearoff=False)
-        self.context_menu_cpu.add_command(label="Edit", command= lambda c = 'edit': self.onCpuContextMenu(c))
+        self.context_menu_cpu.add_command(label="Edit (SNMP) ", command= lambda c = 'edit': self.onCpuContextMenu(c))
         self.context_menu_cpu.add_command(label="Date/ Time", command= lambda c = 'date_time': self.onCpuContextMenu(c))
         self.context_menu_cpu.add_separator()                      
         self.context_menu_cpu.add_command(label="Warmstart", command= lambda c = 'warmstart': self.onCpuContextMenu(c))
@@ -509,8 +509,7 @@ class ObjectTreeView(ttk.Treeview):
             if type == 'remove':
                 self.removeChildrenFromWatchList(cpu.name)
                 self.delete(cpu.name) # remove from tree            
-                self.watch_list.pop(cpu.name) # remove from watch list
-                print(self.watch_list)            
+                self.watch_list.pop(cpu.name) # remove from watch list           
                 cpu.kill() # remove PVI-Object
 
         
