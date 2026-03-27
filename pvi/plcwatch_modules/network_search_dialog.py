@@ -1,8 +1,9 @@
 import tkinter as tk
-from typing import Union, List, Optional
+from typing import cast, Union, List, Optional, Callable
 from ipaddress import IPv4Network, IPv4Address
 import asyncio
 from dataclasses import dataclass
+from pvi import Connection, Device, Cpu, PviObject
 from pvi.plcwatch_modules.resources import icon_storage
 from pvi.plcwatch_modules.ifaddr import get_adapters, IP as Ifaddr_IP
 
@@ -20,7 +21,12 @@ class ScanResult:
     status: str = "Online"
 
 class NetworkSearchDialog:
-    def __init__(self, parent: tk.Tk):
+    def __init__(self, parent: tk.Tk, 
+                 pvi_connection : Connection, 
+                 device : Device):
+        self.pvi_connection = pvi_connection
+        self.device = device
+        
         self.result: Optional[ScanResult] = None
         self.dialog = tk.Toplevel(parent)
         self.dialog.title("Search for CPUs")
@@ -142,6 +148,7 @@ class NetworkSearchDialog:
         self.dialog.bind('<Escape>', lambda e: self.cancel_clicked())
 
         self.list_of_targets: List[ScanResult] = []
+        self.list_of_cpus: List[ScanResult] = []
         
         # Scanning state
         self.scan_count: int = 0
@@ -149,6 +156,24 @@ class NetworkSearchDialog:
         self.is_scanning: bool = False
         self.scan_aborted: bool = False
         self.scan_task: Optional[asyncio.Task] = None
+        self.validated_cpu_count : int = 0
+    
+    
+    def onCpuErrorChanged( self, obj : PviObject,  error : int ):
+        cpu = cast( Cpu, obj )
+        if error == 0:
+
+            self.list_of_cpus.append( ScanResult( 
+                            target= cpu.cpuInfo.get('CT', 'unknown'),
+                            AR = cpu.version,
+                            ip = cpu.ip_address, # type: ignore
+                            status = cpu.status.get('RunState','unknown')
+                            ))
+        else:
+            pass
+        cpu.kill()
+        self.validated_cpu_count += 1
+    
     
     async def scan_host(self, ip: str) -> Optional[ScanResult]:
         """Scan a single host for ANSL port"""
@@ -166,6 +191,7 @@ class NetworkSearchDialog:
         except (asyncio.TimeoutError, ConnectionRefusedError, OSError):
             self.scan_count += 1
             return None
+    
     
     async def scan_network(self, network: IPv4Network) -> List[ScanResult]:
         """Scan network using asyncio with semaphore for concurrency control"""
@@ -223,7 +249,9 @@ class NetworkSearchDialog:
         # Disable scan button, enable abort button
         self.button_scan.config(state='disabled')
         self.button_abort.config(state='normal')
-        
+        self.result_cpu_found.set(f"Start Scanning ...") 
+        self.dialog.update()  # Allow tkinter to process events  
+             
         # Create new event loop in a thread-safe way
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -238,8 +266,24 @@ class NetworkSearchDialog:
                 self.dialog.update()  # Allow tkinter to process events
             
             # Get the result
-            cpu_list = self.scan_task.result()
-            return cpu_list
+            scan_results = self.scan_task.result()
+            
+            self.validated_cpu_count = 0
+            number_of_results_to_validate = len(scan_results)
+            
+            self.list_of_cpus.clear()
+            self.result_cpu_found.set(f"Validate hosts found ...")
+            self.dialog.update()  # Allow tkinter to process events 
+            for scan_result in scan_results:
+                scan_result : ScanResult
+                cpu = Cpu( self.device, f'CPU_{scan_result.ip.replace('.','_')}', CD='/COMT=3000')
+                cpu.ip_address = scan_result.ip # type: ignore
+                cpu.errorChanged = self.onCpuErrorChanged
+                
+            while self.validated_cpu_count < number_of_results_to_validate:
+                self.pvi_connection.doEvents()
+                
+            return self.list_of_cpus
         finally:
             loop.close()
             # Re-enable scan button, disable abort button

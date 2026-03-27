@@ -9,9 +9,8 @@ import threading
 from typing import Union, List
 from ipaddress import IPv4Address
 from pvi import Connection, PviObject, Line, Device, Cpu, Task, Variable
-from pvi.plcwatch_modules import (NetworkSearchDialog,
+from pvi.plcwatch_modules import (NetworkSearchDialog, ScanResult,
                                 VariableListBox, ObjectTreeView, icon_storage)
-from pvi.Anslscan import ScanResult
 
 
 
@@ -109,7 +108,7 @@ class ApplicationWindow(tk.Tk):
         self.listbox.announcePviObject( object )
        
     def show_network_search_dialog(self):
-        dialog = NetworkSearchDialog(self)
+        dialog = NetworkSearchDialog(self, self.pvi_connection, self.ansl_device)
         result : Union[ScanResult, None] = dialog.show()
         
         if result:
