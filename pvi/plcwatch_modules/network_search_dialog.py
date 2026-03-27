@@ -8,7 +8,7 @@ from pvi.plcwatch_modules.ifaddr import get_adapters, IP as Ifaddr_IP
 
 # Constants
 ANSL_PORT = 11169
-SOCKET_TIMEOUT = 1
+SOCKET_TIMEOUT = 3
 MAX_CONCURRENT_SCANS = 256
 
 @dataclass
