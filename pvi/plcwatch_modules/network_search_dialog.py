@@ -1,14 +1,27 @@
 import tkinter as tk
-from typing import Union
-from ipaddress import IPv4Network
-import os
-from pvi.Anslscan import ansl_scan, ScanResult
+from typing import Union, List, Optional
+from ipaddress import IPv4Network, IPv4Address
+import asyncio
+from dataclasses import dataclass
 from pvi.plcwatch_modules.resources import icon_storage
 from pvi.plcwatch_modules.ifaddr import get_adapters, IP as Ifaddr_IP
 
+# Constants
+ANSL_PORT = 11169
+SOCKET_TIMEOUT = 1
+MAX_CONCURRENT_SCANS = 256
+
+@dataclass
+class ScanResult:
+    """Result of a network scan"""
+    target: str
+    ip: str
+    AR: str = "Unknown"
+    status: str = "Online"
+
 class NetworkSearchDialog:
-    def __init__(self, parent : tk.Tk):
-        self.result = None
+    def __init__(self, parent: tk.Tk):
+        self.result: Optional[ScanResult] = None
         self.dialog = tk.Toplevel(parent)
         self.dialog.title("Search for CPUs")
         self.dialog.geometry("700x550")
@@ -22,8 +35,8 @@ class NetworkSearchDialog:
         # Center the dialog
         left = parent.winfo_x()
         top = parent.winfo_y()   
-        x = left +  (parent.winfo_width() - self.dialog.winfo_width())//2
-        y = top + (parent.winfo_height() - self.dialog.winfo_height())//2
+        x = left + (parent.winfo_width() - self.dialog.winfo_width()) // 2
+        y = top + (parent.winfo_height() - self.dialog.winfo_height()) // 2
         self.dialog.geometry(f'+{x}+{y}')
         
         # Create form
@@ -63,15 +76,15 @@ class NetworkSearchDialog:
         self.listbox_adapters.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar_adapters.config(command=self.listbox_adapters.yview)
         
-        self.ip_addresses = []
-        for adapter in get_adapters(include_unconfigured=True) :
+        self.ip_addresses: List[Ifaddr_IP] = []
+        for adapter in get_adapters(include_unconfigured=True):
             if adapter.operational_status == 'Up':
                 for ip in adapter.ips:
                     if ip.is_IPv4:
                         self.ip_addresses.append(ip)
                         self.listbox_adapters.insert(tk.END, f"{ip.ip}/{ip.network_prefix} ({adapter.nice_name} / {ip.nice_name})")
 
-        self.listbox_adapters.bind('<<ListboxSelect>>', self.adapter_selected )
+        self.listbox_adapters.bind('<<ListboxSelect>>', self.adapter_selected)
 
         # Create frame for manual network address entry
         edit_frame = tk.Frame(main_frame)
@@ -93,7 +106,7 @@ class NetworkSearchDialog:
         # Create frame for listbox for CPUs found
         self.result_cpu_found = tk.StringVar()
         self.result_cpu_found.set("0 CPU(s) found: (ANSL)")
-        tk.Label(main_frame, textvariable= self.result_cpu_found, font=('Arial', 10)).grid(row=4, column=0, sticky='w', pady=10)
+        tk.Label(main_frame, textvariable=self.result_cpu_found, font=('Arial', 10)).grid(row=4, column=0, sticky='w', pady=10)
         listbox_frame_targets = tk.Frame(main_frame)
         listbox_frame_targets.grid(row=5, column=0, pady=10, padx=0, sticky='ew')
         
@@ -107,8 +120,7 @@ class NetworkSearchDialog:
                                 selectmode=tk.SINGLE)
         self.listbox_targets.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar_targets.config(command=self.listbox_targets.yview)
-        self.listbox_targets.bind('<<ListboxSelect>>', lambda e : self.button_ok.config( state = 'normal') )
-        
+        self.listbox_targets.bind('<<ListboxSelect>>', lambda e: self.button_ok.config(state='normal'))
         
         # Buttons
         button_frame = tk.Frame(main_frame)
@@ -124,8 +136,93 @@ class NetworkSearchDialog:
         self.dialog.bind('<Return>', lambda e: self.ok_clicked())
         self.dialog.bind('<Escape>', lambda e: self.cancel_clicked())
 
-        self.list_of_targets = []
+        self.list_of_targets: List[ScanResult] = []
         
+        # Scanning state
+        self.scan_count: int = 0
+        self.total_hosts: int = 0
+        self.is_scanning: bool = False
+        self.scan_task: Optional[asyncio.Task] = None
+    
+    async def scan_host(self, ip: str) -> Optional[ScanResult]:
+        """Scan a single host for ANSL port"""
+        try:
+            conn = asyncio.open_connection(ip, ANSL_PORT)
+            reader, writer = await asyncio.wait_for(conn, timeout=SOCKET_TIMEOUT)
+            writer.close()
+            await writer.wait_closed()
+            self.scan_count += 1
+            return ScanResult(target=f"CPU@{ip}", ip=ip, AR="ANSL", status="Online")
+        except (asyncio.TimeoutError, ConnectionRefusedError, OSError):
+            self.scan_count += 1
+            return None
+    
+    async def scan_network(self, network: IPv4Network) -> List[ScanResult]:
+        """Scan network using asyncio with semaphore for concurrency control"""
+        hosts = list(network.hosts())
+        self.total_hosts = len(hosts)
+        self.scan_count = 0
+        results: List[ScanResult] = []
+        
+        # Create semaphore to limit concurrent scans
+        semaphore = asyncio.Semaphore(MAX_CONCURRENT_SCANS)
+        
+        async def scan_with_semaphore(ip: IPv4Address) -> Optional[ScanResult]:
+            async with semaphore:
+                return await self.scan_host(str(ip))
+        
+        # Create tasks for all hosts
+        tasks = [scan_with_semaphore(ip) for ip in hosts]
+        
+        # Process results as they complete
+        for coro in asyncio.as_completed(tasks):
+            result = await coro
+            if result:
+                results.append(result)
+        
+        return results
+    
+    def update_scan_progress(self):
+        """Update scan progress every 5 seconds"""
+        if self.is_scanning:
+            self.result_cpu_found.set(f"Scanning: {self.scan_count}/{self.total_hosts} hosts checked...")
+            self.dialog.after(5000, self.update_scan_progress)
+    
+    async def run_scan_async(self, network: IPv4Network) -> List[ScanResult]:
+        """Run async scan with progress updates"""
+        self.is_scanning = True
+        self.scan_count = 0
+        
+        # Start progress updates
+        self.update_scan_progress()
+        
+        try:
+            cpu_list = await self.scan_network(network)
+        finally:
+            self.is_scanning = False
+        
+        return cpu_list
+    
+    def run_async_scan(self, network: IPv4Network):
+        """Run async scan in a way that allows tkinter updates"""
+        # Create new event loop in a thread-safe way
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        
+        try:
+            # Schedule the scan task
+            self.scan_task = loop.create_task(self.run_scan_async(network))
+            
+            # Run the loop step by step, allowing tkinter updates
+            while not self.scan_task.done():
+                loop.run_until_complete(asyncio.sleep(0.1))
+                self.dialog.update()  # Allow tkinter to process events
+            
+            # Get the result
+            cpu_list = self.scan_task.result()
+            return cpu_list
+        finally:
+            loop.close()
     
     def toggle_selection_mode(self):
         """Toggle between adapter list and manual entry mode"""
@@ -139,7 +236,6 @@ class NetworkSearchDialog:
             self.listbox_adapters.config(state='disabled')
             self.edit_network_address.config(state='normal')
             self.button_scan.config(state='normal')
-    
     
     def manual_scan_clicked(self):
         """Perform scan from manually entered network address"""
@@ -157,11 +253,10 @@ class NetworkSearchDialog:
         
         try:
             ip = IPv4Network(network_addr, strict=False)
-            cpu_list = ansl_scan(ip)
+            cpu_list = self.run_async_scan(ip)
             self.result_cpu_found.set(f"{len(cpu_list)} CPU(s) found: (ANSL)")
             
             for cpu in cpu_list:
-                cpu : ScanResult
                 self.listbox_targets.insert(tk.END, f"CPU {cpu.target}, IP: {cpu.ip}, {cpu.AR}, {cpu.status}")
                 self.list_of_targets.append(cpu)
         except Exception as e:
@@ -169,52 +264,52 @@ class NetworkSearchDialog:
         
         self.dialog.config(cursor=old_cursor)
     
-    
-    # an network adapter was select, we do a scan from it
-    def adapter_selected(self, event : tk.Event ):
+    def adapter_selected(self, event: tk.Event):
+        """An network adapter was selected, we do a scan from it"""
         if not self.listbox_adapters.curselection():
-            return 'break' # why is this so complicated ?
+            return 'break'
+        
         old_cursor = self.dialog.cget('cursor')
         self.dialog.config(cursor='watch')
         self.dialog.update_idletasks()
-        self.button_ok.config( state = 'disabled')
-        self.listbox_targets.delete(0,tk.END)        
+        self.button_ok.config(state='disabled')
+        self.listbox_targets.delete(0, tk.END)        
         self.result_cpu_found.set("0 CPU(s) found: (ANSL)") 
         self.list_of_targets.clear()    
+        
         try:        
             idx = self.listbox_adapters.curselection()[0]
-            ifaddr_ip : Ifaddr_IP = self.ip_addresses[idx]
-            network_prefix = max( min(ifaddr_ip.network_prefix,23), 24)
+            ifaddr_ip: Ifaddr_IP = self.ip_addresses[idx]
+            network_prefix = max(min(ifaddr_ip.network_prefix, 23), 24)
             ip = IPv4Network(f'{ifaddr_ip.ip}/{network_prefix}', strict=False)
-            self.network_address.set(ip.compressed) # preset the field for manual scan
-            cpu_list = ansl_scan( IPv4Network(f'{ip.network_address}/{ip.prefixlen}'))
+            self.network_address.set(ip.compressed)  # preset the field for manual scan
+            cpu_list = self.run_async_scan(IPv4Network(f'{ip.network_address}/{ip.prefixlen}'))
             self.result_cpu_found.set(f"{len(cpu_list)} CPU(s) found: (ANSL)")
 
             for cpu in cpu_list:
-                cpu : ScanResult
                 self.listbox_targets.insert(tk.END, f"CPU {cpu.target}, IP: {cpu.ip}, {cpu.AR}, {cpu.status}")    
                 self.list_of_targets.append(cpu)
         except Exception as e:
-            self.result_cpu_found.set("Error") 
+            self.result_cpu_found.set(f"Error: {str(e)}") 
+        
         self.dialog.config(cursor=old_cursor) 
         return 'break'
                 
-     
     def ok_clicked(self):
-        
+        """Handle OK button click"""
         # Get selected CPU if any
-        selected_cpu = None
         if self.listbox_targets.curselection():
             idx = self.listbox_targets.curselection()[0]
-            target : ScanResult = self.list_of_targets[idx]
+            target: ScanResult = self.list_of_targets[idx]
             self.result = target
             self.dialog.destroy()            
 
-    
     def cancel_clicked(self):
+        """Handle Cancel button click"""
         self.result = None
         self.dialog.destroy()
     
-    def show(self) -> Union[ScanResult, None]:
+    def show(self) -> Optional[ScanResult]:
+        """Show dialog and wait for result"""
         self.dialog.wait_window()
         return self.result
