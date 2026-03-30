@@ -33,6 +33,7 @@ from ipaddress import IPv4Address
 from pvi import Connection, PviObject, Line, Device, Cpu, Task, Variable
 from pvi.plcwatch_modules import (NetworkSearchDialog, ScanResult,
                                 VariableListBox, ObjectTreeView, icon_storage)
+from __about__ import __version__
 
 
 
@@ -69,6 +70,10 @@ class ApplicationWindow(tk.Tk):
         self.target_menu.add_separator()
         for n, ip in enumerate(self.app_configuration['ips']):
             self.target_menu.add_command(label=f"{n+1}. {ip}", command= lambda ip=ip : self.connect_to_ip(ip) )
+            
+        self.help_menu = tk.Menu(menubar, tearoff=0) 
+        menubar.add_cascade(label="Help", menu=self.help_menu) 
+        self.help_menu.add_command(label="About", command=self.show_about_dialog)                 
                 
         # Create main vertical PanedWindow (splits top and bottom)
         self.main_paned = tk.PanedWindow(self, orient=tk.VERTICAL, sashrelief=tk.FLAT, sashwidth=5)
@@ -125,6 +130,11 @@ class ApplicationWindow(tk.Tk):
     def onClosing(self):
         del self.pvi_connection
         self.destroy()
+        
+    def show_about_dialog(self):
+        license = self.pvi_connection.license
+        messagebox.showinfo( 'Plcwatch', f'https://github.com/hilch/Pvi.py\nVersion {__version__}'
+                            f'\nSercurity mode: {license[0]}')
     
     def onTreeviewMouseLeave( self, object : PviObject ):
         self.listbox.announcePviObject( object )
