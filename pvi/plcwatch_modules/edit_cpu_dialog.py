@@ -211,7 +211,7 @@ class EditCpuDialog( tk.Toplevel):
         self.line = Line( pvi_connection.root, 'LNSNMP', CD='LNSNMP')
         self.device = Device( self.line, 'Device', CD='/IF=snmp /RT=1000' )
         self.device.errorChanged =cast( Callable[[PviObject,int],None], self.deviceErrorChanged)
-    
+        self.setWidgetStateNetworkSettings(False)
     
     def logInfo( self, text : str ):
         self.log_label.config( text = text)
@@ -249,10 +249,12 @@ class EditCpuDialog( tk.Toplevel):
             
     def deviceErrorChanged( self, device : Device, error : int ):     
         if error == 0:
+            for c in (self.ip_method_combo, self.ip_entry, self.subnet_entry, self.gateway_entry):
+                    c.state(['disabled'])            
+            
             macs = [ x['name'] for x in device.externalObjects if x['type'] == 'Station']
             if len(macs) == 0:
-                for c in (self.ip_method_combo, self.ip_entry, self.subnet_entry, self.gateway_entry):
-                    c.state(['disabled'])
+                pass
             else:
                 for mac in macs:
                     self.update_idletasks()
