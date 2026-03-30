@@ -33,6 +33,7 @@ from pvi.plcwatch_modules.resources import image_files
 from pvi.plcwatch_modules.treeview_tooltip import TreeViewTooltip
 from pvi.plcwatch_modules.edit_cpu_dialog import EditCpuDialog 
 from pvi.plcwatch_modules.time_dialog import TimeDialog
+from pvi.plcwatch_modules.list_modules_dialog import ListModulesDialog
 from pvi.utils.IEC import toIEC
 
 class ObjectTreeView(ttk.Treeview):
@@ -84,6 +85,7 @@ class ObjectTreeView(ttk.Treeview):
         self.context_menu_cpu = tk.Menu(self, tearoff=False)
         self.context_menu_cpu.add_command(label="Edit (SNMP) ", command= lambda c = 'edit': self.onCpuContextMenu(c))
         self.context_menu_cpu.add_command(label="Date/ Time", command= lambda c = 'date_time': self.onCpuContextMenu(c))
+        self.context_menu_cpu.add_command(label="List Modules", command= lambda c = 'modules': self.onCpuContextMenu(c))        
         self.context_menu_cpu.add_separator()                      
         self.context_menu_cpu.add_command(label="Warmstart", command= lambda c = 'warmstart': self.onCpuContextMenu(c))
         self.context_menu_cpu.add_command(label="Coldstart", command= lambda c = 'coldstart': self.onCpuContextMenu(c))
@@ -520,6 +522,8 @@ class ObjectTreeView(ttk.Treeview):
                     self.wait_window(dialog)
                 elif type == 'date_time':
                     dialog = TimeDialog(self, self.pvi_connection, cpu )
+                elif type == 'modules':
+                    dialog = ListModulesDialog(self, self.pvi_connection, cpu)
                 elif type == 'warmstart':
                     cpu.warmStart()
                 elif type == 'coldstart':
