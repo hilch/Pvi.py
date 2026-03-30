@@ -298,7 +298,8 @@ class NetworkSearchDialog:
             self.dialog.update()  # Allow tkinter to process events 
             for scan_result in scan_results:
                 scan_result : ScanResult
-                cpu = Cpu( self.device, f'CPU_{scan_result.ip.replace('.','_')}', CD='/COMT=3000')
+                cpu = Cpu( self.device, f'CPU_{scan_result.ip.replace('.','_')}', 
+                          CD=f"/IP={scan_result.ip} /COMT=3000")
                 cpu.ip_address = scan_result.ip # type: ignore
                 cpu.errorChanged = self.onCpuErrorChanged
                 
