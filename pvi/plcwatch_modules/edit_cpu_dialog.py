@@ -50,14 +50,13 @@ class EditCpuDialog( tk.Toplevel):
     def __init__(self, parent : tk.Widget, pvi_connection : Connection, cpu : Cpu ):
         super().__init__(parent)
         self.title("Edit CPU")
-        # Center the dialog
+        # set size and position
         left = parent.winfo_rootx()
         top = parent.winfo_rooty()   
         self.geometry(f'400x450+{left +50}+{top + 50}')      
-        
-        #self.geometry("400x550")
         self.resizable(False, False)       
         self.iconbitmap(icon_storage['cpu'])
+        
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1) 
         self.protocol("WM_DELETE_WINDOW", self.onCancelClicked)  # Intercept close button       

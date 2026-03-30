@@ -31,7 +31,7 @@ class TimeDialog(tk.Toplevel):
     def __init__(self, parent: tk.Widget, pvi_connection : Connection, cpu : Cpu) -> None:
         super().__init__(parent)
         self.title("Set Date and Time")
-        # Center the dialog
+        # set size and position
         left = parent.winfo_rootx()
         top = parent.winfo_rooty()   
         self.geometry(f'500x280+{left +50}+{top + 50}')   
