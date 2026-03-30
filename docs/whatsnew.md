@@ -10,6 +10,7 @@
 - new property 'isStructure' for Variable object
 - new members 'toIEC' and 'fromIEC' for Variable object
 - new property 'cpuInfoExtended' for Cpu object
+- new properties 'moduleInfo' and 'moduleInfoExtended' for Module objects
 - new member function 'readRequestStatus' for all objects
 
 ## V1.2.9

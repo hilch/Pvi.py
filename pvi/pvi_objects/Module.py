@@ -20,16 +20,77 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Union, Callable
+from datetime import datetime, timezone
+from typing import Union, Callable, Dict, Any
+from enum import IntEnum, unique
 import xml.etree.ElementTree as ET
 import re
-import datetime
 import inspect
 from ctypes import create_string_buffer, byref, sizeof
 from .include import *
 from .Object import PviObject
 from .Error import PviError
+from .Helpers import dictFromParameterPairString
 
+@unique
+class ModuleType(IntEnum):
+    UNKNOWN = 0
+    CYCLIC_RESOURCE = 0x11
+    SYSTEM_OBJECT = 0x12
+    IDLE_TIME_OBJECT = 0x13
+    OBJECT_OF_A_TIMER_RESOURCE = 0x14
+    INTERRUPT_OBJECT = 0x15
+    EXCEPTION_OBJECT = 0x16
+    REACTION_TASK_MODULE = 0x17
+    AVT_LIBRARY = 0x21
+    MATHTRAP_LIBRARY = 0x25
+    TRAP_LIBRARY = 0x26
+    ADVANCED_TRAP_LIBRARY = 0x28
+    OPTIMIZED_IO_MODULE = 0x31
+    IO_MAPPING = 0x32
+    DATA_OBJECT = 0x41
+    CONTAINER_MODULE = 0x43
+    SAFETY_APP = 0x44
+    NC_DRIVER = 0x45
+    MOTION_DATA_OBJECT = 0x46
+    SAFETY_CONFIGURATION = 0x47
+    PROFILER_DEFINITION = 0x4b
+    PROFILER_DATA_OBJECT = 0x4c
+    TRACER_DEFINITION = 0x4d
+    TRACER_DATA = 0x4e
+    NC_UPDATE = 0x4f
+    LOGGER_MODULE = 0x53
+    TARGET_SYSTEM_CONFIGURATION = 0x81
+    NETWORK_CONFIGURATION_MODULE = 0x82
+    IO_CONFIGURATION = 0x84
+    OPCUA_CONFIGURATION = 0x86
+    REDUNDANCY_CONFIGURATION = 0x87
+    XML_BASED_CONFIGURATION = 0x88
+    XML_BASED_CONFIGURATION_NON_VOLATILE = 0x89
+    DB_SQLITE_TEXT_DEFINITION = 0xd1
+    DB_SQLITE_UNIT_DEFINITION = 0xd2
+    DB_SQLITE_RELOADABLE_TEXT = 0xd3
+
+    @classmethod
+    def _missing_(cls, value):
+        return ModuleType.UNKNOWN
+
+
+@unique
+class MemoryType(IntEnum):
+    SYSROM = 0
+    SYSRAM = 1
+    USRROM = 2
+    USRRAM = 3
+    MEMCARD = 4
+    FIXRAM = 5
+    DRAM = 65
+    UNKNOWN = 256
+
+    @classmethod
+    def _missing_(cls, value):
+        return MemoryType.UNKNOWN
+    
 
 class Module(PviObject):
     '''class representing modules
@@ -98,7 +159,7 @@ class Module(PviObject):
                     except:
                         pass
                 try: # try to convert timestamp into Python datatype
-                    value = datetime.datetime.fromtimestamp( float(entry.attrib['TimestampUtc']) )
+                    value = datetime.fromtimestamp( float(entry.attrib['TimestampUtc']) )
                     entry.attrib.update({ 'TimestampUtc' : str(value)} )
                 except:
                     pass
@@ -133,7 +194,7 @@ class Module(PviObject):
                 matches = patternParameterPairs.findall(str(data[n]))            
                 for m in matches:
                     if str(m).startswith('TIME'):
-                        dt = datetime.datetime.fromtimestamp( int(m[5:]))
+                        dt = datetime.fromtimestamp( int(m[5:]))
                         entry.update({ 'date' : dt})
                     elif str(m).startswith('ID'):
                         id = int(m[3:])
@@ -238,3 +299,93 @@ class Module(PviObject):
             if self._result:
                 raise PviError(self._result)           
                             
+    @property       
+    def moduleInfo(self) -> dict:
+        """
+        read the Module type information
+         example:
+
+        ```
+        module = Module( cpu, '$$sysconf' )
+        ...
+        print("info =", module.moduleInfo )
+        ```
+
+        results in:
+
+        ```
+        info = {'MT': <ModuleType.TARGET_SYSTEM_CONFIGURATION: 129>, 'ML': '70720'}
+        ```
+
+        """    
+        s = create_string_buffer(b'\000' * 1024)             
+        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_MOD_TYPE , None, 0, byref(s), sizeof(s) )     
+        if self._result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+            ret = dict()
+            ret.update( dictFromParameterPairString(s)  )
+            type_number = int(ret.get('MT',0))
+            ret.update( {'MT' : ModuleType(type_number)})
+            return ret          
+        else:
+            raise PviError(self._result, self)    
+
+
+        
+    @property       
+    def moduleInfoExtended(self) -> dict:
+        """
+        read the Module type information
+         example:
+
+        ```
+        module = Module( cpu, '$$sysconf' )
+        ...
+        print("info =", module.moduleInfoExtended )
+        ```
+
+        results in:
+
+        ```
+        info = {'Name': '$$sysconf', 
+                'Size': '70720', 
+                'Address': '0x038B70A0', 
+                'MemType': <MemoryType.USRROM: 2>, 
+                'Version': '73', 
+                'Revision': '48', 
+                'ModulType': <ModuleType.TARGET_SYSTEM_CONFIGURATION: 129>, 
+                'Time': datetime.datetime(2024, 1, 5, 11, 0, 8), 
+                'RawTimeErzT5': 'f8-25-58-04-00', 
+                'RawTimeAenT5': 'fc-72-75-12-00', 
+                'TaskClass': '0', 
+                'InstallNo': '0', 
+                'ModulState': '1', 
+                'DomainOvIndex': '1793', 
+                'DomainModulState': '6', 
+                'Listed': '3'}
+        ```
+
+        """    
+        s = create_string_buffer(b'\000' * 4096)             
+        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_LN_XML_MOD_INFO  , None, 0, byref(s), sizeof(s) )     
+        if self._result == 0:
+            s = str(s, 'ascii').rstrip('\x00')
+            """Parse Module Info XML and return as dictionary"""
+            root = ET.fromstring(s)
+            module_info : Dict[str, Any]= dict()
+            if root.tag == 'ModInfo':        
+                module_info = dict(root.attrib)
+                type_number = int(module_info.get('ModulType', '0x00'),16)
+                module_info.update( {'ModulType' : ModuleType(type_number).name } ) 
+                memory_type = int(module_info.get('MemType', '0x100'),16)
+                module_info.update( {'MemType' : MemoryType(memory_type).name } )
+                time_created = datetime.strptime(module_info.get('Time','') , "%Y-%m-%d-%H-%M-%S.%f")
+                module_info.update( {'Time' : time_created } ) 
+                version = f'{int(module_info.get('Version','0')):02x}'
+                version += f'{int(module_info.get('Revision','0')):02x}'
+                version = f'{version[0]}.{version[1]}{version[2]}.{version[3]}'
+                module_info.update({'Version': version})  
+                del module_info['Revision']                                 
+            return module_info      
+        else:
+            raise PviError(self._result, self)    
