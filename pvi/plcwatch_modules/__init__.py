@@ -1,4 +1,6 @@
 from pvi.plcwatch_modules.network_search_dialog import NetworkSearchDialog, ScanResult
+from pvi.plcwatch_modules.snmp_scan_dialog import SnmpScanDialog, SnmpScanResult
+from pvi.plcwatch_modules.list_modules_dialog import ListModulesDialog
 from pvi.plcwatch_modules.connect_target_dialog import ConnectTargetDialog
 from pvi.plcwatch_modules.variable_listbox import VariableListBox
 from pvi.plcwatch_modules.object_treeview import ObjectTreeView

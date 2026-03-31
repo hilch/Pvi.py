@@ -31,7 +31,7 @@ import threading
 from typing import Union, List
 from ipaddress import IPv4Address
 from pvi import Connection, PviObject, Line, Device, Cpu, Task, Variable
-from pvi.plcwatch_modules import (NetworkSearchDialog, ScanResult,
+from pvi.plcwatch_modules import (NetworkSearchDialog, ScanResult, SnmpScanDialog,
                                 VariableListBox, ObjectTreeView, icon_storage)
 from __about__ import __version__
 
@@ -48,7 +48,7 @@ class ApplicationWindow(tk.Tk):
         
         self.app_configuration = dict()
         self.path_local_app_data =  Path(os.getenv('LOCALAPPDATA')) / 'Plcwatch'# type: ignore
-        self.load_app_settings()
+        self.loadApplicationSettings()
                 
         # create PVI objects
         self.pvi_connection = Connection()
@@ -66,14 +66,16 @@ class ApplicationWindow(tk.Tk):
         
         self.target_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="Targets", menu=self.target_menu)
-        self.target_menu.add_command(label="Search for Targets", command=self.show_network_search_dialog)    
+        self.target_menu.add_command(label="Search for Targets (ANSL)", command=self.showNetworkSearchDialog)    
         self.target_menu.add_separator()
         for n, ip in enumerate(self.app_configuration['ips']):
-            self.target_menu.add_command(label=f"{n+1}. {ip}", command= lambda ip=ip : self.connect_to_ip(ip) )
+            self.target_menu.add_command(label=f"{n+1}. {ip}", command= lambda ip=ip : self.connectToIpAddress(ip) )
+        self.target_menu.add_separator()
+        self.target_menu.add_command(label="Search for Targets (SNMP)", command=self.showSnmpScanDialog)      
             
         self.help_menu = tk.Menu(menubar, tearoff=0) 
         menubar.add_cascade(label="Help", menu=self.help_menu) 
-        self.help_menu.add_command(label="About", command=self.show_about_dialog)                 
+        self.help_menu.add_command(label="About", command=self.showAboutDialog)                 
                 
         # Create main vertical PanedWindow (splits top and bottom)
         self.main_paned = tk.PanedWindow(self, orient=tk.VERTICAL, sashrelief=tk.FLAT, sashwidth=5)
@@ -95,7 +97,7 @@ class ApplicationWindow(tk.Tk):
         self.tree = ObjectTreeView( parent=tree_frame, 
                                    yscrollcommand=tree_scrollbar.set,
                                    pvi_connection= self.pvi_connection, 
-                                   callback_ip_connected = self.connected_to_ip,
+                                   callback_ip_connected = self.onConnectedToIpAddress,
                                    callback_mouse_leave= self.onTreeviewMouseLeave
                                    )
         self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
@@ -126,32 +128,38 @@ class ApplicationWindow(tk.Tk):
     
     # def pvi_cyclic( self):
     #     pass
-    
-    def onClosing(self):
-        del self.pvi_connection
-        self.destroy()
-        
-    def show_about_dialog(self):
+         
+    def showAboutDialog(self):
         license = self.pvi_connection.license
         messagebox.showinfo( 'Plcwatch', f'https://github.com/hilch/Pvi.py\nVersion {__version__}'
                             f'\nSercurity mode: {license[0]}')
     
-    def onTreeviewMouseLeave( self, object : PviObject ):
-        self.listbox.announcePviObject( object )
-       
-    def show_network_search_dialog(self):
+    def showNetworkSearchDialog(self):
         dialog = NetworkSearchDialog(self, self.pvi_connection, self.ansl_device)
         result : Union[ScanResult, None] = dialog.show()
         
         if result:
             self.tree.insertCpu( self.ansl_device, IPv4Address(result.ip) )
     
-    def connect_to_ip(self, ip : str ):
+    def showSnmpScanDialog(self):
+        dialog = SnmpScanDialog(self, self.pvi_connection)
+        result = dialog.show()
+        if result != '0.0.0.0':
+            self.connectToIpAddress(result)
+    
+    def onTreeviewMouseLeave( self, object : PviObject ):
+        self.listbox.announcePviObject( object )
+       
+            
+    def onClosing(self):
+        del self.pvi_connection
+        self.destroy()
+    
+    def connectToIpAddress(self, ip : str ):
         self.tree.insertCpu( self.ansl_device, IPv4Address(ip))
     
-    
     # after succesful connection to a cpu change menu 'Targets'
-    def connected_to_ip(self, ip : str ):
+    def onConnectedToIpAddress(self, ip : str ):
         ips = self.app_configuration['ips']
         if ips[0] != ip:
             ips = ips[0:4]
@@ -159,7 +167,7 @@ class ApplicationWindow(tk.Tk):
             for n, ip in enumerate(ips):
                 self.target_menu.entryconfig(n+2, label = f"{n+1}. {ip}" )
             self.app_configuration['ips'] = ips  
-            self.save_app_settings()              
+            self.saveApplicationSettings()              
                        
                         
     def update(self):
@@ -171,7 +179,7 @@ class ApplicationWindow(tk.Tk):
         self.after( 50, self.update)  
 
 
-    def load_app_settings(self):
+    def loadApplicationSettings(self):
         # Local AppData
         try:
             with open(self.path_local_app_data / 'config.json', 'r') as f:
@@ -183,10 +191,10 @@ class ApplicationWindow(tk.Tk):
             self.app_configuration = { 
                                       'ips' : ['127.0.0.1']*5
                                       }
-            self.save_app_settings()
+            self.saveApplicationSettings()
 
             
-    def save_app_settings(self):
+    def saveApplicationSettings(self):
         try:
             with open(self.path_local_app_data / 'config.json', 'w') as f:
                 json.dump(self.app_configuration, f)
