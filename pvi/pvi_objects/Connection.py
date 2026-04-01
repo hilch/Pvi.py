@@ -297,6 +297,25 @@ class Connection():
         self._result = PviXReadResponse( self._hPvi, wParam, None, 0 )
 
     # ----------------------------------------------------------------------------------
+    def _getObjectAndCall(self, linkID: wintypes.DWORD, method_name: str, *args):
+        """
+        Helper method to retrieve PviObject and call a method on it.
+        Eliminates repetitive get-and-check pattern.
+        
+        Args:
+            linkID: The link ID to look up
+            method_name: Name of the method to call on the object
+            *args: Arguments to pass to the method
+            
+        Raises:
+            ValueError: If linkID is not found in _linkIDs
+        """
+        po = self._linkIDs.get(linkID)
+        if po is None:
+            raise ValueError(f"linkID {linkID} not found!")
+        getattr(po, method_name)(*args)
+
+    # ----------------------------------------------------------------------------------
     def doEvents(self):
         """         
         event loop - must be cyclically called
@@ -331,60 +350,28 @@ class Connection():
             elif responseInfo.nType == POBJ_EVENT_PVI_ARRANGE:
                 self._eventPviArrange( wParam, responseInfo )
             elif responseInfo.nType == POBJ_ACC_TYPE:
-                po = self._linkIDs.get(responseInfo.LinkID, None )
-                if po:
-                    po._eventDataType( wParam, responseInfo )
-                else:
-                    raise ValueError("linkID not found !")
+                self._getObjectAndCall(responseInfo.LinkID, '_eventDataType', wParam, responseInfo)
             elif responseInfo.nType == POBJ_EVENT_DATA:
-                po = self._linkIDs.get(responseInfo.LinkID, None )
-                if po:
-                    po._eventData( wParam, responseInfo )
-                else:
-                    raise ValueError("linkID not found !")                    
+                self._getObjectAndCall(responseInfo.LinkID, '_eventData', wParam, responseInfo)                    
             elif responseInfo.nType == POBJ_ACC_UPLOAD_STM:
-                po = self._linkIDs.get(responseInfo.LinkID, None )
-                if po:
-                    po._eventUploadStream( wParam, responseInfo, dataLen.value ) 
-                else:
-                    raise ValueError("linkID not found !")
+                self._getObjectAndCall(responseInfo.LinkID, '_eventUploadStream', wParam, responseInfo, dataLen.value)
             elif responseInfo.nType == POBJ_ACC_DOWNLOAD_STM:
-                po = self._linkIDs.get(responseInfo.LinkID, None )
-                if po:
-                    po._eventDownloadStream( wParam, responseInfo ) 
-                else:
-                    raise ValueError("linkID not found !") 
+                self._getObjectAndCall(responseInfo.LinkID, '_eventDownloadStream', wParam, responseInfo) 
             elif responseInfo.nType == POBJ_EVENT_STATUS or responseInfo.nType == POBJ_ACC_STATUS:
-                po = self._linkIDs.get(responseInfo.LinkID, None )
-                if po:
-                    po._eventStatus( wParam, responseInfo )
-                else:
-                    raise ValueError("linkID not found !")                   
+                self._getObjectAndCall(responseInfo.LinkID, '_eventStatus', wParam, responseInfo)                   
             elif responseInfo.nType == POBJ_EVENT_PROCEEDING:
-                po = self._linkIDs.get(responseInfo.LinkID, None )
-                if po:
-                    po._eventProceeding( wParam, responseInfo ) 
-                else:
-                    raise ValueError("linkID not found !")   
+                self._getObjectAndCall(responseInfo.LinkID, '_eventProceeding', wParam, responseInfo)   
             elif responseInfo.nType == POBJ_ACC_LN_XML_LOGM_DATA:
-                po = self._linkIDs.get(responseInfo.LinkID, None )
-                if po:
-                    po._eventUploadLogData( wParam, responseInfo, dataLen.value ) 
-                else:
-                    raise ValueError("linkID not found !") 
+                self._getObjectAndCall(responseInfo.LinkID, '_eventUploadLogData', wParam, responseInfo, dataLen.value) 
             elif responseInfo.nType == POBJ_ACC_MOD_DATA:
-                po = self._linkIDs.get(responseInfo.LinkID, None )
-                if po:
-                    po._eventUploadModData( wParam, responseInfo, dataLen.value ) 
-                else:
-                    raise ValueError("linkID not found !")                                                                    
+                self._getObjectAndCall(responseInfo.LinkID, '_eventUploadModData', wParam, responseInfo, dataLen.value)                                                                    
             elif responseInfo.nType == POBJ_EVENT_ERROR:
-                po = self._linkIDs.get(responseInfo.LinkID, None )
+                po = self._linkIDs.get(responseInfo.LinkID)
                 if po:
-                    debuglog( f'{repr(po)}: error {responseInfo.ErrCode}')
-                    po._eventError( wParam, responseInfo )
+                    debuglog(f'{repr(po)}: error {responseInfo.ErrCode}')
+                    self._getObjectAndCall(responseInfo.LinkID, '_eventError', wParam, responseInfo)
                 else:
-                    raise ValueError("linkID not found !")
+                    raise ValueError(f"linkID {responseInfo.LinkID} not found!")
             else:
                 self._eventOther( wParam, responseInfo )
                 # po = self.findObjectByLinkID(responseInfo.LinkID)
