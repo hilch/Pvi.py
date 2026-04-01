@@ -28,6 +28,6 @@ from .pvi_objects.Device import Device
 from .pvi_objects.Station import Station
 from .pvi_objects.Cpu import Cpu
 from .pvi_objects.Task import Task
-from .pvi_objects.Module import Module
+from .pvi_objects.Module import Module, MemoryType, ModuleType
 from .pvi_objects.Variable import Variable
 

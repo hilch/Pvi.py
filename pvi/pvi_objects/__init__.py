@@ -28,5 +28,5 @@ from .Device import Device
 from .Station import Station
 from .Cpu import Cpu
 from .Task import Task
-from .Module import Module
+from .Module import Module, MemoryType, ModuleType
 from .Variable import Variable
