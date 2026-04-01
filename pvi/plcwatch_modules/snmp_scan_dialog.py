@@ -26,7 +26,7 @@ from typing import cast, List, Optional, Callable
 import time
 from dataclasses import dataclass
 from pvi.plcwatch_modules.resources import icon_storage
-from pvi import Connection, PviObject, Line, Device, Station, Variable
+from pvi import Connection, PviObject, Line, Device, Station, Variable, PviError
 
 @dataclass
 class SnmpScanResult:
@@ -196,7 +196,16 @@ class SnmpScanDialog(tk.Toplevel):
                                 'defaultGateway'
                                 ) :
                     variable = Variable( station, name )
-                    values.update({ name : variable.value})
+                    try:
+                        values.update({ name : variable.value})
+                    except PviError as e:
+                        if e.number == 14787:
+                            if variable.dataType == 'string':
+                                values.update({ name : ''})
+                            elif variable.dataType == 'i32':
+                                values.update({ name : 0 })
+                        else:
+                            raise PviError(e.number)
                     variable.kill()
 
                 station.kill()

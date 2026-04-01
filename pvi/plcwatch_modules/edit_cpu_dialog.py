@@ -282,8 +282,14 @@ class EditCpuDialog( tk.Toplevel):
             try:
                 value = variable.value
                 values.update( { object['name'] : value })  
-            except:
-                pass
+            except PviError as e:
+                if e.number == 14787:
+                    if variable.dataType == 'string':
+                        values.update({ object['name'] : ''})
+                    elif variable.dataType == 'i32':
+                        values.update({ object['name'] : 0 })
+                else:
+                    raise PviError(e.number)
             finally:
                 variable.kill()
                             
