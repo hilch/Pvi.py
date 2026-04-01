@@ -21,493 +21,249 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from inspect import signature
-from typing import cast, Union, List, Dict
-from ctypes import create_string_buffer, byref, sizeof
-from ctypes import wintypes
-from typing import Callable, Union, Dict
+from typing import cast, Union, List, Dict, Callable, Optional
+from ctypes import create_string_buffer, byref, sizeof, wintypes
 import re
 import ast
-import inspect
 import logging
 from .include import *
 from .Error import PviError
 from .Helpers import dictFromParameterPairString, debuglog
 
 
-
 class PviObject():
-    '''super class representing a PVI object 
+    '''super class representing a PVI object'''
 
-    '''
+    # Buffer size constants 
+    _BUFFER_SIZE_SMALL: int = 64
+    _BUFFER_SIZE_MEDIUM: int = 1024
+    _BUFFER_SIZE_LARGE: int = 4096
+    _BUFFER_SIZE_XLARGE: int = 65536
 
-    def __init__(self, parent : Union['PviObject',None], objType : T_POBJ_TYPE, name : str, **objectDescriptor : Union[str,int, float]):
-        '''
-        Args: 
-            parent: the parent Pvi Object
-            objType:   Pvi Object Type
-            name: name of object in PVI hierarchy
-            objectDescriptor: e.g. AT=rwe, CD="/RO=View::TempValue" see PVI documentation 
-                                or link descriptor e.g. LinkDescriptor="EV=eds" or Linkdescriptor={"EV":"eds"}
-        '''
+    def __init__(self, parent: Union['PviObject', None], objType: T_POBJ_TYPE, name: str, 
+                 **objectDescriptor: Union[str, int, float]):
         self._logger = logging.getLogger("pvipy")
-        parentName = re.findall('(\\S+)',str(parent.name))[0]+'/' if parent else ''
-        self._name = f'{parentName}{name}'        
+        parentName = re.findall(r'(\S+)', str(parent.name))[0] + '/' if parent else ''
+        self._name = f'{parentName}{name}'
         self._userName = name
         self._linkID = 0
-        self._linkDescriptor = {'EV':'ed'}
+        self._linkDescriptor = {'EV': 'ed'}
         if objType == T_POBJ_TYPE.POBJ_CPU or objType == T_POBJ_TYPE.POBJ_MODULE:
-            self._linkDescriptor.update({ 'EV' : 'ep' }) # need this for downloading proceeding info
+            self._linkDescriptor.update({'EV': 'ep'})
 
-        # pick the link descriptor if given
         if 'LinkDescriptor' in objectDescriptor:
             cn = str(objectDescriptor['LinkDescriptor'])
-            try: # try if link descriptor is given as dict
+            try:
                 ld = ast.literal_eval(cn)
-                for key, value in ld.items:
-                    self._linkDescriptor.update({str.upper(key) : value})              
-            except SyntaxError: # otherwise it is given as str            
-                self._linkDescriptor.update( dictFromParameterPairString(cn))
-            del objectDescriptor['LinkDescriptor']  # 'LinkDescriptor' must not occur in object descriptor 
+                for key, value in ld.items():  
+                    self._linkDescriptor.update({str.upper(key): value})
+            except (SyntaxError, ValueError, TypeError):  
+                self._linkDescriptor.update(dictFromParameterPairString(cn))
+            del objectDescriptor['LinkDescriptor']
 
         self._objectDescriptor = objectDescriptor
-
         self._type = objType
-        self._result = int(0)      
+        self._result = int(0)
         self._pviError = int(0)
-        self._errorChanged = lambda _ : _
+        self._errorChanged: Optional[Callable] = None  
         self._errorChangedArgCount = 0
-        def statusResponse( o : 'PviObject', st : Dict[str,str]):
+        
+        def statusResponse(o: 'PviObject', st: Dict[str, str]) -> None:
             pass
         self._statusResponse = statusResponse
         self._parent = parent
         self._hPvi = wintypes.DWORD()
         debuglog(f'{self._objectDescriptor} - {self._linkDescriptor}')
-        if parent: # all objects but '@Pvi' have a parent
-            self._connection = parent._connection # type: ignore
+        if parent is not None:  
+            self._connection = parent._connection
             self._hPvi = self._connection._hPvi
             self._connection.link(self)
-            
-            
-            
-    def __hash__(self):
-        return hash( (self._name, self._type) )
 
-    def __eq__(self, other):
+    def __hash__(self) -> int:
+        return hash((self._name, self._type))
+
+    def __eq__(self, other) -> bool:
         return self.__hash__() == other.__hash__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self._name}"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"PviObject( name={self._name}, linkID={self._linkID} )"
 
+    def _read_string_property(self, access_type: int, buffer_size: int) -> str:
+        '''Generic helper to read string property from PVI'''
+        s = create_string_buffer(b'\000' * buffer_size)
+        self._result = PviXRead(self._hPvi, self._linkID, access_type, None, 0, byref(s), sizeof(s))
+        if self._result != 0:
+            raise PviError(self._result, self)
+        return str(s, 'ascii').rstrip('\x00')
 
     @property
     def name(self) -> str:
-        '''
-        hierarchical PVI object name
-
-        example:
-        ```
-        name= @Pvi/LNANSL/TCP/myArsim/mainlogic/gHeating.status.actTemp
-        ```
-        '''
         return self._name
-
 
     @property
     def userName(self) -> str:
-        '''
-        user defined object name
-        defaults to .objectName
-        '''
         return self._userName
-
 
     @property
     def objectName(self) -> str:
-        '''
-        object name
-
-        example:
-        ```
-        temperature = Variable( task1, 'gHeating.status.actTemp' )
-        ...
-        print( "oname=", temperature.name)
-        ```
-        results in:
-
-        ```
-        oname= gHeating.status.actTemp
-        ```
-        '''         
         x = self._name.rpartition('/')
-        try:
-            return x[2]
-        except IndexError:
-            return self._name
-        
+        return x[2] if x[2] else self._name
 
     @property
     def descriptor(self) -> dict:
-        '''
-        object descriptor
-        example:
-        ```
-        temperature = Variable( task1, 'gHeating.status.actTemp' )
-        ...
-        print( "descriptor=", temperature.name)
-        ```
-        results in:
-
-        ```
-        descriptor= {'CD': 'gHeating.status.actTemp', 'RF': 0}
-        ```
-        '''         
         return self._objectDescriptor
-
 
     @property
     def evmask(self) -> str:
-        '''
-        event mask in link descriptor
-
-        "e": Change in error state
-        "d": Data changes
-        "f": Change to the data format 
-        "c": Change to the connection description
-        "p": Progress information about active requests 
-        "s": Status changes
-        "u": Change in the user tag string        
-        '''
-        s = create_string_buffer(b'\000' * 10)   
-        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_EVMASK , None, 0, byref(s), sizeof(s) )
-        if self._result == 0:
-            s = str(s, 'ascii')
-            self._linkDescriptor.update( {'EV': str(s)})
-            return(s)
-        else:
-            raise PviError(self._result, self)         
+        result = self._read_string_property(POBJ_ACC_EVMASK, self._BUFFER_SIZE_SMALL)
+        self._linkDescriptor.update({'EV': result})
+        return result
 
     @evmask.setter
-    def evmask(self, mask : str ):
+    def evmask(self, mask: str) -> None:
         s = create_string_buffer(mask.encode())
-
-        self._result = PviXWrite( self._hPvi, self._linkID, POBJ_ACC_EVMASK, byref(s), sizeof(s), None, 0 ) 
+        self._result = PviXWrite(self._hPvi, self._linkID, POBJ_ACC_EVMASK, byref(s), sizeof(s), None, 0)
         if self._result == 0:
-            self._linkDescriptor.update( {'EV': str(s)})
+            self._linkDescriptor.update({'EV': str(s)})
         else:
-            raise PviError(self._result, self)      
-
+            raise PviError(self._result, self)
 
     @property
     def userTag(self) -> str:
-        '''
-        user tag
-
-        Typical usage example:
-        ```
-        temperature = Variable( task1, name='gHeating.status.actTemp', UT="actual water temperature" )        
-        ```
-        '''
-        s = create_string_buffer(b'\000' * 4096)   
-        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_USERTAG , None, 0, byref(s), sizeof(s) )
-        if self._result == 0:
-            s = str(s, 'ascii').rstrip('\x00')
-            self._objectDescriptor.update({ 'UT': s}) # type: ignore
-            return s            
-        else:
-            raise PviError(self._result, self)  
+        result = self._read_string_property(POBJ_ACC_USERTAG, self._BUFFER_SIZE_LARGE)
+        self._objectDescriptor.update({'UT': result})
+        return result
 
     @userTag.setter
-    def userTag(self, tag : str ):
-        '''
-        user tag
-        '''
+    def userTag(self, tag: str) -> None:
         s = create_string_buffer(tag.encode('ascii'))
-        self._result = PviXWrite( self._hPvi, self._linkID, POBJ_ACC_USERTAG, byref(s), sizeof(s), None, 0 ) 
-        if self._result:
-            raise PviError(self._result, self)  
-        self._objectDescriptor.update({ 'UT': tag}) # type: ignore
+        self._result = PviXWrite(self._hPvi, self._linkID, POBJ_ACC_USERTAG, byref(s), sizeof(s), None, 0)
+        if self._result != 0:
+            raise PviError(self._result, self)
+        self._objectDescriptor.update({'UT': tag})
 
     @property
     def type(self) -> T_POBJ_TYPE:
-        '''
-        object type 
-
-        example:
-        ```
-        temperature = Variable( task1, 'gHeating.status.actTemp' )
-        ...
-        print( "type=", temperature.type)
-        ```
-        results in:
-
-        ```
-        type= T_POBJ_TYPE.POBJ_PVAR
-        ```
-        '''                 
         return self._type
-
-
 
     @property
     def errorChanged(self) -> Union[Callable[['PviObject', int], None], Callable[[int], None]]:
-        """
-        callback for 'error changed'
-
-        It is advisable to always check the error status '0' before accessing an object.
-
-            Args:
-                cb: callback( PviObject, int ) or callback( int )
-
-        typical example:
-
-        ```
-        cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
-        ...
-        def cpuErrorChanged( error : int ):
-            if error != 0:
-                raise PviError(error)
-  
-        cpu.errorChanged = cpuErrorChanged
-        ```        
-        """
-        if self._errorChanged:
+        if self._errorChanged is not None:  
             return self._errorChanged
-        else:
-            raise ValueError("Object.errorChanged is empty")
-
+        raise ValueError("Object.errorChanged is empty")
 
     @errorChanged.setter
-    def errorChanged(self, cb : Union[Callable[['PviObject', int], None], Callable[[int], None]]):
-        """
-        set callback for 'error changed'.
-
-        It is advisable to always check the error status '0' before accessing an object.
-
-            Args:
-                cb: callback( PviObject, int ) or callback( int )
-
-        typical example:
-
-        ```
-        cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
-        ...
-        def cpuErrorChanged( error : int ):
-            if error != 0:
-                raise PviError(error)
-  
-        cpu.errorChanged = cpuErrorChanged
-        ```
-
-        """
+    def errorChanged(self, cb: Union[Callable[['PviObject', int], None], Callable[[int], None]]) -> None:
         if callable(cb):
             self._errorChanged = cb
-            self._errorChangedArgCount = len(signature(cb).parameters)            
+            self._errorChangedArgCount = len(signature(cb).parameters)
         else:
             raise TypeError("only callable allowed for Object.errorChanged")
 
-
-    def _eventData( self, wParam, responseInfo ):
-        """
-        (internal) handle data events
-        """
-        self._result = PviXReadResponse( self._hPvi, wParam, None, 0 )
-        if callable(self._errorChanged):
+    def _eventData(self, wParam, responseInfo) -> None:
+        self._result = PviXReadResponse(self._hPvi, wParam, None, 0)
+        if self._errorChanged is not None:  
             if self._errorChangedArgCount == 1:
-                self._errorChanged(0) # type: ignore
+                self._errorChanged(0)
             elif self._errorChangedArgCount == 2:
-                self._errorChanged(self,0) # type: ignore
+                self._errorChanged(self, 0)
 
-    def _eventDataType( self, wParam, responseInfo ):
-        """
-        (internal) handle data type events
-        """        
-        self._result = PviXReadResponse( self._hPvi, wParam, None, 0 ) 
-       
+    def _eventDataType(self, wParam, responseInfo) -> None:
+        self._result = PviXReadResponse(self._hPvi, wParam, None, 0)
 
-    def _eventUploadStream( self, wParam, responseInfo, dataLen : int ):  
-        """
-        (internal) handle uploading data streams
-        """                   
-        self._result = PviXReadResponse( self._hPvi, wParam, None, 0 ) 
+    def _eventUploadStream(self, wParam, responseInfo, dataLen: int) -> None:
+        self._result = PviXReadResponse(self._hPvi, wParam, None, 0)
 
-
-    def _eventStatus( self, wParam, responseInfo ):
-        s = create_string_buffer(64)
-        self._result = PviXReadResponse( self._hPvi, wParam, byref(s), sizeof(s) )
-        st = dict()        
+    def _eventStatus(self, wParam, responseInfo) -> None:
+        s = create_string_buffer(self._BUFFER_SIZE_SMALL)  
+        self._result = PviXReadResponse(self._hPvi, wParam, byref(s), sizeof(s))
+        st = dict()
         if self._result == 0:
-            s = str(s, 'ascii').rstrip('\x00')
-            st.update( dictFromParameterPairString(s))        
-            self._statusResponse( self, st )
+            s_str = str(s, 'ascii').rstrip('\x00')
+            st.update(dictFromParameterPairString(s_str))
+            self._statusResponse(self, st)
 
-
-    def _eventError( self, wParam, responseInfo ):
-        """         
-        (internal) handle error events
-        """      
-        self._result = PviXReadResponse( self._hPvi, wParam, None, 0 )
-        if callable(self._errorChanged):
+    def _eventError(self, wParam, responseInfo) -> None:
+        self._result = PviXReadResponse(self._hPvi, wParam, None, 0)
+        if self._errorChanged is not None:  
             if self._errorChangedArgCount == 1:
-                 cast(Callable[[int], None], self._errorChanged)(responseInfo.ErrCode)
+                cast(Callable[[int], None], self._errorChanged)(responseInfo.ErrCode)
             elif self._errorChangedArgCount == 2:
-                 cast(Callable[[PviObject, int], None], self._errorChanged)(self, responseInfo.ErrCode)
- 
-    def _createAndLink(self, connection):
-        """
-        (internal) create object and link it
-        """
+                cast(Callable[['PviObject', int], None], self._errorChanged)(self, responseInfo.ErrCode)
+
+    def _createAndLink(self, connection) -> int:
         descriptor_items = []
         for key, value in self._objectDescriptor.items():
-            quote = '"' if re.search( r"[\/\.\s]", str(value) ) is not None else ''
+            quote = '"' if re.search(r'[\/\.\s]', str(value)) is not None else ''
             descriptor_items += [f'{key}={quote}{value}{quote}']
-        descr = ' '.join(descriptor_items) 
+        descr = ' '.join(descriptor_items)
         linkID = wintypes.DWORD(0)
         ld = ''
         for key, value in self._linkDescriptor.items():
             ld += f'{key}={value} '
-        self._result = PviXCreate( self._hPvi, byref(linkID), bytes(self._name, 'ascii'),
+        self._result = PviXCreate(self._hPvi, byref(linkID), bytes(self._name, 'ascii'),
             self._type, bytes(descr, 'ascii'), PVI_HMSG_NIL, SET_PVIFUNCTION, 0, ld.encode())
-        debuglog(f'PviXCreate({self.name}, { T_POBJ_TYPE(self._type)  }, {self._objectDescriptor}) = {self._result}, linkID={linkID.value}')          
-        if self._result == 0: # object creation successful
+        if self._result == 0:
             self._linkID = linkID.value
-            # if self._type == T_POBJ_TYPE.POBJ_PVAR: # read variable's data type
-            #     PviReadRequest( self._linkID, POBJ_ACC_TYPE, PVI_HMSG_NIL, SET_PVIFUNCTION, 0 )
-            connection._linkIDs[self._linkID] = self # store object for backward reference
+            connection._linkIDs[self._linkID] = self
         else:
             raise PviError(self._result, self)
-        return self._result                
-
+        return self._result
 
     @property
-    def externalObjects(self) -> List[Dict[str,str]]:
-        """     
-        PviObject.externalObjects : list of dict
-        get a list of external objects retrieved by POBJ_ACC_LIST_EXTERN
-        # only available with ANSL, not with INA2000
-
-        example:
-
-        ```
-        cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
-        ...
-        print("external objects", cpu.externalObjects )
-        ```
-
-        results in:
-
-        ```
-        external objects [{'name': '$$sysconf', 'type': 'Module'}, {'name': '$arlogsys', 'type': 'Module'}
-                    ...... name': 'visvc', 'type': 'Module'}]
-
-        ```
-
-        """    
-        s = create_string_buffer(b'\000' * 65536)   
-        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_LIST_EXTERN, None, 0, byref(s), sizeof(s) )
+    def externalObjects(self) -> List[Dict[str, str]]:
+        s = create_string_buffer(b'\000' * self._BUFFER_SIZE_XLARGE)  
+        self._result = PviXRead(self._hPvi, self._linkID, POBJ_ACC_LIST_EXTERN, None, 0, byref(s), sizeof(s))
         if self._result == 0:
-            s = str(s, 'ascii').rstrip('\x00')
-            li1 = [r.split(' OT=') for r in s.split('\t')]
-            li2 = [{ 'name': r[0], 'type' : r[1] } for r in li1]
+            s_str = str(s, 'ascii').rstrip('\x00')
+            li1 = [r.split(' OT=') for r in s_str.split('\t')]
+            li2 = [{'name': r[0], 'type': r[1]} for r in li1]
             return li2
-        else: 
+        raise PviError(self._result, self)
+
+    @property
+    def version(self) -> str:
+        return self._read_string_property(POBJ_ACC_VERSION, self._BUFFER_SIZE_MEDIUM)
+
+    @property
+    def status(self) -> dict:
+        s = create_string_buffer(b'\000' * self._BUFFER_SIZE_SMALL)  
+        self._result = PviXRead(self._hPvi, self._linkID, POBJ_ACC_STATUS, None, 0, byref(s), sizeof(s))
+        st = dict()
+        if self._result == 0:
+            s_str = str(s, 'ascii').rstrip('\x00')
+            st.update(dictFromParameterPairString(s_str))
+        else:
+            raise PviError(self._result, self)
+        return st
+
+    @status.setter
+    def status(self, st: bytes) -> None:
+        s = create_string_buffer(st)
+        self._result = PviXWrite(self._hPvi, self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0)
+        if self._result != 0:
             raise PviError(self._result, self)
 
-
-    @property       
-    def version(self) ->str:
-        """
-        PviObject.version
-        read the object's version
-
-        """    
-        s = create_string_buffer(b'\000' * 1024)             
-        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_VERSION, None, 0, byref(s), sizeof(s) )     
-        if self._result == 0:
-            s = str(s, 'ascii').rstrip('\x00')
-        else:
-            raise PviError(self._result, self)  
-        return s    
-
-
-
-    @property       
-    def status(self) -> dict:
-        """
-        PviObject.status
-        read the object's status
-
-        example:
-
-        ```
-        cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
-        task1 = Task( cpu, 'mainlogic')
-        temperature = Variable( task1, 'gHeating.status.actTemp' )
-        ...
-        print("status=", cpu.status )
-        ```
-
-        results in:
-
-        ```
-        cpu.status= {'ST': 'WarmStart', 'RunState': 'RUN'}
-        task1.status {'ST': 'Running'}
-        temperature.status= {'ST': 'Var', 'SC': 'g'}
-        ```
-        """    
-        s = create_string_buffer(b'\000' * 64)             
-        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_STATUS, None, 0, byref(s), sizeof(s) )
-        st = dict()        
-        if self._result == 0:
-            s = str(s, 'ascii').rstrip('\x00')
-            st.update( dictFromParameterPairString(s))
-        else:
-            raise PviError(self._result, self)  
-        return st    
-
-    
-    @status.setter
-    def status(self, st : bytes):
-        s = create_string_buffer(st)
-        self._result = PviXWrite( self._hPvi, self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 ) 
-        if self._result:
-            raise PviError(self._result, self)        
-
-
-    def readRequestStatus( self, callback : Callable[['PviObject',Dict[str,str]],None] ):
-        '''
-        starts asynchronous reading of the status.
-        
-        Args:
-            callback: callback function of type (PviObject, dict) returning the status dictionary
-        '''                
+    def readRequestStatus(self, callback: Callable[['PviObject', Dict[str, str]], None]) -> None:
         if callable(callback):
             self._statusResponse = callback
-            self._result = PviXReadRequest( self._hPvi, self._linkID, POBJ_ACC_STATUS, 1, SET_PVIFUNCTION, 0)
-            if self._result: 
+            self._result = PviXReadRequest(self._hPvi, self._linkID, POBJ_ACC_STATUS, 1, SET_PVIFUNCTION, 0)
+            if self._result != 0:
                 raise PviError(self._result, self)
         else:
             raise TypeError("Wrong type for Parameter 'callback'")
 
-
-    def __del__(self):
+    def __del__(self) -> None:
         self.kill()
 
-    def kill(self):
-        '''
-        PviObject.kill: kills this object
-        this should be called when object is not beeing used anymore
-        to save PVI resources
-        '''
-        if self._linkID != 0 and self._connection != None:
-
-            self._connection._linkIDs.pop(self._linkID) # remove from linkIDs
-            self._connection._pviObjects.remove(self) # remove from PviObjects
+    def kill(self) -> None:
+        if self._linkID != 0 and self._connection is not None:  
+            self._connection._linkIDs.pop(self._linkID)
+            self._connection._pviObjects.remove(self)
             self._result = PviXUnlink(self._hPvi, self._linkID)
             self._linkID = 0
             if self._result != 0 and self._result != 12045:
                 raise PviError(self._result, self)
-
-    
