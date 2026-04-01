@@ -30,10 +30,10 @@ import os
 import threading
 from typing import Union, List
 from ipaddress import IPv4Address
-from pvi import Connection, PviObject, Line, Device, Cpu, Task, Variable
+from pvi.pvi_objects import Connection, PviObject, Line, Device, Cpu, Task, Variable
 from pvi.plcwatch_modules import (NetworkSearchDialog, ScanResult, SnmpScanDialog,
                                 VariableListBox, ObjectTreeView, icon_storage)
-from __about__ import __version__
+from pvi.__about__ import __version__
 
 
 

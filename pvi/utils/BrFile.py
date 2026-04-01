@@ -23,7 +23,7 @@
 import os
 import struct
 
-from pvi_objects.Module import ModuleType as BrFileType
+from pvi.pvi_objects.Module import ModuleType as BrFileType
 
 class BrFile():
     '''

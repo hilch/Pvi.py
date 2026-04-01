@@ -23,7 +23,7 @@
 from datetime import datetime, timedelta
 from collections import namedtuple
 import struct
-from .BrFile import *
+from pvi.utils.BrFile import *
 
 BrLoggerFileEntry = namedtuple('LoggerEntry', [ 'RecordID', 'Time', 'Nanosec', 'ObjectID' , 'Severity', 'Code', 
                          'EventID', 'OriginID', 'AsciiData', 'BinaryData'])

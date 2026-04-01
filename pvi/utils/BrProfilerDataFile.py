@@ -24,7 +24,7 @@ from datetime import datetime
 from collections import namedtuple
 import struct
 from enum import IntEnum
-from .BrFile import *
+from pvi.utils.BrFile import *
 
 BrProfilerEvent = namedtuple('BrProfilerEvent', [ 'microseconds', 'objectIdent', 'objectName', 'event', 'eventDescription'])
 
