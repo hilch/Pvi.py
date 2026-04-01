@@ -1,4 +1,3 @@
-
 #
 # Pvi.py
 # Python connector for B&R Pvi (process visualization interface)
@@ -25,8 +24,9 @@ from typing import List, Tuple, Union, Any
 from enum import IntEnum
 import datetime
 from dataclasses import dataclass
-from ctypes import c_bool, c_uint8, c_int8, c_uint16, c_int16, c_uint32, c_int32, c_uint64, c_int64, c_float, c_double
-from ctypes import c_char, c_wchar
+from ctypes import (c_bool, c_uint8, c_int8, c_uint16, c_int16, 
+                    c_uint32, c_int32, c_uint64, c_int64, c_float, 
+                    c_double, c_char, c_wchar)
 import re
 import struct
 from .include import *
@@ -76,10 +76,10 @@ class TypeDescription:
 
     def get_array_indices(self) -> Union[List[Tuple[int,int]], None]:
         if 'a' in self.vs:
-            l = []
+            indices = []
             for m in patternVSa.finditer(self.vs):
-                l.append( (int(m.group(2)), int(m.group(3))) )
-            return l
+                indices.append( (int(m.group(2)), int(m.group(3))) )
+            return indices
         elif self.vn > 1:
             return [(0, self.vn-1)]
         else:
@@ -185,6 +185,105 @@ class TypeDescription:
             raise BaseException("not implemented")                
         
         
+
+    # -----------------------------------------------------------------------
+    # Per-type pack helpers 
+    # -----------------------------------------------------------------------
+    def _pack_dt(self, value, single_value):
+        if single_value:
+            if isinstance( value, datetime.datetime):
+                v = int(value.replace(tzinfo=datetime.timezone.utc).timestamp())
+                return c_uint32(v)
+            elif isinstance(value, int):
+                return c_uint32(value)
+        else:
+            if isinstance(value[0], datetime.datetime):
+                v = (int(v.replace(tzinfo=datetime.timezone.utc).timestamp()) for v in value)
+                return (c_uint32*self.vn)(*v)
+            elif isinstance(value[0], int):
+                return (c_uint32*self.vn)(*value)
+        return None
+
+    def _pack_date(self, value, single_value):
+        if single_value:
+            if isinstance(value, datetime.date):
+                value = datetime.datetime.combine(value, datetime.time(), tzinfo=datetime.timezone.utc)
+                return c_uint32(int(value.timestamp()))
+            elif isinstance(value, int):
+                return c_uint32(value)
+        else:
+            if isinstance(value[0], datetime.date):
+                v = (int(datetime.datetime.combine(v, datetime.time(), tzinfo=datetime.timezone.utc).timestamp()) for v in value)
+                return (c_uint32*self.vn)(*v)
+            elif isinstance(value[0], int):
+                return (c_uint32*self.vn)(*value)
+        return None
+
+    def _pack_tod(self, value, single_value):
+        if single_value:
+            if isinstance(value, datetime.time):
+                return c_uint32(value.hour * 3600000 + value.minute * 60000 + value.second * 1000 + int(value.microsecond / 1000))
+            elif isinstance(value, int):
+                return c_uint32(value)
+        else:
+            if isinstance(value[0], datetime.time):
+                v = (v.hour * 3600000 + v.minute * 60000 + v.second * 1000 + int(v.microsecond / 1000) for v in value)
+                return (c_uint32*self.vn)(*v)
+            elif isinstance(value[0], int):
+                return (c_uint32*self.vn)(*value)
+        return None
+
+    def _pack_time(self, value, single_value):
+        if single_value:
+            if isinstance(value, datetime.timedelta):
+                return c_int32(int(value / datetime.timedelta(milliseconds=1)))
+            elif isinstance(value, int):
+                return c_int32(value)
+        else:
+            if isinstance(value[0], datetime.timedelta):
+                v = (int(v / datetime.timedelta(milliseconds=1)) for v in value)
+                return (c_int32*self.vn)(*v)
+            elif isinstance(value[0], int):
+                return (c_int32*self.vn)(*value)
+        return None
+
+    def _pack_string(self, value, single_value):
+        if single_value:
+            if isinstance(value, bytes):
+                return (c_char * self.vl)(*value)
+        else:
+            if isinstance(value[0], bytes):
+                buffer = ((c_char * self.vl) * self.vn)()
+                for n, v in enumerate(value):
+                    s = (c_char*self.vl)(*v)
+                    buffer[n] = s
+                return buffer
+        return None
+
+    def _pack_wstring(self, value, single_value):
+        ch = int(self.vl/2) # no of characters
+        if single_value:
+            if isinstance(value, bytes):
+                value = value.decode()
+            return (c_wchar * ch)(*value)
+        else:
+            buffer = ((c_wchar * (ch)*self.vn))()
+            for n, v in enumerate(value):
+                if isinstance(v, bytes):
+                    v = v.decode()
+                for j, c in enumerate(v):
+                    buffer[n][j] = c
+            return buffer
+
+    # -----------------------------------------------------------------------
+    # Generic pack helper 
+    # -----------------------------------------------------------------------
+    def _pack_ctype(self, ctype_class, value):
+        '''Pack single value or array into the given ctype class.'''
+        if self.get_array_indices():
+            return (ctype_class * self.vn)(*value)
+        return ctype_class(value)
+
     def pack_value_to_buffer(self, value : Any) -> Any:
         '''
         packs Python data type to byte buffer
@@ -198,99 +297,34 @@ class TypeDescription:
 
         try:
             if self.vt == PvType.BOOLEAN:
-                if single_value: # single value
-                    buffer = c_bool(value != 0)
-                else: # array of BOOLEAN
-                    buffer = (c_bool*self.vn)(*value)
+                buffer = self._pack_ctype(c_bool, value != 0 if single_value else [v != 0 for v in value])  
 
             elif self.vt == PvType.U8:           
-                if single_value: # single value
-                    assert type(value) is int
-                    buffer = c_uint8(value)
-                else: # array of U8
-                    buffer = (c_uint8*self.vn)(*value)
+                buffer = self._pack_ctype(c_uint8, value)  
 
             elif self.vt == PvType.I8:              
-                if single_value: # single value
-                    assert type(value) is int                    
-                    buffer = c_int8(value)
-                else: # array of I8
-                    buffer = (c_int8*self.vn)(*value)
+                buffer = self._pack_ctype(c_int8, value)  
 
             elif self.vt == PvType.U16:             
-                if single_value: # single value
-                    assert type(value) is int                    
-                    buffer = c_uint16(value)
-                else: # array of U16
-                    buffer = (c_uint16*self.vn)(*value)
+                buffer = self._pack_ctype(c_uint16, value) 
 
             elif self.vt == PvType.I16:              
-                if single_value: # single value
-                    assert type(value) is int                    
-                    buffer = c_int16(value)
-                else: # array of I16
-                    buffer = (c_int16*self.vn)(*value)
+                buffer = self._pack_ctype(c_int16, value)  
 
             elif self.vt == PvType.U32:              
-                if single_value: # single value
-                    assert type(value) is int                    
-                    buffer = c_uint32(value)
-                else: # array of U32
-                    buffer = (c_uint32*self.vn)(*value)
+                buffer = self._pack_ctype(c_uint32, value)  
 
             elif self.vt == PvType.DT:
-                if single_value: # single value
-                    if type(value) == datetime.datetime:
-                        v = int(value.replace(tzinfo=datetime.timezone.utc).timestamp())
-                        buffer = c_uint32( v )
-                    elif type(value) == int:
-                        buffer = c_uint32(value)
-                else: # array of DT
-                    if type(value[0]) == datetime.datetime:
-                        v = (int(v.replace(tzinfo=datetime.timezone.utc).timestamp()) for v in value)
-                        buffer = (c_uint32*self.vn)( *v )
-                    elif type(value[0]) == int:
-                        buffer = (c_uint32*self.vn)(*value)
+                buffer = self._pack_dt(value, single_value)  
 
             elif self.vt == PvType.DATE:
-                if single_value: # single value
-                    if type(value) == datetime.date:
-                        value = datetime.datetime.combine(value, datetime.time(), tzinfo=datetime.timezone.utc)
-                        buffer = c_uint32( int(value.timestamp()) )
-                    elif type(value) == int:
-                        buffer = c_uint32(value)
-                else: # array of DATE
-                    if type(value[0]) == datetime.date:
-                        v = (int(datetime.datetime.combine(v, datetime.time(), tzinfo=datetime.timezone.utc).timestamp()) for v in value)
-                        buffer = (c_uint32*self.vn)( *v )
-                    elif type(value[0]) == int:
-                        buffer = (c_uint32*self.vn)(*value)            
+                buffer = self._pack_date(value, single_value)  
 
             elif self.vt == PvType.TOD:
-                if single_value: # single value
-                    if type(value) == datetime.time:
-                        buffer = c_uint32( value.hour * 3600000 + value.minute * 60000 + value.second * 1000 + int(value.microsecond / 1000) )
-                    elif type(value) == int:
-                        buffer = c_uint32(value)
-                else: # array of TOD
-                    if type(value[0]) == datetime.time:
-                        v = (v.hour * 3600000 + v.minute * 60000 + v.second * 1000 + int(v.microsecond / 1000) for v in value)
-                        buffer = (c_uint32*self.vn)( *v )
-                    elif type(value[0]) == int:
-                        buffer = (c_uint32*self.vn)(*value)
+                buffer = self._pack_tod(value, single_value)  
 
             elif self.vt == PvType.TIME:
-                if single_value: # single value
-                    if type(value) == datetime.timedelta: 
-                        buffer = c_int32( int( value / datetime.timedelta(milliseconds=1)) )
-                    elif type(value) == int:
-                        buffer = c_int32(value)
-                else: # array of TIME
-                    if type(value[0]) == datetime.timedelta: 
-                        v = (int( v / datetime.timedelta(milliseconds=1)) for v in value)
-                        buffer = (c_int32*self.vn)( *v)
-                    elif type(value[0]) == int:
-                        buffer = (c_int32*self.vn)(value)
+                buffer = self._pack_time(value, single_value)  
 
             elif self.vt == PvType.I32:
                 if single_value: # single value
@@ -298,63 +332,32 @@ class TypeDescription:
                         value = value.value # type: ignore
                     except:
                         pass
-                    assert type(value) is int                    
-                    buffer = c_int32(value)
+                    if isinstance(value, int):
+                        buffer = c_int32(value)
+                    else:
+                        raise TypeError("Wrong Type. Expected 'int'")
                 else: # array of I32
                     buffer = (c_int32*self.vn)(*value)                
 
             elif self.vt == PvType.U64:              
-                if single_value: # single value
-                    assert type(value) is int                    
-                    buffer = c_uint64(value)
-                else: # array of U64
-                    buffer = (c_uint64*self.vn)(*value)                
+                buffer = self._pack_ctype(c_uint64, value)                 
 
             elif self.vt == PvType.I64:               
-                if single_value: # single value 
-                    assert type(value) is int                    
-                    buffer = c_int64(value)
-                else: # array of I64
-                    buffer = (c_int64*self.vn)(*value)                                
+                buffer = self._pack_ctype(c_int64, value)                                 
 
             elif self.vt == PvType.F32:
-                if single_value: # single value
-                    value = float(value) # type: ignore
-                    buffer = c_float(value)
-                else: # array of F32
-                    buffer = (c_float*self.vn)(*value)                
+                value = float(value) if single_value else value  # type: ignore
+                buffer = self._pack_ctype(c_float, value)               
 
             elif self.vt == PvType.F64:              
-                if single_value: # single value
-                    value = (value) # type: ignore
-                    buffer = c_double(value)
-                else: # array of F64
-                    buffer = (c_double*self.vn)(*value)                
+                value = float(value) if single_value else value  # type: ignore
+                buffer = self._pack_ctype(c_double, value)                
 
             elif self.vt == PvType.STRING:
-                if single_value: # single value
-                    if type(value) == bytes:
-                        buffer = (c_char * self.vl)(*value)
-                else: # array of STRING
-                    if type(value[0]) == bytes:
-                        buffer = ((c_char * self.vl) * self.vn)()
-                        for n, v in enumerate(value):
-                            s = (c_char*self.vl)(*v)
-                            buffer[n] = s
+                buffer = self._pack_string(value, single_value) 
 
             elif self.vt == PvType.WSTRING:
-                ch = int(self.vl/2) # no of characters
-                if single_value:
-                    if type(value) == bytes:
-                        value = value.decode()                
-                    buffer = (c_wchar * ch )(*value)                
-                else: # array of WSTRING
-                    buffer = ((c_wchar * (ch)*self.vn))()
-                    for n, v in enumerate(value):
-                        if type(v) == bytes:
-                            v = v.decode()
-                        for j,c in enumerate(v):
-                            buffer[n][j] = c
+                buffer = self._pack_wstring(value, single_value)  
             else:
                 raise RuntimeError( "data type " + str(self.vt) + " not implemented")
             
