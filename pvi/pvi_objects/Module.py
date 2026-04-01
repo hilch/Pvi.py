@@ -21,7 +21,7 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from datetime import datetime, timezone
-from typing import Union, Callable, Dict, Any
+from typing import Union, Callable, Dict, Any, Optional, List
 from enum import IntEnum, unique
 import xml.etree.ElementTree as ET
 import re
@@ -31,6 +31,7 @@ from .include import *
 from .Object import PviObject
 from .Error import PviError
 from .Helpers import dictFromParameterPairString
+
 
 @unique
 class ModuleType(IntEnum):
@@ -90,7 +91,7 @@ class MemoryType(IntEnum):
     @classmethod
     def _missing_(cls, value):
         return MemoryType.UNKNOWN
-    
+
 
 class Module(PviObject):
     '''class representing modules
@@ -103,7 +104,14 @@ class Module(PviObject):
     module = Module( cpu, 'bigmod' )
     ```
     '''
-    def __init__( self, parent : PviObject, name : str, **objectDescriptor: Union[str,int, float]):
+
+    _BUFFER_SIZE_SMALL: int = 1024
+    _BUFFER_SIZE_MEDIUM: int = 4096
+    _ANSL_LOGGER_ACCESS_NOT_SUPPORTED: int = 12058
+
+    # ------------------------------------------------------------------
+
+    def __init__(self, parent: PviObject, name: str, **objectDescriptor: Union[str, int, float]):
         '''
         Args:
             parent : CPU object
@@ -113,144 +121,140 @@ class Module(PviObject):
         if parent.type != T_POBJ_TYPE.POBJ_CPU:
             raise PviError(12009, self)
         if 'CD' not in objectDescriptor:
-            objectDescriptor.update({'CD':name})                    
-        super().__init__( parent, T_POBJ_TYPE.POBJ_MODULE, name, **objectDescriptor)
-        self._uploaded = None
-        self._progress = None
+            objectDescriptor.update({'CD': name})
+        super().__init__(parent, T_POBJ_TYPE.POBJ_MODULE, name, **objectDescriptor)
+        self._uploaded: Optional[Callable] = None
+        self._progress: Optional[Callable] = None
 
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Module( name={self._name}, linkID={self._linkID} )"
 
-  
-    def _eventUploadStream( self, wParam, responseInfo, dataLen : int ):
-        '''
-        (internal) upload a data module as stream
-        '''
-        s = create_string_buffer(dataLen)       
-        self._result = PviXReadResponse( self._hPvi, wParam, s, sizeof(s) )
-        if self._result == 0:
-            if self._uploaded:
-                sig = inspect.signature(self._uploaded)
-                if len(sig.parameters) == 2:
-                    self._uploaded(self, s.raw)
-                elif len(sig.parameters) == 1:
-                    self._uploaded(s.raw)                      
+
+    def _call_callback(self, callback: Optional[Callable], *args) -> None:
+        """
+        Call a callback with flexible signature (1 or 2 parameters).
+        If callback accepts 2 params: callback(self, *args).
+        If callback accepts 1 param:  callback(*args).
+        Does nothing when callback is None.
+        """
+        if callback is None:
+            return
+        sig = inspect.signature(callback)
+        if len(sig.parameters) == 2:
+            callback(self, *args)
         else:
+            callback(*args)
+
+
+    def _read_response_bytes(self, wParam, dataLen: int, extra: int = 0) -> bytes:
+        """
+        Read PVI response into a buffer and return raw bytes.
+
+        Args:
+            wParam:   wParam from the event
+            dataLen:  number of bytes reported by the event
+            extra:    optional extra bytes added to the buffer (default 0)
+        Raises:
+            PviError: if PviXReadResponse returns non-zero
+        """
+        s = create_string_buffer(dataLen + extra)
+        self._result = PviXReadResponse(self._hPvi, wParam, s, sizeof(s))
+        if self._result != 0:
             raise PviError(self._result, self)
+        return s.raw
 
 
-    def _eventUploadLogData( self, wParam, responseInfo, dataLen : int ):
-        '''
-        (internal) upload XML logger data (ANSL only)
-        '''
-        s = create_string_buffer(dataLen+256)       
-        self._result = PviXReadResponse( self._hPvi, wParam, s, sizeof(s) )
-        s = s.raw.replace(b'\x00',b'')
-        if self._result == 0:
-            logger = ET.fromstring(s) 
-            entries = list()
-            for entry in logger:
-                cols = {'Version','RecordId', 'OriginRecordId', 'EventId', 'AddDataSize', 'AddDataFormat', 'Severity', 'Info'}
-                for c in cols:
-                    try: # try to convert columns into integer values
-                        value = int(entry.attrib[c])
-                        entry.attrib.update({c : str(value)} )
-                    except:
-                        pass
-                try: # try to convert timestamp into Python datatype
-                    value = datetime.fromtimestamp( float(entry.attrib['TimestampUtc']) )
-                    entry.attrib.update({ 'TimestampUtc' : str(value)} )
-                except:
+    @staticmethod
+    def _parse_xml(data: Union[str, bytes]) -> ET.Element:
+        """
+        Parse XML and return root Element.
+        Raises:
+            ValueError: wraps ET.ParseError with descriptive message
+        """
+        try:
+            return ET.fromstring(data)
+        except ET.ParseError as exc:
+            raise ValueError(f"Invalid XML data: {exc}") from exc
+
+    # ------------------------------------------------------------------
+
+    def _eventUploadStream(self, wParam, responseInfo, dataLen: int) -> None:
+        '''(internal) upload a data module as stream'''
+        raw = self._read_response_bytes(wParam, dataLen)        
+        self._call_callback(self._uploaded, raw)                
+
+
+    def _eventUploadLogData(self, wParam, responseInfo, dataLen: int) -> None:
+        '''(internal) upload XML logger data (ANSL only)'''
+        raw = self._read_response_bytes(wParam, dataLen, extra=256)  
+        cleaned = raw.replace(b'\x00', b'')
+        logger = self._parse_xml(cleaned)                            
+
+        entries: List[Dict[str, Any]] = []
+        for entry in logger:
+            cols = {'Version', 'RecordId', 'OriginRecordId', 'EventId',
+                    'AddDataSize', 'AddDataFormat', 'Severity', 'Info'}
+            for c in cols:
+                try:
+                    entry.attrib[c] = str(int(entry.attrib[c]))
+                except (KeyError, ValueError):
                     pass
-                entries.append(entry.attrib)
-            if self._uploaded:
-                sig = inspect.signature(self._uploaded)
-                if len(sig.parameters) == 2:
-                    self._uploaded(self, entries)
-                elif len(sig.parameters) == 1:
-                    self._uploaded(entries)      
-        else:
-            raise PviError(self._result, self)
+            try:
+                entry.attrib['TimestampUtc'] = str(
+                    datetime.fromtimestamp(float(entry.attrib['TimestampUtc'])))
+            except (KeyError, ValueError):
+                pass
+            entries.append(entry.attrib)
+
+        self._call_callback(self._uploaded, entries)           
 
 
-    def _eventUploadModData( self, wParam, responseInfo, dataLen : int ):
-        '''
-        (internal) upload logger data (INA2000)
+    def _eventUploadModData(self, wParam, responseInfo, dataLen: int) -> None:
+        '''(internal) upload logger data (INA2000)
         see GUID 75bf0748-45f2-4610-a68d-53760ab5fa98
         '''
-        patternParameterPairs = re.compile(r"\s*([A-Z]{1,4}=\w*)\s*")        
-        s = create_string_buffer(dataLen)       
-        self._result = PviXReadResponse( self._hPvi, wParam, s, sizeof(s) )
+        patternParameterPairs = re.compile(r'\s*([A-Z]{1,4}=\w*)\s*')
+        raw = self._read_response_bytes(wParam, dataLen)        
+
+        entries: List[Dict[str, Any]] = []
+        data = raw.split(b'\x00')
+        n = 0
+        noOfEntries = int(data[0][3:])
+        while n < noOfEntries * 3:
+            n += 1
+            entry: Dict[str, Any] = {}
+            for m in patternParameterPairs.findall(str(data[n])):
+                if m.startswith('TIME'):    entry['date']  = datetime.fromtimestamp(int(m[5:]))
+                elif m.startswith('ID'):    entry['id']    = int(m[3:])
+                elif m.startswith('E'):     entry['error'] = int(m[2:])
+                elif m.startswith('INFO'):  entry['info']  = int(m[5:])
+                elif m.startswith('LEV'):   entry['level'] = int(m[4:])
+                elif m.startswith('TASK'):  entry['task']  = str(data[5:])
+            n += 1; entry['ascii'] = data[n]
+            n += 1; entry['bin']   = data[n]
+            entries.append(entry)
+
+        self._call_callback(self._uploaded, entries)            
+
+
+    def _eventProceeding(self, wParam, responseInfo) -> None:
+        '''(internal) return proceeding info'''
+        proceedingInfo = T_PROCEEDING_INFO()
+        self._result = PviXReadResponse(self._hPvi, wParam, byref(proceedingInfo), sizeof(proceedingInfo))
         if self._result == 0:
-            entries = list()            
-            data = s.raw.split(b'\00')                    
-            n = 0
-            noOfEntries = int(data[0][3:])
-            while n <  noOfEntries*3:
-                n += 1 # point to next entry
-                entry = dict()
-                # read info string
-                matches = patternParameterPairs.findall(str(data[n]))            
-                for m in matches:
-                    if str(m).startswith('TIME'):
-                        dt = datetime.fromtimestamp( int(m[5:]))
-                        entry.update({ 'date' : dt})
-                    elif str(m).startswith('ID'):
-                        id = int(m[3:])
-                        entry.update({ 'id' : id})
-                    elif str(m).startswith('E'):
-                        error = int(m[2:])
-                        entry.update({ 'error' : error })                        
-                    elif str(m).startswith('INFO'):
-                        info = int(m[5:])                        
-                        entry.update({ 'info' : info })
-                    elif str(m).startswith('LEV'):
-                        level = int(m[4:])                        
-                        entry.update({ 'level' : level })
-                    elif str(m).startswith('TASK'):
-                        entry.update({ 'task' : str(data[5:]) })
-                # read ascii data
-                n += 1
-                entry.update({'ascii': data[n] })
-                # read binary data
-                n += 1
-                entry.update({'bin': data[n] })   
-                entries.append(entry) 
-            if self._uploaded:
-                sig = inspect.signature(self._uploaded)
-                if len(sig.parameters) == 2:
-                    self._uploaded(self, entries)
-                elif len(sig.parameters) == 1:
-                    self._uploaded(entries)                    
+            self._call_callback(self._progress, int(proceedingInfo.Percent))  
         else:
             raise PviError(self._result, self)
 
 
-    def _eventProceeding( self, wParam, responseInfo : T_RESPONSE_INFO ):  
+    def upload(self, **kwargs: Union[str, Callable]) -> None:
         '''
-        (internal) return proceeding info
-        '''  
-        proceedingInfo = T_PROCEEDING_INFO()
-        self._result = PviXReadResponse( self._hPvi, wParam, byref(proceedingInfo), sizeof(proceedingInfo) )
-        if self._result == 0:
-            if self._progress:
-                sig = inspect.signature(self._progress)
-                if len(sig.parameters) == 2:
-                    self._progress(self, int(proceedingInfo.Percent))
-                elif len(sig.parameters) == 1:                         
-                    self._progress(int(proceedingInfo.Percent))
-        else:
-            raise PviError(self._result, self)               
-
-
-    def upload(self, **kwargs : Union[str, Callable]):
-        '''
-        uploadLoggerData 
+        uploadLoggerData
         loads logger data if module is a logger module else load binary data
 
-        Args: 
-            kwargs:    
+        Args:
+            kwargs:
                 uploaded - callback - is fired when module was uploaded
                 progress - callback(int) - returns percentage of progress
                 MT - Moduletype e.g. 'BRT', '_LOGM'
@@ -269,123 +273,85 @@ class Module(PviObject):
                 else:
                     raise TypeError("only type 'callable' for argument 'progress' allowed !")
             elif key == 'MT' and value == '_LOGM':
-                loggerModule = True # interpret as logger module
+                loggerModule = True
             else:
                 arguments += f"{key}={value}"
 
-        # check if module is a logger module
         if loggerModule:
-            # try ANSL logger module
-            s = create_string_buffer(b'\000' * 4096)   
-            self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_LN_XML_LOGM_INFO, None, 0, byref(s), sizeof(s) )
+            s = create_string_buffer(b'\000' * self._BUFFER_SIZE_MEDIUM)         
+            self._result = PviXRead(self._hPvi, self._linkID, POBJ_ACC_LN_XML_LOGM_INFO,
+                                    None, 0, byref(s), sizeof(s))
             if self._result == 0:
-                s = str(s, 'ascii').rstrip('\x00')
-                xmlTree = ET.fromstring(s)
+                xmlTree = self._parse_xml(str(s, 'ascii').rstrip('\x00'))        
                 loggerVersion = xmlTree.attrib.get('Version', '1000').encode('ascii')
-                s = create_string_buffer(b'DN=10000000 VI=' + loggerVersion )   
-                self._result = PviXReadArgumentRequest( self._hPvi, self._linkID, POBJ_ACC_LN_XML_LOGM_DATA, byref(s), sizeof(s), PVI_HMSG_NIL, SET_PVIFUNCTION, 0 )            
+                s = create_string_buffer(b'DN=10000000 VI=' + loggerVersion)
+                self._result = PviXReadArgumentRequest(self._hPvi, self._linkID,
+                    POBJ_ACC_LN_XML_LOGM_DATA, byref(s), sizeof(s), PVI_HMSG_NIL, SET_PVIFUNCTION, 0)
                 if self._result:
-                    raise PviError(self._result)           
-            elif self._result == 12058: # access not aupported ?
-                s = create_string_buffer(b'DN=100000') # maximum possible is undocumented.
-                self._result = PviXReadArgumentRequest( self._hPvi, self._linkID, POBJ_ACC_MOD_DATA, byref(s), sizeof(s), PVI_HMSG_NIL, SET_PVIFUNCTION, 0    ) 
+                    raise PviError(self._result)
+            elif self._result == self._ANSL_LOGGER_ACCESS_NOT_SUPPORTED:        
+                s = create_string_buffer(b'DN=100000')  # maximum possible is undocumented
+                self._result = PviXReadArgumentRequest(self._hPvi, self._linkID,
+                    POBJ_ACC_MOD_DATA, byref(s), sizeof(s), PVI_HMSG_NIL, SET_PVIFUNCTION, 0)
                 if self._result:
-                    raise PviError(self._result)           
+                    raise PviError(self._result)
             else:
                 raise PviError(self._result)
         else:
             s = create_string_buffer(bytes(arguments, 'ascii'))
-            self._result = PviXReadArgumentRequest( self._hPvi, self._linkID, POBJ_ACC_UPLOAD_STM, byref(s), sizeof(s), PVI_HMSG_NIL, SET_PVIFUNCTION, 0    ) 
+            self._result = PviXReadArgumentRequest(self._hPvi, self._linkID,
+                POBJ_ACC_UPLOAD_STM, byref(s), sizeof(s), PVI_HMSG_NIL, SET_PVIFUNCTION, 0)
             if self._result:
-                raise PviError(self._result)           
-                            
-    @property       
+                raise PviError(self._result)
+
+
+    def delete(self) -> None:
+        """
+        delete Module from CPU
+
+        Raises:
+            PviError
+
+        Returns:
+            None
+        """
+        s = create_string_buffer(b'LD=Delete')        
+        self._result = PviXWrite( self._hPvi, self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )  
+        # if self._result:
+        #     raise PviError(self._result, self)        
+
+    @property
     def moduleInfo(self) -> dict:
-        """
-        read the Module type information
-         example:
-
-        ```
-        module = Module( cpu, '$$sysconf' )
-        ...
-        print("info =", module.moduleInfo )
-        ```
-
-        results in:
-
-        ```
-        info = {'MT': <ModuleType.TARGET_SYSTEM_CONFIGURATION: 129>, 'ML': '70720'}
-        ```
-
-        """    
-        s = create_string_buffer(b'\000' * 1024)             
-        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_MOD_TYPE , None, 0, byref(s), sizeof(s) )     
+        """read the Module type information"""
+        s = create_string_buffer(b'\000' * self._BUFFER_SIZE_SMALL)              
+        self._result = PviXRead(self._hPvi, self._linkID, POBJ_ACC_MOD_TYPE,
+                                None, 0, byref(s), sizeof(s))
         if self._result == 0:
-            s = str(s, 'ascii').rstrip('\x00')
-            ret = dict()
-            ret.update( dictFromParameterPairString(s)  )
-            type_number = int(ret.get('MT',0))
-            ret.update( {'MT' : ModuleType(type_number)})
-            return ret          
+            ret: Dict[str, Any] = {}
+            ret.update(dictFromParameterPairString(str(s, 'ascii').rstrip('\x00')))
+            ret['MT'] = ModuleType(int(ret.get('MT', 0)))
+            return ret
         else:
-            raise PviError(self._result, self)    
+            raise PviError(self._result, self)
 
-
-        
-    @property       
+    @property
     def moduleInfoExtended(self) -> dict:
-        """
-        read the Module type information
-         example:
-
-        ```
-        module = Module( cpu, '$$sysconf' )
-        ...
-        print("info =", module.moduleInfoExtended )
-        ```
-
-        results in:
-
-        ```
-        info = {'Name': '$$sysconf', 
-                'Size': '70720', 
-                'Address': '0x038B70A0', 
-                'MemType': <MemoryType.USRROM: 2>, 
-                'Version': '73', 
-                'Revision': '48', 
-                'ModulType': <ModuleType.TARGET_SYSTEM_CONFIGURATION: 129>, 
-                'Time': datetime.datetime(2024, 1, 5, 11, 0, 8), 
-                'RawTimeErzT5': 'f8-25-58-04-00', 
-                'RawTimeAenT5': 'fc-72-75-12-00', 
-                'TaskClass': '0', 
-                'InstallNo': '0', 
-                'ModulState': '1', 
-                'DomainOvIndex': '1793', 
-                'DomainModulState': '6', 
-                'Listed': '3'}
-        ```
-
-        """    
-        s = create_string_buffer(b'\000' * 4096)             
-        self._result = PviXRead( self._hPvi, self._linkID, POBJ_ACC_LN_XML_MOD_INFO  , None, 0, byref(s), sizeof(s) )     
+        """read the extended Module type information"""
+        s = create_string_buffer(b'\000' * self._BUFFER_SIZE_MEDIUM)             
+        self._result = PviXRead(self._hPvi, self._linkID, POBJ_ACC_LN_XML_MOD_INFO,
+                                None, 0, byref(s), sizeof(s))
         if self._result == 0:
-            s = str(s, 'ascii').rstrip('\x00')
-            """Parse Module Info XML and return as dictionary"""
-            root = ET.fromstring(s)
-            module_info : Dict[str, Any]= dict()
-            if root.tag == 'ModInfo':        
+            root = self._parse_xml(str(s, 'ascii').rstrip('\x00'))               
+            module_info: Dict[str, Any] = {}
+            if root.tag == 'ModInfo':
                 module_info = dict(root.attrib)
-                type_number = int(module_info.get('ModulType', '0x00'),16)
-                module_info.update( {'ModulType' : ModuleType(type_number).name } ) 
-                memory_type = int(module_info.get('MemType', '0x100'),16)
-                module_info.update( {'MemType' : MemoryType(memory_type).name } )
-                time_created = datetime.strptime(module_info.get('Time','') , "%Y-%m-%d-%H-%M-%S.%f")
-                module_info.update( {'Time' : time_created } ) 
-                version = f'{int(module_info.get('Version','0')):02x}'
-                version += f'{int(module_info.get('Revision','0')):02x}'
-                version = f'{version[0]}.{version[1]}{version[2]}.{version[3]}'
-                module_info.update({'Version': version})  
-                del module_info['Revision']                                 
-            return module_info      
+                module_info['ModulType'] = ModuleType(int(module_info.get('ModulType', '0x00'), 16)).name
+                module_info['MemType']   = MemoryType(int(module_info.get('MemType',   '0x100'), 16)).name
+                module_info['Time']      = datetime.strptime(module_info.get('Time', ''), "%Y-%m-%d-%H-%M-%S.%f")
+                version  = f"{int(module_info.get('Version',  '0')):02x}"
+                version += f"{int(module_info.get('Revision', '0')):02x}"
+                module_info['Version'] = f'{version[0]}.{version[1]}{version[2]}.{version[3]}'
+                del module_info['Revision']
+            return module_info
         else:
-            raise PviError(self._result, self)    
+            raise PviError(self._result, self)
