@@ -180,19 +180,89 @@ class TestTaskInfo( unittest.TestCase ):
     def test_Taskinfo1(self):
         task = Task( cpu, 'mainlogic')
         self.assertEqual( 'Running', task.status['ST'] )
-        task.kill
+        task.kill()
 
     def test_Taskinfo2(self):
         task = Task( cpu, 'myTask', CD='/RO=::mainlogic')
         self.assertEqual( 'Running', task.status['ST'] )
-        task.kill
+        task.kill()
 
     def test_applicationModuleTask(self):
         task = Task( cpu, 'myAppTask', CD='/RO=AppMod1::myApptask1')
         self.assertEqual( 'Running', task.status['ST'] )
         self.assertIn( 'i', task.variables)
-        task.kill
+        task.kill()
 
+class TestModuleInfo( unittest.TestCase ):
+    def test_Module1(self):
+        module = Module(cpu, 'sysconf', CD='$$sysconf' )
+        self.assertEqual( module.moduleInfo, {'MT': ModuleType.TARGET_SYSTEM_CONFIGURATION, 'ML': '70720'})
+        info_extended = module.moduleInfoExtended
+        self.assertEqual( info_extended['Name'], '$$sysconf' )
+        self.assertEqual( info_extended['Size'], '70720' )        
+        self.assertEqual( info_extended['ModulType'], 'TARGET_SYSTEM_CONFIGURATION' )
+        self.assertEqual( info_extended['Version'], '4.93.0' )   
+        self.assertEqual( info_extended['Time'], datetime.datetime(2024, 1, 5, 11, 0, 8) )               
+        module.kill()
+
+
+class TestModulCreate( unittest.TestCase ):
+    def test_ModuleDownload(self):
+
+        self.assertFalse( 'mymod' in cpu.modules)
+        
+        ready = False
+        progress = 0
+        
+        def callback_progress(x):
+            nonlocal progress
+            progress = x  
+
+        def callback_downloaded():
+            nonlocal ready            
+            ready = True
+                
+        cpu.downloadModule( bytes(50000), MN='mymod', MT='BRT', progress = callback_progress , downloaded = callback_downloaded )
+        
+        try:
+            while not(ready):
+                pviConnection.doEvents()
+        except:
+            pass
+        
+        ready = False
+        progress = 0
+                    
+        def callback_uploaded( data ):
+            nonlocal ready
+            ready = True           
+               
+        module = Module( cpu, 'mymod' )
+        module.upload( uploaded = callback_uploaded, progress = callback_progress ) 
+               
+        try:
+            while not(ready):
+                pviConnection.doEvents()
+        except:
+            pass
+          
+        self.assertTrue( 'mymod' in cpu.modules)
+        module.kill
+        
+        module = Module( cpu, 'mymod' )
+        module.delete()
+        module.kill()
+        
+        start = time.time()
+        try:
+            while (time.time()-start) < 5:
+                pviConnection.doEvents()
+        except:
+            pass
+                
+        self.assertFalse( 'mymod' in cpu.modules)
+   
+            
 
 class TestVariables( unittest.TestCase):
     def test_variableInfo(self):
