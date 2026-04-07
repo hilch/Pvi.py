@@ -28,6 +28,7 @@ from ipaddress import IPv4Address
 import re
 import json
 import time
+import enum
 from pvi import Connection, PviObject, Device, Cpu, Task, Variable, PviError
 from pvi.plcwatch_modules.resources import image_files
 from pvi.plcwatch_modules.treeview_tooltip import TreeViewTooltip
@@ -125,9 +126,14 @@ class ObjectTreeView(ttk.Treeview):
         struct_elements = dict.fromkeys( '.' + re.split(r'[\[.]', e[1:])[0] for e in struct.value )
             
         for counter, element_name in enumerate(struct_elements):
+            if element_name == '.enumlist2':
+                pass            
+            
             # if counter % 10 == 0:
             #     self.update_idletasks()  
             element = Variable(task, struct.objectName + element_name)
+            data_type = element.dataType
+            indices = element._type_description.get_array_indices()
             
             icon = self.image_storage.get(element.dataType, self.image_storage['variable'])
 
@@ -195,6 +201,8 @@ class ObjectTreeView(ttk.Treeview):
                                 image = icon, values = [datatype_name, vk] )
                         self.tooltip_handler.set_tooltip(array.name, array.name)
             else: # vector
+                if array.name == '@Pvi/LNANSL/TCP/127_0_0_1/myProg/myComplexStruct.enumlist2':
+                    pass
                 # self.update_idletasks()             
                 i1 = indices[0][0] + j
                 tags = [f'"type":"variable","task-linkid":{task._linkID},"varname":"{array.objectName}[{i1}]"']
@@ -399,13 +407,16 @@ class ObjectTreeView(ttk.Treeview):
     
     def displayItemValue(self, iid : str, value : Any):
         values = self.item(iid)['values']
-        values[1] = value # type: ignore
-        self.item( iid, values = values )
+        if isinstance( values, list) and len(values)>=2:
+            if isinstance(value, enum.Enum):
+                values[1] = value.name
+            else:
+                values[1] = value 
+            self.item( iid, values = values )
      
           
     def displayItemValuesIfStructure(self, iid : str, struct_values : OrderedDict ):
         for element, element_value in struct_values.items():
-
             if isinstance( element_value, list ):
                 if self.exists( iid + element ):               
                     self.displayItemValuesIfArray( iid + element, element_value )
@@ -416,14 +427,20 @@ class ObjectTreeView(ttk.Treeview):
     
     def displayItemValuesIfArray(self, iid: str, list_values : list):
         children = self.get_children(iid)
+
         for index, value in enumerate(list_values):
             if isinstance( value, list): # two-dimensional array ?
                 length = len(value)
                 for index2, v in enumerate(value):
-                    self.displayItemValue( children[index*length+index2], v)    
-            else:          
-                self.displayItemValue( children[index], value)
-    
+                    try:
+                        self.displayItemValue( children[index*length+index2], v)  
+                    except IndexError:
+                        pass  
+            else: 
+                try:  
+                    self.displayItemValue( children[index], value)
+                except IndexError:
+                    pass
         
         
     def insertCpu(self, device : Device, ip : IPv4Address ):
