@@ -150,7 +150,7 @@ class Variable(PviObject):
             else:
                 hint = str(enum_range).replace('{','()').replace('}',')')
                 raise ValueError(f"Cannot convert '{s}' to {self.dataType} -> ({hint})")
-        if sub_range:
+        elif sub_range:
             try:
                 int_val = int(s)
             except ValueError:
