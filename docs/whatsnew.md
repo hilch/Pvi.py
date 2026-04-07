@@ -2,6 +2,7 @@
 
 - Anslscan.py : do not exit on OS errors
 - fix : values of two-dimensional arrays were double-packed into a list
+- fix : handling vectors with `[0..0]` indices.
 - fix : values of arrays with just one element weren't return as list
 - fix : correct .dataType of multi-dimensional structure arrays
 - fix : correct repr of Variable (VT was incorrect)

@@ -79,7 +79,10 @@ class TypeDescription:
             indices = []
             for m in patternVSa.finditer(self.vs):
                 indices.append( (int(m.group(2)), int(m.group(3))) )
-            return indices
+            if len(indices) > 0:
+                return indices
+            else:
+                return [(0,0)]
         elif self.vn > 1:
             return [(0, self.vn-1)]
         else:
