@@ -324,7 +324,9 @@ class TestVariables( unittest.TestCase):
         for n in range(0,10):
              var = Variable(task, f"myComplexStruct.intvector[{n}]")
              var.value = 300 + n
-             var.kill()                
+             var.kill()
+        var = Variable(task, "myComplexStruct.intvector2")
+        self.assertEqual( var.dataType, 'i16[0..0]')                                
         task.kill()     
 
     def test_DINT(self):
@@ -436,7 +438,7 @@ class TestVariables( unittest.TestCase):
                                       [1040.0, 1041.0, 1042.0, 1043.0], [1050.0, 1051.0, 1052.0, 1053.0], 
                                       [1060.0, 1061.0, 1062.0, 1063.0], [1070.0, 1071.0, 1072.0, 1073.0], 
                                       [1080.0, 1081.0, 1082.0, 1083.0], [1090.0, 1091.0, 1092.0, 1093.0]] )
-        var.kill
+        var.kill()
         task.kill()       
 
     def test_STRING(self):   
@@ -559,16 +561,21 @@ class TestEnums( unittest.TestCase):
         self.assertEqual( var.value, myEnumType.drei)
         var.value = myEnumType.eins
         self.assertEqual( var.value.value, 0)        
-        var.kill
-        task.kill
+        var.kill()
+        task.kill()
         
     def test_enumlist(self):       
         task = Task( cpu, 'myProg')             
         var = Variable( task, 'myComplexStruct.enumlist')
+        self.assertEqual( var.dataType, 'myEnumType[0..4]' )
         var.value = [myEnumType.drei, 0, myEnumType.zwei, 0, myEnumType.eins]
         self.assertEqual( var.value, [myEnumType.drei, myEnumType.eins, myEnumType.zwei, myEnumType.eins, myEnumType.eins])
         var.value = [myEnumType.eins, myEnumType.zwei, myEnumType.drei, myEnumType.eins, myEnumType.zwei]
-        task.kill
+        var.kill()
+        var = Variable( task, 'myComplexStruct.enumlist2')
+        self.assertEqual( var.dataType, 'myEnumType[0..0]' )        
+        var.kill()
+        task.kill()
 
 class TestDerivedDatatypes( unittest.TestCase):
     def test_derived1(self):
@@ -576,7 +583,7 @@ class TestDerivedDatatypes( unittest.TestCase):
         var = Variable( task, 'myComplexStruct.derived1' )
         self.assertEqual( var.value, 4)
         self.assertEqual( var.dataType, 'myDerivedType1')
-        var.kill
+        var.kill()
         var = Variable( task, 'myComplexStruct.derived2' )
         self.assertEqual( var.value, [3,4,5,6])
         self.assertEqual( var.dataType, 'myDerivedType2[3..6]')        
@@ -588,8 +595,8 @@ class TestStructures( unittest.TestCase):
         task = Task( cpu, 'myProg')
         var = Variable( task, 'myComplexStruct.myStruct0' )
         self.assertEqual( var.dataType, 'myStructType')        
-        var.kill
-        task.kill
+        var.kill()
+        task.kill()
 
     def test_structArray(self):
         task = Task( cpu, 'myProg')
@@ -597,17 +604,17 @@ class TestStructures( unittest.TestCase):
         self.assertEqual( var.dataType, 'myStructType[0..1]')
         self.assertEqual( var.value,[OrderedDict({'.member1': 3, '.member2': [33, 44, 55]}), 
                                      OrderedDict({'.member1': 3, '.member2': [33, 44, 55]})])        
-        var.kill
+        var.kill()
         var = Variable( task, 'myComplexStruct.myStruct2' ) # array with only one element
         self.assertEqual( var.dataType, 'myStructType[2..2]')  
         self.assertEqual( var.value, [OrderedDict({'.member1': 3, '.member2': [33, 44, 55]})])     
-        var.kill  
+        var.kill()  
         var = Variable( task, 'myComplexStruct.myStruct3' ) # array with negative index
         self.assertEqual( var.dataType, 'myStructType[-1..1]')  
         self.assertEqual( var.value, [OrderedDict({'.member1': 4, '.member2': [9, 19, 29]}), 
                                       OrderedDict({'.member1': 5, '.member2': [10, 20, 30]}), 
                                       OrderedDict({'.member1': 6, '.member2': [11, 21, 31]})])     
-        var.kill                
+        var.kill()                
         var = Variable( task, 'myComplexStruct.myStruct4' ) # multi-dimensional array
         self.assertEqual( var.dataType, 'myStructType[0..2,0..3]')
         self.assertEqual( var.value, [[OrderedDict({'.member1': 0, '.member2': [0, 0, 0]}), 
@@ -622,7 +629,7 @@ class TestStructures( unittest.TestCase):
                                        OrderedDict({'.member1': 21, '.member2': [41, 61, 81]}), 
                                        OrderedDict({'.member1': 22, '.member2': [42, 62, 82]}), 
                                        OrderedDict({'.member1': 23, '.member2': [43, 63, 83]})]])     
-        var.kill                
+        var.kill()                
         var = Variable( task, 'myComplexStruct.myStruct5' ) # nested structure arrays
         self.assertEqual( var.dataType, 'myStructType2[0..2]')
         self.assertEqual( var.value, [OrderedDict({'.struct1.member1': 5, 
@@ -649,7 +656,7 @@ class TestStructures( unittest.TestCase):
                                                                      '.structList[1].member2': [20, 21, 22], 
                                                                      '.structList[2].member1': 14, 
                                                                      '.structList[2].member2': [30, 31, 32]})])     
-        var.kill 
+        var.kill() 
         var = Variable( task, 'myComplexStruct.myStruct6' ) # multi-dimensional struct array and nested struct arrays
         self.assertEqual( var.dataType, 'myStructType2[1..2,-1..1]')
         self.assertEqual( var.value, [[OrderedDict({'.struct1.member1': 3, 
@@ -700,8 +707,8 @@ class TestStructures( unittest.TestCase):
                                                     '.structList[1].member2': [33, 44, 55], 
                                                     '.structList[2].member1': 3, 
                                                     '.structList[2].member2': [33, 44, 55]})]] )     
-        var.kill                                                       
-        task.kill
+        var.kill()                                                       
+        task.kill()
 
     def test_complexStructure(self):
         task = Task( cpu, 'myProg')

@@ -36,6 +36,7 @@ TYPE
 		wstringlist : ARRAY[1..10]OF WSTRING[40] := ["A","B","C","D","E","F","G","H","I","J"];
 		vector : ARRAY[1..10]OF REAL;
 		intvector : ARRAY[0..9]OF INT;
+		intvector2 : ARRAY[0..0]OF INT;
 		matrix : ARRAY[0..9,0..3]OF REAL;
 		myStruct0 : myStructType;
 		myStruct1 : ARRAY[0..1]OF myStructType;
@@ -46,6 +47,7 @@ TYPE
 		myStruct6 : ARRAY[1..2,-1..1]OF myStructType2;
 		myEnum : myEnumType;
 		enumlist : ARRAY[0..4]OF myEnumType;
+		enumlist2 : ARRAY[0..0]OF myEnumType;
 		subrange1 : SINT(-3..6) ;
 		derived1 : myDerivedType1;
 		derived2 : myDerivedType2;
