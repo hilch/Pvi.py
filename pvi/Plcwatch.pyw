@@ -43,7 +43,7 @@ class ApplicationWindow(tk.Tk):
         self.protocol("WM_DELETE_WINDOW", self.onClosing)
               
         self.title("PLCWATCH")
-        self.geometry("1024x768")
+        self.geometry("1024x500")
         self.iconbitmap(icon_storage['app'])
         
         self.app_configuration = dict()
