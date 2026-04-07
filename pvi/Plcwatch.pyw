@@ -165,7 +165,8 @@ class ApplicationWindow(tk.Tk):
             ips = ips[0:4]
             ips.insert(0,ip)
             for n, ip in enumerate(ips):
-                self.target_menu.entryconfig(n+2, label = f"{n+1}. {ip}" )
+                self.target_menu.entryconfig(n+2, label = f"{n+1}. {ip}", 
+                                             command=lambda ip=ip : self.connectToIpAddress(ip) )
             self.app_configuration['ips'] = ips  
             self.saveApplicationSettings()              
                        
