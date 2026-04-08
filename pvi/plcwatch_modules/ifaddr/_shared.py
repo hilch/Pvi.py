@@ -24,7 +24,7 @@ import socket
 import ipaddress
 from dataclasses import dataclass
 
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Tuple
 
 
 class Adapter:
@@ -108,7 +108,7 @@ class IP:
     Represents an IP address of an adapter.
     """
 
-    ip: Union[tuple[str, int, int], str]
+    ip: Union[Tuple[str, int, int], str]
     network_prefix: int
     nice_name: str
 

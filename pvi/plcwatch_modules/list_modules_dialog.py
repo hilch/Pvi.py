@@ -25,7 +25,7 @@ from tkinter import ttk
 from typing import List, Optional
 from dataclasses import dataclass
 from pvi.plcwatch_modules.resources import icon_storage
-from pvi import Connection, PviObject, Cpu, Module
+from pvi.pvi_objects import Connection, PviObject, Cpu, Module
 
 @dataclass
 class ModuleInfo:

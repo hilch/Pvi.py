@@ -27,13 +27,12 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 import os
-import threading
-from typing import Union, List
+from typing import Union
 from ipaddress import IPv4Address
-from pvi.pvi_objects import Connection, PviObject, Line, Device, Cpu, Task, Variable
+from pvi.pvi_objects import Connection, PviObject, Line, Device
 from pvi.plcwatch_modules import (NetworkSearchDialog, ScanResult, SnmpScanDialog,
                                 VariableListBox, ObjectTreeView, icon_storage)
-from pvi.__about__ import __version__
+from .__about__ import __version__
 
 
 

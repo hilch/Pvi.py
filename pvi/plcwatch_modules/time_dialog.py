@@ -24,7 +24,7 @@ import tkinter as tk
 from tkinter import messagebox
 from datetime import datetime
 import re
-from pvi import Connection, Cpu
+from pvi.pvi_objects import Connection, Cpu
 from .resources import icon_storage
 
 class TimeDialog(tk.Toplevel):

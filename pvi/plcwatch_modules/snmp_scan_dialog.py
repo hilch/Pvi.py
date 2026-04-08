@@ -22,11 +22,11 @@
 
 import tkinter as tk
 from tkinter import ttk, messagebox
-from typing import cast, List, Optional, Callable
+from typing import cast, List, Callable
 import time
 from dataclasses import dataclass
 from pvi.plcwatch_modules.resources import icon_storage
-from pvi import Connection, PviObject, Line, Device, Station, Variable, PviError
+from pvi.pvi_objects import Connection, PviObject, Line, Device, Station, Variable, PviError
 
 @dataclass
 class SnmpScanResult:

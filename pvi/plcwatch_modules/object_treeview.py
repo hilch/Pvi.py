@@ -29,7 +29,7 @@ import re
 import json
 import time
 import enum
-from pvi import Connection, PviObject, Device, Cpu, Task, Variable, PviError
+from pvi.pvi_objects import Connection, PviObject, Device, Cpu, Task, Variable, PviError
 from pvi.plcwatch_modules.resources import image_files
 from pvi.plcwatch_modules.treeview_tooltip import TreeViewTooltip
 from pvi.plcwatch_modules.edit_cpu_dialog import EditCpuDialog 

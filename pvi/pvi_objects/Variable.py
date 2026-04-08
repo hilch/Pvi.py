@@ -25,7 +25,7 @@ from ctypes import create_string_buffer, sizeof, byref, c_int32
 from typing import cast, Union, Any, OrderedDict as OrderedDictType, Callable
 from collections import OrderedDict
 from enum import Enum
-import pvi.utils.IEC as IEC
+from pvi.utils import IEC
 import re
 from copy import deepcopy
 import gc

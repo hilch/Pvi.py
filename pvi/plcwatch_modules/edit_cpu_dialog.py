@@ -25,7 +25,7 @@ from tkinter import ttk
 import ipaddress
 import time
 from typing import cast, Callable
-from pvi import Connection, Line, PviObject, Device, Station, Cpu, Task, Variable, PviError
+from pvi.pvi_objects import Connection, Line, PviObject, Device, Station, Cpu, Task, Variable, PviError
 from .resources import icon_storage
 
 

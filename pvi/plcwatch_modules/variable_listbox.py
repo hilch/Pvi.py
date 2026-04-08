@@ -24,7 +24,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox, font
 from typing import cast, Union, Callable, Any
-from pvi import Connection, PviObject, Cpu, Task, Variable
+from pvi.pvi_objects import Connection, PviObject, Cpu, Task, Variable
 
 class VariableListBox(ttk.Treeview):
     def __init__(self, parent : tk.Widget,
@@ -75,8 +75,8 @@ class VariableListBox(ttk.Treeview):
                 variable.valueChanged = self.onValueChanged
                 variable.errorChanged = self.onErrorChanged                                
                 self.watch_list.update( { variable.name : [variable]})
-                self.insert('', 'end', iid=variable.name, values = [f'{cpu.objectName.replace('_','.')}',
-                                                            f'{taskname}:{variable.objectName}', 
+                self.insert('', 'end', iid=variable.name, values = [f"{cpu.objectName.replace('_','.')}",
+                                                            f"{taskname}:{variable.objectName}", 
                                                             variable.dataType, variable.value] )
             self.announced_pvi_object = None
     

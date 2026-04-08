@@ -21,11 +21,11 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import tkinter as tk
-from typing import cast, Union, List, Optional, Callable
+from typing import cast, List, Optional
 from ipaddress import IPv4Network, IPv4Address
 import asyncio
 from dataclasses import dataclass
-from pvi import Connection, Device, Cpu, PviObject
+from pvi.pvi_objects import Connection, Device, Cpu, PviObject
 from pvi.plcwatch_modules.resources import icon_storage
 from pvi.plcwatch_modules.ifaddr import get_adapters, IP as Ifaddr_IP
 
