@@ -1,6 +1,6 @@
 # Version history
 
-## V1.2.10
+## V1.2.11
 
 - Add Plcwatch.pyw
 - Anslscan.py : do not exit on OS errors
@@ -17,6 +17,10 @@
 - new properties 'moduleInfo' and 'moduleInfoExtended' for Module objects
 - new member 'delete' for Module objects
 - new member function 'readRequestStatus' for all objects
+
+## V1.2.10
+
+- Fix reading SNMP variables (which also fixes pvi/Snmp).
 
 ## V1.2.9
 
