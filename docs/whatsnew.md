@@ -1,5 +1,8 @@
 # Version history
 
+## V1.2.10
+
+- Add Plcwatch.pyw
 - Anslscan.py : do not exit on OS errors
 - fix : values of two-dimensional arrays were double-packed into a list
 - fix : handling vectors with `[0..0]` indices.

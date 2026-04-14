@@ -21,6 +21,7 @@ classifiers = [
 Snmpscan = "pvi.Snmpscan:main_cli"
 Anslscan = "pvi.Anslscan:main_cli"
 Inascan = "pvi.Inascan:main_cli"
+Plcwatch = "pvi.Plcwatch:main"
 
 [tool.hatch.build.targets.wheel]
 only-include = ["pvi"]

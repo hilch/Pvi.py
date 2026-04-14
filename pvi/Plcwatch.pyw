@@ -201,7 +201,9 @@ class ApplicationWindow(tk.Tk):
         except Exception as e:
             pass
         
-
-if __name__ == "__main__":
+def main():
     app = ApplicationWindow()
     app.mainloop()
+
+if __name__ == "__main__":
+    main()
