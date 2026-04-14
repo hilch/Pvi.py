@@ -4,7 +4,7 @@
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![Made For B&R](https://github.com/hilch/BandR-badges/blob/main/Made-For-BrAutomation.svg)](https://www.br-automation.com)
 
-Python wrapper for [B&amp;R PVI (process visualization interface)](https://www.br-automation.com/en/products/software/automation-software/automation-netpvi/).
+Python wrapper for [B&amp;R PVI (process visualization interface)](https://help.br-automation.com/#/en/4/automationnet/pvi/pvi.htm).
 
 In times of more modern protocols like OPC-UA, this may seem a bit old-fashioned.
 But PVI has some hidden strengths and is also very versatile.
@@ -12,6 +12,10 @@ Have a look into the documentation of the 'Lines' (ANSL, INA2000, NET2000, MTC, 
 In most cases it is used just to communicate with B&R PLCs with 'ANSL' and 'SNMP'.
 Unfortunately its native C-language interface is very complex and also PVI Services (C#) can be a high barrier to entry.
 It's a lot more fun with Python !
+
+## PVI - Version 6
+
+Starting with PVI version 6, older protocol DLLs ("lines") were removed, so that PVI6 now supports only ANSL and SNMP.
 
 ## PVI installation and license
 
