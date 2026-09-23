@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?AutomationStudio Version=3.0?>
 <Transfer xmlns="http://br-automation.co.at/AS/Transfer">
-  <OperatingSystem Version="6.5.1" />
+  <OperatingSystem Version="6.7.6" />
   <Hardware Target="SG4" />
   <Operation Download="ashwd.br" Memory="SystemROM" />
   <Operation Download="asfw.br" Memory="SystemROM" />

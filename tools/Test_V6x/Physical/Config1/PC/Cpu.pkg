@@ -19,7 +19,7 @@
     <Object Type="Package">AppMod1</Object>
   </Objects>
   <Configuration ModuleId="PC_any">
-    <AutomationRuntime Version="6.5.1" />
+    <AutomationRuntime Version="6.7.6" />
     <Build GccVersion="11.3.0" />
     <DefaultTargetMemory Tasks="UserROM" />
     <Transfer WaitForReconnectAfterReboot="True" />
