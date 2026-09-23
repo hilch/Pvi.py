@@ -15,4 +15,4 @@ filenames = [f for f in os.listdir(path_of_the_directory) if f.endswith(ext)]
 
 for filename in filenames:
     module = BrFile(path_of_the_directory + '\\' + filename)
-    print( f'content of {filename} is {module.fileType}' )
+    print( f'content of {filename} is {module.fileType.name}' )
