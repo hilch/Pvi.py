@@ -1311,6 +1311,51 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#v1212" class="md-nav__link">
+    <span class="md-ellipsis">
+      V1.2.12
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v1211" class="md-nav__link">
+    <span class="md-ellipsis">
+      V1.2.11
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v1210" class="md-nav__link">
+    <span class="md-ellipsis">
+      V1.2.10
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v129" class="md-nav__link">
+    <span class="md-ellipsis">
+      V1.2.9
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v128" class="md-nav__link">
+    <span class="md-ellipsis">
+      V1.2.8
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v127" class="md-nav__link">
     <span class="md-ellipsis">
       V1.2.7
@@ -1462,6 +1507,51 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#v1212" class="md-nav__link">
+    <span class="md-ellipsis">
+      V1.2.12
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v1211" class="md-nav__link">
+    <span class="md-ellipsis">
+      V1.2.11
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v1210" class="md-nav__link">
+    <span class="md-ellipsis">
+      V1.2.10
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v129" class="md-nav__link">
+    <span class="md-ellipsis">
+      V1.2.9
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v128" class="md-nav__link">
+    <span class="md-ellipsis">
+      V1.2.8
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v127" class="md-nav__link">
     <span class="md-ellipsis">
       V1.2.7
@@ -1594,6 +1684,41 @@
 
 
 <h1 id="version-history">Version history</h1>
+<h2 id="v1212">V1.2.12</h2>
+<ul>
+<li>fix : deleting a Module.delete didn't raise an Exception when module did not exist</li>
+</ul>
+<h2 id="v1211">V1.2.11</h2>
+<ul>
+<li>Add Plcwatch.pyw</li>
+<li>Anslscan.py : do not exit on OS errors</li>
+<li>fix : values of two-dimensional arrays were double-packed into a list</li>
+<li>fix : handling vectors with <code>[0..0]</code> indices.</li>
+<li>fix : values of arrays with just one element weren't return as list</li>
+<li>fix : correct .dataType of multi-dimensional structure arrays</li>
+<li>fix : correct repr of Variable (VT was incorrect)</li>
+<li>fix : bug reading SNMP variables</li>
+<li>fix : ignore all characters after '\x00' when reading WSTRING variables</li>
+<li>new property 'isStructure' for Variable object</li>
+<li>new members 'toIEC' and 'fromIEC' for Variable object</li>
+<li>new property 'cpuInfoExtended' for Cpu object</li>
+<li>new properties 'moduleInfo' and 'moduleInfoExtended' for Module objects</li>
+<li>new member 'delete' for Module objects</li>
+<li>new member function 'readRequestStatus' for all objects</li>
+</ul>
+<h2 id="v1210">V1.2.10</h2>
+<ul>
+<li>Fix reading SNMP variables (which also fixes pvi/Snmp).</li>
+</ul>
+<h2 id="v129">V1.2.9</h2>
+<ul>
+<li>Fix 'writable' attribute of Variable</li>
+</ul>
+<h2 id="v128">V1.2.8</h2>
+<ul>
+<li>Improve reading for struct arrays, Enums, two-dimensional variables, subranges</li>
+<li>change return type of arrays to list instead tuple (incompatible change)</li>
+</ul>
 <h2 id="v127">V1.2.7</h2>
 <ul>
 <li>creating executable scripts for Snmpscan, Anslscan, Snmpscan</li>

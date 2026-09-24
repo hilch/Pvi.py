@@ -1145,6 +1145,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#pvi.pvi_objects.Cpu.Cpu.cpuInfoExtended" class="md-nav__link">
+    <span class="md-ellipsis">
+      cpuInfoExtended
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pvi.pvi_objects.Cpu.Cpu.descriptor" class="md-nav__link">
     <span class="md-ellipsis">
       descriptor
@@ -1168,21 +1177,6 @@
       externalObjects
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="externalObjects">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pvi.pvi_objects.Cpu.Cpu.externalObjects--only-available-with-ansl-not-with-ina2000" class="md-nav__link">
-    <span class="md-ellipsis">
-      only available with ANSL, not with INA2000
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -1587,6 +1581,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#pvi.pvi_objects.Cpu.Cpu.cpuInfoExtended" class="md-nav__link">
+    <span class="md-ellipsis">
+      cpuInfoExtended
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pvi.pvi_objects.Cpu.Cpu.descriptor" class="md-nav__link">
     <span class="md-ellipsis">
       descriptor
@@ -1610,21 +1613,6 @@
       externalObjects
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="externalObjects">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pvi.pvi_objects.Cpu.Cpu.externalObjects--only-available-with-ansl-not-with-ina2000" class="md-nav__link">
-    <span class="md-ellipsis">
-      only available with ANSL, not with INA2000
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -1832,8 +1820,7 @@ task1 = Task( cpu, 'mainlogic')
 
             <details class="quote">
               <summary>Source code in <code>pvi\pvi_objects\Cpu.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 33</span>
-<span class="normal"> 34</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 34</span>
 <span class="normal"> 35</span>
 <span class="normal"> 36</span>
 <span class="normal"> 37</span>
@@ -2170,7 +2157,89 @@ task1 = Task( cpu, 'mainlogic')
 <span class="normal">368</span>
 <span class="normal">369</span>
 <span class="normal">370</span>
-<span class="normal">371</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Cpu</span><span class="p">(</span><span class="n">PviObject</span><span class="p">):</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span>
+<span class="normal">377</span>
+<span class="normal">378</span>
+<span class="normal">379</span>
+<span class="normal">380</span>
+<span class="normal">381</span>
+<span class="normal">382</span>
+<span class="normal">383</span>
+<span class="normal">384</span>
+<span class="normal">385</span>
+<span class="normal">386</span>
+<span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span>
+<span class="normal">390</span>
+<span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span>
+<span class="normal">396</span>
+<span class="normal">397</span>
+<span class="normal">398</span>
+<span class="normal">399</span>
+<span class="normal">400</span>
+<span class="normal">401</span>
+<span class="normal">402</span>
+<span class="normal">403</span>
+<span class="normal">404</span>
+<span class="normal">405</span>
+<span class="normal">406</span>
+<span class="normal">407</span>
+<span class="normal">408</span>
+<span class="normal">409</span>
+<span class="normal">410</span>
+<span class="normal">411</span>
+<span class="normal">412</span>
+<span class="normal">413</span>
+<span class="normal">414</span>
+<span class="normal">415</span>
+<span class="normal">416</span>
+<span class="normal">417</span>
+<span class="normal">418</span>
+<span class="normal">419</span>
+<span class="normal">420</span>
+<span class="normal">421</span>
+<span class="normal">422</span>
+<span class="normal">423</span>
+<span class="normal">424</span>
+<span class="normal">425</span>
+<span class="normal">426</span>
+<span class="normal">427</span>
+<span class="normal">428</span>
+<span class="normal">429</span>
+<span class="normal">430</span>
+<span class="normal">431</span>
+<span class="normal">432</span>
+<span class="normal">433</span>
+<span class="normal">434</span>
+<span class="normal">435</span>
+<span class="normal">436</span>
+<span class="normal">437</span>
+<span class="normal">438</span>
+<span class="normal">439</span>
+<span class="normal">440</span>
+<span class="normal">441</span>
+<span class="normal">442</span>
+<span class="normal">443</span>
+<span class="normal">444</span>
+<span class="normal">445</span>
+<span class="normal">446</span>
+<span class="normal">447</span>
+<span class="normal">448</span>
+<span class="normal">449</span>
+<span class="normal">450</span>
+<span class="normal">451</span>
+<span class="normal">452</span>
+<span class="normal">453</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Cpu</span><span class="p">(</span><span class="n">PviObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;representing a PVI CPU object</span>
 <span class="sd">    ANSL &amp; INA2000 : specifies a cpu</span>
 <span class="sd">    SNMP : can be used but is not necessary</span>
@@ -2444,7 +2513,7 @@ task1 = Task( cpu, 'mainlogic')
     <span class="k">def</span> <span class="nf">cpuInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
-<span class="sd">            dict with memory information</span>
+<span class="sd">            dict with cpu information according POBJ_ACC_CPU_INFO</span>
 
 <span class="sd">        example:</span>
 <span class="sd">        ```</span>
@@ -2458,6 +2527,87 @@ task1 = Task( cpu, 'mainlogic')
             <span class="n">ret</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">update</span><span class="p">(</span> <span class="n">dictFromParameterPairString</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>  <span class="p">)</span>
             <span class="k">return</span> <span class="n">ret</span>          
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>     
+
+
+    <span class="nd">@property</span>       
+    <span class="k">def</span> <span class="nf">cpuInfoExtended</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dict with extended CPU information according POBJ_ACC_LN_XML_CPU_INFO</span>
+
+<span class="sd">        example:</span>
+<span class="sd">        ```</span>
+<span class="sd">        ```</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>    
+        <span class="n">s</span> <span class="o">=</span> <span class="n">create_string_buffer</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\000</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="mi">4096</span><span class="p">)</span>             
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXRead</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_LN_XML_CPU_INFO</span>  <span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">)</span>     
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s1">&#39;ascii&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Parse CPU Info XML and return as dictionary&quot;&quot;&quot;</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+            <span class="n">cpu_info</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;SoftwareVers&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                <span class="s1">&#39;AnslServer&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                <span class="s1">&#39;CpuConfiguration&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                <span class="s1">&#39;OperationalValues&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                <span class="s1">&#39;TechnologyGuarding&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                <span class="s1">&#39;NetworkDevices&#39;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">&#39;Hosts&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                    <span class="s1">&#39;Interfaces&#39;</span><span class="p">:</span> <span class="p">[]</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+
+            <span class="c1"># Parse SoftwareVers</span>
+            <span class="n">sw_vers</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;SoftwareVers&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sw_vers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">cpu_info</span><span class="p">[</span><span class="s1">&#39;SoftwareVers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">sw_vers</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
+
+            <span class="c1"># Parse AnslServer</span>
+            <span class="n">ansl_server</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;AnslServer&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ansl_server</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">cpu_info</span><span class="p">[</span><span class="s1">&#39;AnslServer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ansl_server</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
+
+            <span class="c1"># Parse CpuConfiguration</span>
+            <span class="n">cpu_config</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;CpuConfiguration&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">cpu_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">cpu_info</span><span class="p">[</span><span class="s1">&#39;CpuConfiguration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">cpu_config</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
+
+            <span class="c1"># Parse OperationalValues</span>
+            <span class="n">op_values</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;OperationalValues&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">op_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;CurrentCpuMode&#39;</span> <span class="ow">in</span> <span class="n">op_values</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+                    <span class="n">op_values</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;CurrentCpuMode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;1&#39;</span> <span class="p">:</span> <span class="s1">&#39;BOOT&#39;</span><span class="p">,</span> 
+                                                          <span class="s1">&#39;2&#39;</span> <span class="p">:</span> <span class="s1">&#39;DIAG&#39;</span><span class="p">,</span> 
+                                                          <span class="s1">&#39;3&#39;</span> <span class="p">:</span> <span class="s1">&#39;SERV&#39;</span><span class="p">,</span>
+                                                          <span class="s1">&#39;4&#39;</span> <span class="p">:</span> <span class="s1">&#39;RUN&#39;</span>
+                                                          <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">op_values</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;CurrentCpuMode&#39;</span><span class="p">],</span> <span class="s1">&#39;&lt;unknown&gt;&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s1">&#39;CpuBootMode&#39;</span> <span class="ow">in</span> <span class="n">op_values</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+                    <span class="n">op_values</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;CpuBootMode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;1&#39;</span> <span class="p">:</span> <span class="s1">&#39;Warmstart&#39;</span><span class="p">,</span> 
+                                                          <span class="s1">&#39;2&#39;</span> <span class="p">:</span> <span class="s1">&#39;Coldstart&#39;</span><span class="p">,</span> 
+                                                          <span class="s1">&#39;4&#39;</span> <span class="p">:</span> <span class="s1">&#39;Watchdog&#39;</span><span class="p">,</span>
+                                                          <span class="s1">&#39;32&#39;</span> <span class="p">:</span> <span class="s1">&#39;Diagnose&#39;</span><span class="p">,</span>
+                                                          <span class="s1">&#39;64&#39;</span> <span class="p">:</span> <span class="s1">&#39;Error&#39;</span>
+                                                          <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">op_values</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;CpuBootMode&#39;</span><span class="p">],</span> <span class="s1">&#39;&lt;unknown&gt;&#39;</span><span class="p">)</span>                                 
+                <span class="n">cpu_info</span><span class="p">[</span><span class="s1">&#39;OperationalValues&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">op_values</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
+
+            <span class="c1"># Parse TechnologyGuarding</span>
+            <span class="n">tech_guard</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;TechnologyGuarding&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tech_guard</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">cpu_info</span><span class="p">[</span><span class="s1">&#39;TechnologyGuarding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">tech_guard</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
+
+            <span class="c1"># Parse NetworkDevices</span>
+            <span class="n">net_devices</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;NetworkDevices&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">net_devices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">net_devices</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;Host&#39;</span><span class="p">):</span>
+                    <span class="n">cpu_info</span><span class="p">[</span><span class="s1">&#39;NetworkDevices&#39;</span><span class="p">][</span><span class="s1">&#39;Hosts&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">host</span><span class="o">.</span><span class="n">attrib</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">interface</span> <span class="ow">in</span> <span class="n">net_devices</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;Interface&#39;</span><span class="p">):</span>
+                    <span class="n">cpu_info</span><span class="p">[</span><span class="s1">&#39;NetworkDevices&#39;</span><span class="p">][</span><span class="s1">&#39;Interfaces&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">attrib</span><span class="p">))</span>
+
+            <span class="k">return</span> <span class="n">cpu_info</span>      
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">PviError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>     
 
@@ -2556,7 +2706,53 @@ task1 = Task( cpu, 'mainlogic')
           </td>
           <td>
             <div class="doc-md-description">
-              <p>dict with memory information</p>
+              <p>dict with cpu information according POBJ_ACC_CPU_INFO</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+      <p>example:</p>
+<pre><code></code></pre>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="pvi.pvi_objects.Cpu.Cpu.cpuInfoExtended" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">cpuInfoExtended</span><span class="p">:</span> <span class="nb">dict</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>dict</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>dict with extended CPU information according POBJ_ACC_LN_XML_CPU_INFO</p>
             </div>
           </td>
         </tr>
@@ -2583,16 +2779,6 @@ task1 = Task( cpu, 'mainlogic')
 
 
   <div class="doc doc-contents ">
-  
-      <p>object descriptor
-example:</p>
-<pre><code>temperature = Variable( task1, 'gHeating.status.actTemp' )
-...
-print( &quot;descriptor=&quot;, temperature.name)
-</code></pre>
-<p>results in:</p>
-<pre><code>descriptor= {'CD': 'gHeating.status.actTemp', 'RF': 0}
-</code></pre>
   </div>
 
 </div>
@@ -2602,7 +2788,7 @@ print( &quot;descriptor=&quot;, temperature.name)
 
 
 <h3 id="pvi.pvi_objects.Cpu.Cpu.errorChanged" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">errorChanged</span><span class="p">:</span> <span class="n">Callable</span></code>
+          <code class="highlight language-python"><span class="n">errorChanged</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">PviObject</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">],</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-property"><code>property</code></small>
@@ -2613,21 +2799,6 @@ print( &quot;descriptor=&quot;, temperature.name)
 
 
   <div class="doc doc-contents ">
-  
-      <p>callback for 'error changed'</p>
-<p>It is advisable to always check the error status '0' before accessing an object.</p>
-<pre><code>Args:
-    cb: callback( PviObject, int ) or callback( int )
-</code></pre>
-<p>typical example:</p>
-<pre><code>cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
-...
-def cpuErrorChanged( error : int ):
-    if error != 0:
-        raise PviError(error)
-
-cpu.errorChanged = cpuErrorChanged
-</code></pre>
   </div>
 
 </div>
@@ -2637,7 +2808,7 @@ cpu.errorChanged = cpuErrorChanged
 
 
 <h3 id="pvi.pvi_objects.Cpu.Cpu.externalObjects" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">externalObjects</span></code>
+          <code class="highlight language-python"><span class="n">externalObjects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-property"><code>property</code></small>
@@ -2647,20 +2818,6 @@ cpu.errorChanged = cpuErrorChanged
 
 
   <div class="doc doc-contents ">
-  
-      <p>PviObject.externalObjects : list of dict
-get a list of external objects retrieved by POBJ_ACC_LIST_EXTERN</p>
-<h4 id="pvi.pvi_objects.Cpu.Cpu.externalObjects--only-available-with-ansl-not-with-ina2000">only available with ANSL, not with INA2000</h4>
-<p>example:</p>
-<pre><code>cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
-...
-print(&quot;external objects&quot;, cpu.externalObjects )
-</code></pre>
-<p>results in:</p>
-<pre><code>external objects [{'name': '$$sysconf', 'type': 'Module'}, {'name': '$arlogsys', 'type': 'Module'}
-            ...... name': 'visvc', 'type': 'Module'}]
-
-</code></pre>
   </div>
 
 </div>
@@ -2710,11 +2867,6 @@ print(&quot;cpu.modules=&quot;, cpu.modules)
 
 
   <div class="doc doc-contents ">
-  
-      <p>hierarchical PVI object name</p>
-<p>example:</p>
-<pre><code>name= @Pvi/LNANSL/TCP/myArsim/mainlogic/gHeating.status.actTemp
-</code></pre>
   </div>
 
 </div>
@@ -2734,16 +2886,6 @@ print(&quot;cpu.modules=&quot;, cpu.modules)
 
 
   <div class="doc doc-contents ">
-  
-      <p>object name</p>
-<p>example:</p>
-<pre><code>temperature = Variable( task1, 'gHeating.status.actTemp' )
-...
-print( &quot;oname=&quot;, temperature.name)
-</code></pre>
-<p>results in:</p>
-<pre><code>oname= gHeating.status.actTemp
-</code></pre>
   </div>
 
 </div>
@@ -2877,16 +3019,6 @@ print(&quot;cpu.time=&quot;, cpu.time)
 
 
   <div class="doc doc-contents ">
-  
-      <p>object type </p>
-<p>example:</p>
-<pre><code>temperature = Variable( task1, 'gHeating.status.actTemp' )
-...
-print( &quot;type=&quot;, temperature.type)
-</code></pre>
-<p>results in:</p>
-<pre><code>type= T_POBJ_TYPE.POBJ_PVAR
-</code></pre>
   </div>
 
 </div>
@@ -2997,8 +3129,7 @@ SNMP : ''</p>
 
           <details class="quote">
             <summary>Source code in <code>pvi\pvi_objects\Cpu.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">46</span>
-<span class="normal">47</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">47</span>
 <span class="normal">48</span>
 <span class="normal">49</span>
 <span class="normal">50</span>
@@ -3011,7 +3142,8 @@ SNMP : ''</p>
 <span class="normal">57</span>
 <span class="normal">58</span>
 <span class="normal">59</span>
-<span class="normal">60</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">parent</span> <span class="p">:</span> <span class="n">PviObject</span><span class="p">,</span> <span class="n">name</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">objectDescriptor</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]):</span>
+<span class="normal">60</span>
+<span class="normal">61</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">parent</span> <span class="p">:</span> <span class="n">PviObject</span><span class="p">,</span> <span class="n">name</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">objectDescriptor</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Args:</span>
 <span class="sd">        parent : the device (or station) object  </span>
@@ -3049,11 +3181,11 @@ SNMP : ''</p>
 
           <details class="quote">
             <summary>Source code in <code>pvi\pvi_objects\Cpu.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">111</span>
-<span class="normal">112</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">112</span>
 <span class="normal">113</span>
 <span class="normal">114</span>
-<span class="normal">115</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">coldStart</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">115</span>
+<span class="normal">116</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">coldStart</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    executes a cold restart</span>
 <span class="sd">    &#39;&#39;&#39;</span>        
@@ -3081,11 +3213,11 @@ SNMP : ''</p>
 
           <details class="quote">
             <summary>Source code in <code>pvi\pvi_objects\Cpu.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">125</span>
-<span class="normal">126</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">126</span>
 <span class="normal">127</span>
 <span class="normal">128</span>
-<span class="normal">129</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">diagnostics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">129</span>
+<span class="normal">130</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">diagnostics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    executes a DIAG stop</span>
 <span class="sd">    &#39;&#39;&#39;</span>        
@@ -3160,8 +3292,7 @@ progress - callback(p) or callback (Cpu, p) to show progress</p>
 
           <details class="quote">
             <summary>Source code in <code>pvi\pvi_objects\Cpu.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">132</span>
-<span class="normal">133</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">133</span>
 <span class="normal">134</span>
 <span class="normal">135</span>
 <span class="normal">136</span>
@@ -3203,7 +3334,8 @@ progress - callback(p) or callback (Cpu, p) to show progress</p>
 <span class="normal">172</span>
 <span class="normal">173</span>
 <span class="normal">174</span>
-<span class="normal">175</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">downloadModule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span> <span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">)</span><span class="o">-&gt;</span><span class="kc">None</span><span class="p">:</span>
+<span class="normal">175</span>
+<span class="normal">176</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">downloadModule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span> <span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">)</span><span class="o">-&gt;</span><span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    download given bytes as module</span>
 
@@ -3265,36 +3397,20 @@ progress - callback(p) or callback (Cpu, p) to show progress</p>
 
 
   <div class="doc doc-contents ">
-  
-      <p>PviObject.kill: kills this object
-this should be called when object is not beeing used anymore
-to save PVI resources</p>
 
           <details class="quote">
             <summary>Source code in <code>pvi\pvi_objects\Object.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">468</span>
-<span class="normal">469</span>
-<span class="normal">470</span>
-<span class="normal">471</span>
-<span class="normal">472</span>
-<span class="normal">473</span>
-<span class="normal">474</span>
-<span class="normal">475</span>
-<span class="normal">476</span>
-<span class="normal">477</span>
-<span class="normal">478</span>
-<span class="normal">479</span>
-<span class="normal">480</span>
-<span class="normal">481</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    PviObject.kill: kills this object</span>
-<span class="sd">    this should be called when object is not beeing used anymore</span>
-<span class="sd">    to save PVI resources</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">)</span> <span class="c1"># remove from linkIDs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">_pviObjects</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="c1"># remove from PviObjects</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">_pviObjects</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXUnlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">!=</span> <span class="mi">12045</span><span class="p">:</span>
@@ -3322,11 +3438,11 @@ to save PVI resources</p>
 
           <details class="quote">
             <summary>Source code in <code>pvi\pvi_objects\Cpu.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">118</span>
-<span class="normal">119</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">119</span>
 <span class="normal">120</span>
 <span class="normal">121</span>
-<span class="normal">122</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">stopTarget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">122</span>
+<span class="normal">123</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">stopTarget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    executes a SERV stop</span>
 <span class="sd">    &#39;&#39;&#39;</span>        
@@ -3354,11 +3470,11 @@ to save PVI resources</p>
 
           <details class="quote">
             <summary>Source code in <code>pvi\pvi_objects\Cpu.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">104</span>
-<span class="normal">105</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">105</span>
 <span class="normal">106</span>
 <span class="normal">107</span>
-<span class="normal">108</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">warmStart</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">108</span>
+<span class="normal">109</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">warmStart</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    executes a warm restart</span>
 <span class="sd">    &#39;&#39;&#39;</span>

@@ -1181,21 +1181,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="externalObjects">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pvi.pvi_objects.Task.Task.externalObjects--only-available-with-ansl-not-with-ina2000" class="md-nav__link">
-    <span class="md-ellipsis">
-      only available with ANSL, not with INA2000
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
           <li class="md-nav__item">
@@ -1557,21 +1542,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="externalObjects">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pvi.pvi_objects.Task.Task.externalObjects--only-available-with-ansl-not-with-ina2000" class="md-nav__link">
-    <span class="md-ellipsis">
-      only available with ANSL, not with INA2000
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
           <li class="md-nav__item">
@@ -1894,7 +1864,7 @@ temperature = Variable( task1, 'gHeating.status.actTemp' )
 <span class="sd">        sets the task status</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            status: &#39;Start&#39;, &#39;Stop&#39;, &#39;Resume&#39;, &#39;Cycle(&lt;x&lt;)&#39;</span>
+<span class="sd">            status: &#39;Start&#39;, &#39;Stop&#39;, &#39;Resume&#39;, &#39;Cycle(&lt;x&gt;)&#39;</span>
 <span class="sd">        &#39;&#39;&#39;</span>        
         <span class="n">s</span> <span class="o">=</span> <span class="n">create_string_buffer</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;ST=&quot;</span> <span class="o">+</span> <span class="n">status</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXWrite</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">,</span> <span class="n">POBJ_ACC_STATUS</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span>
@@ -1993,16 +1963,6 @@ temperature = Variable( task1, 'gHeating.status.actTemp' )
 
 
   <div class="doc doc-contents ">
-  
-      <p>object descriptor
-example:</p>
-<pre><code>temperature = Variable( task1, 'gHeating.status.actTemp' )
-...
-print( &quot;descriptor=&quot;, temperature.name)
-</code></pre>
-<p>results in:</p>
-<pre><code>descriptor= {'CD': 'gHeating.status.actTemp', 'RF': 0}
-</code></pre>
   </div>
 
 </div>
@@ -2012,7 +1972,7 @@ print( &quot;descriptor=&quot;, temperature.name)
 
 
 <h3 id="pvi.pvi_objects.Task.Task.errorChanged" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">errorChanged</span><span class="p">:</span> <span class="n">Callable</span></code>
+          <code class="highlight language-python"><span class="n">errorChanged</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">PviObject</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">],</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-property"><code>property</code></small>
@@ -2023,21 +1983,6 @@ print( &quot;descriptor=&quot;, temperature.name)
 
 
   <div class="doc doc-contents ">
-  
-      <p>callback for 'error changed'</p>
-<p>It is advisable to always check the error status '0' before accessing an object.</p>
-<pre><code>Args:
-    cb: callback( PviObject, int ) or callback( int )
-</code></pre>
-<p>typical example:</p>
-<pre><code>cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
-...
-def cpuErrorChanged( error : int ):
-    if error != 0:
-        raise PviError(error)
-
-cpu.errorChanged = cpuErrorChanged
-</code></pre>
   </div>
 
 </div>
@@ -2047,7 +1992,7 @@ cpu.errorChanged = cpuErrorChanged
 
 
 <h3 id="pvi.pvi_objects.Task.Task.externalObjects" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">externalObjects</span></code>
+          <code class="highlight language-python"><span class="n">externalObjects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-property"><code>property</code></small>
@@ -2057,20 +2002,6 @@ cpu.errorChanged = cpuErrorChanged
 
 
   <div class="doc doc-contents ">
-  
-      <p>PviObject.externalObjects : list of dict
-get a list of external objects retrieved by POBJ_ACC_LIST_EXTERN</p>
-<h4 id="pvi.pvi_objects.Task.Task.externalObjects--only-available-with-ansl-not-with-ina2000">only available with ANSL, not with INA2000</h4>
-<p>example:</p>
-<pre><code>cpu = Cpu( device, 'myArsim', CD='/IP=127.0.0.1' )
-...
-print(&quot;external objects&quot;, cpu.externalObjects )
-</code></pre>
-<p>results in:</p>
-<pre><code>external objects [{'name': '$$sysconf', 'type': 'Module'}, {'name': '$arlogsys', 'type': 'Module'}
-            ...... name': 'visvc', 'type': 'Module'}]
-
-</code></pre>
   </div>
 
 </div>
@@ -2090,11 +2021,6 @@ print(&quot;external objects&quot;, cpu.externalObjects )
 
 
   <div class="doc doc-contents ">
-  
-      <p>hierarchical PVI object name</p>
-<p>example:</p>
-<pre><code>name= @Pvi/LNANSL/TCP/myArsim/mainlogic/gHeating.status.actTemp
-</code></pre>
   </div>
 
 </div>
@@ -2114,16 +2040,6 @@ print(&quot;external objects&quot;, cpu.externalObjects )
 
 
   <div class="doc doc-contents ">
-  
-      <p>object name</p>
-<p>example:</p>
-<pre><code>temperature = Variable( task1, 'gHeating.status.actTemp' )
-...
-print( &quot;oname=&quot;, temperature.name)
-</code></pre>
-<p>results in:</p>
-<pre><code>oname= gHeating.status.actTemp
-</code></pre>
   </div>
 
 </div>
@@ -2165,16 +2081,6 @@ print( &quot;oname=&quot;, temperature.name)
 
 
   <div class="doc doc-contents ">
-  
-      <p>object type </p>
-<p>example:</p>
-<pre><code>temperature = Variable( task1, 'gHeating.status.actTemp' )
-...
-print( &quot;type=&quot;, temperature.type)
-</code></pre>
-<p>results in:</p>
-<pre><code>type= T_POBJ_TYPE.POBJ_PVAR
-</code></pre>
   </div>
 
 </div>
@@ -2387,36 +2293,20 @@ print( &quot;type=&quot;, temperature.type)
 
 
   <div class="doc doc-contents ">
-  
-      <p>PviObject.kill: kills this object
-this should be called when object is not beeing used anymore
-to save PVI resources</p>
 
           <details class="quote">
             <summary>Source code in <code>pvi\pvi_objects\Object.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">468</span>
-<span class="normal">469</span>
-<span class="normal">470</span>
-<span class="normal">471</span>
-<span class="normal">472</span>
-<span class="normal">473</span>
-<span class="normal">474</span>
-<span class="normal">475</span>
-<span class="normal">476</span>
-<span class="normal">477</span>
-<span class="normal">478</span>
-<span class="normal">479</span>
-<span class="normal">480</span>
-<span class="normal">481</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    PviObject.kill: kills this object</span>
-<span class="sd">    this should be called when object is not beeing used anymore</span>
-<span class="sd">    to save PVI resources</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">)</span> <span class="c1"># remove from linkIDs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">_pviObjects</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="c1"># remove from PviObjects</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">_linkIDs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">_pviObjects</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">PviXUnlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hPvi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_linkID</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">!=</span> <span class="mi">12045</span><span class="p">:</span>

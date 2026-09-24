@@ -1788,14 +1788,14 @@
 
             <details class="quote">
               <summary>Source code in <code>pvi\Anslscan.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">42</span>
 <span class="normal">43</span>
 <span class="normal">44</span>
 <span class="normal">45</span>
 <span class="normal">46</span>
-<span class="normal">47</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">ScanResult</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Anslscan&#39;s result</span>
 <span class="sd">    &quot;&quot;&quot;</span>    
@@ -1898,7 +1898,27 @@
 
           <details class="quote">
             <summary>Source code in <code>pvi\Anslscan.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">108</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
 <span class="normal">109</span>
 <span class="normal">110</span>
 <span class="normal">111</span>
@@ -1912,7 +1932,15 @@
 <span class="normal">119</span>
 <span class="normal">120</span>
 <span class="normal">121</span>
-<span class="normal">122</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">ansl_scan</span><span class="p">(</span> <span class="n">network</span> <span class="p">:</span> <span class="n">ipaddress</span><span class="o">.</span><span class="n">IPv4Network</span> <span class="p">)</span><span class="o">-&gt;</span><span class="n">List</span><span class="p">[</span><span class="n">ScanResult</span><span class="p">]</span> <span class="p">:</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">ansl_scan</span><span class="p">(</span> <span class="n">network</span> <span class="p">:</span> <span class="n">ipaddress</span><span class="o">.</span><span class="n">IPv4Network</span> <span class="p">)</span><span class="o">-&gt;</span><span class="n">List</span><span class="p">[</span><span class="n">ScanResult</span><span class="p">]</span> <span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Scan for CPU with ANSL protocol activated</span>
 
 <span class="sd">    Args:</span>
@@ -1921,11 +1949,39 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        list with scan results, namedtuple(&#39;ScanResult&#39;, [&#39;target&#39;,&#39;AR&#39;, &#39;ip&#39;,&#39;status&#39;])</span>
 <span class="sd">    &quot;&quot;&quot;</span>    
-    <span class="k">global</span> <span class="n">pviConnection</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="n">cpu_list</span><span class="p">,</span> <span class="n">network_to_scan</span>
+    <span class="k">global</span> <span class="n">cpu_list</span><span class="p">,</span> <span class="n">network_to_scan</span>
+
+    <span class="n">pviConnection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">()</span> <span class="c1"># start a Pvi connection</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">Line</span><span class="p">(</span> <span class="n">pviConnection</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;LNANSL&#39;</span><span class="p">,</span> <span class="n">CD</span><span class="o">=</span><span class="s1">&#39;LNANSL&#39;</span><span class="p">)</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">Device</span><span class="p">(</span> <span class="n">line</span><span class="p">,</span> <span class="s1">&#39;TCP&#39;</span><span class="p">,</span> <span class="n">CD</span><span class="o">=</span><span class="s1">&#39;/IF=TcpIp&#39;</span> <span class="p">)</span>
+    <span class="n">network_to_scan</span> <span class="o">=</span> <span class="n">ipaddress</span><span class="o">.</span><span class="n">IPv4Network</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">)</span>
+    <span class="n">cpu_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">objectsArranged</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>       
+        <span class="c1"># Check servers simultaneously using ThreadPoolExecutor</span>
+        <span class="k">with</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">MAX_WORKERS</span><span class="p">)</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">host</span><span class="p">:</span> <span class="n">check_server</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">host</span><span class="p">)),</span> <span class="n">network_to_scan</span><span class="o">.</span><span class="n">hosts</span><span class="p">()</span> <span class="p">)</span> <span class="c1"># type: ignore</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+
+        <span class="c1"># connect to all CPUs found with PVI to get further information</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>          
+            <span class="n">cpu</span> <span class="o">=</span> <span class="n">Cpu</span><span class="p">(</span> <span class="n">device</span><span class="p">,</span> <span class="s1">&#39;newCpu&#39;</span><span class="p">,</span> <span class="n">CD</span><span class="o">=</span><span class="s1">&#39;/IP=&#39;</span> <span class="o">+</span> <span class="n">result</span> <span class="p">)</span>
+            <span class="n">cpu</span><span class="o">.</span><span class="n">ip_address</span> <span class="o">=</span> <span class="n">result</span> <span class="c1"># type: ignore ,add dynamic member for IP address</span>
+            <span class="n">cpu</span><span class="o">.</span><span class="n">checked</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># type: ignore , add dynamic member for &#39;checked&#39; state</span>
+            <span class="n">cpu</span><span class="o">.</span><span class="n">errorChanged</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">PviObject</span><span class="p">,</span><span class="nb">int</span><span class="p">],</span><span class="kc">None</span><span class="p">],</span> <span class="n">cpu_error_change</span> <span class="p">)</span>
+            <span class="k">while</span> <span class="ow">not</span><span class="p">(</span><span class="n">cpu</span><span class="o">.</span><span class="n">checked</span><span class="p">):</span> <span class="c1"># type: ignore</span>
+                <span class="n">pviConnection</span><span class="o">.</span><span class="n">doEvents</span><span class="p">()</span>
+            <span class="n">cpu</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
+            <span class="k">del</span> <span class="n">cpu</span>
+
+        <span class="n">device</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
+        <span class="n">line</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
+        <span class="n">pviConnection</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
     <span class="n">network_to_scan</span> <span class="o">=</span> <span class="n">network</span>
-    <span class="n">cpu_list</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
     <span class="n">pviConnection</span><span class="o">.</span><span class="n">objectsArranged</span> <span class="o">=</span> <span class="n">objectsArranged</span>
     <span class="n">pviConnection</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> 
+
     <span class="k">return</span> <span class="n">cpu_list</span>   
 </code></pre></div></td></tr></table></div>
           </details>
