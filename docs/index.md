@@ -92,6 +92,23 @@ For example, the following address specifications are equivalent: `192.168.1.0/2
 
 [Netmask / CDIR Translation Table](netmask_cidr.md)
 
+
+## GUI
+
+### Plcwatch
+
+This module allows you to browse, view, and modify variables in a PLC.
+In addition, it's a great example of how Pvi.py can be used effectively in a GUI environment.
+
+- search for PLC targets by using ANSL
+![plcwatch_search_for_targets_ansl](./tutorial/plcwatch_search_for_targets_ansl.png)
+
+- search for PLC targets by using SNMP
+![plcwatch_search_for_targets_snmp](./tutorial/plcwatch_search_for_targets_snmp.png)
+
+- Browse and view variables
+![plcwatch_watch_variables](./tutorial/plcwatch_watch_variables.png)
+
 ## Source Code
 
 Find it on GitHub [github.com/hilch/Pvi.py](https://github.com/hilch/Pvi.py)
