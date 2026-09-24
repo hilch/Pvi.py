@@ -20,12 +20,27 @@ In that case PVI-Manager must be stopped and restarted again.
 This can be very annoying if Automation Studio is being used in the background at the same time, because it then has to be restarted as well.
 Contact your local B&R office to buy a valid license if trial license is not sufficient for you.
 
+And: PVI is only available for Microsoft Windows, so Pvi.py is also restricted to the Windows operating system.
+
+## PVI version
+
 Pvi.py is tested with PVI 4.1 - 64 Bit version (PviCom64.dll). Older version might work but 32 Bit versions won't.
 
 Pvi.py will search in the path given by environment variable 'PVIPY_PVIDLLPATH' for PviCom64.dll.
 If this is not set it will search in Windows registry which is the most common way.
 
-And: PVI is only available for Microsoft Windows, so Pvi.py is also restricted to the Windows operating system.
+If you installed PVI 4.x and PVI 6.x both Pvi.py will prefer PVI 4.x when 'PVIPY_PVIDLLPATH' is not explicitely set.
+This was chosen because obsolete communication lines (especially INA2000) were removed from PVI 6.x.
+If it is impractical to set 'PVIPY_PVIDLLPATH' before you start the script this can be alternatively done inside script:
+
+```python
+import os
+
+os.environ['PVIPY_PVIDLLPATH'] = r'C:\Program Files (x86)\BRAutomation\PVI6\Bin'
+# 'os.environ' must be used before importing from 'pvi'
+
+from pvi import Connection, Cpu, Device, Line, Module, PviError
+```
 
 ## Python
 
