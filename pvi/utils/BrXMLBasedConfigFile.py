@@ -23,24 +23,23 @@
 
 from pvi.utils.BrFile import *
 
-class BrDataObjectFile(BrFile):
+class BrXMLBasedConfigFile(BrFile):
     '''
     class for a *.br file containing data object
     '''
     def __init__(self, filename: str):
         super().__init__(filename)
-        if self._fileType != ModuleType.DATA_OBJECT:
+        if self._fileType != ModuleType.XML_BASED_CONFIGURATION:
             raise TypeError(f'content is not a B&R data module (Type is {self._fileType})')
         self._data_start_address = struct.unpack_from('>L', self._content, 0x24)[0]
         self._data_end_address = struct.unpack_from('>L', self._content, 0x28)[0]
-        pass
 
     @property
     def version(self) -> int:
         return struct.unpack_from('<H', self._content, 0x82)[0]
 
     @property
-    def data(self) -> bytes:
-        return self._content[self._data_start_address:self._data_end_address]
+    def data(self) -> str:
+        return self._content[self._data_start_address:self._data_end_address].decode('utf-8-sig')
 
 

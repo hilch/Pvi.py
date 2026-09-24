@@ -89,7 +89,7 @@ class BrProfilerDataFile(BrFile):
 
 	def __init__(self, filename: str):
 		super().__init__(filename)
-		if self.fileType != BrFileType.PROFILER_DATA_OBJECT:
+		if self.fileType != ModuleType.PROFILER_DATA_OBJECT:
 			raise TypeError(f'content is not a B&R profiler data module (Type is {self.fileType})')
 		self.__offsetRecords = struct.unpack_from('<H', self._content, 0x2d)[0] + struct.unpack_from('<H', self._content, 0x2f)[0] # 2 x uint16
 							

@@ -1,5 +1,10 @@
 # Version history
 
+##
+
+- incompatible change: BrDataObjectFile: removed obsolete property 'xmlHeader'
+- new file handling for some *.br files: BrMotionDataObjectFile, BrXMLBasedConfigFile
+
 ## V1.2.11
 
 - Add Plcwatch.pyw

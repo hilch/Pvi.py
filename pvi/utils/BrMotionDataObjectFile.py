@@ -23,17 +23,16 @@
 
 from pvi.utils.BrFile import *
 
-class BrDataObjectFile(BrFile):
+class BrMotionDataObjectFile(BrFile):
     '''
     class for a *.br file containing data object
     '''
     def __init__(self, filename: str):
         super().__init__(filename)
-        if self._fileType != ModuleType.DATA_OBJECT:
+        if self._fileType != ModuleType.MOTION_DATA_OBJECT:
             raise TypeError(f'content is not a B&R data module (Type is {self._fileType})')
         self._data_start_address = struct.unpack_from('>L', self._content, 0x24)[0]
-        self._data_end_address = struct.unpack_from('>L', self._content, 0x28)[0]
-        pass
+        self._data_end_address = struct.unpack_from('>L', self._content, 0x2c)[0]
 
     @property
     def version(self) -> int:
@@ -44,3 +43,14 @@ class BrDataObjectFile(BrFile):
         return self._content[self._data_start_address:self._data_end_address]
 
 
+
+
+    @property
+    def xmlHeader(self):
+        header = bytearray()
+        for x in self._content[0x30:]:
+            if x != 0:
+                header.append(x)
+            else:
+                break
+        return header.decode('ascii')        

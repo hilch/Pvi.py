@@ -24,6 +24,7 @@ from datetime import datetime, timedelta
 from collections import namedtuple
 import struct
 from pvi.utils.BrFile import *
+from typing import Union, NamedTuple
 
 BrLoggerFileEntry = namedtuple('LoggerEntry', [ 'RecordID', 'Time', 'Nanosec', 'ObjectID' , 'Severity', 'Code', 
                          'EventID', 'OriginID', 'AsciiData', 'BinaryData'])
@@ -34,7 +35,7 @@ class BrLoggerFile(BrFile):
     '''
     def __init__(self, filename: str):
         super().__init__(filename)
-        if self.fileType != BrFileType.LOGGER_MODULE:
+        if self.fileType != ModuleType.LOGGER_MODULE:
             raise TypeError(f'content is not a B&R logger module (Type is {self.fileType})')
         self.__entries = None
         self.__BASE_OFFSET = 0xc0
@@ -106,7 +107,7 @@ class BrLoggerFile(BrFile):
        return self.entries[0].RecordID
 
 
-    def __readEntry(self) -> bytes:
+    def __readEntry(self) -> Union[NamedTuple, None] :
         '''
         (internal) read and decode an entry
         '''              

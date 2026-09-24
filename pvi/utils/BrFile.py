@@ -23,7 +23,7 @@
 import os
 import struct
 
-from pvi.pvi_objects.Module import ModuleType as BrFileType
+from pvi.pvi_objects.Module import ModuleType
 
 class BrFile():
     '''
@@ -40,7 +40,7 @@ class BrFile():
 
     @property
     def fileType(self):
-        return BrFileType(self._fileType)
+        return ModuleType(self._fileType)
 
 
     def __repr__(self) -> str:
