@@ -310,15 +310,15 @@ class Module(PviObject):
         delete Module from CPU
 
         Raises:
-            PviError
+            PviError : PVI-Error
 
         Returns:
             None
         """
         s = create_string_buffer(b'LD=Delete')        
         self._result = PviXWrite( self._hPvi, self._linkID, POBJ_ACC_STATUS, byref(s), sizeof(s), None, 0 )  
-        # if self._result:
-        #     raise PviError(self._result, self)        
+        if self._result:
+            raise PviError(self._result, self)        
 
     @property
     def moduleInfo(self) -> dict:

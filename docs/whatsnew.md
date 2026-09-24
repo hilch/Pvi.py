@@ -1,5 +1,9 @@
 # Version history
 
+## V1.2.12
+
+- fix : deleting a Module.delete didn't raise an Exception when module did not exist
+
 ## V1.2.11
 
 - Add Plcwatch.pyw
