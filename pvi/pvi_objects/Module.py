@@ -71,6 +71,7 @@ class ModuleType(IntEnum):
     DB_SQLITE_TEXT_DEFINITION = 0xd1
     DB_SQLITE_UNIT_DEFINITION = 0xd2
     DB_SQLITE_RELOADABLE_TEXT = 0xd3
+    MOTION_NW_TRACE = 0x4602
 
     @classmethod
     def _missing_(cls, value):

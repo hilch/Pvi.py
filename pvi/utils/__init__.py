@@ -1,6 +1,7 @@
 from .BrFile import BrFile, ModuleType
 from .BrDataObjectFile import BrDataObjectFile
 from .BrMotionDataObjectFile import BrMotionDataObjectFile
+from .BrMotionNwTraceFile import BrMotionNwTraceFile
 from .BrXMLBasedConfigFile import BrXMLBasedConfigFile
 from .BrLoggerFile import BrLoggerFile
 from .BrProfilerDataFile import BrProfilerDataFile

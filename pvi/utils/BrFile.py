@@ -40,8 +40,9 @@ class BrFile():
 
     @property
     def fileType(self):
+        if self._fileType == ModuleType.MOTION_DATA_OBJECT and self._subType == 0x02:
+            return ModuleType.MOTION_NW_TRACE
         return ModuleType(self._fileType)
-
 
     def __repr__(self) -> str:
         return f'File ({str(self._fileType)})'
