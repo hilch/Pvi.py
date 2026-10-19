@@ -31,11 +31,14 @@ class BrFile():
     '''
     def __init__(self, filename : str ):
         self.__name = os.path.basename(filename)
+        file_size = os.path.getsize(filename)
         with open(filename, 'rb') as f:
             self._content = f.read()
         magicNumber, self._fileType, self._subType, self._fileSize  = struct.unpack_from('>HBB10xI', self._content, 0) # big-endian
         if magicNumber != 0x2b97:
             raise TypeError('content is not a B&R module !')
+        if file_size != self._fileSize:
+            raise TypeError('file length does not match !')
 
 
     @property
@@ -43,6 +46,10 @@ class BrFile():
         if self._fileType == ModuleType.MOTION_DATA_OBJECT and self._subType == 0x02:
             return ModuleType.MOTION_NW_TRACE
         return ModuleType(self._fileType)
+
+    @property
+    def fileSize(self):
+        return self._fileSize
 
     def __repr__(self) -> str:
         return f'File ({str(self._fileType)})'
