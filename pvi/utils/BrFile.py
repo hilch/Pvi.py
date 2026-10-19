@@ -44,7 +44,9 @@ class BrFile():
     @property
     def fileType(self):
         if self._fileType == ModuleType.MOTION_DATA_OBJECT and self._subType == 0x02:
-            return ModuleType.MOTION_NW_TRACE
+            start = struct.unpack_from('>L', self._content, 0x24)[0]
+            if self._content[start:start+12] == b'MTrcBinDat01':
+                return ModuleType.MOTION_NW_TRACE
         return ModuleType(self._fileType)
 
     @property
