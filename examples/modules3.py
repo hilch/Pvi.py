@@ -6,6 +6,7 @@
 
 import os
 from pvi.utils import BrFile, ModuleType, BrDataObjectFile, BrMotionDataObjectFile, BrXMLBasedConfigFile
+from pvi.utils import BrMotionNwTraceFile
 
 # 'Temp' folder contains 'anonymous' file names and makes it difficult to determine the content
 # or alternatively take a view into the 'Binaries' folder of a project
@@ -26,6 +27,9 @@ for filename in filenames:
         data_module = BrMotionDataObjectFile(path_of_the_directory + '\\' + filename)
         data = data_module.data
         print( f", data: {data[:20]} .... {data[-20:]}")
+    elif module.fileType == ModuleType.MOTION_NW_TRACE:
+        data_module = BrMotionNwTraceFile(path_of_the_directory + '\\' + filename)
+        print( f"version: {data_module.module_revision}")        
     elif module.fileType == ModuleType.XML_BASED_CONFIGURATION:
         data_module = BrXMLBasedConfigFile(path_of_the_directory + '\\' + filename)
         data = str.replace( data_module.data, '\r\n', '')
