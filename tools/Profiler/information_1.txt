@@ -1,0 +1,12 @@
+Name of data Object:06302147$f
+Start date of profiling:6/30/2026 9:46:52 PM
+Automation Runtime version:S4.93
+Used profiler version:4.00.2
+Profiled target type:X20CP3687X
+Profiled board type:Information not available
+Tick frequency MHz:1596.000
+Profiler state:Ready
+Known Objects on target:606
+First record at offset:368
+Last record at offset:367
+

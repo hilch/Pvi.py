@@ -1,0 +1,11 @@
+Name of data Object:prfmod*
+Start date of profiling:10/23/2026 10:48:24 AM
+Automation Runtime version:6.1.1
+Used profiler version:6.1.0.0
+Profiled target type:X20CP3684
+Profiled board type:Information not available
+Tick frequency MHz:10.00
+Profiler state:Ready
+Known Objects on target:169
+First record at offset:0
+Last record at offset:499999

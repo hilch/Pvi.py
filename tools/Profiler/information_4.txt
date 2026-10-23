@@ -1,0 +1,12 @@
+Name of data Object:10071026$f
+Start date of profiling:10/7/2026 10:26:43 AM
+Automation Runtime version:6.8.1
+Used profiler version:6.1.0.0
+Profiled target type:5APC4100.TGL2-000
+Profiled board type:Information not available
+Tick frequency MHz:2610.125
+Profiler state:Ready
+Known Objects on target:581
+First record at offset:0
+Last record at offset:499999
+

@@ -1,0 +1,12 @@
+Name of data Object:09101239$f
+Start date of profiling:9/10/2026 12:39:39 PM
+Automation Runtime version:6.7.7
+Used profiler version:6.1.0.0
+Profiled target type:5APC3100.KBU3-000
+Profiled board type:Information not available
+Tick frequency MHz:2900.000
+Profiler state:Ready
+Known Objects on target:372
+First record at offset:0
+Last record at offset:49999
+

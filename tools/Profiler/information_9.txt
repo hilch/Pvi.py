@@ -1,0 +1,17 @@
+Name of data Object:prfmod$f
+Start date of profiling:10/23/2026 1:25:01 PM
+Automation Runtime version:6.8.1
+Used profiler version:6.1.0.0
+Profiled target type:X20CP3684
+Profiled board type:Information not available
+Tick frequency MHz:10.00
+Profiler state:Ready
+Known Objects on target:170
+First record at offset:0
+Last record at offset:9374
+Number of recording entries:10000
+Additional data size per entry:10
+Buffer for created tasks:123
+Buffer for created user task:123
+
+
