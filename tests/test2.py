@@ -14,7 +14,7 @@ from pvi.utils import BrProfilerDataFile
 from pvi.utils.BrProfilerDataFile import BrProfilerEvent
 
 class ProfilerDataFileTests(unittest.TestCase):
-    fixtures = Path(__file__).resolve().parent
+    fixtures = Path(__file__).resolve().parent / 'profiler_testdata'
 
     def test_legacy_object_metadata(self):
         expected = {
