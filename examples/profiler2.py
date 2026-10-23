@@ -8,30 +8,34 @@
 import tarfile
 import tempfile
 import csv
-import os
 import re
 import locale
+import shutil
+from pathlib import Path, PurePosixPath
 from pprint import PrettyPrinter
 from pvi.utils import BrProfilerDataFile
 
 locale.setlocale(locale.LC_ALL, '')
 
-pattern = re.compile(r'(BuR_SDM_profiling_.*pd)')
+pattern = re.compile(r'BuR_SDM_profiling_.*\.pd')
 
-systemdump = r'C:\Temp\BuR_SDM_Sysdump_2023-07-31_11-11-41.tar.gz'
+systemdump = Path(__file__).with_name('BuR_SDM_Sysdump_.tar.gz')
 
-with tempfile.TemporaryDirectory() as t:
-    tf = tarfile.open( systemdump, mode = 'r')
-    tf.extractall(t)
-    dataDirName = t + '/Data Files'
-    dataFileNames = os.listdir(dataDirName)
-    for dataFileName in dataFileNames:
-        match = pattern.findall(dataFileName)
-        if match:
-            profilingName = match[0]
+with tempfile.TemporaryDirectory() as temporaryDirectory, tarfile.open(systemdump, mode='r:*') as archive:
+    profilerMembers = {
+        member.name: member for member in archive.getmembers()
+        if member.isfile() and pattern.fullmatch(PurePosixPath(member.name).name)
+    }
+    for member in profilerMembers.values():
+        dataFileName = PurePosixPath(member.name).name
+        source = archive.extractfile(member)
+        if source is not None:
+            temporaryFile = Path(temporaryDirectory) / 'profiling.pd'
+            with source, temporaryFile.open('wb') as destination:
+                shutil.copyfileobj(source, destination)
             try:
-                profilerData = BrProfilerDataFile(dataDirName + '/' + dataFileName)
-            except TypeError: # ingore all non-profiler files
+                profilerData = BrProfilerDataFile(str(temporaryFile))
+            except TypeError:
                 continue  
 
             with open(f'{dataFileName}.txt', 'w', newline = '') as f: 
