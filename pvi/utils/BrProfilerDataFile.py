@@ -238,6 +238,7 @@ class BrProfilerDataFile(BrFile):
 				break
 
 		self.__entries = None
+		self.__cyclicStatisticsReady = False
 
 
 	@property
@@ -273,7 +274,77 @@ class BrProfilerDataFile(BrFile):
 
 	@property
 	def cyclicTasks(self) -> dict:
+		'''Task metadata, observed start counts, and complete-call runtimes in microseconds.'''
+		if not self.__cyclicStatisticsReady:
+			self.__calculateCyclicStatistics()
 		return self.__cyclicTasks
+
+	def __calculateCyclicStatistics(self):
+		statistics = {ident: {'call_count': 0, 'completed_calls': 0, 'net_total': 0, 'gross_total': 0,
+			'net_min': None, 'net_max': None, 'gross_min': None, 'gross_max': None}
+			for ident in self.__cyclicTasks}
+		classNames = {task['name']: ident for ident, task in self.__taskClasses.items()}
+		schedulerClasses = {ident: classNames.get(task['name']) for ident, task in self.__systemTasks.items()}
+		cores = {}
+		count = (self.__lastRecordAtOffset - self.__firstRecordAtOffset) % self.__maxPossibleEntries + 1
+		for entryIndex in range(count):
+			physicalIndex = (self.__firstRecordAtOffset + entryIndex) % self.__maxPossibleEntries
+			offset = self.__offsetRecords + physicalIndex * self.__recordSize
+			ticks, event, ident = struct.unpack_from('<QII', self._content, offset)
+			core = struct.unpack_from('<I', self._content, offset + 16)[0] if self.__hasCore else 0
+			if core not in cores:
+				cores[core] = {'ticks': ticks, 'class': None, 'interrupts': [], 'calls': [], 'phases': []}
+			state = cores[core]
+			elapsed = ticks - state['ticks']
+			if not state['interrupts']:
+				for call in reversed(state['calls']):
+					if call['class'] == state['class']:
+						call['net'] += elapsed
+						break
+			state['ticks'] = ticks
+			if event >> 24 == 0:
+				state['class'] = schedulerClasses.get(ident)
+			elif event == 0x01000000:
+				state['interrupts'].append(ident)
+			elif event == 0x01000001:
+				if state['interrupts'] and state['interrupts'][-1] == ident:
+					state['interrupts'].pop()
+			elif event == 0x1e000000:
+				state['phases'].append((ident, state['class']))
+				state['class'] = ident
+			elif event == 0x1e000004:
+				if state['phases'] and state['phases'][-1][0] == ident:
+					_, state['class'] = state['phases'].pop()
+			elif event == 0x02000000 and ident in statistics:
+				statistics[ident]['call_count'] += 1
+				state['calls'] = [call for call in state['calls'] if call['ident'] != ident]
+				state['class'] = self.__cyclicTasks[ident]['taskClass']
+				state['calls'].append({'ident': ident, 'class': state['class'], 'start': ticks, 'net': 0})
+			elif event == 0x02000001 and ident in statistics:
+				for callIndex in range(len(state['calls']) - 1, -1, -1):
+					if state['calls'][callIndex]['ident'] != ident:
+						continue
+					call = state['calls'].pop(callIndex)
+					result = statistics[ident]
+					result['completed_calls'] += 1
+					for kind, duration in (('net', call['net']), ('gross', ticks - call['start'])):
+						result[kind + '_total'] += duration
+						minimum, maximum = result[kind + '_min'], result[kind + '_max']
+						result[kind + '_min'] = duration if minimum is None else min(minimum, duration)
+						result[kind + '_max'] = duration if maximum is None else max(maximum, duration)
+					if not state['phases']:
+						state['class'] = state['calls'][-1]['class'] if state['calls'] else None
+					break
+		for ident, result in statistics.items():
+			task = self.__cyclicTasks[ident]
+			task['call_count'] = result['call_count']
+			for kind in ('net', 'gross'):
+				minimum, maximum = result[kind + '_min'], result[kind + '_max']
+				task[f'minimal_{kind}_time'] = None if minimum is None else minimum * 1000 / self.__tickFrequencyKhz
+				task[f'maximal_{kind}_time'] = None if maximum is None else maximum * 1000 / self.__tickFrequencyKhz
+				task[f'average_{kind}_time'] = (None if minimum is None else
+					result[kind + '_total'] * 1000 / self.__tickFrequencyKhz / result['completed_calls'])
+		self.__cyclicStatisticsReady = True
 
 	@property
 	def systemTasks(self) -> dict:

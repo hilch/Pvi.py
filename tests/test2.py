@@ -29,8 +29,10 @@ class ProfilerDataFileTests(unittest.TestCase):
         for filename, checksum in expected.items():
             with self.subTest(filename=filename):
                 profiler = BrProfilerDataFile(str(self.fixtures / filename))
-                result = ''.join(str(getattr(profiler, attribute)) for attribute in (
-                    'taskClasses', 'cyclicTasks', 'systemTasks', 'interruptHandler', 'libraryFunctions'))
+                cyclic_metadata = {ident: {key: task[key] for key in ('name', 'taskClass')}
+                    for ident, task in profiler.cyclicTasks.items()}
+                result = (str(profiler.taskClasses) + str(cyclic_metadata) + str(profiler.systemTasks)
+                    + str(profiler.interruptHandler) + str(profiler.libraryFunctions))
                 self.assertEqual(hashlib.sha256(result.encode()).hexdigest(), checksum)
 
     def test_fixture_entries(self):
@@ -109,6 +111,95 @@ class ProfilerDataFileTests(unittest.TestCase):
                     else:
                         self.assertIsInstance(entry.cpuCore, int)
                 self.assertEqual(checksum.hexdigest(), checksums[filename])
+
+    def test_cyclic_task_statistics(self):
+        profiler = BrProfilerDataFile(str(self.fixtures / 'profiler7.pd'))
+        task = next(task for task in profiler.cyclicTasks.values() if task['name'] == 'Cnc')
+        self.assertEqual(task['call_count'], 14988)
+        for kind in ('net', 'gross'):
+            self.assertAlmostEqual(task[f'minimal_{kind}_time'], 3.2, places=6)
+            self.assertAlmostEqual(task[f'average_{kind}_time'], 31.235, places=3)
+            self.assertAlmostEqual(task[f'maximal_{kind}_time'], 203.5, places=6)
+
+    def profiler_from_events(self, events):
+        original = (self.fixtures / 'profiler6.pd').read_bytes()
+        config, metadata, start = struct.unpack_from('>3I', original, 0x24)
+        data = bytearray(original[:start])
+        for ticks, event, ident, core in events:
+            data.extend(struct.pack('<QIII', ticks, event, ident, core))
+        struct.pack_into('>I', data, 0x0e, len(data))
+        struct.pack_into('>III', data, 0x30, len(data), len(data), len(data))
+        struct.pack_into('<II', data, config + 16, len(events) * 20, 0)
+        struct.pack_into('<III', data, metadata + 12, 0, len(events) - 1, 1000)
+        return self.read_modified_capture(data)
+
+    def test_cyclic_statistics_interrupts_preemption_and_boundaries(self):
+        original = BrProfilerDataFile(str(self.fixtures / 'profiler6.pd'))
+        ident = next(iter(original.cyclicTasks))
+        task_class = original.cyclicTasks[ident]['taskClass']
+        class_name = original.taskClasses[task_class]['name']
+        scheduler = next(ident for ident, task in original.systemTasks.items() if task['name'] == class_name)
+        class_names = {task['name'] for task in original.taskClasses.values()}
+        idle = next(ident for ident, task in original.systemTasks.items() if task['name'] not in class_names)
+        events = [
+            (0, 0x02000001, ident, 0),
+            (1, 0x02000000, ident, 0),
+            (3, 0x01000000, 101, 0),
+            (4, 0x01000000, 102, 0),
+            (5, 0x01000001, 102, 0),
+            (6, 0x01000001, 101, 0),
+            (7, 0x00000000, idle, 0),
+            (10, 0x00000000, scheduler, 0),
+            (11, 0x02000001, ident, 0),
+            (20, 0x02000000, ident, 0),
+            (24, 0x02000001, ident, 0),
+            (30, 0x02000000, ident, 0),
+        ]
+        profiler = self.profiler_from_events(events)
+        task = profiler.cyclicTasks[ident]
+        self.assertEqual(task['call_count'], 3)
+        for field, value in {
+            'minimal_net_time': 4, 'average_net_time': 4, 'maximal_net_time': 4,
+            'minimal_gross_time': 4, 'average_gross_time': 7, 'maximal_gross_time': 10,
+        }.items():
+            self.assertEqual(task[field], value, field)
+        unused = next(task for task_ident, task in profiler.cyclicTasks.items() if task_ident != ident)
+        self.assertEqual(unused['call_count'], 0)
+        for kind in ('net', 'gross'):
+            for aggregation in ('minimal', 'average', 'maximal'):
+                self.assertIsNone(unused[f'{aggregation}_{kind}_time'])
+
+    def test_cyclic_statistics_task_class_preemption_and_cores(self):
+        original = BrProfilerDataFile(str(self.fixtures / 'profiler6.pd'))
+        ident = next(iter(original.cyclicTasks))
+        task_class = original.cyclicTasks[ident]['taskClass']
+        other_class = next(class_ident for class_ident in original.taskClasses if class_ident != task_class)
+        events = [
+            (0, 0x02000000, ident, 0),
+            (1, 0x02000000, ident, 1),
+            (2, 0x1e000000, other_class, 0),
+            (3, 0x01000000, 101, 1),
+            (5, 0x01000001, 101, 1),
+            (6, 0x1e000004, other_class, 0),
+            (9, 0x02000001, ident, 1),
+            (10, 0x02000001, ident, 0),
+        ]
+        profiler = self.profiler_from_events(events)
+        task = profiler.cyclicTasks[ident]
+        self.assertEqual(task['call_count'], 2)
+        self.assertEqual(task['minimal_net_time'], 6)
+        self.assertEqual(task['average_net_time'], 6)
+        self.assertEqual(task['maximal_net_time'], 6)
+        self.assertEqual(task['minimal_gross_time'], 8)
+        self.assertEqual(task['average_gross_time'], 9)
+        self.assertEqual(task['maximal_gross_time'], 10)
+
+    def test_cyclic_statistics_incomplete_call_does_not_skew_average(self):
+        profiler = BrProfilerDataFile(str(self.fixtures / 'profiler6.pd'))
+        task = next(task for task in profiler.cyclicTasks.values() if task['name'] == 'Svc#2.001')
+        self.assertEqual(task['call_count'], 2)
+        for kind in ('net', 'gross'):
+            self.assertAlmostEqual(task[f'average_{kind}_time'], 7.249, places=3)
 
     def read_modified_capture(self, data):
         with tempfile.TemporaryDirectory() as directory:

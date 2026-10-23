@@ -52,6 +52,44 @@ undecoded event and payload meanings are not inferred. Timestamps are calculated
 from the stored tick frequency and may differ slightly from the Profiler's CSV
 export if that frequency does not preserve the full conversion precision.
 
+## Cyclic task statistics
+
+Each entry in `profiler.cyclicTasks` retains its `name` and `taskClass` and
+provides these calculated fields:
+
+| Field | Meaning |
+| --- | --- |
+| `call_count` | Number of recorded cyclic-task start events |
+| `minimal_net_time` | Shortest complete call's execution time, excluding recorded interruptions |
+| `average_net_time` | Total net time of complete calls divided by their count |
+| `maximal_net_time` | Longest complete call's net execution time |
+| `minimal_gross_time` | Shortest complete call's elapsed start-to-finish time |
+| `average_gross_time` | Total gross time of complete calls divided by their count |
+| `maximal_gross_time` | Longest complete call's elapsed start-to-finish time |
+
+All times are in microseconds. Net time excludes recorded interrupt handlers
+and execution of other task classes on the same CPU core. Interrupt nesting,
+scheduler switches, and task-class phases are tracked separately for each
+core. Gross time includes these interruptions, following the definitions in
+[Evaluating Profiler data in a table](https://help.br-automation.com/#/en/6/diagnostics_support/diagnosis/profile/analyze/diagnosis_profile_analyze_table.html).
+
+Only matched start/finish pairs contribute timing measurements. An unmatched
+finish at the beginning of a recording is ignored; an unfinished start still
+contributes to `call_count`, but not to the timing summaries. Consequently,
+`call_count` can exceed the number of calls used for the averages at recording
+boundaries. If no complete call was recorded, all six timing fields are
+`None`. Tasks with no start event have a `call_count` of zero.
+
+Statistics are calculated on first access and cached. Their accuracy depends
+on recording the relevant task, scheduler, and interrupt events; unrecorded
+interruptions cannot be subtracted from net time.
+
+```python
+for ident, task in profiler.cyclicTasks.items():
+	print(hex(ident), task['name'], task['call_count'],
+		  task['average_net_time'], task['average_gross_time'])
+```
+
 ## Examples
 
 find the following examples on GitHub [github.com/hilch/Pvi.py](https://github.com/hilch/Pvi.py/tree/main/examples)
