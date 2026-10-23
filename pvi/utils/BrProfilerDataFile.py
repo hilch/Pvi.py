@@ -24,9 +24,24 @@ from datetime import datetime
 from collections import namedtuple
 import struct
 from enum import IntEnum
-from pvi.utils.BrFile import *
+from typing import Optional
+from pvi.utils.BrFile import BrFile, ModuleType
 
-BrProfilerEvent = namedtuple('BrProfilerEvent', [ 'microseconds', 'objectIdent', 'objectName', 'event', 'eventDescription'])
+class BrProfilerEvent(namedtuple('BrProfilerEvent', ['microseconds', 'objectIdent', 'objectName', 'event', 'eventDescription'])):
+	cpuCore: Optional[int] = None
+	additionalData: bytes = b''
+
+	def __new__(cls, microseconds, objectIdent, objectName, event, eventDescription, *, cpuCore=None, additionalData=b''):
+		entry = super().__new__(cls, microseconds, objectIdent, objectName, event, eventDescription)
+		entry.cpuCore = cpuCore
+		entry.additionalData = additionalData
+		return entry
+
+	def _replace(self, **fields):
+		entry = super()._replace(**fields)
+		entry.cpuCore = self.cpuCore
+		entry.additionalData = self.additionalData
+		return entry
 
 class BrProfilerObjectType(IntEnum):
 	UNKNOWN = 0
@@ -44,12 +59,15 @@ BrLibraryFunctionEvents = {
 
 BrCyclicTaskEvents = {
 	0x02000000 : 'cyclic task started',
-	0x02000001 : 'cyclic task finished'
+	0x02000001 : 'cyclic task finished',
+	0x02000002 : 'init program started',
+	0x02000003 : 'init program finished',
+	0x02000004 : 'exit program started',
+	0x02000005 : 'exit program finished'
 }
 
 BrTaskClassEvents = {
 	0x1e000000 : 'taskclass started',
-	0x1e000001 : 'taskclass stopped',
 	0x1e000001 : 'input scheduler finished',
 	0x1e000002 : 'end of cyclic programs',
 	0x1e000003 : 'output scheduler started',
@@ -75,9 +93,26 @@ BrInterruptHandlerEvents = {
 	0x01000001 : 'interrupt handler finished'	
 }
 
+BrProgramPhaseEvents = {
+	0x1b000000 : 'init program started',
+	0x1b000001 : 'input scheduler of init program finished',
+	0x1b000002 : 'end of cyclic programs in init program',
+	0x1b000004 : 'output scheduler of init program finished',
+	0x1c000000 : 'exit program started',
+	0x1c000002 : 'end of cyclic programs in exit program'
+}
+
+BrUserEvents = {
+	0x1f000100 : 'user event started',
+	0x1f000200 : 'user event started',
+	0x1f000d00 : 'user event started',
+	0x1f00f101 : 'user event finished'
+}
+
 class BrProfilerDataFile(BrFile):
 	'''
-	class for a *.br file containing profiler data
+	Read the profiler layouts observed in the supplied 4.x and 6.x captures.
+	Events retain their five tuple fields; cpuCore and additionalData are attributes.
 	'''
 	SIZEOF_RECORD_ENTRY = 16
 	SIZEOF_LIBRARY_FUNCTION_ENTRY = 28
@@ -91,37 +126,51 @@ class BrProfilerDataFile(BrFile):
 		super().__init__(filename)
 		if self.fileType != ModuleType.PROFILER_DATA_OBJECT:
 			raise TypeError(f'content is not a B&R profiler data module (Type is {self.fileType})')
-		self.__offsetRecords = struct.unpack_from('<H', self._content, 0x2d)[0] + struct.unpack_from('<H', self._content, 0x2f)[0] # 2 x uint16
-							
-		self.__maxSize = struct.unpack_from('<I', self._content, 0xa4)[0] # uint32 maximal size of profiler data object
-		self.__additionalDatasizePerEntry = struct.unpack_from('<I', self._content, 0xa8)[0] # uint32
-		self.__bufferForCreatedTask = struct.unpack_from('<I', self._content, 0xac)[0] # uint32		
-		self.__bufferForCreatedUserTask = struct.unpack_from('<I', self._content, 0xbc)[0] # uint32
-		head = 0x116
-		# optional library functions
-		libraryFunctionsList = bytearray()
-		while struct.unpack_from('<H', self._content, head)[0] != 0:
-			c = self._content[head]
-			libraryFunctionsList.append( self._content[head])
-			head +=1
-		if len(libraryFunctionsList) > 0:
-			head +=1
-			libraryFunctionsList = str(libraryFunctionsList, 'ascii').split('\0')
-		self.__sgType = 'SG' + str(struct.unpack_from('<B', self._content, head+2)[0])
-		self.__arversion = str(self._content[head+6:head+8], encoding = 'ascii') + '.' \
-					+ str(self._content[head+8:head+10], encoding = 'ascii')
-		self.__bridcode = hex(struct.unpack_from('<I', self._content, head+10)[0]) # uint32
-		self.__firstRecordAtOffset = struct.unpack_from('<I', self._content, head+14)[0] # uint32
-		self.__lastRecordAtOffset = struct.unpack_from('<I', self._content, head+18)[0] # uint32
-		self.__tickFrequencyMhz = struct.unpack_from('<I', self._content, head+22)[0] # uint32
-		year, month, day, _ , hour, minute, second  = struct.unpack_from('<HBBBBBB', self._content, head+26)
+		if self._subType not in (0, 3):
+			raise ValueError('Unsupported profiler module subtype')
+		config, metadata, self.__offsetRecords, self.__endRecords = struct.unpack_from('>4I', self._content, 0x24)
+		if not (0x3c <= config and config + 0x84 <= metadata and metadata + 0xb4 <= self.__offsetRecords <= self.__endRecords <= len(self._content)):
+			raise ValueError('Invalid profiler section pointers')
+		self.__maxSize, self.__additionalDatasizePerEntry, self.__bufferForCreatedTask = struct.unpack_from('<III', self._content, config + 0x10)
+		self.__bufferForCreatedUserTask = struct.unpack_from('<I', self._content, config + 0x28)[0]
+		libraryNames = self._content[config + 0x82:metadata].rstrip(b'\0')
+		libraryFunctionsList = libraryNames.decode('ascii').split('\0') if libraryNames else []
+		self.__sgType = 'SG' + str(self._content[metadata])
+		runtimeText = self._content[metadata + 4:metadata + 8]
+		runtimeParts = struct.unpack_from('<III', self._content, metadata + 0x80)
+		if runtimeText.strip(b'\0'):
+			self.__arversion = runtimeText[:2].decode('ascii') + '.' + runtimeText[2:].decode('ascii')
+			self.__hasCore = False
+		elif runtimeParts[0] == 6:
+			self.__arversion = '.'.join(str(part) for part in runtimeParts)
+			self.__hasCore = self._subType == 0
+		else:
+			raise ValueError('Unsupported profiler record layout')
+		self.__recordSize = (20 if self.__hasCore else 16) + self.__additionalDatasizePerEntry
+		if self.__maxSize != self.__endRecords - self.__offsetRecords or self.__maxSize % self.__recordSize:
+			raise ValueError('Profiler event-region length does not match record size')
+		self.__bridcode = hex(struct.unpack_from('<I', self._content, metadata + 8)[0])
+		self.__firstRecordAtOffset, self.__lastRecordAtOffset, self.__tickFrequencyKhz = struct.unpack_from('<III', self._content, metadata + 0x0c)
+		if not self.__tickFrequencyKhz:
+			raise ValueError('Profiler tick frequency must be positive')
+		self.__tickFrequencyMhz = self.__tickFrequencyKhz / 1000
+		year, month, day, _, hour, minute, second = struct.unpack_from('<HBBBBBB', self._content, metadata + 0x18)
 		self.__profilingTimestamp = datetime( year, month, day, hour, minute, second)
-		self.__noOfCyclicTasks = struct.unpack_from('<I', self._content, head+64)[0] # uint32
-		self.__noOfSystemTasks = struct.unpack_from('<I', self._content, head+72)[0] # uint32		
-		self.__profiledTargetType = str(self._content[head+84:head+99], encoding='ascii').rstrip('\x00')
-		self.__maxPossibleEntries = int(self.__maxSize / (__class__.SIZEOF_RECORD_ENTRY + self.__additionalDatasizePerEntry))
-		self.__systemTick = 1000 / (self.__tickFrequencyMhz)
-		self.__offsetObjectEntry = head + 0xb6
+		self.__noOfTaskClasses = struct.unpack_from('<I', self._content, metadata + 0x36)[0]
+		self.__noOfCyclicTasks = struct.unpack_from('<I', self._content, metadata + 0x3e)[0]
+		self.__noOfSystemTasks = struct.unpack_from('<I', self._content, metadata + 0x46)[0]
+		self.__noOfInterrupts = struct.unpack_from('<I', self._content, metadata + 0x4e)[0]
+		self.__profiledTargetType = self._content[metadata + 0x52:metadata + 0x80].split(b'\0', 1)[0].decode('ascii')
+		self.__maxPossibleEntries = self.__maxSize // self.__recordSize
+		if not (0 <= self.__firstRecordAtOffset < self.__maxPossibleEntries and 0 <= self.__lastRecordAtOffset < self.__maxPossibleEntries):
+			raise ValueError('Profiler record index is outside the event region')
+		self.__offsetObjectEntry = metadata + 0xb4
+		objectTableSize = (len(libraryFunctionsList) * self.SIZEOF_LIBRARY_FUNCTION_ENTRY
+			+ self.__noOfTaskClasses * self.SIZEOF_TASKCLASS_ENTRY
+			+ self.__noOfCyclicTasks * self.SIZEOF_OBJECT_ENTRY
+			+ self.__noOfSystemTasks * self.SIZEOF_SYSTEMOBJECT_ENTRY)
+		if self.__offsetObjectEntry + objectTableSize > self.__offsetRecords:
+			raise ValueError('Profiler object tables overlap the event region')
 
 		# now get the profiled objects:
 		self.__objectTypes = dict()
@@ -137,10 +186,9 @@ class BrProfilerDataFile(BrFile):
 			offset += __class__.SIZEOF_LIBRARY_FUNCTION_ENTRY
 
 
-		self.__objectTypes = dict()
 		# 2. task classes
 		self.__taskClasses = dict()
-		for n in range(9):
+		for n in range(self.__noOfTaskClasses):
 			ident, cycleTime, toleranceTime, prio, name = struct.unpack_from('<I20xIII34s', self._content, offset)
 			name = str(name, 'ascii').rstrip('\x00')
 			objectPriority = 255- prio
@@ -171,10 +219,14 @@ class BrProfilerDataFile(BrFile):
 
 		# 3. interrupt handler
 		self.__interruptHandler = dict()
-		while offset < self.__offsetRecords - __class__.MIN_SIZE_INTERRUPT_VECTOR:
+		for interruptIndex in range(self.__noOfInterrupts):
+			if offset + self.MIN_SIZE_INTERRUPT_VECTOR > self.__offsetRecords:
+				raise ValueError('Profiler interrupt table overlaps the event region')
 			ident, interruptNr, length = struct.unpack_from('<I20xII', self._content, offset)
 			offset += __class__.MIN_SIZE_INTERRUPT_VECTOR
 			if ident != 0:
+				if length > self.__offsetRecords - offset:
+					raise ValueError('Profiler interrupt name overlaps the event region')
 				name = bytearray()
 				if length > 0:
 					name = self._content[offset:offset+length]
@@ -196,11 +248,16 @@ class BrProfilerDataFile(BrFile):
 			"profiledTarget" : self.__profiledTargetType,
 			"targetIdCode"   : self.__bridcode,
 			"tickFrequencyMhz"  : self.__tickFrequencyMhz,
+			"tickFrequencyKhz" : self.__tickFrequencyKhz,
 			"maxSize" : self.__maxSize,
 			"additionalDataSizePerEntry" : self.__additionalDatasizePerEntry,
 			"bufferForCreatedTask" : self.__bufferForCreatedTask,
 			"bufferForCreatedUserTask" : self.__bufferForCreatedUserTask,
 			"entries" : self.__maxPossibleEntries,
+			"recordSize" : self.__recordSize,
+			"hasCpuCore" : self.__hasCore,
+			"firstRecordIndex" : self.__firstRecordAtOffset,
+			"lastRecordIndex" : self.__lastRecordAtOffset,
 			"AR" : self.__arversion
 		})
 
@@ -229,60 +286,72 @@ class BrProfilerDataFile(BrFile):
 
 	@property
 	def entries(self) -> list:
-		if not(self.__entries):
-			offset = self.__offsetRecords + self.__firstRecordAtOffset * __class__.SIZEOF_RECORD_ENTRY
-			maxOffset = self.__offsetRecords + (self.__maxPossibleEntries-1) * __class__.SIZEOF_RECORD_ENTRY
-			noOfValidEntries = self.__maxPossibleEntries
-			if self.__lastRecordAtOffset > self.__firstRecordAtOffset:
-				noOfValidEntries = self.__lastRecordAtOffset - self.__firstRecordAtOffset + 1
-			else:
-				noOfValidEntries = self.__lastRecordAtOffset + self.__maxPossibleEntries - self.__firstRecordAtOffset + 1
+		if self.__entries is None:
+			noOfValidEntries = (self.__lastRecordAtOffset - self.__firstRecordAtOffset) % self.__maxPossibleEntries + 1
 			self.__entries = list()
-			startticks = None
-			for n in range( noOfValidEntries):
+			startticks = struct.unpack_from('<Q', self._content, self.__offsetRecords + self.__firstRecordAtOffset * self.__recordSize)[0]
+			for entryIndex in range(noOfValidEntries):
+				physicalIndex = (self.__firstRecordAtOffset + entryIndex) % self.__maxPossibleEntries
+				offset = self.__offsetRecords + physicalIndex * self.__recordSize
 				ticks, event, objectIdent = struct.unpack_from('<QII', self._content, offset)
-				if not(startticks):
-					startticks = ticks
-				micros = (ticks-startticks) * self.__systemTick
-
-				objectName = ''
-				eventDescription = ''
-
-				if event in BrLibraryFunctionEvents and objectIdent in self.__libraryFunctions:
-					object = self.__libraryFunctions[objectIdent]
-					objectName = object['name']
-					eventDescription = BrLibraryFunctionEvents[event]
-
-				else:
-					objectType = self.__objectTypes.get(objectIdent, BrProfilerObjectType.UNKNOWN )
-					if objectType == BrProfilerObjectType.UNKNOWN:
-						objectName = 'Unknown Object'
-					elif objectType == BrProfilerObjectType.TASK_CLASS:
-						object = self.__taskClasses[objectIdent]
-						objectName = object['name']
-						eventDescription = BrTaskClassEvents.get( event, '' )
-					elif objectType == BrProfilerObjectType.CYCLIC_TASK:
-						object = self.__cyclicTasks[objectIdent]
-						objectName = object['name']
-						eventDescription = BrCyclicTaskEvents.get( event, '' )
-					elif objectType == BrProfilerObjectType.SYSTEM_TASK:
-						object = self.__systemTasks[objectIdent]
-						objectName = object['name']
-						eventDescription = BrSystemObjectEvents.get( event, '' )
-					elif objectType == BrProfilerObjectType.INTERRUPT_VECTOR:
-						object = self.__interruptHandler[objectIdent]
-						objectName = object['name']
-						eventDescription = BrInterruptHandlerEvents.get( event, '' ) 
-					else:
-						raise ValueError("Unknown profiler object type")
-
-
-				self.__entries.append( BrProfilerEvent( micros, objectIdent, objectName, event, eventDescription) )
-				if offset >= maxOffset:
-					offset = self.__offsetRecords
-				else:
-					offset += __class__.SIZEOF_RECORD_ENTRY
+				micros = (ticks - startticks) * 1000 / self.__tickFrequencyKhz
+				cpuCore = struct.unpack_from('<I', self._content, offset + 16)[0] if self.__hasCore else None
+				baseSize = 20 if self.__hasCore else 16
+				additionalData = self._content[offset + baseSize:offset + self.__recordSize]
+				objectName = self.__objectName(event, objectIdent)
+				eventDescription = self.__eventDescription(event)
+				self.__entries.append(BrProfilerEvent(micros, objectIdent, objectName, event, eventDescription,
+					cpuCore=cpuCore, additionalData=additionalData))
 		return self.__entries
+
+	def __objectName(self, event, ident):
+		family = event >> 24
+		if family == 3:
+			objects = self.__libraryFunctions
+		elif family == 1:
+			objects = self.__interruptHandler
+		elif family == 2:
+			objects = self.__cyclicTasks
+		elif family in (0x1b, 0x1c, 0x1e):
+			objects = self.__taskClasses
+		elif family in (0, 0x11):
+			objects = self.__systemTasks
+		elif family == 0x1f:
+			return f'User Event 0x{ident:08x}'
+		else:
+			return 'Unknown Object'
+		name = objects.get(ident, {}).get('name', 'Unknown Object')
+		if name == 'Unknown Object':
+			label = {0: 'UnknownTask', 2: 'UnknownCyclicTask', 0x1e: 'UnknownTaskClass'}.get(family, 'UnknownObject')
+			return f'{label} 0x{ident:08x}'
+		if family in (0, 0x11, 0x1e) and name.startswith('TC#'):
+			return 'Cyclic #' + name[3:]
+		if family == 1:
+			name = name.replace('\0', '')
+			if name.endswith(' ()'):
+				name = name[:-3]
+		return name
+
+	@staticmethod
+	def __eventDescription(event):
+		family = event >> 24
+		if family == 0:
+			state = {0: 'ready', 1: 'suspended', 2: 'waiting', 4: 'delayed', 6: 'delayed and waiting'}.get(event & 0xff)
+			if state is not None:
+				return f'task switch; outgoing task was {state}'
+		for events in (BrLibraryFunctionEvents, BrCyclicTaskEvents, BrTaskClassEvents, BrInterruptHandlerEvents, BrProgramPhaseEvents, BrUserEvents):
+			if event in events:
+				return events[event]
+		if event in (0x11000000, 0x11000001):
+			return 'task created' if event == 0x11000000 else 'task deleted'
+		if event == 0x15000003:
+			return 'task class tolerance'
+		if family in (0x12, 0x13, 0x14, 0x15):
+			label = {0x12: 'system exception', 0x13: 'processor exception', 0x14: 'AR logger event', 0x15: 'system event'}[family]
+			return f'{label} (0x{event:08X})'
+		if family == 0x1f:
+			return f'user event (0x{event:08X}); semantics unknown'
+		return f'unknown event 0x{event:08X}'
 
 
 	def __repr__(self) -> str:
