@@ -2,7 +2,7 @@
 
 ## Scope and evidence
 
-This describes files 2-9 and their matching CSV exports and information
+This describes files 2-9 and 11 and their matching CSV exports and information
 reports. The reports independently provide profiler versions, frequency,
 record indexes, target identity, and capture dates.
 
@@ -16,12 +16,13 @@ record indexes, target identity, and capture dates.
 | `profiling_7.pd` | `profiling_7.csv` | `information_7.txt` | `6.1.0.0` |
 | `profiling_8.pd` | `profiling_8.csv` | `information_8.txt` | `6.1.0.0` |
 | `profiling_9.pd` | `profiling_9.csv` | `information_9.txt` | `6.1.0.0` |
+| `profiling_11.pd` | `profiling_11.csv` | `information_11.txt` | `6.1.0.0` |
 
 See [Profiling 4.x](profiling_binary_format_4x.md) for files 1 and 10.
 Profiler application versions differ from Automation Runtime versions;
 their binary field remains unidentified. Subtype is not a profiler-major-
 version discriminator: file 2 uses `0x03`, also observed in profiling 4.x.
-Within these 6.x samples, file 2 has 16-byte records and files 3-9 have
+Within these 6.x samples, file 2 has 16-byte records and files 3-9 and 11 have
 core-bearing records of 20, 32, or 120 bytes. These are observations, not a
 universal version-to-layout rule.
 In particular, 4.x file 10 uses subtype `0x00` with 16-byte records and
@@ -36,7 +37,7 @@ big-endian unless stated otherwise.
 | --- | ---: | --- |
 | `0x00` | 2 | Module signature `0x2B97` |
 | `0x02` | 1 | Module type `0x4C` |
-| `0x03` | 1 | Subtype `0x03` in file 2; `0x00` in files 3-9 |
+| `0x03` | 1 | Subtype `0x03` in file 2; `0x00` in files 3-9 and 11 |
 | `0x0E` | 4 | Total file size in bytes |
 | `0x20` | 4 | Binary-payload offset `0x78` |
 | `0x24` | 4 | Capture-configuration pointer `0xAC` |
@@ -62,8 +63,8 @@ These little-endian 32-bit fields explain the event length and record stride:
 
 | Relative offset | Size | Observed meaning |
 | --- | ---: | --- |
-| `+0x10` | 4 | Event-region length; equals end minus start in all eight samples |
-| `+0x14` | 4 | Stored additional bytes per record: 100 in file 5, 12 in file 9, zero otherwise |
+| `+0x10` | 4 | Event-region length; equals end minus start in all nine samples |
+| `+0x14` | 4 | Stored additional bytes per record: 100 in file 5, 12 in files 9 and 11, zero otherwise |
 | `+0x18` | 4 | Buffer for created tasks; assignment distinguished by 4.x file 10 |
 | `+0x28` | 4 | Buffer for created user tasks; assignment distinguished by 4.x file 10 |
 
@@ -99,10 +100,15 @@ an unequal-setting 6.x capture would independently confirm them for 6.x.
 | `profiling_7.pd` | 10,000 | 0 | 0 | 20 | 10,000 | 50 |
 | `profiling_8.pd` | 10,000 | 0 | 0 | 20 | 10,000 | 256 |
 | `profiling_9.pd` | 10,000 | 10 | 12 | 32 | 9,375 | 123 |
+| `profiling_11.pd` | 10,000 | 10 | 12 | 32 | 9,375 | 50 |
 
 Files 7 and 8 have identical event-region boundaries despite changing
 both buffer settings from 50 to 256. These settings therefore do not
 directly give pre-event object-table sizes in these samples.
+
+File 11 repeats file 9's requested/stored size distinction on a different
+target. Both have 300,000 event bytes and 9,375 stored slots; this supports
+the observed layout without proving a universal allocation or alignment rule.
 
 ## Profiler metadata
 
@@ -122,8 +128,13 @@ Numeric fields in this block are little-endian.
 | `+0x1D` | 1 | Hour, 24-hour clock |
 | `+0x1E` | 1 | Minute |
 | `+0x1F` | 1 | Second |
+| `+0x36` | 4 | Number of task-class table slots |
+| `+0x3E` | 4 | Number of cyclic-task table slots |
+| `+0x46` | 4 | Number of system-task table slots |
+| `+0x4E` | 4 | Number of interrupt-handler table entries |
 | `+0x52` | variable | Null-terminated ASCII target type |
 | `+0x80`, `+0x84`, `+0x88` | 4 each | Automation Runtime major, minor, patch; absolute offsets `0x1B0`, `0x1B4`, `0x1B8` |
+| `+0xB4` | variable | Start of object tables; optional library-function entries precede task classes |
 
 | File | Frequency (kHz) | Reported MHz | First index | Last index | Known objects reported |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -135,6 +146,7 @@ Numeric fields in this block are little-endian.
 | `profiling_7.pd` | 10,000 | 10.00 | 0 | 9,999 | 170 |
 | `profiling_8.pd` | 10,000 | 10.00 | 0 | 9,999 | 170 |
 | `profiling_9.pd` | 10,000 | 10.00 | 0 | 9,374 | 170 |
+| `profiling_11.pd` | 10,000 | 10.000 | 0 | 9,374 | 71 |
 
 | File | Capture start | Automation Runtime | Target |
 | --- | --- | --- | --- |
@@ -146,11 +158,14 @@ Numeric fields in this block are little-endian.
 | `profiling_7.pd` | `2026-10-23 13:15:01` | `6.8.1` | `X20CP3684` |
 | `profiling_8.pd` | `2026-10-23 13:20:30` | `6.8.1` | `X20CP3684` |
 | `profiling_9.pd` | `2026-10-23 13:25:01` | `6.8.1` | `X20CP3684` |
+| `profiling_11.pd` | `2026-10-26 14:32:02` | `6.8.1` | `1A4000.00` |
 
 Dates and times match the reports, including corrected `information_6.txt`.
 Timezone and an absolute event-counter epoch are not established.
-Known-object counts are report values, not identified binary count fields
-or CSV object totals. Profiler application versions have not been mapped
+Known-object counts are report values, not a separately identified binary
+count field or CSV object totals. File 11's 71 reported objects equal its
+eight task classes, eight cyclic tasks, and 55 system tasks; that equality
+is not established for all captures. Profiler application versions have not been mapped
 to binary fields and must not be inferred from a constant metadata prefix.
 
 The first/last indexes identify the wrapped buffer in file 2. In these
@@ -169,7 +184,9 @@ Supplied domain information defines exported VxWorks task priority as
 **255 highest, 0 lowest**. Higher-priority tasks can preempt lower-priority
 tasks on the same core; equal-priority ordering is not determined by this
 alone. Empty priority cells are not zero. The binary priority field has not
-been located; these semantics are not inferred from the entry bytes.
+been fully resolved for every object category. In particular, the priority
+exported for a task-class group need not equal the parser's task-class
+metadata priority; see file 11 below.
 
 ### Binary names and object identifiers
 
@@ -196,6 +213,7 @@ of repeated names was considered, not just the first.
 | `profiling_7.pd` | 25 | 8 | 1 | 16 | 0 |
 | `profiling_8.pd` | 25 | 8 | 1 | 16 | 0 |
 | `profiling_9.pd` | 25 | 8 | 1 | 16 | 0 |
+| `profiling_11.pd` | 25 | 8 | 1 | 16 | 0 |
 
 Counts refer to name/ID pairs, not necessarily distinct names. Every located
 pair matches a layout; missing literal names do not establish absent metadata.
@@ -217,12 +235,41 @@ the event code and context; complete namespace rules remain unresolved.
 | `profiling_7.pd` | 6 | 0 |
 | `profiling_8.pd` | 6 | 0 |
 | `profiling_9.pd` | 6 | 0 |
+| `profiling_11.pd` | 7 | 0 |
 
 Stride counts include only consecutive matched name offsets, not all entries.
-Files 6-9 each have only one matched B entry, so no adjacent B stride can
+Files 6-9 and 11 each have only one matched B entry, so no adjacent B stride can
 be tested in those files.
 Repeated spacing supports fixed-size layouts in these regions, not complete
 table boundaries or a binary-only layout-selection rule.
+
+### File 11 object tables
+
+The metadata slot counts are 8 task classes, 8 cyclic tasks, 55 system
+tasks, and 0 interrupt handlers. There are no configured library functions.
+The following little-endian layouts exactly account for the tables before
+the event region at `0x1510`:
+
+| Table | Start | Slots | Entry size | Fields relative to entry start |
+| --- | --- | ---: | ---: | --- |
+| Task classes | `0x1E4` | 8 | 70 | ID `+0x00`, cycle time `+0x18`, tolerance `+0x1C`, raw priority `+0x20`, 34-byte name `+0x24` |
+| Cyclic tasks | `0x414` | 8 | 62 | ID `+0x00`, task-class ID `+0x18`, 34-byte name `+0x1C` |
+| System tasks | `0x604` | 55 | 70 | ID `+0x00`, raw priority `+0x18`, stack size `+0x1C`, free stack `+0x20`, 34-byte name `+0x24` |
+
+The system table ends at `0x150E`; the remaining two bytes before events
+have no established meaning. The 20 bytes between an entry's ID and the
+next listed field are not decoded here.
+
+The eight cyclic entries are `Program1` through `Program8`, with IDs
+`0x030D5200` through `0x030D5414` in increments of `0x4C`. Their task-class
+IDs are 1 through 8. `WINDOWS` is system object ID 1, overlapping task-class
+ID 1; event family, not the numeric ID alone, selects its name.
+
+For the task-class table, `255 - raw_priority` gives 253 for `TC#1` and
+254 for `TC#2` through `TC#8`, matching the CSV's child-program priorities.
+The CSV's group priorities are instead 204 and 182. These must not be
+conflated; the scheduler-code observation below supplies a separate
+correlation for the exported group priorities.
 
 ## Event records
 
@@ -241,6 +288,7 @@ field. Names and descriptions are not inline.
 | `profiling_7.pd` | `0x00` | 10,000 | 20 | 200,000 |
 | `profiling_8.pd` | `0x00` | 10,000 | 20 | 200,000 |
 | `profiling_9.pd` | `0x00` | 9,375 | 32 | 300,000 |
+| `profiling_11.pd` | `0x00` | 9,375 | 32 | 300,000 |
 
 ### Packed structure
 
@@ -258,7 +306,7 @@ All known fields are unsigned little-endian integers:
 | Subtype `0x03`, file 2 | `<QII` | 16 bytes |
 | Subtype `0x00`, files 3-4 and 6-8 | `<QIII` | 20 bytes |
 | Subtype `0x00`, file 5 | `<QIII100x` | 120 bytes |
-| Subtype `0x00`, file 9 | `<QIII12x` | 32 bytes |
+| Subtype `0x00`, files 9 and 11 | `<QIII12x` | 32 bytes |
 
 File 2 has no CPU-core field and exports `-` in that CSV column. File 5's
 extra 100 bytes at record offsets `0x14`-`0x77` are zero in every inspected
@@ -269,6 +317,10 @@ they do not prove that all skipped bytes are semantic padding or distinguish
 requested payload bytes from alignment bytes.
 The configuration additional-byte field, not subtype alone, selects stride
 for these samples.
+
+File 11 also has 12 zero additional bytes in every record and empty CSV
+additional-data cells. Readers should retain those stored bytes rather
+than assuming that the extra area is always padding.
 
 Physical record `i` occupies `[start + i * size, start + (i + 1) * size)`;
 the record count is `(end - start) / size`. Physical and chronological
@@ -329,6 +381,28 @@ files store XML viewer state (columns, selection, and graph bounds), not
 capture-buffer settings; their `FileVersion="5.0"` is not evidence of a
 5.x profiler application version.
 
+### File 11 validation
+
+The file is 307,840 bytes long, matching header `0x0E`. Configuration and
+metadata remain at `0xAC` and `0x130`. The event region is
+`[0x1510, 0x4A8F0)`, followed by trailer pointers `0x4A8F4` and `0x4A918`.
+Its 300,000 bytes contain 9,375 occupied 32-byte records, ordered by indexes
+0 through 9,374 without a ring wrap. All CPU-core fields are zero.
+
+First and last counters are 236,125,006,148 and 236,662,551,275. The relative
+span is 53,754,512.7 microseconds. Every CSV event matches the binary code,
+object ID, resolved name, core, additional bytes, and both relative and
+absolute timestamps. Time comparisons use exact decimal arithmetic at
+10 ticks per microsecond. The CSV preamble names `profiler.pd`; pairing is
+established by all rows, not that filename.
+
+The eight cyclic tasks have 541, 270, 108, 54, 27, 18, 13, and 11 complete
+calls respectively, totaling 1,042. All six per-task timing summaries match
+the CSV within its three-decimal rounding. Net and gross times coincide
+in this recording; no interrupt-handler events occur. The final cyclic
+call is complete, although its task-class output-scheduler phase falls
+outside the recording.
+
 ## Counter and CSV time conversion
 
 Let `F` be the little-endian kHz value at `M + 0x14`, `T` an unsigned
@@ -354,8 +428,9 @@ ring indexes and configuration-derived strides:
 | `profiling_7.pd` | 10,000 | 0 | 0 | 0 |
 | `profiling_8.pd` | 10,000 | 0 | 0 | 0 |
 | `profiling_9.pd` | 9,375 | 0 | 0 | 0 |
+| `profiling_11.pd` | 9,375 | 0 | 0 | 0 |
 
-Core comparisons apply only to subtype `0x00`. Files 6-9's 10,000 kHz field
+Core comparisons apply only to subtype `0x00`. Files 6-9 and 11's 10,000 kHz field
 explains the exact 10-tick conversion. Files 3-5 agree within three-decimal
 CSV rounding, allowing small floating-point effects. File 2 does not: its
 stored/reported 2416.666 MHz needs additional precision or conversion details
@@ -367,8 +442,8 @@ formulas as a universal specification for unobserved variants.
 
 The event code at record offset `0x08` is an unsigned little-endian 32-bit
 integer matching CSV `Event`. Meanings are derived from CSV descriptions,
-not a complete dictionary for all profiler versions. Files 2-9 contain
-282 distinct codes in total. Hexadecimal prefixes below refer to decoded
+not a complete dictionary for all profiler versions. Files 2-9 and 11 contain
+284 distinct codes in total; file 11 adds two to the previous 282. Hexadecimal prefixes below refer to decoded
 integers, not first stored bytes. Not every listed code occurs in every
 6.x sample.
 
@@ -386,8 +461,27 @@ the outgoing name is in the description, not a separate known record field.
 | `0x04` | delayed |
 | `0x06` | delayed and waiting |
 
-Middle bytes `xxxx` remain undecoded; preserve them.
+No general decoding rule for middle bytes `xxxx` is established; preserve them.
 A ready-state switch does not alone prove higher-priority preemption.
+
+File 11 contains these scheduler codes:
+
+| Code | Occurrences | Incoming object | Outgoing state | Both middle bytes | CSV incoming priority |
+| --- | ---: | --- | --- | --- | ---: |
+| `0x00333300` | 541 | `Cyclic #1` | ready | `0x33` (51) | 204 |
+| `0x00494900` | 501 | `Cyclic #2` through `Cyclic #8` | ready | `0x49` (73) | 182 |
+| `0x00FDFD02` | 1,041 | `WINDOWS` | waiting | `0xFD` (253) | 2 |
+
+The first two codes are new relative to files 2-9; the third was already
+observed. Each middle byte equals `255 - CSV incoming priority` in this
+capture. This is a priority correlation, not proof of the independent
+meaning of each byte or a universal rule. In particular, `0x00494900`
+is shared by seven different incoming objects. Resolve incoming names
+from the record's object ID and system-task table, never from a hard-coded
+event-code/name mapping. The outgoing name is still not reconstructed.
+
+The ten distinct codes in file 11 are these three switches, cyclic task
+start/finish, and all five task-class phases. No new event family occurs.
 
 Updated file 6 contains 16 distinct codes. Fifteen were already present
 in files 1-5; the new `0x00414100` occurs 14,988 times and describes a

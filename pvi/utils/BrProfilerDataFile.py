@@ -52,61 +52,74 @@ class BrProfilerObjectType(IntEnum):
 	INTERRUPT_VECTOR = 5
 
 BrLibraryFunctionEvents = {
-	0x03000000 : 'library function started',
-	0x03000001 : 'library function finished'
+	0x03000000 : "library function '{name}' started",
+	0x03000001 : "library function '{name}' finished"
 }
 
 
 BrCyclicTaskEvents = {
-	0x02000000 : 'cyclic task started',
-	0x02000001 : 'cyclic task finished',
-	0x02000002 : 'init program started',
-	0x02000003 : 'init program finished',
-	0x02000004 : 'exit program started',
-	0x02000005 : 'exit program finished'
+	0x02000000 : "cyclic task '{name}' started",
+	0x02000001 : "cyclic task '{name}' finished",
+	0x02000002 : "init program '{name}' started",
+	0x02000003 : "init program '{name}' finished",
+	0x02000004 : "exit program '{name}' started",
+	0x02000005 : "exit program '{name}' finished"
 }
 
 BrTaskClassEvents = {
-	0x1e000000 : 'taskclass started',
-	0x1e000001 : 'input scheduler finished',
-	0x1e000002 : 'end of cyclic programs',
-	0x1e000003 : 'output scheduler started',
-	0x1e000004 : 'output scheduler finished'
+	0x1e000000 : "task class '{name}' started",
+	0x1e000001 : "input scheduler of task class '{name}' finished",
+	0x1e000002 : "end of cyclic programs in task class '{name}'",
+	0x1e000003 : "output scheduler of task class '{name}' started",
+	0x1e000004 : "output scheduler of task class '{name}' finished"
 }
 
 
 BrSystemObjectEvents = {
-	0x00191902 : '#1 is now running',
-	0x00252502 : '#2 is now running',
-	0x00373704 : '#3 is now running',
-	0x00414102 : '#8 is now running',	
-	0x00020200 : 'IO Scheduler is now running',
-	0x00fcfc02 : 'TcIdleFiller is now running',
-	0x01000000 : 'system task started',
-	0x01000001 : 'system task stopped',
-	0x00212102 : 'system task is now running',
-	0x11000001 : 'system task deleted'
+	0x00191902 : 'task switch; outgoing task was waiting',
+	0x00252502 : 'task switch; outgoing task was waiting',
+	0x00373704 : 'task switch; outgoing task was delayed',
+	0x00414102 : 'task switch; outgoing task was waiting',
+	0x00020200 : 'task switch; outgoing task was ready',
+	0x00fcfc02 : 'task switch; outgoing task was waiting',
+	0x00333300 : 'task switch; outgoing task was ready',
+	0x00494900 : 'task switch; outgoing task was ready',
+	0x00fdfd02 : 'task switch; outgoing task was waiting',
+	0x00212102 : 'task switch; outgoing task was waiting',
+	0x11000000 : "task '{name}' created",
+	0x11000001 : "task '{name}' deleted"
 }
 
 BrInterruptHandlerEvents = {
-	0x01000000 : 'interrupt handler started',
-	0x01000001 : 'interrupt handler finished'	
+	0x01000000 : "interrupt handler '{name}' started",
+	0x01000001 : "interrupt handler '{name}' finished"
 }
 
 BrProgramPhaseEvents = {
-	0x1b000000 : 'init program started',
-	0x1b000001 : 'input scheduler of init program finished',
-	0x1b000002 : 'end of cyclic programs in init program',
-	0x1b000004 : 'output scheduler of init program finished',
-	0x1c000000 : 'exit program started',
-	0x1c000002 : 'end of cyclic programs in exit program'
+	0x1b000000 : "init program '{name}' started",
+	0x1b000001 : "input scheduler of init program '{name}' finished",
+	0x1b000002 : "end of cyclic programs in init program '{name}'",
+	0x1b000004 : "output scheduler of init program '{name}' finished",
+	0x1c000000 : "exit program '{name}' started",
+	0x1c000002 : "end of cyclic programs in exit program '{name}'"
 }
 
 BrUserEvents = {
-	0x1f000100 : 'user event started',
-	0x1f000200 : 'user event started',
-	0x1f000d00 : 'user event started',
-	0x1f00f101 : 'user event finished'
+	0x1f000100 : "user event '{name}' started",
+	0x1f000110 : 'non-calculable user event entry',
+	0x1f000120 : 'non-calculable user event entry',
+	0x1f000121 : 'non-calculable user event entry',
+	0x1f0001d0 : 'non-calculable user event entry',
+	0x1f0001d2 : 'non-calculable user event entry',
+	0x1f0001f0 : 'non-calculable user event entry',
+	0x1f000200 : "user event '{name}' started",
+	0x1f000210 : 'non-calculable user event entry',
+	0x1f000220 : 'non-calculable user event entry',
+	0x1f000d00 : "user event '{name}' started",
+	0x1f000d20 : 'non-calculable user event entry',
+	0x1f00f101 : "user event '{name}' finished",
+	0x1f00f102 : 'non-calculable user event entry',
+	0x1f00f103 : 'non-calculable user event entry'
 }
 
 class BrProfilerDataFile(BrFile):
@@ -370,7 +383,7 @@ class BrProfilerDataFile(BrFile):
 				baseSize = 20 if self.__hasCore else 16
 				additionalData = self._content[offset + baseSize:offset + self.__recordSize]
 				objectName = self.__objectName(event, objectIdent)
-				eventDescription = self.__eventDescription(event)
+				eventDescription = self.__eventDescription(event, objectName)
 				self.__entries.append(BrProfilerEvent(micros, objectIdent, objectName, event, eventDescription,
 					cpuCore=cpuCore, additionalData=additionalData))
 		return self.__entries
@@ -383,7 +396,7 @@ class BrProfilerDataFile(BrFile):
 			objects = self.__interruptHandler
 		elif family == 2:
 			objects = self.__cyclicTasks
-		elif family in (0x1b, 0x1c, 0x1e):
+		elif family in (0x1b, 0x1c, 0x1e) or event == 0x15000003:
 			objects = self.__taskClasses
 		elif family in (0, 0x11):
 			objects = self.__systemTasks
@@ -393,9 +406,9 @@ class BrProfilerDataFile(BrFile):
 			return 'Unknown Object'
 		name = objects.get(ident, {}).get('name', 'Unknown Object')
 		if name == 'Unknown Object':
-			label = {0: 'UnknownTask', 2: 'UnknownCyclicTask', 0x1e: 'UnknownTaskClass'}.get(family, 'UnknownObject')
+			label = 'UnknownTaskClass' if event == 0x15000003 else {0: 'UnknownTask', 2: 'UnknownCyclicTask', 0x1e: 'UnknownTaskClass'}.get(family, 'UnknownObject')
 			return f'{label} 0x{ident:08x}'
-		if family in (0, 0x11, 0x1e) and name.startswith('TC#'):
+		if (family in (0, 0x11, 0x1b, 0x1c, 0x1e) or event == 0x15000003) and name.startswith('TC#'):
 			return 'Cyclic #' + name[3:]
 		if family == 1:
 			name = name.replace('\0', '')
@@ -404,19 +417,23 @@ class BrProfilerDataFile(BrFile):
 		return name
 
 	@staticmethod
-	def __eventDescription(event):
+	def __eventDescription(event, objectName=None):
 		family = event >> 24
 		if family == 0:
+			description = BrSystemObjectEvents.get(event)
 			state = {0: 'ready', 1: 'suspended', 2: 'waiting', 4: 'delayed', 6: 'delayed and waiting'}.get(event & 0xff)
-			if state is not None:
-				return f'task switch; outgoing task was {state}'
-		for events in (BrLibraryFunctionEvents, BrCyclicTaskEvents, BrTaskClassEvents, BrInterruptHandlerEvents, BrProgramPhaseEvents, BrUserEvents):
+			if description is None and state is not None:
+				description = f'task switch; outgoing task was {state}'
+			if description is not None:
+				if objectName is not None:
+					return description.replace('task switch;', f"'{objectName}' is now running;", 1)
+				return description
+		for events in (BrLibraryFunctionEvents, BrCyclicTaskEvents, BrTaskClassEvents, BrInterruptHandlerEvents, BrProgramPhaseEvents, BrUserEvents, BrSystemObjectEvents):
 			if event in events:
-				return events[event]
-		if event in (0x11000000, 0x11000001):
-			return 'task created' if event == 0x11000000 else 'task deleted'
+				description = events[event]
+				return description.replace(" '{name}'", '') if objectName is None else description.format(name=objectName)
 		if event == 0x15000003:
-			return 'task class tolerance'
+			return 'task class tolerance' if objectName is None else f'{objectName} is now in task class tolerance'
 		if family in (0x12, 0x13, 0x14, 0x15):
 			label = {0x12: 'system exception', 0x13: 'processor exception', 0x14: 'AR logger event', 0x15: 'system event'}[family]
 			return f'{label} (0x{event:08X})'

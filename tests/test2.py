@@ -11,7 +11,7 @@ pviPath = str(Path(__file__).parents[1])
 sys.path.append( pviPath )
 
 from pvi.utils import BrProfilerDataFile
-from pvi.utils.BrProfilerDataFile import BrProfilerEvent
+from pvi.utils.BrProfilerDataFile import BrProfilerEvent, BrSystemObjectEvents
 
 class ProfilerDataFileTests(unittest.TestCase):
     fixtures = Path(__file__).resolve().parent / 'profiler_testdata'
@@ -111,6 +111,112 @@ class ProfilerDataFileTests(unittest.TestCase):
                     else:
                         self.assertIsInstance(entry.cpuCore, int)
                 self.assertEqual(checksum.hexdigest(), checksums[filename])
+
+    def test_extended_capture_events_and_statistics(self):
+        profiler = BrProfilerDataFile(str(self.fixtures / 'profiler8.pd'))
+        expected_info = {
+            'AR': '6.8.1', 'profiledTarget': '1A4000.00', 'tickFrequencyMhz': 10.0,
+            'startDateOfProfiling': datetime(2026, 10, 26, 14, 32, 2),
+            'entries': 9375, 'recordSize': 32, 'additionalDataSizePerEntry': 12,
+            'firstRecordIndex': 0, 'lastRecordIndex': 9374, 'hasCpuCore': True,
+            'bufferForCreatedTask': 50, 'bufferForCreatedUserTask': 50,
+        }
+        for key, value in expected_info.items():
+            self.assertEqual(profiler.info[key], value, key)
+        self.assertEqual((len(profiler.taskClasses), len(profiler.cyclicTasks),
+                          len(profiler.systemTasks), len(profiler.interruptHandler)), (8, 8, 55, 0))
+        entries = profiler.entries
+        self.assertEqual(len(entries), 9375)
+        self.assertEqual(entries[-1].microseconds, 53754512.7)
+        self.assertEqual(entries[0].objectName, 'Cyclic #1')
+        self.assertEqual(entries[6].objectName, 'WINDOWS')
+        self.assertEqual(entries[0].objectIdent, entries[6].objectIdent)
+        checksum = hashlib.sha256()
+        for entry in entries:
+            self.assertEqual(entry.cpuCore, 0)
+            self.assertEqual(entry.additionalData, bytes(12))
+            self.assertNotIn('Unknown', entry.objectName)
+            checksum.update(struct.pack('<dIIi', entry.microseconds, entry.objectIdent, entry.event, entry.cpuCore))
+            checksum.update(entry.additionalData)
+            if entry.event >> 24 == 0:
+                state = 'ready' if entry.event & 0xff == 0 else 'waiting'
+                self.assertEqual(entry.eventDescription, f"'{entry.objectName}' is now running; outgoing task was {state}")
+                self.assertEqual(BrSystemObjectEvents[entry.event], f'task switch; outgoing task was {state}')
+        self.assertEqual(checksum.hexdigest(), '0ec269a964faf1dd1f6c2ab6f42e30945c018601229cbf58f37f5979ce354bbf')
+        expected_tasks = (
+            (541, 91.3, 229.971, 534.7), (270, 86.3, 237.052, 529.0),
+            (108, 111.8, 231.269, 527.5), (54, 121.3, 242.924, 548.3),
+            (27, 99.1, 226.281, 469.7), (18, 121.4, 227.322, 530.0),
+            (13, 134.3, 179.746, 249.6), (11, 145.9, 211.482, 421.0),
+        )
+        tasks = {task['name']: task for task in profiler.cyclicTasks.values()}
+        for number, (count, minimum, average, maximum) in enumerate(expected_tasks, start=1):
+            task = tasks[f'Program{number}']
+            self.assertEqual(task['call_count'], count)
+            for kind in ('net', 'gross'):
+                for aggregation, expected in zip(('minimal', 'average', 'maximal'), (minimum, average, maximum)):
+                    self.assertAlmostEqual(task[f'{aggregation}_{kind}_time'], expected, places=3)
+
+    def test_csv_task_class_and_user_event_definitions(self):
+        decode = getattr(BrProfilerDataFile, '_BrProfilerDataFile__eventDescription')
+        self.assertEqual(decode(0x1e000000), 'task class started')
+        for code in (0x1f000110, 0x1f000120, 0x1f000121, 0x1f0001d0,
+                     0x1f0001d2, 0x1f0001f0, 0x1f000210, 0x1f000220,
+                     0x1f000d20, 0x1f00f102, 0x1f00f103):
+            with self.subTest(code=hex(code)):
+                self.assertEqual(decode(code), 'non-calculable user event entry')
+        for code in (0x1f000100, 0x1f000200, 0x1f000d00):
+            self.assertEqual(decode(code), 'user event started')
+        self.assertEqual(decode(0x1f00f101), 'user event finished')
+        self.assertEqual(decode(0x1fabcdef), 'user event (0x1FABCDEF); semantics unknown')
+        self.assertEqual(decode(0x7f000000), 'unknown event 0x7F000000')
+
+    def test_detailed_event_descriptions(self):
+        decode = getattr(BrProfilerDataFile, '_BrProfilerDataFile__eventDescription')
+        expected = {
+            0x03000000: "library function 'Target' started",
+            0x03000001: "library function 'Target' finished",
+            0x01000000: "interrupt handler 'Target' started",
+            0x01000001: "interrupt handler 'Target' finished",
+            0x02000000: "cyclic task 'Target' started",
+            0x02000001: "cyclic task 'Target' finished",
+            0x02000002: "init program 'Target' started",
+            0x02000003: "init program 'Target' finished",
+            0x02000004: "exit program 'Target' started",
+            0x02000005: "exit program 'Target' finished",
+            0x1e000000: "task class 'Target' started",
+            0x1e000001: "input scheduler of task class 'Target' finished",
+            0x1e000002: "end of cyclic programs in task class 'Target'",
+            0x1e000003: "output scheduler of task class 'Target' started",
+            0x1e000004: "output scheduler of task class 'Target' finished",
+            0x1b000000: "init program 'Target' started",
+            0x1b000001: "input scheduler of init program 'Target' finished",
+            0x1b000002: "end of cyclic programs in init program 'Target'",
+            0x1b000004: "output scheduler of init program 'Target' finished",
+            0x1c000000: "exit program 'Target' started",
+            0x1c000002: "end of cyclic programs in exit program 'Target'",
+            0x11000000: "task 'Target' created",
+            0x11000001: "task 'Target' deleted",
+            0x1f000100: "user event 'Target' started",
+            0x1f00f101: "user event 'Target' finished",
+            0x15000003: 'Target is now in task class tolerance',
+            0x00333300: "'Target' is now running; outgoing task was ready",
+            0x00abcd06: "'Target' is now running; outgoing task was delayed and waiting",
+        }
+        for code, description in expected.items():
+            with self.subTest(code=hex(code)):
+                self.assertEqual(decode(code, 'Target'), description)
+        profiler = BrProfilerDataFile(str(self.fixtures / 'profiler8.pd'))
+        self.assertEqual(profiler.entries[0].eventDescription, "task class 'Cyclic #1' started")
+        self.assertEqual(profiler.entries[2].eventDescription,
+                         "input scheduler of task class 'Cyclic #1' finished")
+        self.assertEqual(profiler.entries[3].eventDescription, "cyclic task 'Program1' started")
+        self.assertEqual(profiler.entries[8].eventDescription,
+                         "output scheduler of task class 'Cyclic #1' finished")
+        profiler = BrProfilerDataFile(str(self.fixtures / 'profiler4.pd'))
+        tolerance = next(entry for entry in profiler.entries if entry.event == 0x15000003)
+        self.assertEqual(tolerance.objectName, 'Cyclic #2')
+        self.assertEqual(tolerance.eventDescription, 'Cyclic #2 is now in task class tolerance')
 
     def test_cyclic_task_statistics(self):
         profiler = BrProfilerDataFile(str(self.fixtures / 'profiler7.pd'))

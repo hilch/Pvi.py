@@ -37,6 +37,12 @@ field. `additionalData` contains the stored extra bytes, without interpreting
 them or discarding possible alignment bytes. Existing five-value unpacking
 continues to work.
 
+`eventDescription` uses the most detailed supported wording, including the
+resolved object name and the specific task-class, init, or exit phase. For
+example, `0x1e000001` can produce `input scheduler of task class 'Cyclic #1'
+finished`. Scheduler switches include the incoming task name and outgoing
+state, but do not invent an outgoing name that cannot be reconstructed.
+
 `info['tickFrequencyMhz']` is now expressed in MHz, correcting the previous
 kHz-valued result. `tickFrequencyKhz` exposes the original integer field.
 `recordSize`, `hasCpuCore`, `firstRecordIndex`, and `lastRecordIndex` describe

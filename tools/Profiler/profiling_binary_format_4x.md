@@ -5,7 +5,7 @@
 This describes files 1 and 10, their matching CSV exports, and information
 reports. Both reports identify profiler application version `4.00.2`.
 Interpretations are limited to these samples, not every possible 4.x file.
-See [Profiling 6.x](profiling_binary_format_6x.md) for files 2-9.
+See [Profiling 6.x](profiling_binary_format_6x.md) for files 2-9 and 11.
 
 | Binary file | CSV reference | Information report | Automation Runtime | Target |
 | --- | --- | --- | --- | --- |
@@ -79,7 +79,7 @@ Let `C` be the big-endian pointer at `0x24`: `0x94` in file 1 and
 
 In file 10, `C + 0x18` stores 20 and `C + 0x28` stores 0, matching
 the reported created-task and created-user-task buffer sizes, respectively.
-Unlike the supplied 6.x files 2-9, these reported settings differ,
+Unlike the supplied 6.x files 2-9 and 11, these reported settings differ,
 providing evidence for the individual assignment of the two fields.
 File 1 also stores unequal values, 50 and 0, but its information report
 does not list either buffer setting, so it cannot independently establish
