@@ -27,6 +27,10 @@ In that case PVI-Manager must be stopped and restarted again.
 This can be very annoying when Automation Studio is being used in the background at the same time, because it then has to be restarted as well.
 Contact your local B&R office to buy a valid license if trial license is not sufficient for you.
 
+## License
+
+This software published under [MIT license](LICENSE). Also have a look into the [disclaimer](Disclaimer.md).
+
 ## Installation
 
 ```bash
