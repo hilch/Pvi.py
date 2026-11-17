@@ -6,6 +6,12 @@
 
 Python wrapper for [B&amp;R PVI (process visualization interface)](https://help.br-automation.com/#/en/4/automationnet/pvi/pvi.htm).
 
+## License
+
+This software published under [MIT license](LICENSE). Also have a look into the [disclaimer](Disclaimer.md).
+
+## Intention
+
 In times of more modern protocols like OPC-UA, this may seem a bit old-fashioned.
 But PVI has some hidden strengths and is also very versatile.
 Have a look into the documentation of the 'Lines' (ANSL, INA2000, NET2000, MTC, ADI, DCAN, SNMP, MODBUS, MININET) and what they are used for.
@@ -27,9 +33,6 @@ In that case PVI-Manager must be stopped and restarted again.
 This can be very annoying when Automation Studio is being used in the background at the same time, because it then has to be restarted as well.
 Contact your local B&R office to buy a valid license if trial license is not sufficient for you.
 
-## License
-
-This software published under [MIT license](LICENSE). Also have a look into the [disclaimer](Disclaimer.md).
 
 ## Installation
 
